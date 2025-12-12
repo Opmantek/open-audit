@@ -12,7 +12,8 @@ param (
     [switch]$help,
     [string]$benchmark,
     [int]$benchmark_id,
-    [int]$device_id
+    [int]$device_id,
+    [int]$delay = 120
 )
 
 $url = ''
@@ -34,7 +35,7 @@ if ($help -eq $true) {
     exit
 }
 
-function Execute-Audit($location_id, $org_id) {
+function Execute-Audit($location_id, $org_id, $delay) {
     if (Test-Path -Path ".\downloads") {
         if ($debug -eq 1) {
             Write-Host "The path for downloads exists"
@@ -71,9 +72,12 @@ function Execute-Audit($location_id, $org_id) {
     if ($debug -eq 1) {
         Write-Host "$($command)"
     }
-    $seconds = Get-Random -Minimum 1200 -Maximum 10800  # Random time of 20 min to 3 hours
+    $delay = $delay * 60
+    $seconds = Get-Random -Minimum 0 -Maximum $delay
+    if ($debug -eq 1) {
+        Write-Host "Paused for $seconds seconds."
+    }
     Start-Sleep -Seconds $seconds
-    Write-Host "Paused for $seconds seconds."
     iex "& $command"
 }
 
@@ -444,7 +448,7 @@ function Execute-Install {
        $test = Unregister-ScheduledTask -TaskName "Open-AudIT Agent" -Confirm:$false
     }
 
-    $taskTrigger = New-ScheduledTaskTrigger -Daily -At 10am -RandomDelay 00:30:00
+    $taskTrigger = New-ScheduledTaskTrigger -Daily -At 10am -RandomDelay 02:00:00
 
     $taskAction = New-ScheduledTaskAction -Execute "C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe" -Argument "-NoProfile -ExecutionPolicy Bypass -File `"$programPath\agent.ps1`"" -WorkingDirectory "$programPath"
 
@@ -581,7 +585,7 @@ function Execute-Update {
        $test = Unregister-ScheduledTask -TaskName "Open-AudIT Agent" -Confirm:$false
     }
 
-    $taskTrigger = New-ScheduledTaskTrigger -Daily -At 10am -RandomDelay 00:30:00
+    $taskTrigger = New-ScheduledTaskTrigger -Daily -At 10am -RandomDelay 02:00:00
 
     $taskAction = New-ScheduledTaskAction -Execute "C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe" -Argument "-NoProfile -ExecutionPolicy Bypass -File `"$programPath\agent.ps1`"" -WorkingDirectory "$programPath"
 
@@ -606,7 +610,7 @@ function Execute-Update {
 
 if ($audit -eq $true) {
     # Provided on the command line
-    Execute-Audit -location_id 0 -org_id 0
+    Execute-Audit -location_id 0 -org_id 0 -delay $delay
     exit
 }
 
@@ -690,7 +694,10 @@ if ($response.actions.audit -eq $true) {
     if ($debug -eq 1) {
         Write-Host "Auditing"
     }
-    Execute-Audit -location_id $response.actions.location_id -org_id $response.actions.org_id
+    if ($response.actions.delay) {
+        $delay = $response.actions.delay
+    }
+    Execute-Audit -location_id $response.actions.location_id -org_id $response.actions.org_id -delay $delay
 }
 
 Write-Host "Uninstall: $($response.actions.uninstall)"

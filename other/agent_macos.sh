@@ -1,6 +1,6 @@
 #!/bin/sh
 
-version="6.0.0"
+version="6.0.1"
 
 O=$IFS
 IFS=$'\n'
@@ -17,6 +17,7 @@ org_id=""
 uninstall="n"
 update="n"
 url=""
+delay=120
 
 # Not setable by user
 programPath="/usr/local/Open-AudIT-Agent"
@@ -44,24 +45,49 @@ lcase ()
     echo "$result"
 }
 
-i=$(($#-1))
-while [ $i -ge 0 ]; do
-    case ${BASH_ARGV[$i]} in
-        "--audit" )
-            audit="y" ;;
-        "--debug" )
-            debug="y" ;;
-        "--help" )
-            help="y" ;;
-        "--install" )
-            install="y" ;;
-        "--uninstall" )
-            uninstall="y" ;;
-        "--url" )
-            url=${BASH_ARGV[$i-1]} ;;
-    esac
-    i=$((i-1))
+POSITIONAL_ARGS=()
+while [[ $# -gt 0 ]]; do
+  case $1 in
+    --audit)
+      audit="y"
+      shift
+      ;;
+    --debug)
+      debug="y"
+      shift
+      ;;
+    --help)
+      help="y"
+      shift
+      ;;
+    --install)
+      install="y"
+      shift
+      ;;
+    --uninstall)
+      uninstall="y"
+      shift
+      ;;
+    --url)
+      url="$2"
+      shift
+      shift
+      ;;
+    --delay)
+      delay="$2"
+      shift
+      shift
+      ;;
+    *)
+      POSITIONAL_ARGS+=("$1") # save positional arg
+      shift
+      ;;
+  esac
 done
+set -- "${POSITIONAL_ARGS[@]}" # restore positional parameters
+
+# Remove the last character if it is a /
+url="${url%/}"
 
 if [ "$help" = "y" ]; then
     echo ""
@@ -72,7 +98,8 @@ if [ "$help" = "y" ]; then
     echo " --uninstall: Uninstall this agent (default n)."
     echo " --audit: Audit the local computer and submit the result (default n)."
     echo " --help: These options."
-    echo " --url \$url: Hard set a URL to report in to. (default empty)"
+    echo " --url: The URL to use, no trailing slash. EG: http://your_server/open-audit/index.php (default empty)"
+    echo " --delay: A random amount of minutes between 0 and this value, before we execute the assigned action. (default 120)"
     echo ""
     echo "Running from $scriptPath"
     exit 0
@@ -81,7 +108,6 @@ fi
 if [ "$install" = "y" ]; then
     audit="y"
 fi
-
 
 if [ "$debug" = "y" ]; then
     echo ""
@@ -96,6 +122,7 @@ if [ "$debug" = "y" ]; then
     echo "Uninstall: $uninstall"
     echo "Update: $update"
     echo "URL: $url"
+    echo "Delay: $delay"
     echo "----------------------------"
     echo ""
 fi
@@ -104,15 +131,20 @@ execute_audit ()
 {
     location_id="$1"
     org_id="$2"
-    debugging="$3"
+    delay="$3"
+    if [ "$delay" -gt 0 ]; then
+        delay=$((0 + $RANDOM % $delay))
+    fi
 
     if [ "$debug" = "y" ]; then
-        echo "Auditing"
+        echo "Sleeping for $delay minutes, then auditing" > `tty`
     fi
+
+    `sleep "$delay"m`
 
     # Make sure we have a directory
     if [ ! -d "$programPath" ]; then
-        test=$(mkdir "$programPath")
+        test=$(mkdir "$programPath" 2>&1)
     fi
     if [ ! -d "$programPath" ]; then
         echo "Could not create $programPath, exiting" >&2
@@ -120,12 +152,11 @@ execute_audit ()
         exit 1
     fi
     if [ "$debug" = "y" ]; then
-        echo "Attempting to download audit_macos.sh from ${url}scripts/macos/download"
+        echo "Attempting to download audit_macos.sh from ${url}/scripts/macos/download"
         echo "And store it in $programPath/audit_macos.sh"
-        echo ""
     fi
 
-    execute_download "${url}scripts/macos/download" "$programPath/audit_macos.sh"
+    execute_download "${url}/scripts/macos/download" "$programPath/audit_macos.sh"
     if [ "$debug" = "y" ] && [ -f "$programPath/audit_macos.sh" ]; then
         echo "Audit script downloaded successfully."
         echo ""
@@ -140,7 +171,7 @@ execute_audit ()
     # Build the command
     # No need to set the URL here as we download from $url and 
     #        Open-AudIT will set it in the audit script for us
-    if [ "$debugging" = "y" ]; then
+    if [ "$debug" = "y" ]; then
         command="$command debugging=5"
     fi
     if [ "$location_id" ]; then
@@ -247,9 +278,9 @@ execute_install ()
 
     # Copy the agent into this directory
     if [ ! -f "$scriptPath/agent.sh" ]; then
-        path="${url}agents/macos/download"
+        path="${url}/agents/macos/download"
         if [ "$agentId" ]; then
-            path="${url}agents/${agentId}/download/macos"
+            path="${url}/agents/${agentId}/download/macos"
         fi
         if [ "$debug" = "y" ]; then
             echo "Downloading agent from ${path} to ${programPath}/agent.sh"
@@ -331,7 +362,7 @@ execute_update ()
         echo "Updating"
     fi
     # Update the actual agent script
-    test=$(execute_download "${url}agents/macos/download" "$programPath/agent.sh")
+    test=$(execute_download "${url}/agents/macos/download" "$programPath/agent.sh")
     if [ "$debug" = "y" ] && [ -f "$programPath/agent.sh" ]; then
         echo "Agent updated successfully."
         echo "Update complete."
@@ -373,9 +404,9 @@ fi
 
 if [ "$debug" = "y" ]; then
     if [ "$agentId" ]; then
-        echo "Sending to: ${url}agents/${agentId}/execute"
+        echo "Sending to: ${url}/agents/${agentId}/execute"
     else
-        echo "Sending to: ${url}agents/execute"
+        echo "Sending to: ${url}/agents/execute"
     fi
     echo ""
     echo "$postDetails"
@@ -384,9 +415,9 @@ if [ "$debug" = "y" ]; then
 fi
 
 if [ "$agentId" ]; then
-    response=$(curl -s --header "Content-Type: application/json" --data "$postDetails" "${url}agents/${agentId}/execute")
+    response=$(curl -s --header "Content-Type: application/json" --data "$postDetails" "${url}/agents/${agentId}/execute")
 else
-    response=$(curl -s --header "Content-Type: application/json" --data "$postDetails" "${url}agents/execute")
+    response=$(curl -s --header "Content-Type: application/json" --data "$postDetails" "${url}/agents/execute")
 fi
 
 if [ "$debug" = "y" ]; then
@@ -445,6 +476,15 @@ for line in $(echo $response); do
             echo "OrgID sent from server: $org_id"
         fi
     fi
+
+    # Delay
+    if [ $(echo $line | grep "\"delay\"" | cut -d: -f2 | cut -d, -f1) ]; then
+        delay=$(echo $line | grep "\"delay\"" | cut -d: -f2 | cut -d, -f1)
+        delay=$(trim $delay)
+        if [ "$debug" = "y" ]; then
+            echo "Delay sent from server: $delay"
+        fi
+    fi
 done
 
 if [ "$debug" = "y" ]; then
@@ -463,7 +503,7 @@ if [ "$update" = "y" ]; then
 fi
 
 if [ "$audit" = "y" ]; then
-    execute_audit "$location_id" "$org_id" ""
+    execute_audit "$location_id" "$org_id" "$delay"
 fi
 
 if [ "$uninstall" = "y" ]; then

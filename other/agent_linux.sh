@@ -1,6 +1,6 @@
 #!/bin/bash
 
-version="6.0.0"
+version="6.0.1"
 
 ORIGIFS=$IFS
 NEWLINEIFS=$(echo -en "\n\b");
@@ -86,6 +86,9 @@ while [[ $# -gt 0 ]]; do
 done
 set -- "${POSITIONAL_ARGS[@]}" # restore positional parameters
 
+# Remove the last character if it is a /
+url="${url%/}"
+
 if [ "$help" = "y" ]; then
     echo ""
     echo "This is the Open-AudIT Agent version $version."
@@ -105,7 +108,6 @@ fi
 if [ "$install" = "y" ]; then
     audit="y"
 fi
-
 
 if [ "$debug" = "y" ]; then
     echo ""
@@ -129,19 +131,20 @@ execute_audit ()
 {
     location_id="$1"
     org_id="$2"
-    debugging="$3"
-    delay=$((0 + $RANDOM % "$4"))
+    delay="$3"
+    if [ "$delay" -gt 0 ]; then
+        delay=$((0 + $RANDOM % $delay))
+    fi
 
     if [ "$debug" = "y" ]; then
-        echo "Sleeping for $delay minutes." > `tty`
-        echo "Auditing" > `tty`
+        echo "Sleeping for $delay minutes, then auditing" > `tty`
     fi
 
     `sleep "$delay"m`
 
     # Make sure we have a directory
     if [ ! -d "$programPath" ]; then
-        test=$(mkdir "$programPath")
+        test=$(mkdir "$programPath" 2>&1)
     fi
     if [ ! -d "$programPath" ]; then
         echo "Could not create $programPath, exiting" >&2
@@ -153,7 +156,7 @@ execute_audit ()
         echo "And store it in ${programPath}/audit_linux.sh" > `tty`
     fi
 
-    test=$(execute_download "$url/scripts/linux/download" "${programPath}/audit_linux.sh")
+    execute_download "$url/scripts/linux/download" "${programPath}/audit_linux.sh"
     if [ "$debug" = "y" ] && [ -f "${programPath}/audit_linux.sh" ]; then
         echo "Audit script downloaded successfully." > `tty`
         echo "" > `tty`
@@ -168,7 +171,7 @@ execute_audit ()
     # Build the command
     # No need to set the URL here as we download from $url and 
     #        Open-AudIT will set it in the audit script for us
-    if [ "$debugging" = "y" ]; then
+    if [ "$debug" = "y" ]; then
         command="$command debugging=5"
     fi
     if [ "$location_id" ] && [ "$location_id" -gt 0 ]; then
@@ -666,6 +669,15 @@ for line in $response; do
             echo "OrgID sent from server: $org_id"
         fi
     fi
+
+    # Delay
+    if [ $(echo $line | grep "\"delay\"" | cut -d: -f2 | cut -d, -f1) ]; then
+        delay=$(echo $line | grep "\"delay\"" | cut -d: -f2 | cut -d, -f1)
+        delay=$(trim $delay)
+        if [ "$debug" = "y" ]; then
+            echo "Delay sent from server: $delay"
+        fi
+    fi
 done
 
 
@@ -685,7 +697,7 @@ if [ "$update" = "y" ]; then
 fi
 
 if [ "$audit" = "y" ]; then
-    test=$(execute_audit "$location_id" "$org_id" "$debug" "$delay")
+    test=$(execute_audit "$location_id" "$org_id" "$delay")
 fi
 
 if [ "$uninstall" = "y" ]; then
