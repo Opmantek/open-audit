@@ -624,7 +624,6 @@ class WidgetsModel extends BaseModel
             if (strpos($sql, '(@filter)') !== false) {
                 $sql = str_replace('@filter', $org_list, $sql);
             }
-            #echo $sql; exit;
             $query = $this->db->query($sql);
             if (empty($query)) {
                 log_message('error', 'Could not execute SQL: ' . $sql);
@@ -637,15 +636,17 @@ class WidgetsModel extends BaseModel
             }
             if (!empty($result[0]->count)) {
                 $return->result = $result[0]->count;
+            } elseif (!empty($result) and count($result) > 0) {
+                $return->result = count($result);
             }
             unset($result);
         }
         if (empty($widget->sql) and !empty($widget->status_query_id)) {
             $queriesModel = new \App\Models\QueriesModel();
-            $result = $queriesModel->execute(intval($widget->status_query_id, $instance->user));
+            $result = $queriesModel->execute(intval($widget->status_query_id), $instance->user);
             if (!empty($result[0]->count)) {
                 $return->result = $result[0]->count;
-            } else {
+            } elseif (!empty($result) and count($result) > 0) {
                 $return->result = count($result);
             }
         }
