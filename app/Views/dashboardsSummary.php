@@ -102,9 +102,6 @@ $instance = & get_instance();
                     <?php
                     $i = 0;
                     foreach ($included['collections'] as $name => $collection) {
-                        if ($name === 'vendors') {
-                            continue;
-                        }
                         $i++;
                         $color = 'darkgrey';
                         $link = '#';
