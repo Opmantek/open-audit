@@ -1159,9 +1159,16 @@ class Cli extends Controller
     public function updateDevicesAll()
     {
         log_message('debug', 'Executing updateDevicesAll');
-
         $vulnerabilitiesModel = model('VulnerabilitiesModel');
         $vulnerabilitiesModel->updateDevicesAll();
+        return redirect()->route('vulnerabilitiesCollection');
+    }
+
+    public function executeVendorsAll()
+    {
+        log_message('debug', 'Cli::executeVendorsAll');
+        $vendorsModel = model('VendorsModel');
+        $vendorsModel->executeAll();
         return redirect()->route('vulnerabilitiesCollection');
     }
 

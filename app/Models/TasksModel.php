@@ -99,7 +99,7 @@ class TasksModel extends BaseModel
             $instance = & get_instance();
             $data->uuid = $instance->config->uuid;
         }
-        if (empty($data->sub_resource_id) and ($data->type === 'vulnerabilities' or $data->type === 'vendors')) {
+        if (empty($data->sub_resource_id) and ($data->type === 'vulnerabilities' or $data->type === 'vulnerabilities_all' or $data->type === 'vendors' or $data->type === 'vendors_execute_all')) {
             $data->sub_resource_id = 0;
         }
         $data = $this->createFieldData('tasks', $data);
@@ -142,7 +142,7 @@ class TasksModel extends BaseModel
     {
         $included = array();
         $result = $this->builder->getWhere(['id' => intval($id)])->getResult()[0];
-        if ( $result->type !== 'vulnerabilities_all') {
+        if ($result->type !== 'vulnerabilities_all' and $result->type !== 'vendors_execute_all') {
             $type = ucfirst($result->type);
             if ($type != 'Collector') {
                 $namespace = "\\App\\Models\\" . $type . "Model";
@@ -259,7 +259,7 @@ class TasksModel extends BaseModel
         }
         if ($result !== false) {
             for ($i = 0; $i < count($result); $i++) {
-                if ($result[$i]->type !== 'collector' and $result[$i]->type !== 'reports' and $result[$i]->type !== 'vulnerabilities_all') {
+                if ($result[$i]->type !== 'collector' and $result[$i]->type !== 'reports' and $result[$i]->type !== 'vulnerabilities_all' and $result[$i]->type !== 'vendors_execute_all') {
                     $sql = 'SELECT id, name FROM `' . $result[$i]->type . '` WHERE id = ?';
                     $data_result = $this->db->query($sql, [$result[$i]->sub_resource_id])->getResult();
                     if (!empty($data_result[0]->name)) {

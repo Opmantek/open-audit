@@ -20,7 +20,7 @@ include 'shared/common_functions.php';
                             <?= read_field('first_run', $resource->first_run, $dictionary->columns->first_run, $update, '', '', '', '', $meta->collection) ?>
                             <?= read_field('type', $resource->type, $dictionary->columns->type, false, '', '', '', '', $meta->collection) ?>
 
-                            <?php if ($resource->type !== 'vulnerabilities' and $resource->type !== 'vulnerabilities_all') { ?>
+                            <?php if ($resource->type !== 'vulnerabilities' and $resource->type !== 'vulnerabilities_all' and $resource->type !== 'vendors_execute_all') { ?>
                             <?= read_select('sub_resource_id', $resource->sub_resource_id, $dictionary->columns->sub_resource_id . ' Links to <code>' . $resource->type . '.id</code>.', $update, ucwords($resource->type) . ' ' . __('Name'), $included[$resource->type], $meta->collection) ?>
                             <?php } ?>
 

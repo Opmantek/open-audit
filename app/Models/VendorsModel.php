@@ -115,6 +115,54 @@ class VendorsModel extends BaseModel
         return true;
     }
 
+    public function executeAll(): bool
+    {
+        $start = microtime(true);
+        // Get all vulnerabilities with a vendor in the list
+        $sql = "SELECT * FROM vulnerabilities WHERE `vendor` IN (SELECT `name` FROM `vendors` WHERE `use` = 'y')";
+        $query = $this->db->query($sql);
+        log_message('debug', 'VendorsModel::executeAll SQL: ' . str_replace("\n", " ", (string)$this->db->getLastQuery()));
+        if (empty($query)) {
+            return false;
+        }
+        $vulnerabilities = $query->getResult();
+        // Get all Orgs
+        $orgsModel = new \App\Models\OrgsModel();
+        $allOrgs = $orgsModel->listAll();
+        foreach ($allOrgs as $singleOrg) {
+            $orgs[] = $singleOrg->id;
+        }
+        // Loop through vulnerabilities and orgs
+        $count = 1;
+        $total = count($vulnerabilities);
+        foreach ($vulnerabilities as $vulnerability) {
+            log_message('debug', $count . ' / ' . $total . ' vulnerabilities executed.');
+            if (empty($vulnerability->sql)) {
+                log_message('warning', 'No SQL for VendorsModel::executeAll, ID: ' . $vulnerability->id . '.');
+                continue;
+            }
+            foreach ($orgs as $org) {
+                set_time_limit(60);
+                $sql = $vulnerability->sql . " AND devices.org_id = " . $org . ' GROUP BY devices.id';
+                $devices = $this->db->query($sql)->getResult();
+                $sql = "DELETE FROM vulnerabilities_cache WHERE vulnerability_id = ? AND org_id = ?";
+                $this->db->query($sql, [$vulnerability->id, $org]);
+                if (!empty($devices) and count($devices) > 0) {
+                    $sql = "INSERT INTO vulnerabilities_cache VALUES (null, ?, ?, ?, NOW())";
+                    $this->db->query($sql, [$vulnerability->id, $org, count($devices)]);
+                    foreach ($devices as $device) {
+                        $sql = "UPDATE devices SET cve = CONCAT(`cve`, ',', ?) WHERE devices.id = ? AND devices.cve NOT LIKE ?";
+                        $this->db->query($sql, [$vulnerability->cve, $device->{'devices.id'}, $vulnerability->cve]);
+                    }
+                }
+            }
+            $count++;
+        }
+        log_message('info', 'VendorsModel::executeAll, ' . $total . ' vulnerabilities took ' . (microtime(true) - $start) . ' seconds.');
+        return true;
+    }
+
+
     /**
      * Return an array containing arrays of related items to be stored in resp->included
      *

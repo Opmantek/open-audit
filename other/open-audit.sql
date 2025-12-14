@@ -4640,9 +4640,10 @@ CREATE TABLE `tasks` (
 
 LOCK TABLES `tasks` WRITE;
 /*!40000 ALTER TABLE `tasks` DISABLE KEYS */;
-INSERT INTO `tasks` VALUES (1, 'Vulnerability Retrieval', 1, 'Retrieve an updated vulnerability list.', 0, '', 'y', 'vulnerabilities', FLOOR(RAND()*(55-5)+5), FLOOR(RAND()*(3)+1), '*', '*', '*', 0, 0, '2000-01-01 00:00:00', '2000-01-01 00:00:00', '', '', 0, 'system', '2000-01-01 00:00:00');
-INSERT INTO `tasks` VALUES (2, 'Vendor Retrieval', 1, 'Retrieve an updated vendor list.', 0, '', 'y', 'vendors', FLOOR(RAND()*(55-5)+5), FLOOR(RAND()*(5)+1), '*', '*', '*', 0, 0, '2000-01-01 00:00:00', '2000-01-01 00:00:00', '', '', 0, 'system', '2000-01-01 00:00:00');
-INSERT INTO `tasks` VALUES (3, 'Run All Vulnerabilities', 1, 'Execute all vulnerabilities for all Orgs and Devices.', 0, '', 'y', 'vulnerabilities_all', FLOOR(RAND()*(55-5)+5), FLOOR(RAND()*(3)+3), '*', '*', '*', 0, 0, '2000-01-01 00:00:00', '2000-01-01 00:00:00', '', '', 0, 'system', '2000-01-01 00:00:00');
+INSERT INTO `tasks` VALUES (1, 'Vulnerability Retrieval', 1, 'Retrieve an updated vulnerability list.', 0, '', 'y', 'vulnerabilities', FLOOR(RAND() * (55 - 30 + 1) + 30), FLOOR(RAND() * (3) + 1), '*', '*', '*', 0, 0, '2000-01-01 00:00:00', '2000-01-01 00:00:00', '', '', 0, 'system', '2000-01-01 00:00:00');
+INSERT INTO `tasks` VALUES (2, 'Vendor Retrieval', 1, 'Retrieve an updated vendor list.', 0, '', 'y', 'vendors', FLOOR(RAND() * (55 - 5) + 5), FLOOR(RAND()*(5)+1), '*', '*', '*', 0, 0, '2000-01-01 00:00:00', '2000-01-01 00:00:00', '', '', 0, 'system', '2000-01-01 00:00:00');
+INSERT INTO `tasks` VALUES (3, 'Run All Vulnerabilities', 1, 'Execute all vulnerabilities for all Orgs and Devices.', 0, '', 'y', 'vulnerabilities_all', FLOOR(RAND() * (55 - 5) + 5), FLOOR(RAND()*(3)+3), '*', '*', '*', 0, 0, '2000-01-01 00:00:00', '2000-01-01 00:00:00', '', '', 0, 'system', '2000-01-01 00:00:00');
+INSERT INTO `tasks` VALUES (4, 'Vulnerabilities by Vendors', 1, 'Execute vulnerabilities for selected Vendors.', 0, '', 'y', 'vendors_execute_all', FLOOR(5 + RAND() * (20 - 5 + 1)), '*', '*', '*', '*', 0, 0, '2000-01-01 00:00:00', '2000-01-01 00:00:00', '', '', 0, 'system', '2000-01-01 00:00:00');
 
 /*!40000 ALTER TABLE `tasks` ENABLE KEYS */;
 UNLOCK TABLES;

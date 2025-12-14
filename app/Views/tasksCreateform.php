@@ -33,6 +33,7 @@ include 'shared/common_functions.php';
                                             <option value="queries"><?= __('Query') ?></option>
                                             <option value="vendors"><?= __('Vendors') ?></option>
                                             <option value="vulnerabilities"><?= __('Vulnerabilities') ?></option>
+                                            <option value="vendors_execute_all"><?= __('Vendors Execute All') ?></option>
                                             <!--<option value="summaries"><?= __('Summary') ?></option>-->
                                         </select>
                                     </div>

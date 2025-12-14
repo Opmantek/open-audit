@@ -14,14 +14,20 @@ $result = $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
 
-// Set to daily between 12 and 4am
-$sql = "UPDATE `tasks` SET `minute` = FLOOR(RAND()*(55-5)+5), `hour` = FLOOR(RAND()*(3)+1) WHERE `name` = 'Vulnerability Retrieval'";
+// Set to daily between midnight and 4am
+$sql = "UPDATE `tasks` SET `minute` = 30, `hour` = FLOOR(RAND()*(3)+1) WHERE `type` = 'vulnerabilities'";
 $result = $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
 
-// Set daily after above, between 4 and 7 am
-$sql = "UPDATE `tasks` SET `minute` = FLOOR(RAND()*(55-5)+5), `hour` = FLOOR(RAND()*(3)+3) WHERE `name` = 'Run All Vulnerabilities'";
+// Set daily after above, between 4am and 7am between minutes 45 and 55
+$sql = "UPDATE `tasks` SET `minute` = FLOOR(RAND() * (55 - 45 + 1) + 45), `hour` = FLOOR(RAND()*(3)+3) WHERE `type` = 'vulnerabilities_all'";
+$result = $db->query($sql);
+$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+log_message('info', (string)$db->getLastQuery());
+
+// Hourly vendors execute vulnerabilities task in between minutes 2 and 20
+$sql = "INSERT INTO `tasks` VALUES (null, 'Vulnerabilities by Vendors', 1, 'Execute vulnerabilities for selected Vendors.', 0, '', 'y', 'vendors_execute_all', FLOOR(5 + RAND() * (20 - 5 + 1)), '*', '*', '*', '*', 0, 0, '2000-01-01 00:00:00', '2000-01-01 00:00:00', '', '', 0, 'system', '2000-01-01 00:00:00')";
 $result = $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
