@@ -26,12 +26,6 @@ $result = $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
 
-// Not used
-$sql = "DELETE FROM tasks WHERE name = 'Vendor Retrieval'";
-$result = $db->query($sql);
-$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
-log_message('info', (string)$db->getLastQuery());
-
 // New column agents.action_delay
 if (!$db->fieldExists('action_delay', 'agents')) {
     $sql = "ALTER TABLE `agents` ADD `action_delay` int(10) unsigned DEFAULT 120 AFTER `action_uninstall`";
