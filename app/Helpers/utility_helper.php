@@ -541,7 +541,7 @@ function createNewsData()
 
     $path = '/usr/local/open-audit/writable/logs/';
     if (php_uname('s') === 'Windows NT') {
-        $logfile = 'c:\\xampp\\open-audit\\writable\\logs\\';
+        $path = 'c:\\xampp\\open-audit\\writable\\logs\\';
     }
     $files = array_diff(scandir($path), array('.', '..', 'index.html'));
     foreach ($files as $file) {
