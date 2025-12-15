@@ -2930,6 +2930,13 @@ if [ -z $(echo "$skip_sections" | grep "software,") ]; then
 					version=$(echo "$package" | awk '{print $3}' | cut -d: -f2 | cut -d- -f1 | cut -d+ -f1 | cut -d~ -f1)
 					version_raw=version=$(echo "$package" | awk '{print $3}')
 					description=$(echo "$package" | awk '{print $5}')
+					if [[ "$version_raw" == *"snap"* ]]; then
+						test=$(snap list 2>/dev/null | grep "^$name ")
+						if [ -n "$test" ]; then
+							version=$(echo "$test" | awk '{print $2}' | cut -d: -f2 | cut -d- -f1 | cut -d+ -f1 | cut -d~ -f1)
+							version_raw=$(echo "$test" | awk '{print $2}')
+						fi
+					fi
 					echo "		<item>" >> "$xml_file"
 					echo "			<name>$(escape_xml $name)</name>" >> "$xml_file"
 					echo "			<version>$(escape_xml $version)</version>" >> "$xml_file"
