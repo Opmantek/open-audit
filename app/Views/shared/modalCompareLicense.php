@@ -58,14 +58,6 @@ if (!$binary) {
     $message = '<div class="container-fluid"><div class="alert alert-danger alert-dismissable fade show" role="alert">' . __('The enterprise binary from FirstWave is required for a license. Please download Open-AudIT from') . ' <a href="https://firstwave.com">https://firstwave.com</a>.</div></div>';
 }
 
-
-$button_prompt_never = '';
-$button_prompt_later = '';
-// if (($meta->collection === 'summaries' or $meta->collection === 'groups') and $config->oae_prompt <= date('Y-m-d') and $license !== 'commercial') {
-if ($config->oae_prompt <= date('Y-m-d') and $license !== 'commercial') {
-    // $button_prompt_never = '<span id="button_prompt_never"><a data-bs-dismiss="modal" class="btn btn-default btn-sm dismiss_modal_button" href="#" data-value="2100-01-01">' . __('Do not show me again') . '</a></span>';
-    $button_prompt_later = '<span id="button_prompt_later"><a data-bs-dismiss="modal" class="btn btn-default btn-sm dismiss_modal_button" href="#" data-value="' . date('Y-m-d', strtotime(date('Y-m-d') . ' + 30 day')) . '">' . __('Ask me later') . '</a></span>';
-}
 $countries = array(
     "Afghanistan", "Aland Islands", "Albania", "Algeria", "American Samoa", "Andorra",
     "Angola", "Anguilla", "Antarctica", "Antigua and Barbuda", "Argentina", "Armenia",
@@ -116,8 +108,16 @@ $countries = array(
     <div class="modal-dialog modal-xl">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">Open-AudIT Community, Professional and Enterprise Feature Comparison</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" style="padding-right: 50px; padding-top: 50px;"></button>
+                <div class="col-10 clearfix pull-left">
+                    <h5 class="modal-title">Open-AudIT Community, Professional and Enterprise Feature Comparison</h5>
+                </div>
+                <div class="col-2 clearfix text-end">
+                    <?php if ($config->oae_prompt <= date('Y-m-d') and $license !== 'commercial' and $binary) {
+                        echo '<span id="button_prompt_later"><a data-bs-dismiss="modal" class="btn btn-default btn-sm dismiss_modal_button" href="#" data-value="' . date('Y-m-d', strtotime(date('Y-m-d') . ' + 7 day')) . '">' . __('Ask me later') . '</a></span>';
+                    } else { ?>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" style="padding-right: 50px; padding-top: 50px;"></button>
+                    <?php } ?>
+                </div>
             </div>
             <div class="modal-body">
                 <br>
@@ -311,23 +311,6 @@ $countries = array(
                         </tr>
                     </tfoot>
                 </table>
-
-                <div class="row">
-                    <div class="col-6 clearfix pull-left">
-                        <?php #if (($meta->collection === 'summaries' or $meta->collection === 'groups') and $config->oae_prompt <= date('Y-m-d') and $license !== 'commercial' and $binary) { ?>
-                        <?php if ($config->oae_prompt <= date('Y-m-d') and $license !== 'commercial' and $binary) {
-                            echo $button_prompt_later;
-                        } ?>
-                    </div>
-                    <div class="col-6 clearfix pull-right">
-                        <div class="float-end">
-                            <?php if ($config->oae_prompt <= date('Y-m-d') and $license !== 'commercial' and $binary) {
-                                echo $button_prompt_never;
-                            } ?>
-                        </div>
-                    </div>
-                </div>
-
             </div>
         </div>
     </div>
