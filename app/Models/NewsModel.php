@@ -47,7 +47,20 @@ class NewsModel extends BaseModel
      */
     public function create($data = null): ?int
     {
-        return null;
+        // return null;
+
+        $data = $this->createFieldData('news', $data);
+        if (empty($data)) {
+            return null;
+        }
+        $this->builder->insert($data);
+        $error = $this->sqlError($this->db->error());
+        if ($error) {
+            session()->setFlashdata('error', json_encode($error));
+            return null;
+        }
+        return (intval($this->db->insertID()));
+
     }
 
     /**
