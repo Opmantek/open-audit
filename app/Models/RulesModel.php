@@ -120,7 +120,7 @@ class RulesModel extends BaseModel
      * @param  [type] $parameters MUST contain either a device ID or a device object, SHOULD contain an action, default is to update, SHOULD contain a discovery ID for logging
      * @return [type]             [description]
      */
-    public function execute(object $device = null, int $discovery_id = 0, string $action = 'update', int $id = 0)
+    public function execute(?object $device, int $discovery_id = 0, string $action = 'update', int $id = 0)
     {
         $item_start = microtime(true);
 

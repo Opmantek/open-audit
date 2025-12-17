@@ -69,7 +69,7 @@ class IntegrationsModel extends BaseModel
      *
      * @return int|null     The Integer ID of the newly created item, or false
      */
-    public function create(object $data = null): ?int
+    public function create(?object $data): ?int
     {
         if (empty($data)) {
             return null;
@@ -202,7 +202,7 @@ class IntegrationsModel extends BaseModel
         return true;
     }
 
-    public function deleteFields(int $id = 0, object $data = null): bool
+    public function deleteFields(int $id, ?object $data): bool
     {
         $integration = $this->builder->getWhere(['id' => intval($id)])->getResult()[0];
         try {

@@ -63,7 +63,7 @@ class BenchmarksModel extends BaseModel
      *
      * @return int|false    The Integer ID of the newly created item, or false
      */
-    public function create(object $data = null): ?int
+    public function create(?object $data): ?int
     {
         return null;
     }
