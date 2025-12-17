@@ -2774,7 +2774,7 @@ if ($create_file -eq "y") {
     if ($debug -gt 0) {
         Write-Host "creating file: " -NoNewline
     }
-    $result | Out-File $file
+    $result | Out-File $file -Encoding utf8
     if ($debug -gt 0) {
         Write-Host "complete."
         Write-Host "File     $file"
