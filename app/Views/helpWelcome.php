@@ -40,7 +40,7 @@ foreach ($ips as $ip) {
                                 <div class="col-4 offset-4">
                                     <div class="card text-center">
                                         <div class="card-body">
-                                            <?= __('Run a discovery and find out <b>Whats On Your Network?</b>') ?>'
+                                            <?= __('Run a discovery and find out <b>Whats On Your Network?</b>') ?>
                                         </div>
                                         <div class="card-footer">
                                             <a role="button" id="get_started" class="btn btn-success btn-lg" data-bs-toggle="modal" data-bs-target="#discoveryModel" href="#"><?= __('Get Started') ?></a>
