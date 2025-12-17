@@ -634,7 +634,7 @@ class WidgetsModel extends BaseModel
                 log_message('error', 'Could not retrieve result');
                 return $return;
             }
-            if (!empty($result[0]->count)) {
+            if (isset($result[0]->count)) {
                 $return->result = $result[0]->count;
             } elseif (!empty($result) and count($result) > 0) {
                 $return->result = count($result);
@@ -644,7 +644,7 @@ class WidgetsModel extends BaseModel
         if (empty($widget->sql) and !empty($widget->status_query_id)) {
             $queriesModel = new \App\Models\QueriesModel();
             $result = $queriesModel->execute(intval($widget->status_query_id), $instance->user);
-            if (!empty($result[0]->count)) {
+            if (isset($result[0]->count)) {
                 $return->result = $result[0]->count;
             } elseif (!empty($result) and count($result) > 0) {
                 $return->result = count($result);
@@ -676,7 +676,7 @@ class WidgetsModel extends BaseModel
                 log_message('error', 'Could not retrieve result');
                 return $return;
             }
-            if (!empty($result[0]->secondary_text)) {
+            if (isset($result[0]->secondary_text)) {
                 $widget->secondary_text = $result[0]->secondary_text;
             }
         }
