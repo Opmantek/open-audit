@@ -207,7 +207,7 @@ class DevicesModel extends BaseModel
             $this->builder->orderBy('devices.id');
         }
         $this->builder->limit($resp->meta->limit, $resp->meta->offset);
-        log_message('debug', str_replace("\n", " ", (string)$this->builder->getCompiledSelect(false)));
+        // log_message('debug', str_replace("\n", " ", (string)$this->builder->getCompiledSelect(false)));
         $query = $this->builder->get();
         if ($this->sqlError($this->db->error())) {
             return array();
