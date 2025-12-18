@@ -219,7 +219,7 @@ if (!empty($config->servers)) {
                                         if (!empty($report->{'attributes'}->{'commercial'}) and $report->{'attributes'}->{'commercial'} === 'y' and (empty($config->product) or $config->product === 'community')) {
                                             echo "                                <li><a class=\"dropdown-item greyout toastProfessional\" href=\"#\">" . $report->{'attributes'}->{'name'} . "</a></li>\n";
                                         } else {
-                                            echo "                                <li><a class=\"dropdown-item\" href=\"" . url_to('queriesExecute', $report->id) . "\">" . $report->{'attributes'}->{'name'} . "</a></li>\n";
+                                            echo "                                <li><a class=\"dropdown-item\" href=\"" . url_to($report->type . 'Execute', $report->id) . "\">" . $report->{'attributes'}->{'name'} . "</a></li>\n";
                                         }
                                     }
                                 }
