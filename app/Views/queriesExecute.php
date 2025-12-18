@@ -4,76 +4,183 @@
 include 'shared/collection_functions.php';
 include 'shared/read_functions.php';
 include 'shared/common_functions.php';
-$allCollections = new \Config\Collections();
-$collections = array();
-foreach ($allCollections as $collection => $value) {
-    $collections[] = $collection;
+$sort_column_index = 3;
+$url = base_url() . 'index.php/queries/' . $meta->id . '/execute?format=json';
+if (!empty($meta->data_order)) {
+    for ($i = 0; $i < count($meta->data_order); $i++) {
+        if (strpos($meta->data_order[$i], '.') !== false) {
+            $meta->data_order[$i] = str_replace('.', '__', $meta->data_order[$i]);
+        }
+        if (strpos($meta->data_order[$i], 'ip_padded') !== false) {
+            unset($meta->data_order[$i]);
+        }
+    }
 }
+
 ?>
+
+
         <main class="container-fluid">
             <div class="card">
                 <div class="card-header">
                     <?= read_card_header($meta->collection, $meta->id, $meta->icon, $user, $meta->name, $meta->action) ?>
                 </div>
                 <div class="card-body">
-                    <?php if (!empty($data)) { ?>
-                    <table class="table <?= $GLOBALS['table'] ?> table-striped table-hover dataTable">
-                        <thead>
-                            <tr>
-                                <?php foreach ($data[0]->attributes as $key => $value) {
-                                    if (strripos($key, 'ip_padded') === strlen($key) - 9) {
-                                        continue;
-                                    }
-                                    if ($key === 'devices.icon') {
-                                        echo '<th class="text-center">' . __('Icon') . "</th>\n";
-                                    } elseif ($key === 'devices.id') {
-                                        echo '<th class="text-center">' . __('Details') . "</th>\n";
-                                    } elseif (strpos($key, '.id') !== false) {
-                                        echo '<th class="text-center">' . collection_column_name($key) . "</th>\n";
-                                    } else {
-                                        echo '<th>' . collection_column_name($key) . "</th>\n";
-                                    }
-                                } ?>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <?php if (!empty($data)) {
-                                foreach ($data as $item) {
-                                    echo "<tr>\n";
-                                    foreach ($data[0]->attributes as $key => $value) {
-                                        if (strripos($key, 'ip_padded') === strlen($key) - 9) {
-                                            continue;
-                                        }
-                                        if ($key === 'devices.id') {
-                                            echo collection_button_read('devices', $item->id);
-                                        } elseif (strpos($key, '.id') !== false) {
-                                            $temp = explode('.', $key);
-                                            if (in_array($temp[0], $collections)) {
-                                                echo collection_button_read($temp[0], $item->attributes->{$key});
-                                            } else {
-                                                echo "<td class=\"text-center\">" . $item->attributes->{$key} . "</td>\n";
-                                            }
-                                        } elseif ($key === 'link') {
-                                            echo "<td><a href=\"" . base_url() . 'index.php/' . $item->attributes->{$key} . "\" role=\"button\" class=\"btn btn-sm btn-primary\"><span style=\"width:1rem;\" title=\"" . __('View') . "\" class=\"icon-eye\" aria-hidden=\"true\"></span></td>";
-                                        } elseif ((strripos($key, 'ip') === strlen($key) - 2)) {
-                                            $padded_key = substr($key, 0, strpos($key, 'ip')) . 'ip_padded';
-                                            if (!empty($item->attributes->{$padded_key})) {
-                                                echo '            <td><span style="display:none;">' . $item->attributes->{$padded_key} . '</span>' . $item->attributes->{$key} . "</td>\n";
-                                            } else {
-                                                echo "<td>" . $item->attributes->{$key} . "</td>\n";
-                                            }
-                                        } elseif ($key === 'devices.icon') {
-                                            echo "<td class=\"text-center\"><img style=\"width:40px\" src=\"" . base_url() . "device_images/" . $item->attributes->{$key} . ".svg\" alt=\"\"></td>\n";
-                                        } else {
-                                            echo "<td>" . nl2br($item->attributes->{$key}) . "</td>\n";
-                                        }
-                                    }
-                                    echo "</tr>\n";
-                                }
-                            } ?>
-                        </tbody>
-                    </table>
-                    <?php } ?>
+                    <br>
+                    <div class="table-responsive">
+                        <table class="table <?= $GLOBALS['table'] ?> table-striped table-hover dataTableDevices">
+                            <thead>
+                                <tr>
+                                <?php foreach ($meta->data_order as $key) { ?>
+                                    <th><?= collection_column_name(str_replace('devices__', '', $key)) ?></th>
+                                <?php } ?>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </main>
+
+<script {csp-script-nonce}>
+window.onload = function () {
+    $(document).ready(function () {
+
+        let logSort = {};
+        var myDataTable = new DataTable('.dataTableDevices', {
+            lengthChange: true,
+            lengthMenu: [ [25, 50, 100, <?= $config->page_size ?>], [25, 50, 100, '<?= $config->page_size ?>'] ],
+            order: [[ <?= $sort_column_index ?>, 'asc' ]],
+            pageLength: 25,
+            processing: true,
+            searching: false,
+            search: {
+                return: true
+            },
+            serverSide: true,
+            ajax: {
+                url: '<?= $url ?>',
+                dataSrc: 'data',
+                data: function (d) {
+                    d.limit = d.length;
+                    d.offset = d.start;
+                    <?php foreach ($meta->data_order as $key) {
+                        $key = str_replace('devices.', '', $key);
+                        echo "\n\t\t\t\t\tif ($(\"#search_" . $key . "\").val() != '') {\n";
+                        echo "\t\t\t\t\t\td[\"" . str_replace('__', '.', $key) . "\"] = $(\"#search_" . $key . "\").val();\n";
+                        echo "\t\t\t\t\t}\n";
+                    } ?>
+                    if (d.order[0]) {
+                    <?php
+                    foreach ($meta->data_order as $key) {
+                        $key = str_replace('devices.', '', $key);
+                        $sort_key = $key;
+                        if (strpos($key, "__") !== false) {
+                            $sort_key = str_replace('__', '.', $key);
+                        } else {
+                            $sort_key = 'devices.' . $key;
+                        }
+                        echo "\n\t\t\t\t\t\tif (d.columns[d.order[0].column].data == 'attributes.$key') {
+                            logSort.column = 'devices.$key';
+                            logSort.direction = d.order[0].dir;
+                            if (d.order[0].dir == 'asc') {
+                                d.sort = '$sort_key';
+                            } else {
+                                d.sort = '-$sort_key';
+                            }
+                        }\n";
+                    }
+                    ?>
+                    } else {
+                        if (logSort.direction == 'asc') {
+                            d.sort = '-' + logSort.column;
+                            logSort.direction = 'desc';
+                        } else {
+                            d.sort = logSort.column;
+                            logSort.direction = 'asc';
+                        }
+                    }
+                    delete d.start;
+                    delete d.length;
+                    delete d.order;
+                    delete d.columns;
+                }
+            },
+            autoWidth: false,
+            info: true,
+            layout: {
+                bottomStart: {
+                    info: {
+                        text: 'Showing _START_ to _END_ of _TOTAL_ entries'
+                    }
+                },
+                bottomEnd: {
+                    paging: {
+                        type: 'full_numbers'
+                    }
+                },
+                top2Start: {
+                    buttons: [
+                        { extend: 'copy', className: 'btn btn-light mb-2', text: 'Copy' },
+                        { extend: 'csv', className: 'btn btn-light mb-2', text: 'CSV' },
+                        { extend: 'excel', className: 'btn btn-light mb-2', text: 'Excel' },
+                        { extend: 'print', className: 'btn btn-light mb-2', text: 'Print' }
+                    ]
+                },
+                top2End: {
+                    div: {
+                        html: ""
+                    }
+                }
+            },
+            columns: [
+                <?php foreach ($meta->data_order as $key) {
+                    if ($key === 'devices__icon') {
+                        $size = '42px';
+                        if ($GLOBALS['button'] === 'btn-xs') {
+                            $size = '30px';
+                        }
+                        echo '{ data: \'attributes.devices__icon\',
+                            render: function (devices__icon) {
+                                return devices__icon
+                                    ? \'<img style="width:' . $size . ';" src="' . base_url() . 'device_images/\' + devices__icon + \'.svg" alt="\' + devices__icon + \'"/>\'
+                                    : \'\';
+                            }
+                        },';
+                        echo "\n";
+                    } elseif ($key === 'devices__ip') {
+                        echo '{ data: \'attributes.devices__ip\',
+                        render: function (data, type, row, meta) {
+                            if (row.attributes.devices__ip_padded) {
+                                data = \'<span style="display:none;">\' + row.attributes.devices__ip_padded + \'</span>\' + data;
+                            }
+                            return data;
+                            }
+                        },';
+                    } elseif ($key === 'devices__id') {
+                        echo '{ data: \'attributes.devices__id\',
+                            render: function (data, type, row, meta) {
+                                return "<a title=\"View\" role=\"button\" class=\"btn ' . $GLOBALS['button'] . ' btn-primary\" href=\"' . base_url() . 'index.php/devices/" + row.attributes.devices__id + "\"><span title=\"View\" class=\"icon-eye\" aria-hidden=\"true\"></span></a>";
+                            }
+                        },';
+                        echo "\n";
+                    } else {
+                        echo "{ data: 'attributes." .  $key . "' },\n";
+                    }
+                } ?>
+            ],
+            columnDefs: [
+                <?php for ($i = 0; $i < count($meta->data_order); $i++) {
+                    if ($meta->data_order[$i] === 'devices__id' or $meta->data_order[$i] === 'devices__icon') {
+                        echo "\n                {className: \"text-center\", target: $i, width: \"12em\", visible: true, name:\"" . $meta->data_order[$i] . "\"},";
+                    } else {
+                        echo "\n                {className: \"text-start\", target: $i, width: \"12em\", visible: true, name:\"" . $meta->data_order[$i] . "\"},";
+                    }
+                } ?>
+            ],
+        });
+    });
+}
+</script>

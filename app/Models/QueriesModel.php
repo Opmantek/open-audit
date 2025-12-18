@@ -209,8 +209,53 @@ class QueriesModel extends BaseModel
         if (!empty($instance->config->feature_queries_advanced) and $instance->config->feature_queries_advanced === 'y' and !empty($query->advanced) and $query->advanced === 'y') {
             $sql = str_ireplace('@orgs', "({$user->org_list})", $sql);
         }
+
+        $queryd = $this->db->query($sql);
+        if ($this->sqlError($this->db->error())) {
+            return array();
+        }
+        $result = $queryd->getResult();
+        $GLOBALS['recordsTotal'] = count($result);
+        $GLOBALS['recordsFiltered'] = count($result);
+        if ($instance->config->license_limit > 0 and count($result) > $instance->config->license_limit) {
+            $GLOBALS['recordsFiltered'] = $instance->config->license_limit;
+        }
+        unset($result);
         if (!empty($instance->resp->meta->limit) and is_int($instance->resp->meta->limit)) {
-            $sql .= ' LIMIT ' . $instance->resp->meta->limit;
+            if (stripos($sql, ' limit ') === false) {
+                if (!empty($instance->resp->meta->sort) and stripos($sql, ' ORDER BY ') === false) {
+                    $sort = str_replace(' DESC', '', $instance->resp->meta->sort);
+                    if (stripos($sql, $sort) !== false) {
+                        $sql .= ' ORDER BY ' . $instance->resp->meta->sort;
+                    }
+                }
+                $limit = $instance->resp->meta->limit;
+                $offset = (!empty($instance->resp->meta->offset)) ? intval($instance->resp->meta->offset) : 0;
+                $total = $offset + $limit;
+                if ($total > $instance->config->license_limit and $instance->config->license_limit > 0) {
+                    $limit = $instance->config->license_limit - $offset;
+                }
+                $sql .= ' LIMIT ' . $limit;
+                if (!empty($offset)) {
+                    $sql .= ' OFFSET ' . $offset;
+                }
+            } else {
+                if (!empty($instance->resp->meta->sort) and stripos($sql, $instance->resp->meta->sort) !== false) {
+                    $sql = str_replace(' LIMIT ', ' ORDER BY ' . $instance->resp->meta->sort . ' LIMIT ', $sql);
+                }
+            }
+        } else {
+            if (stripos($sql, ' limit ') === false) {
+                if (stripos($sql, 'devices') !== false) {
+                    $sql .= ' LIMIT ' . intval($instance->config->license_limit);
+                }
+            }
+            if (!empty($instance->resp->meta->sort) and stripos($sql, ' ORDER BY ') === false) {
+                $sort = str_replace(' DESC', '', $instance->resp->meta->sort);
+                if (stripos($sql, $sort) !== false) {
+                    $sql = str_replace(' LIMIT ', ' ORDER BY ' . $instance->resp->meta->sort . ' LIMIT ', $sql);
+                }
+            }
         }
         if (!empty($instance->resp->meta->filter)) {
             foreach ($instance->resp->meta->filter as $filter) {
@@ -264,14 +309,13 @@ class QueriesModel extends BaseModel
                     }
                 }
             }
-            // log_message('debug', $sql);
         }
-        $query = $this->db->query($sql);
-        // log_message('debug', str_replace("\n", " ", (string)$this->db->getLastQuery()));
+        log_message('debug', str_replace("\n", " ", (string)$this->db->getLastQuery()));
+        $queryd = $this->db->query($sql);
         if ($this->sqlError($this->db->error())) {
             return array();
         }
-        $result = $query->getResult();
+        $result = $queryd->getResult();
         $result = formatQuery($result);
         $result = format_data($result, $type);
         return $result;

@@ -41,10 +41,23 @@ class Queries extends BaseController
     {
         $query = $this->queriesModel->read($this->resp->meta->id);
         $this->resp->meta->name = $query[0]->attributes->name;
+        $this->resp->meta->data_order = array();
+        if ($this->resp->meta->format !== 'html' and $this->resp->meta->format !== 'json') {
+            $this->resp->meta->limit = 0;
+            $this->resp->meta->offset = 0;
+        }
         $this->resp->data = $this->queriesModel->execute($this->resp->meta->id, $this->user);
         $this->resp->meta->total = count($this->resp->data);
         $this->resp->meta->filtered = count($this->resp->data);
-        if ($this->resp->meta->format !== 'html') {
+        if (!empty($this->resp->data)) {
+            foreach ($this->resp->data[0]->attributes as $key => $value) {
+                $this->resp->meta->data_order[] = $key;
+            }
+        }
+        if (!empty($GLOBALS['collection']) and $this->resp->meta->format === 'json') {
+            // This is dataTables response
+            $this->resp->recordsTotal = (!empty($GLOBALS['recordsTotal'])) ? $GLOBALS['recordsTotal'] : 0;
+            $this->resp->recordsFiltered = (!empty($GLOBALS['recordsFiltered'])) ? $GLOBALS['recordsFiltered'] : 0;
             output($this);
             return true;
         }
@@ -54,6 +67,10 @@ class Queries extends BaseController
         }
         if ($query[0]->attributes->advanced !== 'y') {
             $this->resp->data = filter_response($this->resp->data);
+        }
+        if ($this->resp->meta->format !== 'html' and $this->resp->meta->format !== 'json') {
+            output($this);
+            return true;
         }
         return view('shared/header', [
             'config' => $this->config,
