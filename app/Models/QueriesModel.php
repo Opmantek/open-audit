@@ -205,13 +205,25 @@ class QueriesModel extends BaseModel
             $type = end($split3);
             $sql = str_ireplace('WHERE @filter', "WHERE {$filter}", $sql);
         }
+
         if (!empty($instance->config->feature_queries_advanced) and $instance->config->feature_queries_advanced === 'y' and !empty($query->advanced) and $query->advanced === 'y') {
             $sql = str_ireplace('@orgs', "({$user->org_list})", $sql);
         }
         if (!empty($instance->resp->meta->limit) and is_int($instance->resp->meta->limit)) {
             $sql .= ' LIMIT ' . $instance->resp->meta->limit;
         }
-
+        if (!empty($instance->resp->meta->filter)) {
+            foreach ($instance->resp->meta->filter as $filter) {
+                if ($filter->name === 'devices.org_id') {
+                    $replace = ' WHERE devices.org_id = ' . intval($filter->value) . ' AND ';
+                    $sql = str_ireplace(' WHERE ', $replace , $sql);
+                }
+                if ($filter->name === 'devices.location_id') {
+                    $replace = ' WHERE devices.location_id = ' . intval($filter->value) . ' AND ';
+                    $sql = str_ireplace(' WHERE ', $replace , $sql);
+                }
+            }
+        }
         if ($query->name === 'Benchmarks Query') {
             $request = \Config\Services::request();
             if (!empty($request->getGet('devices_os_family'))) {

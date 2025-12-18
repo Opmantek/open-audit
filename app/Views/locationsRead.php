@@ -7,12 +7,35 @@ $disabled = 'disabled';
 if (!empty($config->maps_api_key) and ($config->product === 'professional' or $config->product === 'enterprise')) {
     $disabled = '';
 }
+$query_id = intval($resource->query_id);
+if (empty($query_id)) {
+    $query_id = 0;
+    if (!empty($config->locations_query_id)) {
+        $query_id = intval($config->locations_query_id);
+    }
+}
+$query_name = '';
+foreach ($included['queries'] as $query) {
+    if ($query_id === $query->id) {
+        $query_name = $query->attributes->name;
+    }
+}
+$blankQuery = new stdClass();
+$blankQuery->id = '';
+$blankQuery->type = 'queries';
+$blankQuery->attributes = new stdClass();
+$blankQuery->attributes->name = '';
+$blankQuery->attributes->value = '';
+$included['queries'] = array_merge([$blankQuery], $included['queries']);
+
 if ($user->toolbar_style === 'icontext') {
     $latlong = '<li class="nav-item" role="presentation"><button type="button" id="locations_latlong" name="locations_latlong" class="locations_latlong btn btn-default"><span class="icon-earth text-oa-success"></span>' . __('Get Lat/Long') . '</button></li>';
 
     $geocode = '<li class="nav-item" role="presentation"><button type="button" id="locations_geocode" name="locations_geocode" class="locations_geocode btn btn-default"><span class="icon-map text-oa-success"></span>' . __('Create Geocode') . '</button></li>';
 
     $devices = '<li class="nav-item" role="presentation"><a type="button" class="btn btn-default" href="' . url_to('devicesCollection') . '?devices.location_id=' . $resource->id . '"><span class="icon-computer text-oa-primary"></span>' . __('Devices') . '</a></li>';
+
+    $query = '<li class="nav-item" role="presentation"><a type="button" class="btn btn-default" href="' . url_to('queriesExecute', $query_id) . '?devices.location_id=' . $resource->id . '"><span class="icon-columns-3-cog text-oa-primary"></span>' . $query_name . '</a></li>';
 
 } elseif ($user->toolbar_style === 'icon') {
     $latlong = '<li class="nav-item" role="presentation"><button type="button" id="locations_latlong" name="locations_latlong" class="locations_latlong btn btn-default"><span class="icon-earth text-success"></span></button></li>';
@@ -21,13 +44,18 @@ if ($user->toolbar_style === 'icontext') {
 
     $devices = '<li class="nav-item" role="presentation"><a type="button" class="btn btn-default" href="' . url_to('devicesCollection') . '?devices.location_id=' . $resource->id . '"><span class="icon-computer text-primary"></span></a></li>';
 
+    $query = '<li class="nav-item" role="presentation"><a type="button" class="btn btn-default" href="' . url_to('queriesExecute', $query_id) . '?devices.location_id=' . $resource->id . '"><span class="icon-columns-3-cog text-primary"></span></a></li>';
+
 } else {
     $latlong = '<li class="nav-item" role="presentation"><button type="button" id="locations_latlong" name="locations_latlong" class="locations_latlong btn btn-default">' . __('Get Lat/Long') . '</button></li>';
 
     $geocode = '<li class="nav-item" role="presentation"><button type="button" id="locations_geocode" name="locations_geocode" class="locations_geocode btn btn-default">' . __('Create Geocode') . '</button></li>';
 
     $devices = '<li class="nav-item" role="presentation"><a type="button" class="btn btn-default" href="' . url_to('devicesCollection') . '?devices.location_id=' . $resource->id . '">' . __('Devices') . '</a></li>';
+
+    $query = '<li class="nav-item" role="presentation"><a type="button" class="btn btn-default" href="' . url_to('queriesExecute', $query_id) . '?devices.location_id=' . $resource->id . '">' . $query_name . '</a></li>';
 }
+
 ?>
         <main class="container-fluid">
             <div class="card">
@@ -40,6 +68,7 @@ if ($user->toolbar_style === 'icontext') {
                             <ul class="nav nav-pills nav-fill" id="myTab" role="tablist">
                                 <?= $latlong ?>
                                 <?= $geocode ?>
+                                <?= $query ?>
                                 <?= $devices ?>
                             </ul>
                         </div>
@@ -71,6 +100,7 @@ if ($user->toolbar_style === 'icontext') {
                                 }
                                 echo read_field($attribute, $resource->{$attribute}, $dictionary->columns->{$attribute}, $update, '', $link_button, '', '', $meta->collection) . "\n";
                             } ?>
+                            <?= read_select('query_id', $resource->query_id, $dictionary->columns->query_id, $update, __('Query'), $included['queries']) ?>
                             <?= read_field('edited_by', $resource->edited_by, $dictionary->columns->edited_by, false, '', '', '', '', $meta->collection) ?>
                             <?= read_field('edited_date', $resource->edited_date, $dictionary->columns->edited_date, false, '', '', '', '', $meta->collection) ?>
                         </div>

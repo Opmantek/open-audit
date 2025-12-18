@@ -1405,6 +1405,7 @@ INSERT INTO `configuration` VALUES (190,'feature_syslog_components','n','bool','
 INSERT INTO `configuration` VALUES (191,'feature_syslog_devices','n','bool','y','system','2000-01-01 00:00:00','Should Open-AudIT create an entry in syslog if a new device detected.');
 INSERT INTO `configuration` VALUES (192,'feature_syslog_vulnerabilities','n','bool','y','system','2000-01-01 00:00:00','Should Open-AudIT create an entry in syslog if a device has a vulnerability detected.');
 INSERT INTO `configuration` VALUES (193,'feature_vulnerabilities_alert_date','n','date','y','system','2000-01-01 00:00:00','The last time a vulnerabilitiy alert was shown.');
+INSERT INTO `configuration` VALUES (194,'locations_query_id','0','number','y','system','2000-01-01 00:00:00','The default Query ID to use when viewing a location.');
 /*!40000 ALTER TABLE `configuration` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -2684,6 +2685,7 @@ CREATE TABLE `locations` (
   `longitude` float(10,6) NOT NULL DEFAULT 0.000000,
   `geo` varchar(200) NOT NULL DEFAULT '',
   `cloud_id` int(10) unsigned DEFAULT NULL,
+  `query_id` int(10) unsigned DEFAULT NULL,
   `edited_by` varchar(200) NOT NULL DEFAULT '',
   `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
   PRIMARY KEY (`id`)

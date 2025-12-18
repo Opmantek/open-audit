@@ -177,6 +177,7 @@ class OpenAudit extends BaseConfig
     public int $license_limit;
     public string $license_string;
     public string $license_string_collector;
+    public int $locations_query_id;
     public string $mail_domain;
     public string $mail_from;
     public string $mail_password;
@@ -287,6 +288,14 @@ class OpenAudit extends BaseConfig
             }
             if ($row->name === 'license_string_collector') {
                 $this->license_string_collector_id = (int)$row->id;
+            }
+        }
+
+        if (empty($this->locations_query_id)) {
+            $query = $db->query("SELECT `id` FROM `queries` WHERE `name` = 'Windows Software'");
+            $result = $query->getResult();
+            if (!empty($result[0]->id)) {
+                $this->locations_query_id = intval($result[0]->id);
             }
         }
 

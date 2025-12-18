@@ -136,6 +136,8 @@ class LocationsModel extends BaseModel
         $include = array();
         $types = $attributesModel->listUser(['attributes.resource' => 'locations', 'attributes.type' => 'type']);
         $include['types'] = $types;
+        $queriesModel = new \App\Models\QueriesModel();
+        $include['queries'] = $queriesModel->listUser();
         return $include;
     }
 
@@ -320,6 +322,7 @@ class LocationsModel extends BaseModel
         $dictionary->columns->longitude = 'The locations longitude.';
         $dictionary->columns->geo = 'An optional GeoCode';
         $dictionary->columns->cloud_id = 'The Cloud that owns this item. Links to <code>clouds.id</code>.';
+        $dictionary->columns->query_id = 'The Query ID for the location. Links to <code>queries.id</code>.';
         $dictionary->columns->edited_by = @$instance->dictionary->edited_by;
         $dictionary->columns->edited_date = @$instance->dictionary->edited_date;
         return $dictionary;
