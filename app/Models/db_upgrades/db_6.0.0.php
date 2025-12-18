@@ -1823,35 +1823,47 @@ if (!$db->fieldExists('status_link_query_id', 'widgets')) {
 // $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 // log_message('info', (string)$db->getLastQuery());
 
-$sql = "UPDATE `widgets` SET `line_days` = `limit` WHERE `type` = 'line'";
-$result = $db->query($sql);
-$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
-log_message('info', (string)$db->getLastQuery());
+if ($db->fieldExists('limit', 'widgets')) {
+    $sql = "UPDATE `widgets` SET `line_days` = `limit` WHERE `type` = 'line'";
+    $result = $db->query($sql);
+    $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+    log_message('info', (string)$db->getLastQuery());
+}
 
-$sql = "UPDATE `widgets` SET `pie_column` = `primary` WHERE `type` = 'pie'";
-$result = $db->query($sql);
-$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
-log_message('info', (string)$db->getLastQuery());
+if ($db->fieldExists('primary', 'widgets')) {
+    $sql = "UPDATE `widgets` SET `pie_column` = `primary` WHERE `type` = 'pie'";
+    $result = $db->query($sql);
+    $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+    log_message('info', (string)$db->getLastQuery());
+}
 
-$sql = "UPDATE `widgets` SET `pie_limit` = `limit` WHERE `type` = 'pie'";
-$result = $db->query($sql);
-$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
-log_message('info', (string)$db->getLastQuery());
+if ($db->fieldExists('limit', 'widgets')) {
+    $sql = "UPDATE `widgets` SET `pie_limit` = `limit` WHERE `type` = 'pie'";
+    $result = $db->query($sql);
+    $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+    log_message('info', (string)$db->getLastQuery());
+}
 
-$sql = "UPDATE `widgets` SET `traffic_primary_query_id` = IF(`primary` = '', 0, CAST(`primary` AS SIGNED)) WHERE `type` = 'traffic'";
-$result = $db->query($sql);
-$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
-log_message('info', (string)$db->getLastQuery());
+if ($db->fieldExists('primary', 'widgets')) {
+    $sql = "UPDATE `widgets` SET `traffic_primary_query_id` = IF(`primary` = '', 0, CAST(`primary` AS SIGNED)) WHERE `type` = 'traffic'";
+    $result = $db->query($sql);
+    $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+    log_message('info', (string)$db->getLastQuery());
+}
 
-$sql = "UPDATE `widgets` SET `traffic_secondary_query_id` = IF(`secondary` = '', 0, CAST(`secondary` AS SIGNED)) WHERE `type` = 'traffic'";
-$result = $db->query($sql);
-$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
-log_message('info', (string)$db->getLastQuery());
+if ($db->fieldExists('secondary', 'widgets')) {
+    $sql = "UPDATE `widgets` SET `traffic_secondary_query_id` = IF(`secondary` = '', 0, CAST(`secondary` AS SIGNED)) WHERE `type` = 'traffic'";
+    $result = $db->query($sql);
+    $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+    log_message('info', (string)$db->getLastQuery());
+}
 
-$sql = "UPDATE `widgets` SET `traffic_ternary_query_id` = IF(`ternary` = '', 0, CAST(`ternary` AS SIGNED)) WHERE `type` = 'traffic'";
-$result = $db->query($sql);
-$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
-log_message('info', (string)$db->getLastQuery());
+if ($db->fieldExists('ternary', 'widgets')) {
+    $sql = "UPDATE `widgets` SET `traffic_ternary_query_id` = IF(`ternary` = '', 0, CAST(`ternary` AS SIGNED)) WHERE `type` = 'traffic'";
+    $result = $db->query($sql);
+    $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+    log_message('info', (string)$db->getLastQuery());
+}
 
 $sql = "UPDATE `widgets` SET `icon` = `where`, `where` = '' WHERE `type` = 'traffic'";
 $result = $db->query($sql);
@@ -1898,10 +1910,12 @@ $result = $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
 
-$sql = "UPDATE `widgets` SET `primary_text` = `group_by` WHERE `type` = 'traffic'";
-$result = $db->query($sql);
-$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
-log_message('info', (string)$db->getLastQuery());
+if ($db->fieldExists('group_by', 'widgets')) {
+    $sql = "UPDATE `widgets` SET `primary_text` = `group_by` WHERE `type` = 'traffic'";
+    $result = $db->query($sql);
+    $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+    log_message('info', (string)$db->getLastQuery());
+}
 
 if ($db->fieldExists('limit', 'widgets')) {
     $sql = "ALTER TABLE `widgets` DROP COLUMN `limit`";
@@ -1958,57 +1972,57 @@ $result = $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
 
-$sql = "INSERT INTO `widgets` VALUES (null,'Windows Clients Without AntiVirus',1,'','status','','SELECT COUNT(devices.id) AS `count` FROM devices LEFT JOIN antivirus ON (devices.id = antivirus.device_id AND antivirus.current = \'y\') WHERE @filter AND antivirus.status IS NULL AND (devices.os_family LIKE \'Windows 10\' or devices.os_family LIKE \'Windows 11\') GROUP BY devices.id','','antivirus','Windows clients with no registered AntiVirus.','No AntiVirus','Windows Clients','','','','',0,'',0,0,0,0,'','danger','success',0,(SELECT `id` FROM `queries` WHERE `name` = 'Windows Clients Without AntiVirus'),'system','2000-01-01 00:00:00')";
+$sql = "INSERT INTO `widgets` VALUES (null,'Windows Clients Without AntiVirus',1,'','status','','SELECT COUNT(devices.id) AS `count` FROM devices LEFT JOIN antivirus ON (devices.id = antivirus.device_id AND antivirus.current = \'y\') WHERE @filter AND antivirus.status IS NULL AND (devices.os_family LIKE \'Windows 10\' or devices.os_family LIKE \'Windows 11\') GROUP BY devices.id','','antivirus','Windows clients with no registered AntiVirus.','No AntiVirus','Windows Clients','','','','',0,'',0,0,0,0,'','danger','success',0,(SELECT `id` FROM `queries` WHERE `name` = 'Windows Clients Without AntiVirus' LIMIT 1),'system','2000-01-01 00:00:00')";
 $result = $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
 
-$sql = "INSERT INTO `widgets` VALUES (null,'Windows 10 Not Latest Build',1,'','traffic','','','','windows','Windows 10 devices not running the latest release from Microsoft.','Not Latest Version','Windows 10','','','','',0,'',0,(SELECT `id` FROM `queries` WHERE `name` = 'Windows 10 Not Latest Build'),0,(SELECT `id` FROM `queries` WHERE `name` = 'Windows 10 Latest Build'),'','','',0,0,'system','2000-01-01 00:00:00')";
+$sql = "INSERT INTO `widgets` VALUES (null,'Windows 10 Not Latest Build',1,'','traffic','','','','windows','Windows 10 devices not running the latest release from Microsoft.','Not Latest Version','Windows 10','','','','',0,'',0,(SELECT `id` FROM `queries` WHERE `name` = 'Windows 10 Not Latest Build' LIMIT 1),0,(SELECT `id` FROM `queries` WHERE `name` = 'Windows 10 Latest Build' LIMIT 1),'','','',0,0,'system','2000-01-01 00:00:00')";
 $result = $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
 
-$sql = "INSERT INTO `widgets` VALUES (null,'Windows 11 Not Latest Build',1,'','traffic','','','','icon-grid-2x2','Windows 11 devices not running the latest release from Microsoft.','Not Latest Version','Windows 11','','','','',0,'',0,(SELECT `id` FROM `queries` WHERE `name` = 'Windows 11 Not Latest Build'),0,(SELECT `id` FROM `queries` WHERE `name` = 'Windows 11 Latest Build'),'','','',0,0,'system','2000-01-01 00:00:00')";
+$sql = "INSERT INTO `widgets` VALUES (null,'Windows 11 Not Latest Build',1,'','traffic','','','','icon-grid-2x2','Windows 11 devices not running the latest release from Microsoft.','Not Latest Version','Windows 11','','','','',0,'',0,(SELECT `id` FROM `queries` WHERE `name` = 'Windows 11 Not Latest Build' LIMIT 1),0,(SELECT `id` FROM `queries` WHERE `name` = 'Windows 11 Latest Build' LIMIT 1),'','','',0,0,'system','2000-01-01 00:00:00')";
 $result = $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
 
-$sql = "INSERT INTO `widgets` VALUES (null,'Windows Clients Without Firewall',1,'','traffic','','','','firewall','Windows 10 and 11 machines without a registered Firewall','No Firewall','Windows Clients','','','','',0,'',0,(SELECT `id` FROM `queries` WHERE `name` = 'Windows Clients Without Firewall'),(SELECT `id` FROM `queries` WHERE `name` = 'Windows Clients With Firewall Disabled'),(SELECT `id` FROM `queries` WHERE `name` = 'Windows Clients With Firewall'),'','','',0,0,'system','2000-01-01 00:00:00')";
+$sql = "INSERT INTO `widgets` VALUES (null,'Windows Clients Without Firewall',1,'','traffic','','','','firewall','Windows 10 and 11 machines without a registered Firewall','No Firewall','Windows Clients','','','','',0,'',0,(SELECT `id` FROM `queries` WHERE `name` = 'Windows Clients Without Firewall'),(SELECT `id` FROM `queries` WHERE `name` = 'Windows Clients With Firewall Disabled'),(SELECT `id` FROM `queries` WHERE `name` = 'Windows Clients With Firewall' LIMIT 1),'','','',0,0,'system','2000-01-01 00:00:00')";
 $result = $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
 
-$sql = "INSERT INTO `widgets` VALUES (null,'Windows Clients Without OS Updates for more than 30 Days',1,'','status','','SELECT COUNT(devices.id) AS `count` FROM devices WHERE @filter AND devices.last_os_update < DATE(NOW() - INTERVAL 30 DAY) AND devices.last_os_update != \'\' AND devices.last_os_update != \'2000-01-01 00:00:00\' AND os_family IN (\'Windows 10\', \'Windows 11\')','','update','Windows 10 and 11 devices that have not been updated for 30 days or more.','No Updates','Windows Clients','','','','',0,'',0,0,0,0,'','danger','success',0,(SELECT `id` FROM `queries` WHERE `name` = 'Windows Clients Without OS Updates for more than 30 Days'),'system','2000-01-01 00:00:00')";
+$sql = "INSERT INTO `widgets` VALUES (null,'Windows Clients Without OS Updates for more than 30 Days',1,'','status','','SELECT COUNT(devices.id) AS `count` FROM devices WHERE @filter AND devices.last_os_update < DATE(NOW() - INTERVAL 30 DAY) AND devices.last_os_update != \'\' AND devices.last_os_update != \'2000-01-01 00:00:00\' AND os_family IN (\'Windows 10\', \'Windows 11\')','','update','Windows 10 and 11 devices that have not been updated for 30 days or more.','No Updates','Windows Clients','','','','',0,'',0,0,0,0,'','danger','success',0,(SELECT `id` FROM `queries` WHERE `name` = 'Windows Clients Without OS Updates for more than 30 Days' LIMIT 1),'system','2000-01-01 00:00:00')";
 $result = $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
 
-$sql = "INSERT INTO `widgets` VALUES (null,'Windows Clients Not Seen for more than 30 Days',1,'','status','','SELECT COUNT(devices.id) AS `count` FROM devices WHERE @filter AND os_family IN (\'Windows 10\', \'Windows 11\') AND devices.last_seen < DATE(NOW() - INTERVAL 30 DAY)','','discoveries','Windows 10 and 11 devices not seen for 30 or more days.','Not Seen','Windows Clients','','','','',0,'',0,0,0,0,'','danger','success',0,(SELECT `id` FROM `queries` WHERE `name` = 'Windows Clients Not Seen for more than 30 Days'),'system','2000-01-01 00:00:00')";
+$sql = "INSERT INTO `widgets` VALUES (null,'Windows Clients Not Seen for more than 30 Days',1,'','status','','SELECT COUNT(devices.id) AS `count` FROM devices WHERE @filter AND os_family IN (\'Windows 10\', \'Windows 11\') AND devices.last_seen < DATE(NOW() - INTERVAL 30 DAY)','','discoveries','Windows 10 and 11 devices not seen for 30 or more days.','Not Seen','Windows Clients','','','','',0,'',0,0,0,0,'','danger','success',0,(SELECT `id` FROM `queries` WHERE `name` = 'Windows Clients Not Seen for more than 30 Days' LIMIT 1),'system','2000-01-01 00:00:00')";
 $result = $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
 
-$sql = "INSERT INTO `widgets` VALUES (null,'Windows Server Without AntiVirus',1,'','status','','SELECT COUNT(devices.id) AS `count` FROM devices WHERE @filter AND devices.id NOT IN (SELECT devices.id FROM devices LEFT JOIN software ON (software.device_id = devices.id AND software.current = \'y\') RIGHT JOIN packages ON (software.name LIKE packages.software_name AND devices.os_group LIKE packages.os) WHERE devices.id IS NOT NULL AND packages.type = \'antivirus\' AND devices.os_name LIKE \'%Server%\') AND devices.os_name LIKE \'%Windows Server%\' GROUP BY devices.id','','antivirus','Windows Servers with no detected AntiVirus.','No AntiVirus','Windows Servers','','','','',0,'',0,0,0,0,'','danger','success',0,(SELECT `id` FROM `queries` WHERE `name` = 'Windows Servers AntiVirus Not Installed'),'system','2000-01-01 00:00:00')";
+$sql = "INSERT INTO `widgets` VALUES (null,'Windows Server Without AntiVirus',1,'','status','','SELECT COUNT(devices.id) AS `count` FROM devices WHERE @filter AND devices.id NOT IN (SELECT devices.id FROM devices LEFT JOIN software ON (software.device_id = devices.id AND software.current = \'y\') RIGHT JOIN packages ON (software.name LIKE packages.software_name AND devices.os_group LIKE packages.os) WHERE devices.id IS NOT NULL AND packages.type = \'antivirus\' AND devices.os_name LIKE \'%Server%\') AND devices.os_name LIKE \'%Windows Server%\' GROUP BY devices.id','','antivirus','Windows Servers with no detected AntiVirus.','No AntiVirus','Windows Servers','','','','',0,'',0,0,0,0,'','danger','success',0,(SELECT `id` FROM `queries` WHERE `name` = 'Windows Servers AntiVirus Not Installed' LIMIT 1),'system','2000-01-01 00:00:00')";
 $result = $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
 
-$sql = "INSERT INTO `widgets` VALUES (null,'Windows Server Without Firewall',1,'','status','','SELECT COUNT(devices.id) AS `count` FROM devices WHERE @filter AND devices.id NOT IN (SELECT devices.id FROM devices LEFT JOIN software ON (software.device_id = devices.id AND software.current = \'y\') RIGHT JOIN packages ON (software.name LIKE packages.software_name AND devices.os_group LIKE packages.os) WHERE devices.id IS NOT NULL AND packages.type = \'firewall\' AND devices.os_name LIKE \'%Server%\') AND devices.os_name LIKE \'%Windows Server%\' GROUP BY devices.id','','firewall','Windows Servers with no detected Firewall.','No Firewall','Windows Servers','','','','',0,'',0,0,0,0,'','danger','success',0,(SELECT `id` FROM `queries` WHERE `name` = 'Windows Servers Firewalls Not Installed'),'system','2000-01-01 00:00:00')";
+$sql = "INSERT INTO `widgets` VALUES (null,'Windows Server Without Firewall',1,'','status','','SELECT COUNT(devices.id) AS `count` FROM devices WHERE @filter AND devices.id NOT IN (SELECT devices.id FROM devices LEFT JOIN software ON (software.device_id = devices.id AND software.current = \'y\') RIGHT JOIN packages ON (software.name LIKE packages.software_name AND devices.os_group LIKE packages.os) WHERE devices.id IS NOT NULL AND packages.type = \'firewall\' AND devices.os_name LIKE \'%Server%\') AND devices.os_name LIKE \'%Windows Server%\' GROUP BY devices.id','','firewall','Windows Servers with no detected Firewall.','No Firewall','Windows Servers','','','','',0,'',0,0,0,0,'','danger','success',0,(SELECT `id` FROM `queries` WHERE `name` = 'Windows Servers Firewalls Not Installed' LIMIT 1),'system','2000-01-01 00:00:00')";
 $result = $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
 
-$sql = "INSERT INTO `widgets` VALUES (null,'Windows Server Not Latest Build',1,'','status','','SELECT COUNT(devices.id) AS `count` FROM devices LEFT JOIN windows ON (windows.device_id = devices.id AND windows.current = \'y\') WHERE @filter AND ((windows.build_number != \'14393.8594\' AND devices.os_family = \'Windows 2016\') OR (windows.build_number != \'17763.8027\' AND devices.os_family = \'Windows 2019\') OR (windows.build_number != \'20348.4405\' AND devices.os_family = \'Windows 2022\') OR (windows.build_number != \'26100.7171\' AND devices.os_family = \'Windows 2025\'))','','windows','Windows Servers not running the latest release from Microsoft.','Not Latest Version','Windows Servers','','','','',0,'',0,0,0,0,'','danger','success',0,(SELECT `id` FROM `queries` WHERE `name` = 'Windows Server Not Latest Build'),'system','2000-01-01 00:00:00')";
+$sql = "INSERT INTO `widgets` VALUES (null,'Windows Server Not Latest Build',1,'','status','','SELECT COUNT(devices.id) AS `count` FROM devices LEFT JOIN windows ON (windows.device_id = devices.id AND windows.current = \'y\') WHERE @filter AND ((windows.build_number != \'14393.8594\' AND devices.os_family = \'Windows 2016\') OR (windows.build_number != \'17763.8027\' AND devices.os_family = \'Windows 2019\') OR (windows.build_number != \'20348.4405\' AND devices.os_family = \'Windows 2022\') OR (windows.build_number != \'26100.7171\' AND devices.os_family = \'Windows 2025\'))','','windows','Windows Servers not running the latest release from Microsoft.','Not Latest Version','Windows Servers','','','','',0,'',0,0,0,0,'','danger','success',0,(SELECT `id` FROM `queries` WHERE `name` = 'Windows Server Not Latest Build' LIMIT 1),'system','2000-01-01 00:00:00')";
 $result = $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
 
-$sql = "INSERT INTO `widgets` VALUES (null,'Windows Servers Without OS Updates for more than 30 Days',1,'','status','','SELECT COUNT(devices.id) AS `count` FROM devices WHERE @filter AND devices.last_os_update < DATE(NOW() - INTERVAL 14 DAY) AND devices.last_os_update != \'\' AND devices.last_os_update != \'2000-01-01 00:00:00\' AND os_family IN (\'Windows 2016\', \'Windows 2019\', \'Windows 2022\', \'Windows 2025\')','','update','Windows Servers that have not been updated for 30 days or more.','No Updates','Windows Servers','','','','',0,'',0,0,0,0,'','danger','success',0,(SELECT `id` FROM `queries` WHERE `name` = 'Windows Servers Without OS Updates for more than 30 Days'),'system','2000-01-01 00:00:00')";
+$sql = "INSERT INTO `widgets` VALUES (null,'Windows Servers Without OS Updates for more than 30 Days',1,'','status','','SELECT COUNT(devices.id) AS `count` FROM devices WHERE @filter AND devices.last_os_update < DATE(NOW() - INTERVAL 14 DAY) AND devices.last_os_update != \'\' AND devices.last_os_update != \'2000-01-01 00:00:00\' AND os_family IN (\'Windows 2016\', \'Windows 2019\', \'Windows 2022\', \'Windows 2025\')','','update','Windows Servers that have not been updated for 30 days or more.','No Updates','Windows Servers','','','','',0,'',0,0,0,0,'','danger','success',0,(SELECT `id` FROM `queries` WHERE `name` = 'Windows Servers Without OS Updates for more than 30 Days' LIMIT 1),'system','2000-01-01 00:00:00')";
 $result = $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
 
-$sql = "INSERT INTO `widgets` VALUES (null,'Windows Servers Not Seen for more than 30 Days',1,'','status','','SELECT COUNT(devices.id) AS `count` FROM devices WHERE @filter AND os_family IN (\'Windows 2016\', \'Windows 2019\', \'Windows 2022\', \'Windows 2025\') AND devices.last_seen < DATE(NOW() - INTERVAL 30 DAY)','','icon-radar','Windows Servers not seen for 30 or more days.','Not Seen','Windows Servers','','','','',0,'',0,0,0,0,'','danger','success',0,(SELECT `id` FROM `queries` WHERE `name` = 'Windows Servers Not Seen for more than 30 Days'),'system','2000-01-01 00:00:00')";
+$sql = "INSERT INTO `widgets` VALUES (null,'Windows Servers Not Seen for more than 30 Days',1,'','status','','SELECT COUNT(devices.id) AS `count` FROM devices WHERE @filter AND os_family IN (\'Windows 2016\', \'Windows 2019\', \'Windows 2022\', \'Windows 2025\') AND devices.last_seen < DATE(NOW() - INTERVAL 30 DAY)','','icon-radar','Windows Servers not seen for 30 or more days.','Not Seen','Windows Servers','','','','',0,'',0,0,0,0,'','danger','success',0,(SELECT `id` FROM `queries` WHERE `name` = 'Windows Servers Not Seen for more than 30 Days' LIMIT 1),'system','2000-01-01 00:00:00')";
 $result = $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
@@ -2025,12 +2039,12 @@ $result = $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
 
-$sql = "INSERT INTO `widgets` VALUES (null,'Orphaned Devices',1,'','status','','SELECT COUNT(devices.id) AS `count` FROM devices WHERE @filter AND devices.last_seen < DATE(NOW() - INTERVAL 30 DAY)','','icon-eye-off','Devices not seen for 30+ days.','Orphaned Devices','30 days.','','','','',0,'',0,0,0,0,'','danger','success',0,(SELECT `id` FROM `queries` WHERE `name` = 'Devices Not Seen for 30 Days'),'system','2000-01-01 00:00:00')";
+$sql = "INSERT INTO `widgets` VALUES (null,'Orphaned Devices',1,'','status','','SELECT COUNT(devices.id) AS `count` FROM devices WHERE @filter AND devices.last_seen < DATE(NOW() - INTERVAL 30 DAY)','','icon-eye-off','Devices not seen for 30+ days.','Orphaned Devices','30 days.','','','','',0,'',0,0,0,0,'','danger','success',0,(SELECT `id` FROM `queries` WHERE `name` = 'Devices Not Seen for 30 Days' LIMIT 1),'system','2000-01-01 00:00:00')";
 $result = $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
 
-$sql = "INSERT INTO `widgets` VALUES (null,'Software Changes',1,'','status','','SELECT COUNT(change_log.id) AS `count` FROM `change_log` LEFT JOIN `devices` ON change_log.device_id = devices.id WHERE @filter AND  `db_table` = \'software\' AND `timestamp` > DATE(NOW()  - INTERVAL 7 DAY) AND `db_action` = \'create\'','','icon-monitor-cloud','Software additions in the last 7 days.','Software Changes','Last 7 days.','','','','',0,'',0,0,0,0,'','warning','success',0,(SELECT `id` FROM `queries` WHERE `name` = 'Software'),'system','2000-01-01 00:00:00')";
+$sql = "INSERT INTO `widgets` VALUES (null,'Software Changes',1,'','status','','SELECT COUNT(change_log.id) AS `count` FROM `change_log` LEFT JOIN `devices` ON change_log.device_id = devices.id WHERE @filter AND  `db_table` = \'software\' AND `timestamp` > DATE(NOW()  - INTERVAL 7 DAY) AND `db_action` = \'create\'','','icon-monitor-cloud','Software additions in the last 7 days.','Software Changes','Last 7 days.','','','','',0,'',0,0,0,0,'','warning','success',0,(SELECT `id` FROM `queries` WHERE `name` = 'Software' LIMIT 1),'system','2000-01-01 00:00:00')";
 $result = $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
@@ -2040,12 +2054,12 @@ $result = $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
 
-$sql = "INSERT INTO `widgets` VALUES (null,'Hardware Changes',1,'','status','','SELECT COUNT(devices.id) AS `count` FROM change_log LEFT JOIN devices ON (change_log.device_id = devices.id) WHERE @filter AND change_log.db_table in (\'bios\', \'disk\', \'memory\', \'module\', \'monitor\', \'motherboard\', \'optical\', \'partition\', \'processor\', \'network\', \'scsi\', \'sound\', \'video\') AND `timestamp` > DATE(NOW() - INTERVAL 7 DAY)','','icon-replace-all','Changes detected in bios, disk, memory, module, monitor, motherboard, optical, partition, processor, network, scsi, sound, video tables.','Hardware Changes','Last 7 days.','','','','',0,'',0,0,0,0,'','warning','success',0,(SELECT `id` FROM `queries` WHERE `name` = 'Hardware'),'system','2000-01-01 00:00:00')";
+$sql = "INSERT INTO `widgets` VALUES (null,'Hardware Changes',1,'','status','','SELECT COUNT(devices.id) AS `count` FROM change_log LEFT JOIN devices ON (change_log.device_id = devices.id) WHERE @filter AND change_log.db_table in (\'bios\', \'disk\', \'memory\', \'module\', \'monitor\', \'motherboard\', \'optical\', \'partition\', \'processor\', \'network\', \'scsi\', \'sound\', \'video\') AND `timestamp` > DATE(NOW() - INTERVAL 7 DAY)','','icon-replace-all','Changes detected in bios, disk, memory, module, monitor, motherboard, optical, partition, processor, network, scsi, sound, video tables.','Hardware Changes','Last 7 days.','','','','',0,'',0,0,0,0,'','warning','success',0,(SELECT `id` FROM `queries` WHERE `name` = 'Hardware' LIMIT 1),'system','2000-01-01 00:00:00')";
 $result = $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
 
-$sql = "INSERT INTO `widgets` VALUES (null,'Windows Software',1,'Windows Software, excluding names starting with KB','status','','SELECT COUNT(*) AS `count` FROM software LEFT JOIN devices ON (software.device_id = devices.id AND software.current = \'y\') WHERE @filter AND software.name NOT LIKE \'KB%\' AND devices.os_group = \'Windows\'','devices','icon-monitor-cloud','Windows Software, excluding names starting with KB','Windows Software','Installed','','','','',0,'',0,0,0,0,'','primary','primary',0,(SELECT `id` FROM `queries` WHERE `name` = 'Windows Software'),'system','2000-01-01 00:00:00')";
+$sql = "INSERT INTO `widgets` VALUES (null,'Windows Software',1,'Windows Software, excluding names starting with KB','status','','SELECT COUNT(*) AS `count` FROM software LEFT JOIN devices ON (software.device_id = devices.id AND software.current = \'y\') WHERE @filter AND software.name NOT LIKE \'KB%\' AND devices.os_group = \'Windows\'','devices','icon-monitor-cloud','Windows Software, excluding names starting with KB','Windows Software','Installed','','','','',0,'',0,0,0,0,'','primary','primary',0,(SELECT `id` FROM `queries` WHERE `name` = 'Windows Software' LIMIT 1),'system','2000-01-01 00:00:00')";
 $result = $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
@@ -2080,7 +2094,7 @@ $result = $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
 
-$sql = "INSERT INTO `widgets` VALUES (null,'Hardware Manufacturers',1,'','status','','SELECT COUNT(DISTINCT devices.manufacturer) AS `count` FROM devices WHERE @filter','','icon-factory','The number of hardware manufacturers in your database.','H/W Vendors','','','','','',0,'',0,0,0,0,'SELECT CONCAT(IF(COUNT(id) > 0, CONCAT(\'+\', COUNT(DISTINCT devices.manufacturer), \' this week.\'), \'\')) AS `secondary_text` FROM devices WHERE first_seen > DATE(NOW() - INTERVAL 7 DAY) AND devices.manufacturer NOT IN (SELECT devices.manufacturer FROM devices WHERE devices.first_seen < DATE(NOW() - INTERVAL 7 DAY))','primary','primary',0,(SELECT `id` FROM `queries` WHERE `name` = 'Hardware Manufacturers'),'system','2000-01-01 00:00:00')";
+$sql = "INSERT INTO `widgets` VALUES (null,'Hardware Manufacturers',1,'','status','','SELECT COUNT(DISTINCT devices.manufacturer) AS `count` FROM devices WHERE @filter','','icon-factory','The number of hardware manufacturers in your database.','H/W Vendors','','','','','',0,'',0,0,0,0,'SELECT CONCAT(IF(COUNT(id) > 0, CONCAT(\'+\', COUNT(DISTINCT devices.manufacturer), \' this week.\'), \'\')) AS `secondary_text` FROM devices WHERE first_seen > DATE(NOW() - INTERVAL 7 DAY) AND devices.manufacturer NOT IN (SELECT devices.manufacturer FROM devices WHERE devices.first_seen < DATE(NOW() - INTERVAL 7 DAY))','primary','primary',0,(SELECT `id` FROM `queries` WHERE `name` = 'Hardware Manufacturers' LIMIT 1),'system','2000-01-01 00:00:00')";
 $result = $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
@@ -2095,7 +2109,7 @@ $result = $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
 
-$sql = "INSERT INTO `widgets` VALUES (null,'Windows Client Not Latest Version',1,'','traffic','','','','icon-grid-2x2','Windows 10 and 11 not running the latest available version from Microsoft.','Not Latest Version','Windows Clients','','','','',0,'',0,(SELECT `id` FROM `queries` WHERE `name` = 'Windows Client Not Latest Build'),0,(SELECT `id` FROM `queries` WHERE `name` = 'Windows Client Latest Build'),'','','',0,0,'system','2000-01-01 00:00:00')";
+$sql = "INSERT INTO `widgets` VALUES (null,'Windows Client Not Latest Version',1,'','traffic','','','','icon-grid-2x2','Windows 10 and 11 not running the latest available version from Microsoft.','Not Latest Version','Windows Clients','','','','',0,'',0,(SELECT `id` FROM `queries` WHERE `name` = 'Windows Client Not Latest Build' LIMIT 1),0,(SELECT `id` FROM `queries` WHERE `name` = 'Windows Client Latest Build' LIMIT 1),'','','',0,0,'system','2000-01-01 00:00:00')";
 $result = $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
