@@ -150,6 +150,19 @@ window.onload = function () {
                             }
                         },';
                         echo "\n";
+                    } elseif ($key === 'icon') {
+                        $size = '42px';
+                        if ($GLOBALS['button'] === 'btn-xs') {
+                            $size = '30px';
+                        }
+                        echo '{ data: \'attributes.icon\',
+                            render: function (icon) {
+                                return icon
+                                    ? \'<img style="width:' . $size . ';" src="' . base_url() . 'device_images/\' + icon + \'.svg" alt="\' + icon + \'"/>\'
+                                    : \'\';
+                            }
+                        },';
+                        echo "\n";
                     } elseif ($key === 'devices__ip') {
                         echo '{ data: \'attributes.devices__ip\',
                         render: function (data, type, row, meta) {
@@ -166,6 +179,13 @@ window.onload = function () {
                             }
                         },';
                         echo "\n";
+                    } elseif ($key === 'id') {
+                        echo '{ data: \'attributes.id\',
+                            render: function (data, type, row, meta) {
+                                return "<a title=\"View\" role=\"button\" class=\"btn ' . $GLOBALS['button'] . ' btn-primary\" href=\"' . base_url() . 'index.php/devices/" + row.attributes.id + "\"><span title=\"View\" class=\"icon-eye\" aria-hidden=\"true\"></span></a>";
+                            }
+                        },';
+                        echo "\n";
                     } else {
                         echo "{ data: 'attributes." .  $key . "' },\n";
                     }
@@ -173,7 +193,7 @@ window.onload = function () {
             ],
             columnDefs: [
                 <?php for ($i = 0; $i < count($meta->data_order); $i++) {
-                    if ($meta->data_order[$i] === 'devices__id' or $meta->data_order[$i] === 'devices__icon') {
+                    if ($meta->data_order[$i] === 'devices__id' or $meta->data_order[$i] === 'devices__icon' or $meta->data_order[$i] === 'id' or $meta->data_order[$i] === 'icon') {
                         echo "\n                {className: \"text-center\", target: $i, width: \"12em\", visible: true, name:\"" . $meta->data_order[$i] . "\"},";
                     } else {
                         echo "\n                {className: \"text-start\", target: $i, width: \"12em\", visible: true, name:\"" . $meta->data_order[$i] . "\"},";
