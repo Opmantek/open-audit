@@ -18,7 +18,10 @@ function simpleDecrypt(string $message = '', string $key = ''): string
         return '';
     }
     $key = mb_substr("00000000000000000000000000000000" . $key, -32);
-    $message = hex2bin($message);
+    $message = @hex2bin($message);
+    if (empty($message)) {
+        return '';
+    }
     $nonce = mb_substr($message, 0, 24, '8bit');
     $ciphertext = mb_substr($message, 24, strlen($message), '8bit');
     $plaintext = '';
