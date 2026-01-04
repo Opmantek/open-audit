@@ -64,7 +64,6 @@ class VulnerabilitiesModel extends BaseModel
                     ' OR vulnerabilities.vendor LIKE ' . $this->db->escape($filter->value) .
                     ' OR vulnerabilities.filter LIKE ' . $this->db->escape($filter->value) .
                     ' OR vulnerabilities.nvd_json LIKE ' . $this->db->escape($filter->value) .
-                    ' OR vulnerabilities.mitre_json LIKE ' . $this->db->escape($filter->value) .
                     ')');
                 continue;
             }
@@ -127,7 +126,6 @@ class VulnerabilitiesModel extends BaseModel
                     ' OR vulnerabilities.vendor LIKE ' . $this->db->escape($filter->value) .
                     ' OR vulnerabilities.filter LIKE ' . $this->db->escape($filter->value) .
                     ' OR vulnerabilities.nvd_json LIKE ' . $this->db->escape($filter->value) .
-                    ' OR vulnerabilities.mitre_json LIKE ' . $this->db->escape($filter->value) .
                     ')');
                 continue;
             }
@@ -182,9 +180,6 @@ class VulnerabilitiesModel extends BaseModel
         }
         if (!empty($data->nvd_json) and !is_string($data->nvd_json)) {
             $data->nvd_json = json_encode($data->nvd_json);
-        }
-        if (!empty($data->mitre_json) and !is_string($data->mitre_json)) {
-            $data->mitre_json = json_encode($data->mitre_json);
         }
         if (!empty($data->products) and !is_string($data->products)) {
             $data->products = json_encode($data->products);
@@ -529,7 +524,6 @@ class VulnerabilitiesModel extends BaseModel
         }
         $item[0]->filter = @json_decode($item[0]->filter);
         $item[0]->nvd_json = @json_decode($item[0]->nvd_json);
-        $item[0]->mitre_json = (!empty($item[0]->mitre_json)) ? json_decode($item[0]->mitre_json) : '';
         $item[0]->references = @json_decode($item[0]->references);
         $item[0]->products = @json_decode($item[0]->products);
         return format_data($item, 'vulnerabilities');
@@ -803,7 +797,6 @@ Network injection. The attacker must inject themselves into the logical network 
         $dictionary->columns->filter  = 'A JSON array of values to test for this vulnerability.';
         $dictionary->columns->sql  = 'The generated SQL query to test for this vulnerability. This field can be edited to correct the query as required.';
         $dictionary->columns->nvd_json  = 'The JSON record from the NVD feed.';
-        $dictionary->columns->mitre_json = 'The JSON record from Mitre.';
         $dictionary->columns->edited_by = 'The name of the user who last changed or added this item (read only).';
         $dictionary->columns->edited_date = 'The date this item was changed or added (read only). NOTE - This is the timestamp from the server.';
 
