@@ -657,6 +657,9 @@ function nmapInstalled($setNotice = false)
             \Config\Services::session()->setFlashdata('error', "WARNING - Nmap not detected. Please install it using your package manager.<br />Please see <a href='" . url_to('helpFAQ') . "?name=Open-AudIT+and+Nmap'>Open-AudIT and Nmap</a> for information about why Open-AudIT requires Nmap and how to install it.");
         }
     }
+    if ($nmap_installed === 'n') {
+        log_message('critical', 'Nmap not detected.');
+    }
     return $nmap_installed;
 }
 
