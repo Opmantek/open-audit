@@ -1,4 +1,3 @@
-/*M!999999\- enable the sandbox mode */ 
 -- MariaDB dump 10.19-12.0.2-MariaDB, for osx10.20 (arm64)
 --
 -- Host: localhost    Database: openaudit
@@ -2698,7 +2697,7 @@ CREATE TABLE `locations` (
 
 LOCK TABLES `locations` WRITE;
 /*!40000 ALTER TABLE `locations` DISABLE KEYS */;
-INSERT INTO `locations` VALUES (1,'Default Location',1,'Our default location',1,'Office','location','','','','','','Gold Coast','','','','Queensland','','Australia','','','','','','','',-28.017260,153.425705,'',NULL,'','2000-01-01 00:00:00');
+INSERT INTO `locations` VALUES (1,'Default Location',1,'Our default location',1,'Office','location','','','','','','Gold Coast','','','','Queensland','','Australia','','','','','','','',-28.017260,153.425705,'',NULL,NULL,'system','2000-01-01 00:00:00');
 /*!40000 ALTER TABLE `locations` ENABLE KEYS */;
 UNLOCK TABLES;
 
