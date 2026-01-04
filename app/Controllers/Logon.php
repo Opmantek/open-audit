@@ -300,6 +300,7 @@ class Logon extends Controller
             exit;
         }
         log_message('info', 'Invalid credentials for ' . $username . ' from ' . @$this->request->getIPAddress());
+        sleep(5);
         if ($format === 'html') {
             return redirect()->to(site_url('logon'));
         }
