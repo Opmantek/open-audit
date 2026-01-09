@@ -425,6 +425,10 @@ class DatabaseModel extends BaseModel
             include "db_upgrades/db_6.0.1.php";
         }
 
+        if (intval(config('Openaudit')->internal_version) < 20260104) {
+            include "db_upgrades/db_6.0.2.php";
+        }
+
         if (php_uname('s') === 'Windows NT') {
             $command = "%comspec% /c start c:\\xampp\\php\\php.exe " . FCPATH . "index.php news execute upgrade";
             pclose(popen($command, 'r'));
