@@ -949,6 +949,10 @@ class Collections extends BaseController
                 return;
             }
 
+            if (!empty($this->resp->meta->include) and $this->resp->meta->collection !== 'devices') {
+                $this->resp->included = $this->{$this->resp->meta->collection . 'Model'}->includedRead($this->resp->meta->id);
+            }
+
             if ($this->resp->meta->collection === 'devices') {
                 unset($this->resp->logs);
                 unset($this->resp->links);

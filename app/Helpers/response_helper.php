@@ -497,6 +497,7 @@ if (!function_exists('response_create')) {
             $sql = "INSERT INTO enterprise VALUES (null, ?, '', NOW(), '')";
             $db->query($sql, [json_encode($response)]);
             $id = $db->insertID();
+            log_message('debug', 'EnterpriseID: ' . $id . ', for ' . $response->meta->collection . ', ' . $response->meta->action);
             // Call the binary and wait for it's response
             unset($output);
             if (php_uname('s') === 'Windows NT') {
@@ -1173,10 +1174,6 @@ if (!function_exists('response_get_include')) {
      */
     function response_get_include($get = '', $post = '', $collection = '')
     {
-        if ($collection !== 'devices') {
-            // We only use include for devices.
-            return '';
-        }
         $include = '';
         $valid_includes = response_valid_includes();
         if (!empty($get)) {
@@ -1188,7 +1185,7 @@ if (!function_exists('response_get_include')) {
         $include = explode(',', $include);
         foreach ($include as $key => $value) {
             if (!empty($value)) {
-                if (!in_array($value, $valid_includes)) {
+                if (!in_array($value, $valid_includes) and ($collection !== 'devices' and $value !== 'y')) {
                     log_message('warning', 'Invalid include provided (' . $value . ').');
                     unset($include[$key]);
                 }
