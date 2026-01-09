@@ -216,6 +216,9 @@ window.onload = function () {
         });
 
         function populate_device_table(devices) {
+            if (!devices) {
+                return;
+            }
             $("#devicesTable").append('<fieldset>');
             for (const device of devices) {
                 installed = '<span class="icon-x text-danger"><\/span>';
