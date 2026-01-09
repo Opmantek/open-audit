@@ -23,6 +23,7 @@ if (is_array($guest_name) and count($guest_name) > 0) {
     foreach ($guest_name as $key => $value) {
         $guest = new \StdClass();
         $guest->vm_ident = str_replace('.1.3.6.1.4.1.6876.2.1.1.2.', '', $key);
+        $guest->name = my_snmp_get($ip, $credentials, "1.3.6.1.4.1.6876.2.1.1.2." . $guest->vm_ident);
         $guest->net = array();
         $guest_mac = my_snmp_real_walk($ip, $credentials, "1.3.6.1.4.1.6876.2.4.1.7." . $guest->vm_ident);
         if (isset($guest_mac) and is_array($guest_mac) and count($guest_mac) > 0) {
@@ -38,8 +39,8 @@ if (is_array($guest_name) and count($guest_name) > 0) {
             }
         }
         $guest->uuid = my_snmp_get($ip, $credentials, "1.3.6.1.4.1.6876.2.1.1.10." . $guest->vm_ident);
-        $guest->memory = my_snmp_get($ip, $credentials, "1.3.6.1.4.1.6876.2.1.1.5." . $guest->vm_ident);
-        $guest->cpu = my_snmp_get($ip, $credentials, "1.3.6.1.4.1.6876.2.1.1.9." . $guest->vm_ident);
+        $guest->memory_count = my_snmp_get($ip, $credentials, "1.3.6.1.4.1.6876.2.1.1.5." . $guest->vm_ident);
+        $guest->cpu_count = my_snmp_get($ip, $credentials, "1.3.6.1.4.1.6876.2.1.1.9." . $guest->vm_ident);
         $guest->status = my_snmp_get($ip, $credentials, "1.3.6.1.4.1.6876.2.1.1.6." . $guest->vm_ident);
         $guest->config_file = my_snmp_get($ip, $credentials, "1.3.6.1.4.1.6876.2.1.1.3." . $guest->vm_ident);
         $guest->os = my_snmp_get($ip, $credentials, "1.3.6.1.4.1.6876.2.1.1.4." . $guest->vm_ident);
