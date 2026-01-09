@@ -232,6 +232,9 @@ if (count($included['issues']) > 0) {
                                     <?= collection_button_devices(url_to('devicesCollection') . '?devices.discovery_id=' . $item->id) ?>
                                     <?= collection_button_execute($meta->collection, intval($item->id)) ?>
                                     <?php foreach ($meta->data_order as $key) {
+                                        if ($key === 'last_run' and $item->attributes->last_run === '2000-01-01 00:00:00') {
+                                            $item->attributes->last_run = '';
+                                        }
                                         if ($key === 'id' or $key === 'orgs.id') {
                                             continue;
                                         }

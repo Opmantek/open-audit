@@ -58,6 +58,14 @@ if ($style === 'icontext') {
     $support_button = "<a role=\"button\" id=\"button_support\" class=\"btn btn-light mb-2\" title=\"" . __('Support') . "\" href=\"" . url_to('discoveriesDownload', $meta->id) . "?format=json_data\">" . __('Support') . "</a>";
 }
 
+if (!empty($resource->last_run) and ($resource->last_run === '2000-01-01 00:00:00' or $resource->last_run === '2001-01-01 00:00:00')) {
+    $resource->last_run = '';
+}
+
+if (!empty($resource->finished) and ($resource->finished === '2000-01-01 00:00:00' or $resource->finished === '2001-01-01 00:00:00')) {
+    $resource->finished = '';
+}
+
 
 $options = array();
 $no = new stdClass();
