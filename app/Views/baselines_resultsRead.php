@@ -281,7 +281,7 @@ if ($style === 'icontext') {
                                 <?php foreach ($policy->result as $row) { ?>
                                     <tr>
                                         <td class="text-center"><a href="<?= url_to('baselines_resultsRead', $meta->id) ?>?device_id=<?= $row->id ?>" role="button" class="btn btn-primary btn-sm"><span class="icon-eye" aria-hidden="true"></span></a></td>
-                                        <td><?= $row->name ?></td>
+                                        <td><a href="<?= url_to('devicesRead', $row->id) ?>"><?= $row->name ?></a></td>
                                         <td><?= @$row->test1 ?></td>
                                         <td><?= @$row->test2 ?></td>
                                         <?php if ($policy->table !== 'software') { ?>
