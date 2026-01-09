@@ -103,12 +103,13 @@ window.onload = function () {
         }
 
         foreach (['antivirus', 'backup', 'firewall', 'approved', 'banned', 'ignored'] as $key) {
-            foreach ($included['software'][$i]->type as $value) {
-                if (!empty($value->$key)) {
-                    $type->{$key} = intval($value->{$key});
+            foreach ($included['software'][$i] as $item) {
+                if (!empty($item->type)) {
+                    if (!empty($value->$key)) {
+                        $type->{$key} = intval($value->{$key});
+                    }
                 }
             }
-
             $button = 'btn-outline-success';
             $fa = __('Add');
             $action = 'create';
