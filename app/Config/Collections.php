@@ -594,7 +594,7 @@ class Collections extends BaseConfig
         $this->vendors = new \StdClass();
         $this->vendors->icon = 'icon-factory';
         $this->vendors->name = 'Vendors';
-        $this->vendors->edition = 'Enterprise';
+        $this->vendors->edition = 'Professional';
         $this->vendors->orgs = 'd';
         $this->vendors->actions = new \stdClass();
         $this->vendors->actions->enterprise = 'crud';
@@ -604,7 +604,7 @@ class Collections extends BaseConfig
         $this->vulnerabilities = new \StdClass();
         $this->vulnerabilities->icon = 'icon-bug';
         $this->vulnerabilities->name = 'Vulnerabilities';
-        $this->vulnerabilities->edition = 'Enterprise';
+        $this->vulnerabilities->edition = 'Professional';
         $this->vulnerabilities->orgs = 'd';
         $this->vulnerabilities->actions = new \stdClass();
         $this->vulnerabilities->actions->enterprise = 'crud';
@@ -614,7 +614,7 @@ class Collections extends BaseConfig
         $this->vulnerabilities_filters = new \StdClass();
         $this->vulnerabilities_filters->icon = 'icon-bug';
         $this->vulnerabilities_filters->name = 'Vulnerabilities Filters';
-        $this->vulnerabilities_filters->edition = 'Enterprise';
+        $this->vulnerabilities_filters->edition = 'Professional';
         $this->vulnerabilities_filters->orgs = 'd';
         $this->vulnerabilities_filters->actions = new \stdClass();
         $this->vulnerabilities_filters->actions->enterprise = 'crud';
