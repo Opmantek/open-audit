@@ -20,14 +20,14 @@ include 'shared/common_functions.php';
                             if ($resource->type === 'snmp') {
                                 echo read_field('credentials.community', '', '', $update, __('Community String'), '', '', 'password', $meta->collection);
                             } elseif ($resource->type === 'ssh') {
-                                echo read_field('credentials.username', (!empty($resource->credentials->username)) ? $resource->credentials->username : '', $dictionary->columns->username, $update, '', '', '', '', $meta->collection);
+                                echo read_field('credentials.username', (!empty($resource->credentials->username)) ? $resource->credentials->username : '', $dictionary->columns->username, $update, __('Username'), '', '', '', $meta->collection);
                                 echo read_field('credentials.password', '', $dictionary->columns->password, $update, __('Password'), '', '', 'password', $meta->collection);
                             } elseif ($resource->type === 'windows') {
-                                echo read_field('credentials.username', (!empty($resource->credentials->username)) ? $resource->credentials->username : '', $dictionary->columns->username, $update, '', '', '', '', $meta->collection);
+                                echo read_field('credentials.username', (!empty($resource->credentials->username)) ? $resource->credentials->username : '', $dictionary->columns->username, $update, __('Username'), '', '', '', $meta->collection);
                                 echo read_field('credentials.password', '', $dictionary->columns->password, $update, __('Password'), '', '', 'password', $meta->collection);
                             } elseif ($resource->type === 'ssh_key') {
-                                echo read_field('credentials.username', (!empty($resource->credentials->username)) ? $resource->credentials->username : '', $dictionary->columns->username, $update, '', '', '', '', $meta->collection);
-                                echo read_field('credentials.ssh_key', '', $dictionary->columns->ssh_key, $update, '', '', '', 'password', $meta->collection);
+                                echo read_field('credentials.username', (!empty($resource->credentials->username)) ? $resource->credentials->username : '', $dictionary->columns->username, $update, __('Username'), '', '', '', $meta->collection);
+                                echo read_field('credentials.ssh_key', '', $dictionary->columns->ssh_key, $update, __('SSH Key'), '', '', 'password', $meta->collection);
                                 echo read_field('credentials.password', '', $dictionary->columns->password, $update, __('Key Password (optional)'), '', '', 'password', $meta->collection);
                                 echo read_field('credentials.sudo_password', '', $dictionary->columns->sudo_password, $update, __('Sudo Password (optional)'), '', '', 'password', $meta->collection);
                             } elseif ($resource->type === 'snmp_v3') {
