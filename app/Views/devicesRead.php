@@ -2807,7 +2807,6 @@ if (empty($resource->type)) {
                                                     <th><?= __('Password Expires') ?></th>
                                                     <th><?= __('Password Last Changed') ?></th>
                                                     <th><?= __('Last Logon') ?></th>
-                                                    <th><?= __('Status') ?></th>
                                                 </tr>
                                                 <?php } else { ?>
                                                 <tr>
@@ -2851,7 +2850,6 @@ if (empty($resource->type)) {
                                                         <td><?= $row->password_expires ?></td>
                                                         <td><?= $row->password_last_changed ?></td>
                                                         <td><?= $row->last_logon ?></td>
-                                                        <td><?= $row->status ?></td>
                                                     </tr>
                                                     <?php } else { ?>
                                                     <tr>
