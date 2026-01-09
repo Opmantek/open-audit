@@ -61,14 +61,14 @@ class Queries extends BaseController
             output($this);
             return true;
         }
-        if (empty($this->resp->data)) {
+        if (empty($this->resp->data) and $this->resp->meta->format === 'html') {
             \Config\Services::session()->setFlashdata('error', 'No data returned when running query.');
             return redirect()->route($this->resp->meta->collection . 'Collection');
         }
         if ($query[0]->attributes->advanced !== 'y') {
             $this->resp->data = filter_response($this->resp->data);
         }
-        if ($this->resp->meta->format !== 'html' and $this->resp->meta->format !== 'json') {
+        if ($this->resp->meta->format !== 'html') {
             output($this);
             return true;
         }
