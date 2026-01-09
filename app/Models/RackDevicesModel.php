@@ -69,6 +69,9 @@ class RackDevicesModel extends BaseModel
         if (empty($data)) {
             return null;
         }
+        if (empty($data->height)) {
+            $data->height = 1;
+        }
         $this->builder->insert($data);
         if ($error = $this->sqlError($this->db->error())) {
             \Config\Services::session()->setFlashdata('error', json_encode($error));
