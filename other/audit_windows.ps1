@@ -22,7 +22,7 @@ param (
     [int]$discovery_id = 0
 )
 
-$version="6.0.1"
+$version="6.0.2"
 
 $debug = $debugging
 
