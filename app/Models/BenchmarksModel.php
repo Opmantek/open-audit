@@ -518,7 +518,7 @@ class BenchmarksModel extends BaseModel
                     }
                     $result->remediation = json_encode($result->remediation);
                     $this->db->transStart();
-                    $sql = "INSERT INTO benchmarks_policies VALUES (NULL, ?, ?, ?, ?, ?, ?, '', '', NOW(), ?)";
+                    $sql = "INSERT IGNORE INTO benchmarks_policies VALUES (NULL, ?, ?, ?, ?, ?, ?, '', '', NOW(), ?)";
                     $this->db->query($sql, [$result->external_ident, $result->name, $result->severity, $result->description, $result->rationale, $result->remediation, $id]);
                     $this->db->transComplete();
                     $sql = "UNLOCK TABLES";
