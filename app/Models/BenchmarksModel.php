@@ -141,6 +141,11 @@ class BenchmarksModel extends BaseModel
         return true;
     }
 
+    protected function isSshCredentialType(string $type): bool
+    {
+        return $type === 'ssh' || $type === 'ssh_key';
+    }
+
     public function execute(int $id = 0, int $device_id = 0): array
     {
         if (empty($id) or empty($device_id)) {
@@ -189,7 +194,7 @@ class BenchmarksModel extends BaseModel
         $credentialsModel = model('App\Models\CredentialsModel');
         foreach ($credentials as $credential) {
             $retrieved_credentials = $credentialsModel->read($credential)[0];
-            if ($retrieved_credentials->attributes->type === 'ssh' or $retrieved_credentials->attributes->type = 'ssh_key') {
+            if ($this->isSshCredentialType($retrieved_credentials->attributes->type)) {
                 continue;
             }
         }
