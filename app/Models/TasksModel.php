@@ -407,7 +407,7 @@ class TasksModel extends BaseModel
         $dictionary->columns->expire_minutes = 'Unused.';
         $dictionary->columns->first_run = 'The timestamp after which, this task should run. For example, run a task after the 1st June 2017 at 10am, set it to <code>2017-06-01 09:59:00</code>. This value should be zero padded (ie, 09, not 9). This value defaults to <code>2000-01-01 00:00:00</code> which means by default, a scheduled task will run at next scheduled execution time.';
         $dictionary->columns->last_run = 'The last date and time this item was executed (read only).';
-        $dictionary->columns->email_address = 'The email address of the reciever';
+        $dictionary->columns->email_address = 'The email address of the receiver';
         $dictionary->columns->format = 'The format used for the output to be emailed.';
         $dictionary->columns->group_id = 'The Group used to run the Baseline. Links to <code>groups.id</code>.';
         $dictionary->columns->edited_by = $instance->dictionary->edited_by;

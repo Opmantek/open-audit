@@ -7017,7 +7017,7 @@ $GLOBALS["lang"]['The device within Open-AudIT. Links to <code>devices.id</code>
 
 $GLOBALS["lang"]['The direct link for the script is'] = '脚本的直接链接是';
 
-$GLOBALS["lang"]['The email address of the reciever'] = '回信器的电子邮件地址';
+$GLOBALS["lang"]['The email address of the receiver'] = '回信器的电子邮件地址';
 
 $GLOBALS["lang"]['The enterprise binary from FirstWave is required for a license. Please download Open-AudIT from'] = '来自FirstWave的企业二进制必须持有许可证。 请从 Open-AudIT 下载';
 
