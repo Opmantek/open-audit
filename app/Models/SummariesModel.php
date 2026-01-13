@@ -347,7 +347,7 @@ class SummariesModel extends BaseModel
         if ($this->sqlError($this->db->error())) {
             return array();
         }
-        return format_data($query->getResult(), 'attributes');
+        return format_data($query->getResult(), 'summaries');
     }
 
     /**
