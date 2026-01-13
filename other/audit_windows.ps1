@@ -59,7 +59,7 @@ if ($debug -gt 0) {
     Write-Host "File:         $file"
 }
 
-$internet = Test-Connection -ComputerName "8.8.8.8" -Count 2 -Quiet
+$internet = Test-Connection -ComputerName "8.8.8.8" -Quiet -Count 2 -ErrorAction Ignore
 if ($debug -gt 0) {
     Write-Host "Online:       $internet"
     Write-Host "================"
@@ -76,7 +76,6 @@ if ($debug -gt 0) {
     Write-Host "system:       " -NoNewline
 }
 
-$internet = Test-Connection -ComputerName "8.8.8.8" -Count 2 -Quiet
 $Win32_BIOS = Get-WmiObject -Class Win32_BIOS
 $Win32_ComputerSystem = Get-WmiObject -Class Win32_ComputerSystem
 $Win32_ComputerSystemProduct = Get-WmiObject -Class Win32_ComputerSystemProduct
@@ -1425,7 +1424,7 @@ if ($skip_sections.Contains("ip,") -eq $false) {
                 }
                 $result.ip += $item
                 $ip_address_array += $result.ip
-                $dns_server = if ($_.DNSServerSearchOrder[0]) { $_.DNSServerSearchOrder[0] }
+                $dns_server = if ($_.DNSServerSearchOrder.Count -ne 0) { $_.DNSServerSearchOrder[0] }
             }
         }
     }
@@ -2356,38 +2355,39 @@ if ($skip_sections.Contains("software,") -eq $false) {
         Write-Host "$count entries took $totalSecs seconds"
     }
 
-
-    if (Get-Command "get-WindowsFeature" -errorAction SilentlyContinue) { 
-        $itimer = [Diagnostics.Stopwatch]::StartNew()
-        if ($debug -gt 0) {
-            Write-Host "software 7:   " -NoNewline
-        }
-        Get-WindowsFeature -ErrorAction Ignore | WHERE Installed | Select DisplayName, Description, @{name='Version';expression={"{0}.{1}" -f $_.AdditionalInfo.MajorVersion,$_.AdditionalInfo.MinorVersion }} | ForEach {
-            $item = @{}
-            $item.name = $_.DisplayName
-            $item.description = $_.Description
-            $item.version = $_.Version
-            $item.publisher = "Microsoft Corporation"
-            $item.type = "Windows Feature"
-            $test = $false
-            for ($i = 0; $i -lt $result.software.Length; $i++) {
-                if ($result.software[$i].name -eq $item.name) {
-                    $test = $true
-                    if ([string]$item.version -ne "" -and [string]$item.version -ne "0.0" -and [string]$result.software[$i].version -eq "") {
-                        # We already have this, likely from Win32_OptionalFeature above. Add the version if it's set and not 0.0.
-                        $result.software[$i].Version = $item.version
+    if ($result.sys.os_name -like "*Server*") {
+        if (Get-Command "get-WindowsFeature" -errorAction SilentlyContinue) { 
+            $itimer = [Diagnostics.Stopwatch]::StartNew()
+            if ($debug -gt 0) {
+                Write-Host "software 7:   " -NoNewline
+            }
+            Get-WindowsFeature -ErrorAction Ignore | WHERE Installed | Select DisplayName, Description, @{name='Version';expression={"{0}.{1}" -f $_.AdditionalInfo.MajorVersion,$_.AdditionalInfo.MinorVersion }} | ForEach {
+                $item = @{}
+                $item.name = $_.DisplayName
+                $item.description = $_.Description
+                $item.version = $_.Version
+                $item.publisher = "Microsoft Corporation"
+                $item.type = "Windows Feature"
+                $test = $false
+                for ($i = 0; $i -lt $result.software.Length; $i++) {
+                    if ($result.software[$i].name -eq $item.name) {
+                        $test = $true
+                        if ([string]$item.version -ne "" -and [string]$item.version -ne "0.0" -and [string]$result.software[$i].version -eq "") {
+                            # We already have this, likely from Win32_OptionalFeature above. Add the version if it's set and not 0.0.
+                            $result.software[$i].Version = $item.version
+                        }
                     }
                 }
+                if ($test -eq $false) {
+                    $result.software += $item
+                }
+                Clear-Variable -name item
             }
-            if ($test -eq $false) {
-                $result.software += $item
+            $totalSecs =  [math]::Round($itimer.Elapsed.TotalSeconds,2)
+            if ($debug -gt 0) {
+                $count = [int]$result.software.count
+                Write-Host "$count entries took $totalSecs seconds"
             }
-            Clear-Variable -name item
-        }
-        $totalSecs =  [math]::Round($itimer.Elapsed.TotalSeconds,2)
-        if ($debug -gt 0) {
-            $count = [int]$result.software.count
-            Write-Host "$count entries took $totalSecs seconds"
         }
     }
 } # End of audit_software
