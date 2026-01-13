@@ -7017,7 +7017,7 @@ $GLOBALS["lang"]['The device within Open-AudIT. Links to <code>devices.id</code>
 
 $GLOBALS["lang"]['The direct link for the script is'] = '스크립트에 대한 직접 링크는';
 
-$GLOBALS["lang"]['The email address of the reciever'] = 'reciever의 이메일 주소';
+$GLOBALS["lang"]['The email address of the receiver'] = 'reciever의 이메일 주소';
 
 $GLOBALS["lang"]['The enterprise binary from FirstWave is required for a license. Please download Open-AudIT from'] = 'FirstWave의 엔터프라이즈 바이너리는 라이센스에 필요합니다. Open-AudIT 다운로드';
 

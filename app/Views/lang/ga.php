@@ -7019,7 +7019,7 @@ $GLOBALS["lang"]['The device within Open-AudIT. Links to <code>devices.id</code>
 
 $GLOBALS["lang"]['The direct link for the script is'] = 'Is é an nasc díreach don script';
 
-$GLOBALS["lang"]['The email address of the reciever'] = 'Seoladh ríomhphoist an reciever';
+$GLOBALS["lang"]['The email address of the receiver'] = 'Seoladh ríomhphoist an reciever';
 
 $GLOBALS["lang"]['The enterprise binary from FirstWave is required for a license. Please download Open-AudIT from'] = 'Tá an dénártha fiontraíochta ó FirstWave ag teastáil le haghaidh ceadúnas. Íoslódáil Open-AudIT ó';
 

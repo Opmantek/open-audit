@@ -7017,7 +7017,7 @@ $GLOBALS["lang"]['The device within Open-AudIT. Links to <code>devices.id</code>
 
 $GLOBALS["lang"]['The direct link for the script is'] = 'Прямая ссылка на сценарий — это';
 
-$GLOBALS["lang"]['The email address of the reciever'] = 'Адрес электронной почты рецивера';
+$GLOBALS["lang"]['The email address of the receiver'] = 'Адрес электронной почты рецивера';
 
 $GLOBALS["lang"]['The enterprise binary from FirstWave is required for a license. Please download Open-AudIT from'] = 'Бинарный бизнес от FirstWave требуется для получения лицензии. Скачать Open-AudIT из';
 
