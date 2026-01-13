@@ -357,7 +357,7 @@ class SummariesModel extends BaseModel
      */
     public function reset(string $table = ''): bool
     {
-        if ($this->tableReset('attributes')) {
+        if ($this->tableReset('summaries')) {
             return true;
         }
         return false;
