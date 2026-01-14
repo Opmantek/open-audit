@@ -33,6 +33,10 @@ function simpleDecrypt(string $message = '', string $key = ''): string
         log_message('error', 'simpleDecrypt error: ' . json_encode($e));
         return '';
     }
+    // Sodium returns false on decryption failure (e.g., wrong key or corrupted ciphertext)
+    if ($plaintext === false) {
+        return '';
+    }
     return $plaintext;
 }
 
