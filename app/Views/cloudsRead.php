@@ -95,8 +95,8 @@ if ($style === 'icontext') {
                                         </div>
                                     </div>
                                     <?php if ($resource->type === 'amazon') {
-                                        echo read_field('credentials.key', $resource->credentials->key, $dictionary->columns->key, $update, '', '', '', '', $meta->collection);
-                                        echo read_field('credentials.secret_key', '', $dictionary->columns->secret_key, $update, '', '', '', '', $meta->collection);
+                                        echo read_field('credentials.key', $resource->credentials->key, $dictionary->columns->key, $update, __('Credentials Key'), '', '', '', $meta->collection);
+                                        echo read_field('credentials.secret_key', '', $dictionary->columns->secret_key, $update, __('Credentials Secret Key'), '', '', '', $meta->collection);
                                     } elseif ($resource->type === 'microsoft') {
                                         echo read_field('credentials.subscription_id', $resource->credentials->subscription_id, $dictionary->columns->subscription_id, $update, '', '', '', '', $meta->collection);
                                         echo read_field('credentials.tenant_id', $resource->credentials->tenant_id, $dictionary->columns->tenant_id, $update, '', '', '', '', $meta->collection);
