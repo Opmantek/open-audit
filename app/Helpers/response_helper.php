@@ -523,7 +523,7 @@ if (!function_exists('response_create')) {
                 @exec($command, $output);
             }
             if (!empty($output)) {
-                log_message('debug', 'Output: ' . json_encode($output));
+                log_message('warning', 'Output: ' . json_encode($output));
                 $string = 'There is an issue with Enterprise functionality. Output below:';
                 foreach ($output as $line) {
                     $string = $string . "<br>" . $line;
