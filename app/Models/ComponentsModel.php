@@ -1560,7 +1560,7 @@ class ComponentsModel extends BaseModel
                 if (!empty($instance->config->create_change_log_netstat_well_known) and $instance->config->create_change_log_netstat_well_known === 'n' and isset($db_item->port) and intval($db_item->port) < 1024) {
                     $special = false;
                 }
-                if (!empty($instance->config->create_change_log_netstat_registered) and $instance->config->create_change_log_netstat_registered === 'n' and isset($db_item->port) and intval($db_item->port) > 1023 and intval($db_item->port < 49152)) {
+                if (!empty($instance->config->create_change_log_netstat_registered) and $instance->config->create_change_log_netstat_registered === 'n' and isset($db_item->port) and intval($db_item->port) > 1023 and intval($db_item->port) < 49152) {
                     $special = false;
                 }
                 if (!empty($instance->config->create_change_log_netstat_dynamic) and $instance->config->create_change_log_netstat_dynamic === 'n' and isset($db_item->port) and intval($db_item->port) > 49151) {
