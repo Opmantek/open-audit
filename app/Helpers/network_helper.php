@@ -323,8 +323,11 @@ if (! function_exists('inttobin')) {
 }
 
 if (!function_exists('ip_address_from_db')) {
-    function ip_address_from_db($ip = '')
+    function ip_address_from_db(string $ip = '')
     {
+        if (!is_string($ip)) {
+            return '';
+        }
         if (!empty($ip)) {
             if (stripos($ip, '.') !== false and substr_count($ip, '.') === 3) {
                 // this is an ip v4 address
