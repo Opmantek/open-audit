@@ -335,7 +335,8 @@ class DevicesModel extends BaseModel
         if (empty($data)) {
             return null;
         }
-        $instance = get_instance();
+
+        helper('components');
 
         $parameters = new \stdClass();
         $parameters->input = $data;
@@ -366,6 +367,7 @@ class DevicesModel extends BaseModel
             $data->first_seen = $data->last_seen;
         }
         if (empty($data->last_seen)) {
+            $instance = get_instance();
             $data->last_seen = $instance->config->timestamp;
             $data->first_seen = $data->last_seen;
         }
@@ -1110,7 +1112,9 @@ class DevicesModel extends BaseModel
             log_message('error', 'DevicesModel::update called, but no $data object supplied.');
             return false;
         }
-        $instance = get_instance();
+        helper('components');
+        helper('utility');
+        $instance = & get_instance();
         $user_id = 0;
         if (!empty($instance->user->id)) {
             $user_id = intval($instance->user->id);
@@ -1413,6 +1417,7 @@ class DevicesModel extends BaseModel
      */
     public function dictionary(): object
     {
+        helper('utility');
         $instance = & get_instance();
 
         // TODO - When running cli -> queue_start -> ip_audit, the $instance->dictionary is not populated.
@@ -1424,7 +1429,7 @@ class DevicesModel extends BaseModel
         $dictionary->columns = new stdClass();
 
         $dictionary->attributes = new stdClass();
-        $dictionary->attributes->collection = explode(',', $instance->config->devices_default_display_columns);
+        $dictionary->attributes->collection = explode(',', @(string)$instance->config->devices_default_display_columns);
         $dictionary->attributes->fields = $this->db->getFieldNames($collection); # All field names for this table
         $dictionary->attributes->create = array('name','org_id'); # We MUST have each of these present and assigned a value
         $dictionary->attributes->update = $this->updateFields($collection); # We MAY update any of these listed fields
@@ -1436,7 +1441,7 @@ class DevicesModel extends BaseModel
 
         $dictionary->notes = '';
 
-        $dictionary->link = $instance->dictionary->link;
+        $dictionary->link = @$instance->dictionary->link;
         $dictionary->product = 'community';
         $dictionary->columns->id = @$instance->dictionary->id;
         $dictionary->columns->uuid = 'Retrieved from the device - Windows:Win32_ComputerSystemProduct, Linux:dmidecode, MacOS:system_profiler, ESXi:vim-cmd hostsvc/hostsummary, HP-UX:machinfo, Solaris:smbios, AIX:uname.';

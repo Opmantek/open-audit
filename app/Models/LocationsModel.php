@@ -270,6 +270,7 @@ class LocationsModel extends BaseModel
      */
     public function dictionary(): object
     {
+        helper('utility');
         $instance = & get_instance();
 
         $collection = 'locations';
@@ -290,7 +291,7 @@ class LocationsModel extends BaseModel
 
         $dictionary->notes = '<p>The <code>type</code> of the location will assign its icon.<br> <br></p>';
 
-        $dictionary->link = $instance->dictionary->link;
+        $dictionary->link = @$instance->dictionary->link;
         $dictionary->product = 'community';
         $dictionary->columns->id = @$instance->dictionary->id;
         $dictionary->columns->name = @$instance->dictionary->name;

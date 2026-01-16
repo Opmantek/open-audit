@@ -356,6 +356,7 @@ class NetworksModel extends BaseModel
      */
     public function dictionary(): object
     {
+        helper('utility');
         $instance = & get_instance();
 
         $collection = 'networks';
@@ -375,7 +376,7 @@ class NetworksModel extends BaseModel
         $dictionary->about = '<p>A network is derived from discovery entries and device attributes.<br> <br></p>';
         $dictionary->notes = '<p>The network should be in the format 192.168.1.0/24.<br> <br></p>';
 
-        $dictionary->link = $instance->dictionary->link;
+        $dictionary->link = @$instance->dictionary->link;
         $dictionary->product = 'community';
         // Set the below directly for when we don't call using a normal user, via CLI discovery
         $dictionary->columns->id = 'The identifier column (integer) in the database (read only).';
