@@ -825,7 +825,7 @@ if (! function_exists('ssh_audit')) {
                     $key = PublicKeyLoader::load($credential->credentials->ssh_key);
                 }
                 try {
-                    if (!$$ssh->login($credential->credentials->username, $key)) {
+                    if (!$ssh->login($credential->credentials->username, $key)) {
                         log_message('debug', '(ssh_audit) Testing SSH Key credentials named: ' . $credential->name . ' FAILED on ' . $ip);
                         $ssh->disconnect();
                         unset($ssh);
