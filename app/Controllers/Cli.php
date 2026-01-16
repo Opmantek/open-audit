@@ -503,7 +503,7 @@ class Cli extends Controller
             $discovery->type = 'discoveries';
             $discovery->attributes = new stdClass();
             $discovery->attributes->name = 'Discovery for ' . $cloud->name;
-            $discovery->attributes->description = $cloud->type . ' discovery.';
+            $discovery->attributes->description = $cloud->name . ' discovery for ' . $cloud->type;
             $discovery->attributes->org_id = $cloud->org_id;
             $discovery->attributes->type = 'cloud';
             $discovery->attributes->cloud_id = $cloud->id;
@@ -512,7 +512,7 @@ class Cli extends Controller
             $discovery->attributes->match_options = json_encode($match_rules);
             $discovery->attributes->command_options = '';
             $discovery->attributes->edited_by = '';
-            $discovery_id = $discoveriesModel->create($discovery);
+            $discovery_id = $discoveriesModel->create($discovery->attributes);
             unset($discovery);
             if (empty($discovery_id)) {
                 $message = 'Could not create discovery entry for cloud ' . $cloud->name;
