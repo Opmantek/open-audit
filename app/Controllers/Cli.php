@@ -584,7 +584,7 @@ class Cli extends Controller
                         $device->location_id = intval($location->id);
                     }
                 }
-                if (!empty($discovery_id)) {
+                if (!empty($discovery_id) and $device->attributes->instance_state === 'running') {
                     $device->attributes->discovery_id = $discovery_id;
                 }
                 $device->attributes->last_seen = $config->timestamp;
