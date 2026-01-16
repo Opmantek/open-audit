@@ -166,7 +166,6 @@ $routes->cli('benchmarks/(:num)/execute', 'Cli::executeBenchmark/$1', ['as' => '
 $routes->cli('discoveries/(:num)/execute', 'Cli::executeDiscovery/$1', ['as' => 'executeDiscovery']);
 $routes->cli('integrations/(:num)/execute', 'Cli::executeIntegration/$1', ['as' => 'executeIntegration']);
 $routes->cli('clouds/(:num)/execute', 'Cli::executeCloud/$1', ['as' => 'executeCloud']);
-$routes->cli('devices/(:num)/cloudDevice', 'Cli::cloudDevice/$1', ['as' => 'cloudDevice']);
 
 $routes->patch('devices/(:num)/reset', 'Devices::reset/$1', ['filter' => \App\Filters\Session::class, 'as' => 'DeviceReset']);
 

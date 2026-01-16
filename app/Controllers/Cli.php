@@ -313,70 +313,369 @@ class Cli extends Controller
         if (empty($id)) {
             log_message('error', 'A cloud execute request was received, but no cloud ID was present in the request.');
         }
+
+        $cloudsModel = model('CloudsModel');
+        $devicesModel = model('DevicesModel');
+        $discoveriesModel = model('DiscoveriesModel');
+        $locationsModel = model('LocationsModel');
+        $networksModel = model('NetworksModel');
+        $orgsModel = model('OrgsModel');
+
+        $config = new \Config\OpenAudit();
+
+        helper('device');
+
+        $pid = getmypid();
+
+        // Retrieve the cloud details
         $db = db_connect() or die("Cannot establish a database connection.");
         $sql = "SELECT * FROM clouds WHERE id = ?";
         $result = $db->query($sql, [$id])->getResult();
         if (!empty($result[0])) {
             $cloud = $result[0];
         }
+        if (!empty($cloud->options)) {
+            $cloud->options = json_decode($cloud->options);
+        }
+
+        // Get all the Org children - an array of integers suitable for IN() in SQL
+        $org_children = $orgsModel->getDescendants(intval($cloud->org_id));
+        $org_children[] = $cloud->org_id;
+
+        // Delete any existing logs
+        $sql = "DELETE FROM cloud_log WHERE cloud_id = " . $id;
+        $result = $db->query($sql);
+
+        // Get the locations, networks and devices
         if (!empty($cloud->type)) {
             switch ($cloud->type) {
                 case 'amazon':
-                    $this->amazon($cloud);
+                    $details = $this->amazon($cloud);
                     break;
 
                 case 'google':
-                    $this->google($cloud);
+                    $details = $this->google($cloud);
                     break;
 
                 case 'microsoft':
-                    $this->microsoft($cloud);
+                    $details = $this->microsoft($cloud);
                     break;
 
                 default:
                     // code...
                     break;
             }
-            return;
         }
-        echo 0;
-        return;
+
+        // Empty rule to defer to global config
+        $match_rules = json_decode('{"match_dbus":"","match_fqdn":"","match_dns_fqdn":"","match_dns_hostname":"","match_hostname":"","match_hostname_dbus":"","match_hostname_serial":"","match_hostname_uuid":"","match_ip":"","match_ip_no_data":"","match_mac":"","match_mac_vmware":"","match_serial":"","match_serial_type":"","match_sysname":"","match_sysname_serial":"","match_uuid":""}');
+
+        // Special matching rules for AWS
+        if ($cloud->type === 'amazon') {
+            // $cloudsModel->log($id, 'Setting AWS match rules.', 'info', 0);
+            // $sql = "UPDATE configuration SET value = 'y' WHERE name = 'match_mac'";
+            // $db->query($sql);
+            // $sql = "UPDATE configuration SET value = 'y' WHERE name = 'match_ip'";
+            // $db->query($sql);
+            $match_rules = json_decode('{"match_dbus":"","match_fqdn":"","match_dns_fqdn":"","match_dns_hostname":"","match_hostname":"","match_hostname_dbus":"","match_hostname_serial":"","match_hostname_uuid":"","match_ip":"y","match_ip_no_data":"","match_mac":"y","match_mac_vmware":"","match_serial":"","match_serial_type":"","match_sysname":"","match_sysname_serial":"","match_uuid":""}');
+        }
+        if ($cloud->type === 'google') {
+            $match_rules = json_decode('{"match_dbus":"","match_fqdn":"","match_dns_fqdn":"","match_dns_hostname":"","match_hostname":"y","match_hostname_dbus":"","match_hostname_serial":"","match_hostname_uuid":"","match_ip":"","match_ip_no_data":"","match_mac":"","match_mac_vmware":"","match_serial":"","match_serial_type":"","match_sysname":"","match_sysname_serial":"","match_uuid":""}');
+        }
+
+        $sql = "SELECT * FROM locations WHERE type = 'Cloud' and `cloud_id` = ? AND `org_id` IN (" . implode(',', $org_children) . ")";
+        $locations = $db->query($sql, [$id])->getResult();
+        log_message('debug', (string)$db->getLastQuery());
+        $cloudsModel->log($id, count($locations) . ' cloud locations retrieved from Open-AudIT.', 'info', 0);
+        $cloudsModel->log($id, count($details->locations) . ' locations retrieved from ' . ucfirst($cloud->type) . '.', 'info', 0);
+
+        // Locations
+        $count = 0;
+        if (count($details->locations) > 0) {
+            foreach ($details->locations as $cloud_location) {
+                if (!empty($cloud_location->attributes->options) and !is_string($cloud_location->attributes->options)) {
+                    $cloud_location->attributes->options = json_encode($cloud_location->attributes->options);
+                }
+                $cloud_location->edited_date = $config->timestamp;
+                $insert = true;
+                if (count($locations) > 0) {
+                    foreach ($locations as $oa_location) {
+                        if ($cloud_location->attributes->external_ident === $oa_location->external_ident) {
+                            $insert = false;
+                            $message = 'Location named ' . $cloud_location->attributes->name . ' with an external_ident of ' . $cloud_location->attributes->external_ident . ' exists, not creating.';
+                            log_message('debug', $message);
+                            $cloudsModel->log($id, $message, 'info', 0);
+                        }
+                    }
+                    if ($insert) {
+                        $location_id = $locationsModel->create($cloud_location->attributes);
+                        if (empty($location_id)) {
+                            $message = 'Could not create location named ' . $cloud_location->attributes->name . ' for cloud ' . $cloud->name;
+                            log_message('error', $message);
+                            $cloudsModel->log($id, $message, 'error', 0);
+                        } else {
+                            $message = 'Location named ' . $cloud_location->attributes->name . ' created.';
+                            log_message('debug', $message);
+                            $cloudsModel->log($id, $message, 'info', 0);
+                            $count++;
+                        }
+                    }
+                } else {
+                    $location_id = $locationsModel->create($cloud_location->attributes);
+                    if (empty($location_id)) {
+                        $message = 'Could not create location named ' . $cloud_location->attributes->name . ' for cloud ' . $cloud->name;
+                        log_message('error', $message);
+                        $cloudsModel->log($id, $message, 'error', 0);
+                    } else {
+                            $message = 'Location with name ' . $cloud_location->attributes->name . ' was created.';
+                            log_message('debug', $message);
+                            $cloudsModel->log($id, $message, 'info', 0);
+                        $count++;
+                    }
+                }
+            }
+        }
+        $cloudsModel->log($id, $count . ' new locations derived from ' . ucfirst($cloud->type) . ' information.', 'info', 0);
+
+        // Get our updated location list
+        $sql = "SELECT * FROM locations WHERE type = 'Cloud' and `cloud_id` = ? AND `org_id` IN (" . implode(',', $org_children) . ")";
+        $locations = $db->query($sql, [$id])->getResult();
+        foreach ($locations as $location) {
+            $location->id = intval($location->id);
+            $location->cloud_id = intval($location->cloud_id);
+            $location->org_id = intval($location->org_id);
+        }
+
+        // Networks
+        $sql = "SELECT * FROM networks WHERE type = 'Cloud' and `cloud_id` = ? AND `org_id` IN (" . implode(',', $org_children) . ")";
+        $networks = $db->query($sql, [$id])->getResult();
+        $cloudsModel->log($id, count($networks) . ' cloud networks retrieved from Open-AudIT.', 'info', 0);
+        $cloudsModel->log($id, count($details->networks) . ' networks retrieved from ' . ucfirst($cloud->type) . '.', 'info', 0);
+
+        $count = 0;
+        if (count($details->networks) > 0) {
+            foreach ($details->networks as $cloud_network) {
+                $insert = true;
+                if (count($networks) > 0) {
+                    foreach ($networks as $oa_network) {
+                        if (intval($cloud_network->attributes->external_ident) === intval($oa_network->external_ident)) {
+                            $insert = false;
+                            $message = 'Network named ' . $cloud_network->attributes->name . ' with an external_ident of ' . $cloud_network->attributes->external_ident . ' exists, not creating.';
+                            log_message('debug', $message);
+                            $cloudsModel->log($id, $message, 'info', 0);
+                        }
+                    }
+                    if ($insert) {
+                        $network_id = $networksModel->create($cloud_network->attributes);
+                        if (empty($network_id)) {
+                            $message = 'Could not create network named ' . $cloud_network->attributes->name . ' for cloud ' . $cloud->name;
+                            log_message('error', $message);
+                            $cloudsModel->log($id, $message, 'error', 0);
+                        } else {
+                            $message = 'Network named ' . $cloud_network->attributes->name . ' created.';
+                            log_message('debug', $message);
+                            $cloudsModel->log($id, $message, 'info', 0);
+                            $count++;
+                        }
+                    }
+                } else {
+                    $network_id = $networksModel->create($cloud_network->attributes);
+                    if (empty($network_id)) {
+                        $message = 'Could not create network with name ' . $cloud_network->attributes->name . ' for cloud ' . $cloud->name;
+                        log_message('error', $message);
+                        $cloudsModel->log($id, $message, 'error', 0);
+                    } else {
+                        $message = 'Network with name ' . $cloud_network->attributes->name . ' created.';
+                        log_message('debug', $message);
+                        $cloudsModel->log($id, $message, 'info', 0);
+                        $count++;
+                    }
+                }
+            }
+        }
+        $cloudsModel->log($id, $count . ' new networks derived from ' . ucfirst($cloud->type) . ' information.', 'info', 0);
+
+        // Insert a discovery if required
+        $sql = 'SELECT * FROM discoveries WHERE cloud_id = ?';
+        $discoveries = $db->query($sql, [$id])->getResult();
+        if (empty($discoveries[0]->id)) {
+            $discovery = new stdClass();
+            $discovery->type = 'discoveries';
+            $discovery->attributes = new stdClass();
+            $discovery->attributes->name = 'Discovery for ' . $cloud->name;
+            $discovery->attributes->description = $cloud->type . ' discovery.';
+            $discovery->attributes->org_id = $cloud->org_id;
+            $discovery->attributes->type = 'cloud';
+            $discovery->attributes->cloud_id = $cloud->id;
+            $discovery->attributes->cloud_name = $cloud->name;
+            $discovery->attributes->scan_options = '';
+            $discovery->attributes->match_options = json_encode($match_rules);
+            $discovery->attributes->command_options = '';
+            $discovery->attributes->edited_by = '';
+            $discovery_id = $discoveriesModel->create($data);
+            unset($discovery);
+            if (empty($discovery_id)) {
+                $message = 'Could not create discovery entry for cloud ' . $cloud->name;
+                log_message('error', $message);
+                $cloudsModel->log($id, $message, 'error', 0);
+            }
+        }
+        $sql = "SELECT id FROM discoveries WHERE cloud_id = ?";
+        $discovery_id = @$db->query($sql, [$id])->getResult()[0]->id;
+        if (empty($discovery_id)) {
+            $message = 'Could not retrieve discovery entry for cloud ' . $cloud->name;
+            log_message('error', $message);
+            $cloudsModel->log($id, $message, 'error', 0);
+        } else {
+            $discovery_id = intval($discovery_id);
+        }
+
+        // Remove any logs
+        $sql = "DELETE FROM `discovery_log` WHERE discovery_id = ?";
+        $db->query($sql, [$discovery_id]);
+
+        // Environment
+        $sql = "SELECT * FROM `attributes` WHERE `resource` = 'devices' AND `type` = 'environment'";
+        $env = $db->query($sql)->getResult();
+
+        // Status
+        $sql = "SELECT * FROM `attributes` WHERE `resource` = 'devices' AND `type` = 'status'";
+        $st = $db->query($sql)->getResult();
+
+        // Devices
+        $device_count = 0;
+        if (!empty($details->devices)) {
+            $device_count = count($details->devices);
+        }
+        $cloudsModel->log($id, count($details->devices) . ' devices retrieved from ' . $cloud->type, 'info', 0);
+
+        $execute_discovery = true;
+        if ($cloud->options->ssh === 'n' and $cloud->options->wmi === 'n' and $cloud->options->snmp === 'n') {
+            $execute_discovery = false;
+            $cloudsModel->log($id, 'Not executing discovery as SSH, WMI and SNMP are all set to false.', 'info', 0);
+        }
+
+        $responding_ip_count = 0;
+        if (!empty($device_count)) {
+            foreach ($details->devices as $device) {
+                $cloudsModel->log($id, 'Processing device ' . $device->attributes->hostname . ' at IP ' . $device->attributes->ip, 'info', 0);
+                // Check if we have an existin attribute for environment and if not, create one
+                if (!empty($device->attributes->environment)) {
+                    $insert = true;
+                    foreach ($env as $en) {
+                        if ($en->value === $device->attributes->environment) {
+                            $insert = false;
+                        }
+                    }
+                    if ($insert) {
+                        // Insert the new environment as an attribute
+                        $sql = "INSERT INTO `attributes` VALUES (null, ?, 'devices', 'environment', ?, ?, 'system', NOW())";
+                        $db->query($sql, [$device->attributes->org_id, ucfirst($device->attributes->environment), $device->attributes->environment]);
+                        // Reload our attributes for next check (to include this just added attribute)
+                        $sql = "SELECT id FROM `attributes` WHERE `resource` = 'devices' AND `type` = 'environment' and `value` = ?";
+                        $env = $db->query($sql, [$device->attributes->environment])->getResult();
+
+                    }
+                }
+                foreach ($locations as $location) {
+                    if ($location->name === $device->attributes->{'locations.name'}) {
+                        $device->attributes->location_id = $location->id;
+                        $device->attributes->location_name = $location->name;
+                        $device->location_id = intval($location->id);
+                    }
+                }
+                if (!empty($discovery_id)) {
+                    $device->attributes->discovery_id = $discovery_id;
+                }
+                $device->attributes->last_seen = $config->timestamp;
+                $device->attributes->last_seen_by = 'cloud';
+                $device->attributes->type = 'computer';
+                $device->attributes->instance_tags = json_encode($device->attributes->instance_tags);
+                $device->attributes->instance_options = json_encode($device->attributes->instance_options);
+                $device_id = deviceMatch($device->attributes, 0, $match_rules);
+                if (empty($device_id)) {
+                    $device_id = $devicesModel->create($device->attributes);
+                } else {
+                    $device->attributes->id = intval($device_id);
+                    $devicesModel->update($device_id, $device->attributes);
+                }
+                if (!empty($device->attributes->ip) and $device->attributes->instance_state === 'running' and $execute_discovery) {
+                    // Discovery
+                    $cloudsModel->log($id, "Inserting " . $device->attributes->hostname . " into discovery queue to be processed.", 'info', 0);
+                    $nmap_ports = '';
+                    $ssh_status = 'false';
+                    $wmi_status = 'false';
+                    $snmp_status = 'false';
+                    if (!empty($cloud->options->ssh) and $cloud->options->ssh === 'y') {
+                        $nmap_ports = '22/tcp/ssh';
+                        $ssh_status = 'true';
+                    }
+                    if (!empty($cloud->options->wmi) and $cloud->options->wmi === 'y') {
+                        $wmi_status = 'true';
+                        if ($nmap_ports !== '') {
+                            $nmap_ports = $nmap_ports . ',135/tcp/wmi';
+                        } else {
+                            $nmap_ports = '135/tcp/wmi';
+                        }
+                    }
+                    if (!empty($cloud->options->snmp) and $cloud->options->snmp === 'y') {
+                        $snmp_status = 'true';
+                        if ($nmap_ports !== '') {
+                            $nmap_ports = $nmap_ports . ',161/udp/snmp';
+                        } else {
+                            $nmap_ports = '161/udp/snmp';
+                        }
+                    }
+                    // Create a scan result without actually port scanning the device
+                    $scan = new stdClass();
+                    $scan->ip = ip_address_from_db($device->attributes->ip);
+                    $scan->discovery_id = $discovery_id;
+
+                    $scan->timestamp = $config->timestamp;
+                    $scan->host_is_up = 'true';
+                    $scan->status = 'open';
+                    $scan->nmap_ports = $nmap_ports;
+                    $scan->ssh_status = $ssh_status;
+                    $scan->snmp_status = $snmp_status;
+                    $scan->wmi_status = $wmi_status;
+                    $cloudsModel->log($id, json_encode($scan), 'info', 0);
+
+                    $sql = "INSERT INTO queue VALUES (null, '', 'ip_audit', 1, 0, 'queued', ?, NOW(), '2000-01-01 00:00:00')";
+                    $db->query($sql, [json_encode($scan)]);
+                    // Add the corresponding discovery log
+                    $message = 'IP ' . $scan->ip . ' responding, adding to device list.';
+                    $sql = "INSERT INTO discovery_log VALUES (null, ?, ?, NOW(), 6, 'info', ?, ?, 'OaeController', 'clouds_execute', ?, '', 'notice', 0, '')";
+                    $db->query($sql, [$discovery_id, $device_id, $pid, $scan->ip, $message]);
+                    $responding_ip_count = $responding_ip_count + 1;
+                }
+            }
+        }
+        if (!empty($device_count)) {
+            $sql = "UPDATE discoveries SET status = 'running', ip_all_count = ?, ip_responding_count = ?, ip_scanned_count = ?, ip_discovered_count = 0, ip_audited_count = 0 WHERE id = ?";
+            $db->query($sql, [$device_count, $responding_ip_count, $responding_ip_count, $discovery_id]);
+        }
+        # Start the queue processing
+        $cloudsModel->log($id, 'Starting queue processing.', 'info', 0);
+
+        if (php_uname('s') === 'Windows NT') {
+            $command = "%comspec% /c start /b c:\\xampp\\php\\php.exe " . FCPATH . "index.php queue start";
+            log_message('debug', $command);
+            pclose(popen($command, 'r'));
+        } elseif (php_uname('s') === 'Darwin') {
+            $command = 'php ' . FCPATH . 'index.php queue start > /dev/null 2>&1 &';
+            log_message('debug', $command);
+            @exec($command);
+        } else {
+            $command = 'nohup php ' . FCPATH . 'index.php queue start > /dev/null 2>&1 &';
+            log_message('debug', $command);
+            @exec($command);
+        }
+
+        $sql = 'UPDATE `clouds` SET `status` = "completed" WHERE id = ?';
+        $db->query($sql, [$id]);
+
+        $cloudsModel->log($id, 'Cloud auditing completed.', 'info', 0);
     }
-
-    public function cloudDevice($id)
-    {
-        $id = intval($id);
-        if (empty($id)) {
-            log_message('error', 'A cloud Device request received, but no device was present in the request.');
-        }
-        helper('device');
-        $config = new \Config\OpenAudit();
-        $db = db_connect() or die("Cannot establish a database connection.");
-        $sql = "SELECT * FROM enterprise WHERE id = ?";
-        $result = $db->query($sql, [$id])->getResult();
-        if (empty($result) or empty($result[0]->response)) {
-            log_message('error', 'Could not retrieve device submission');
-            return false;
-        }
-        try {
-            $input = json_decode($result[0]->response, false, 512, JSON_THROW_ON_ERROR);
-        } catch (\JsonException $e) {
-            log_message('error', 'Could not decode JSON. File:' . basename(__FILE__) . ', Line:' . __LINE__ . ', Error: ' . $e->getMessage());
-            $input = new stdClass();
-        }
-        $input->system = $input->attributes;
-        $device = audit_convert(json_encode($input));
-        if (!$device) {
-            log_message('error', 'Could not convert audit submission');
-            return false;
-        }
-        include "include_process_device.php";
-        #$sql = "UPDATE `enterprise` SET `response` = '" . json_encode($device)
-        echo $device->system->id;
-        return true;
-    }
-
-
 
     public function amazon($cloud)
     {
@@ -393,6 +692,9 @@ class Cli extends Controller
         $networks = $networksModel->listAll();
 
         $db = db_connect();
+        $device_fields = $db->getFieldNames('devices');
+        $network_fields = $db->getFieldNames('networks');
+
         try {
             $cloud->credentials = json_decode(simpleDecrypt($cloud->credentials, config('Encryption')->key), false, 512, JSON_THROW_ON_ERROR);
         } catch (\JsonException $e) {
@@ -408,17 +710,28 @@ class Cli extends Controller
         $projects[0]->locations = array();
 
         $client = new Ec2Client([
-            'region'      => 'us-west-2',
+            'region'      => 'us-west-1',
             'credentials' =>  [
                 'key'    => $cloud->credentials->key,
                 'secret' => $cloud->credentials->secret_key
             ]
         ]);
 
-        $result = $client->describeAvailabilityZones();
+        try {
+            $result = $client->describeAvailabilityZones();
+        } catch (\Aws\Ec2\Exception\Ec2Exception $e) {
+            log_message('warning', json_encode($e));
+            return;
+        }
         $zones = $result['AvailabilityZones'];
 
-        $result = $client->describeRegions();
+        try {
+            $result = $client->describeRegions();
+        } catch (\Aws\Ec2\Exception\Ec2Exception $e) {
+            log_message('warning', json_encode($e));
+            return;
+        }
+
         foreach ($result['Regions'] as $each) {
             $item = new stdClass();
             $item->type = 'locations';
@@ -511,6 +824,7 @@ class Cli extends Controller
                 $item->attributes->longitude = '-73.6';
             }
             $projects[0]->locations[] = $item;
+            unset($item);
         }
 
 
@@ -522,8 +836,8 @@ class Cli extends Controller
             $item->attributes->name = $each['CidrBlock'];
             if (!empty($each['Tags']) and is_array($each['Tags'])) {
                 foreach ($each['Tags'] as $tag) {
-                    if ($tag['Key'] === 'Name') {
-                        $item->attributes->name = $tag['Value'];
+                    if (in_array(strtolower($tag['Key']), $network_fields)) {
+                        $item->attributes->{strtolower($tag['Key'])} = $tag['Value'];
                     }
                 }
             }
@@ -544,94 +858,124 @@ class Cli extends Controller
         }
 
         foreach ($projects[0]->locations as $region) {
-            $result = $client->describeInstances(['RegionName' => $region->attributes->name]);
-            if (count($result['Reservations']) > 0) {
-                foreach ($result['Instances'] as $each) {
-                    $item = new stdClass();
-                    $item->type = 'devices';
-                    $item->attributes = new stdClass();
-                    $item->attributes->hostname = $each['PrivateDnsName'];
-                    foreach ($each['Tags'] as $tag) {
-                        if ($tag['Key'] === 'Name') {
-                            $item->attributes->hostname = $tag['Value'];
-                        }
-                    }
-                    $item->attributes->org_id = $cloud->org_id;
-                    $item->attributes->cloud_id = $cloud->id;
-                    $item->attributes->type = 'computer';
-                    $item->attributes->last_seen_by = 'cloud';
-                    $item->attributes->form_factor = 'Virtual';
-                    $item->attributes->status = 'production';
-                    $item->attributes->environment = 'production';
-                    $item->attributes->class = 'virtual server';
+            log_message('debug', 'RegionAttributesName: ' . $region->attributes->name);
+            unset($result);
+            unset($client);
+            $client = new Ec2Client([
+                'region'      => $region->attributes->name,
+                'credentials' =>  [
+                    'key'    => $cloud->credentials->key,
+                    'secret' => $cloud->credentials->secret_key
+                ]
+            ]);
+            $result = $client->describeInstances();
+            if (!empty($result['Reservations'])) {
+                foreach ($result['Reservations'] as $reservation) {
+                    if (!empty($reservation['Instances'])) {
+                        foreach ($reservation['Instances'] as $each) {
+                            $item = new stdClass();
+                            $item->type = 'devices';
+                            $item->attributes = new stdClass();
+                            $item->attributes->hostname = $each['PrivateDnsName'];
+                            foreach ($each['Tags'] as $tag) {
+                                if (in_array(strtolower($tag['Key']), $device_fields)) {
+                                    $item->attributes->{strtolower($tag['Key'])} = $tag['Value'];
+                                }
+                            }
+                            $item->attributes->org_id = $cloud->org_id;
+                            $item->attributes->cloud_id = $cloud->id;
+                            $item->attributes->type = 'computer';
+                            $item->attributes->last_seen_by = 'cloud';
+                            $item->attributes->form_factor = 'Virtual';
+                            $item->attributes->status = 'production';
+                            if (!empty($item->attributes->environment)) {
+                                $item->attributes->environment = strtolower($item->attributes->environment);
+                            } else {
+                                $item->attributes->environment = 'production';
+                            }
+                            $item->attributes->class = 'virtual server';
 
-                    $item->attributes->ip = (!empty($each['PublicIpAddress'])) ? $each['PublicIpAddress'] : '';
-                    if (empty($item->attributes->ip) and !empty($each['PrivateIpAddress'])) {
-                        $item->attributes->ip = $each['PrivateIpAddress'];
-                    }
-                    $item->attributes->instance_provider = 'Amazon AWS';
-                    $item->attributes->instance_type = $each['InstanceType'];
-                    $item->attributes->instance_ident = $each['InstanceId'];
-                    $item->attributes->instance_state = $each['State']['Name'];
-                    $item->attributes->instance_tags = $each['Tags'];
-                    $item->attributes->instance_reservation_ident = $each['ReservationId'];
-                    $item->attributes->fqdn = (!empty($each['PrivateDnsName'])) ? $each['PrivateDnsName'] : '';
-                    if (empty($item->attributes->fqdn) and !empty($each['PublicDnsName'])) {
-                        $item->attributes->fqdn = $each['PublicDnsName'];
-                    }
-                    $item->attributes->{'locations.name'} = (!empty($region->{'attributes'}->{'name'})) ? $region->{'attributes'}->{'name'} : '';
-                    if ($item->attributes->{'locations.name'} === '') {
-                        foreach ($zones as $zone) {
-                            if ($each['Placement']['AvailabilityZone'] === $zone['ZoneName']) {
-                                $item->attributes->{'locations.name'} = $zone['RegionName'];
+                            $item->attributes->ip = (!empty($each['PublicIpAddress'])) ? $each['PublicIpAddress'] : '';
+                            if (empty($item->attributes->ip) and !empty($each['PrivateIpAddress'])) {
+                                $item->attributes->ip = $each['PrivateIpAddress'];
                             }
+                            $item->attributes->instance_provider = 'Amazon AWS';
+                            $item->attributes->instance_type = $each['InstanceType'];
+                            $item->attributes->instance_ident = $each['InstanceId'];
+                            $item->attributes->instance_state = $each['State']['Name'];
+                            $item->attributes->instance_tags = $each['Tags'];
+                            $item->attributes->instance_reservation_ident = $reservation['ReservationId'];
+                            $item->attributes->fqdn = (!empty($each['PrivateDnsName'])) ? $each['PrivateDnsName'] : '';
+                            if (empty($item->attributes->fqdn) and !empty($each['PublicDnsName'])) {
+                                $item->attributes->fqdn = $each['PublicDnsName'];
+                            }
+                            $item->attributes->{'locations.name'} = (!empty($region->{'attributes'}->{'name'})) ? $region->{'attributes'}->{'name'} : '';
+                            if ($item->attributes->{'locations.name'} === '') {
+                                foreach ($zones as $zone) {
+                                    if ($each['Placement']['AvailabilityZone'] === $zone['ZoneName']) {
+                                        $item->attributes->{'locations.name'} = $zone['RegionName'];
+                                    }
+                                }
+                            }
+                            $item->attributes->manufacturer = $each['Hypervisor'];
+                            if ($item->attributes->manufacturer === 'xen') {
+                                $item->attributes->model = 'HVM domU';
+                                $item->attributes->manufacturer = 'Xen';
+                            }
+                            $item->attributes->os_bit = 32;
+                            if ($each['Architecture'] === 'x86_64') {
+                                $item->attributes->os_bit = 64;
+                            }
+                            $item->attributes->processor_count = 0;
+                            if ($each['CpuOptions']['CoreCount'] and $each['CpuOptions']['ThreadsPerCore']) {
+                                $item->attributes->processor_count = intval($each['CpuOptions']['CoreCount'] * $each['CpuOptions']['ThreadsPerCore']);
+                            }
+                            if (!empty($each['PlatformDetails'])) {
+                                if (stripos($each['PlatformDetails'], 'Linux') !== false) {
+                                    $item->attributes->os_group = 'Linux';
+                                }
+                                if (stripos($each['PlatformDetails'], 'Windows') !== false) {
+                                    $item->attributes->os_group = 'Windows';
+                                }
+                            }
+                            $item->attributes->instance_options = $each;
+                            # The public ip details - we don't store this because the VMs have no idea about their public IP.
+                            # Hence audit script after API would generate lots of change logs.
+                            $item->ip = array();
+                            foreach ($each['NetworkInterfaces'] as $interface) {
+                                # the private IP details
+                                $private_ip = new stdClass();
+                                $private_ip->mac = $interface['MacAddress'];
+                                $private_ip->net_index = $interface['NetworkInterfaceId'];
+                                $private_ip->ip = $interface['PrivateIpAddress'];
+                                $private_ip->netmask = '';
+                                $private_ip->version = 4;
+                                foreach ($networks as $network) {
+                                    if ($network->external_ident === $interface['SubnetId']) {
+                                        $temp = explode('\/', $network->network);
+                                        $private_ip->cidr = (!empty($temp[1])) ? $temp[1] : '';
+                                        unset($temp);
+                                        $private_ip->network = $network->network;
+                                        # translate 24 to 255.255.255.0, etc
+                                        $details = network_details($network->network);
+                                        $private_ip->netmask = $details->netmask;
+                                        unset($details);
+                                    }
+                                }
+                                $item->ip[] = $private_ip;
+                            }
+                            if (!$item->attributes->ip and $item->ip[0]->ip) {
+                                $item->attributes->ip = $item->ip[0]->ip;
+                            }
+                            $projects[0]->devices[] = $item;
+                            log_message('debug', 'Processed: ' . @$item->attributes->hostname . ' :: ' . @$item->attributes->os_group . ' :: ' . @$item->attributes->environment);
+                            unset($item);
                         }
                     }
-                    $item->attributes->manufacturer = $each['Hypervisor'];
-                    if ($item->attributes->manufacturer === 'xen') {
-                        $item->attributes->model = 'HVM domU';
-                        $item->attributes->manufacturer = 'Xen';
-                    }
-                    $item->attributes->os_bit = 32;
-                    if ($each['Architecture'] === 'x86_64') {
-                        $item->attributes->os_bit = 64;
-                    }
-                    $item->attributes->processor_count = 0;
-                    if ($each['CpuOptions']['CoreCount'] and $each['CpuOptions']['ThreadsPerCore']) {
-                        $item->attributes->processor_count = intval($each['CpuOptions']['CoreCount'] * $each['CpuOptions']['ThreadsPerCore']);
-                    }
-                    $item->attributes->instance_options = $each;
-                    # The public ip details - we don't store this because the VMs have no idea about their public IP.
-                    # Hence audit script after API would generate lots of change logs.
-                    $item->ip = array();
-                    foreach ($each['NetworkInterfaces'] as $interface) {
-                        # the private IP details
-                        $private_ip = new stdClass();
-                        $private_ip->mac = $interface['MacAddress'];
-                        $private_ip->net_index = $interface['NetworkInterfaceId'];
-                        $private_ip->ip = $interface['PrivateIpAddress'];
-                        $private_ip->netmask = '';
-                        $private_ip->version = 4;
-                        foreach ($networks as $network) {
-                            if ($network->external_ident === $interface['SubnetId']) {
-                                $temp = explode('\/', $network->network);
-                                $private_ip->cidr = (!empty($temp[1])) ? $temp[1] : '';
-                                unset($temp);
-                                $private_ip->network = $network->network;
-                                # translate 24 to 255.255.255.0, etc
-                                $details = network_details($network->network);
-                                $private_ip->netmask = $details->netmask;
-                                unset($details);
-                            }
-                        }
-                        $item->ip[] = $private_ip;
-                    }
-                    if (!$item->attributes->ip and $item->ip[0]->ip) {
-                        $item->attributes->ip = $item->ip[0]->ip;
-                    }
-                    $projects[0]->devices = $item;
                 }
             }
+            unset($result);
+            unset($client);
         }
 
         # Remove locations without a network or device
@@ -646,7 +990,7 @@ class Cli extends Controller
             }
             if ($delete === true) {
                 foreach ($projects[0]->devices as $device) {
-                    if ($device->attributes->{"locations.name"} === $projects[0]->locations[$i]->attributes->name) {
+                    if (!empty($device->attributes->{"locations.name"}) and $device->attributes->{"locations.name"} === $projects[0]->locations[$i]->attributes->name) {
                         $delete = false;
                         continue;
                     }
@@ -663,19 +1007,8 @@ class Cli extends Controller
         foreach ($filtered_locations as $location) {
             $projects[0]->locations[] = $location;
         }
-
-        if ($db->tableExists('enterprise')) {
-            // Insert the entry
-            $sql = "INSERT INTO enterprise VALUES (null, ?, '', NOW(), '')";
-            $db->query($sql, [json_encode($projects[0])]);
-            $id = $db->insertID();
-        }
-        if (empty($id)) {
-            log_message('error', "Could not insert the cloud data into the DB.");
-            return;
-        }
-        echo $id;
-        return;
+        log_message('debug', json_encode($projects[0]->locations[0]));
+        return $projects[0];
     }
 
     public function microsoft($cloud)
@@ -912,18 +1245,7 @@ class Cli extends Controller
             $projects[0]->devices[] = $item;
         }
 
-        if ($db->tableExists('enterprise')) {
-            // Insert the entry
-            $sql = "INSERT INTO enterprise VALUES (null, ?, '', NOW(), '')";
-            $db->query($sql, [json_encode($projects[0])]);
-            $id = $db->insertID();
-        }
-        if (empty($id)) {
-            log_message('error', "Could not insert the cloud data into the DB.");
-            return;
-        }
-        echo $id;
-        return;
+        return $project[0];
     }
 
     public function google($cloud)
@@ -1141,19 +1463,7 @@ class Cli extends Controller
             }
         }
 
-
-        if ($db->tableExists('enterprise')) {
-            // Insert the entry
-            $sql = "INSERT INTO enterprise VALUES (null, ?, '', NOW(), '')";
-            $db->query($sql, [json_encode($projects[0])]);
-            $id = $db->insertID();
-        }
-        if (empty($id)) {
-            log_message('error', "Could not insert the cloud data into the DB.");
-            return;
-        }
-        echo $id;
-        return;
+        return $projects[0];
     }
 
     public function updateDevicesAll()
