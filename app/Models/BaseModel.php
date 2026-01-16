@@ -30,9 +30,7 @@ class BaseModel extends Model
     {
         $db = db_connect();
         $insert_data = new stdClass();
-        $instance = & get_instance();
 
-        #$dictionary = @$instance->{strtolower($table) . 'Model'}->dictionary();
         $modelTable = ucfirst($table);
         if ($modelTable === 'Rack_devices') {
             $modelTable = 'RackDevices';
@@ -71,12 +69,16 @@ class BaseModel extends Model
         # Set the Edited By value to the of the username or system.
         if ($db->fieldExists('edited_by', $table)) {
             $insert_data->edited_by = 'system';
+            $instance = & get_instance();
             if (!empty($instance->user->full_name)) {
                 $insert_data->edited_by = $instance->user->full_name;
             }
+            unset($instance);
         }
         if ($db->fieldExists('edited_date', $table)) {
+            $instance = & get_instance();
             $insert_data->edited_date = (!empty($instance->config->timestamp)) ? $instance->config->timestamp : date('Y-m-d hh:ii:ss');
+            unset($instance);
         }
         return $insert_data;
     }
