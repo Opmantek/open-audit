@@ -368,7 +368,7 @@ class Cli extends Controller
         }
 
         // Empty rule to defer to global config
-        $match_rules = json_decode('{"match_dbus":"","match_fqdn":"","match_dns_fqdn":"","match_dns_hostname":"","match_hostname":"","match_hostname_dbus":"","match_hostname_serial":"","match_hostname_uuid":"","match_ip":"","match_ip_no_data":"","match_mac":"","match_mac_vmware":"","match_serial":"","match_serial_type":"","match_sysname":"","match_sysname_serial":"","match_uuid":""}');
+        $match_rules = json_decode('{"match_dbus":"","match_fqdn":"","match_dns_fqdn":"","match_dns_hostname":"","match_hostname":"","match_hostname_dbus":"","match_hostname_serial":"","match_hostname_uuid":"","match_ip":"y","match_ip_no_data":"","match_mac":"","match_mac_vmware":"","match_serial":"","match_serial_type":"","match_sysname":"","match_sysname_serial":"","match_uuid":""}');
 
         // Special matching rules for AWS
         if ($cloud->type === 'amazon') {
@@ -380,7 +380,7 @@ class Cli extends Controller
             $match_rules = json_decode('{"match_dbus":"","match_fqdn":"","match_dns_fqdn":"","match_dns_hostname":"","match_hostname":"","match_hostname_dbus":"","match_hostname_serial":"","match_hostname_uuid":"","match_ip":"y","match_ip_no_data":"","match_mac":"y","match_mac_vmware":"","match_serial":"","match_serial_type":"","match_sysname":"","match_sysname_serial":"","match_uuid":""}');
         }
         if ($cloud->type === 'google') {
-            $match_rules = json_decode('{"match_dbus":"","match_fqdn":"","match_dns_fqdn":"","match_dns_hostname":"","match_hostname":"y","match_hostname_dbus":"","match_hostname_serial":"","match_hostname_uuid":"","match_ip":"","match_ip_no_data":"","match_mac":"","match_mac_vmware":"","match_serial":"","match_serial_type":"","match_sysname":"","match_sysname_serial":"","match_uuid":""}');
+            $match_rules = json_decode('{"match_dbus":"","match_fqdn":"","match_dns_fqdn":"","match_dns_hostname":"","match_hostname":"y","match_hostname_dbus":"","match_hostname_serial":"","match_hostname_uuid":"","match_ip":"y","match_ip_no_data":"","match_mac":"","match_mac_vmware":"","match_serial":"","match_serial_type":"","match_sysname":"","match_sysname_serial":"","match_uuid":""}');
         }
 
         $sql = "SELECT * FROM locations WHERE type = 'Cloud' and `cloud_id` = ? AND `org_id` IN (" . implode(',', $org_children) . ")";
@@ -512,7 +512,7 @@ class Cli extends Controller
             $discovery->attributes->match_options = json_encode($match_rules);
             $discovery->attributes->command_options = '';
             $discovery->attributes->edited_by = '';
-            $discovery_id = $discoveriesModel->create($data);
+            $discovery_id = $discoveriesModel->create($discovery);
             unset($discovery);
             if (empty($discovery_id)) {
                 $message = 'Could not create discovery entry for cloud ' . $cloud->name;
@@ -563,7 +563,7 @@ class Cli extends Controller
                 if (!empty($device->attributes->environment)) {
                     $insert = true;
                     foreach ($env as $en) {
-                        if ($en->value === $device->attributes->environment) {
+                        if (!empty($en->value) and $en->value === $device->attributes->environment) {
                             $insert = false;
                         }
                     }

@@ -822,6 +822,7 @@ class Collections extends BaseController
                 if (empty($test)) {
                     log_message('warning', 'ID provided to JSON import of ' . $item->id . ' for ' . $this->resp->meta->collection . ' but that row does not exist, removing ID and creating, not updating.');
                     unset($item->id);
+                    unset($item->attributes->id);
                 }
             }
             if (!empty($item->id)) {

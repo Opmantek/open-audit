@@ -63,8 +63,8 @@ class DiscoveriesModel extends BaseModel
      */
     public function create($data = null): ?int
     {
-        $instance = & get_instance();
-        $instance->networksModel = new \App\Models\NetworksModel();
+        $config = new \Config\OpenAudit();
+        $networksModel = new \App\Models\NetworksModel();
         if (empty($data)) {
             return null;
         }
@@ -78,11 +78,11 @@ class DiscoveriesModel extends BaseModel
             \Config\Services::session()->setFlashdata('error', 'Invalid type provided to Discoveries::Create.');
             return null;
         }
-        if ($instance->config->product !== 'enterprise' and $data->type === 'seed') {
+        if ($config->product !== 'enterprise' and $data->type === 'seed') {
             return null;
         }
-        if (empty($instance->config->discovery_default_scan_option)) {
-            $instance->config->discovery_default_scan_option = 1;
+        if (empty($config->discovery_default_scan_option)) {
+            $config->discovery_default_scan_option = 1;
         }
         if (empty($data->devices_assigned_to_org)) {
             unset($data->devices_assigned_to_org);
@@ -141,10 +141,10 @@ class DiscoveriesModel extends BaseModel
         }
         if (empty($data->scan_options)) {
             $data->scan_options = new \stdClass();
-            $data->scan_options->id = intval($instance->config->discovery_default_scan_option);
+            $data->scan_options->id = intval($config->discovery_default_scan_option);
         }
         if (!isset($data->scan_options->id)) {
-            $data->scan_options->id = intval($instance->config->discovery_default_scan_option);
+            $data->scan_options->id = intval($config->discovery_default_scan_option);
         }
         if (isset($data->scan_options->ping)) {
             if ($data->scan_options->ping !== 'y' && $data->scan_options->ping !== 'n') {
@@ -347,7 +347,7 @@ class DiscoveriesModel extends BaseModel
                     $network->org_id = (!empty($data->devices_assigned_to_org)) ? intval($data->devices_assigned_to_org) : intval($data->org_id);
                     $network->location_id = (!empty($data->devices_assigned_to_location)) ? intval($data->devices_assigned_to_location) : 1;
                     $network->description = $data->name;
-                    $instance->networksModel->upsert($network);
+                    $networksModel->upsert($network);
                 }
             }
 
@@ -365,7 +365,7 @@ class DiscoveriesModel extends BaseModel
                 $network->org_id = (!empty($data->devices_assigned_to_org)) ? intval($data->devices_assigned_to_org) : intval($data->org_id);
                 $network->location_id = (!empty($data->devices_assigned_to_location)) ? intval($data->devices_assigned_to_location) : 1;
                 $network->description = $data->name;
-                $instance->networksModel->upsert($network);
+                $networksModel->upsert($network);
             }
 
             if (stripos($data->subnet, '-') !== false) {
@@ -429,9 +429,9 @@ class DiscoveriesModel extends BaseModel
      */
     public function getDeviceDiscoveryCredentials(int $device_id = 0, int $discovery_id = 0, string $ip_address = ''): array
     {
-        $instance = & get_instance();
         $credentialsModel = new \App\Models\CredentialsModel();
         $discoveryLogModel = new \App\Models\DiscoveryLogModel();
+        $orgsModel = new \App\Models\OrgsModel();
         helper('security');
         $credentials = array();
 
@@ -501,7 +501,8 @@ class DiscoveriesModel extends BaseModel
 
         // Discovery associated credentials
         // get our Orgs List
-        $temp = $instance->orgsModel->getUserDescendants([$org_id], $instance->orgs);
+        $orgs = $orgsModel->listAll();
+        $temp = $orgsModel->getUserDescendants([$org_id], $orgs);
         $temp[] = $org_id;
         $org_list = implode(', ', $temp);
         unset($temp);
@@ -535,7 +536,7 @@ class DiscoveriesModel extends BaseModel
      */
     public function includedCollection(int $id = 0): array
     {
-        $instance = & get_instance();
+        $config = new \Config\OpenAudit();
         $included = array();
         $sql = 'SELECT COUNT(id) AS `count` FROM `queue`';
         $included['queue_items'] = $this->db->query($sql)->getResult()[0]->count;
@@ -557,7 +558,7 @@ class DiscoveriesModel extends BaseModel
             $query = $this->db->query($sql, [$discovery->discovery_id]);
         }
 
-        if (!empty($instance->config->queue_count)) {
+        if (!empty($config->queue_count)) {
             $sql = "SELECT discovery_log.timestamp FROM discovery_log WHERE discovery_log.timestamp < DATE_SUB(NOW(), INTERVAL 2 HOUR) AND discovery_log.id = (SELECT MAX(id) FROM discovery_log) ORDER BY discovery_log.timestamp DESC";
             $result = $this->db->query($sql)->getResult();
             if (!empty($result[0]->timestamp)) {

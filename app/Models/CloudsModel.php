@@ -94,6 +94,9 @@ class CloudsModel extends BaseModel
         $id = intval($this->db->insertID());
 
         # The discovery
+
+        $match_options =     '{"match_dbus":"","match_fqdn":"","match_dns_fqdn":"","match_dns_hostname":"","match_hostname":"y","match_hostname_dbus":"","match_hostname_serial":"","match_hostname_uuid":"","match_ip":"y","match_ip_no_data":"","match_mac":"y","match_mac_vmware":"","match_serial":"","match_serial_type":"","match_sysname":"","match_sysname_serial":"","match_uuid":""}';
+
         $instance = & get_instance();
         $instance->discoveriesModel = new \App\Models\DiscoveriesModel();
         $discovery = new \stdClass();
@@ -106,6 +109,7 @@ class CloudsModel extends BaseModel
         $discovery->subnet = '';
         $discovery->cloud_id = $id;
         $discovery->cloud_name = $data->name;
+        $discovery->match_options = $match_options;
         $instance->discoveriesModel->create($discovery);
 
         return ($id);
