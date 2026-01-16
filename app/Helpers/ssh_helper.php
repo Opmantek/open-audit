@@ -815,17 +815,23 @@ if (! function_exists('ssh_audit')) {
 
         foreach ($credentials as $credential) {
             if ($credential->type === 'ssh_key') {
-                $ssh = new \phpseclib3\Net\SSH2($ip, $ssh_port);
-                $ssh->setTimeout(10);
                 log_message('debug', '(ssh_audit) Testing SSH Key credentials named: ' . $credential->name . ' for ' . $ip);
                 unset($test);
+                $ssh = new \phpseclib3\Net\SSH2($ip, $ssh_port);
+                $ssh->setTimeout(10);
                 if (!empty($credential->credentials->password)) {
                     $key = PublicKeyLoader::load($credential->credentials->ssh_key, $credential->credentials->password);
                 } else {
                     $key = PublicKeyLoader::load($credential->credentials->ssh_key);
                 }
-                $test = @$ssh->login($credential->credentials->username, $key);
-                if (!empty($test)) {
+                try {
+                    if (!$$ssh->login($credential->credentials->username, $key)) {
+                        log_message('debug', '(ssh_audit) Testing SSH Key credentials named: ' . $credential->name . ' FAILED on ' . $ip);
+                        $ssh->disconnect();
+                        unset($ssh);
+                        unset($test);
+                        continue;
+                    }
                     $log->message = "Valid credentials for {$credential->type} named {$credential->name} used to log in to {$ip}.";
                     $log->command_status = 'success';
                     $discoveryLogModel->create($log);
@@ -835,11 +841,19 @@ if (! function_exists('ssh_audit')) {
                         $password = $credential->credentials->sudo_password;
                     }
                     break;
-                }
-                if (empty($test)) {
+                } catch (ConnectionClosedException $e) {
+                    log_message('debug', "(ssh_audit) Connection closed using key for $ip: " . $e->getMessage());
                     $ssh->disconnect();
                     unset($ssh);
                     unset($test);
+                    continue;
+                } catch (\Exception $e) {
+                    // Catch any other unexpected exceptions
+                    log_message('debug', "(ssh_audit) Error using key on $ip: " . $e->getMessage());
+                    $ssh->disconnect();
+                    unset($ssh);
+                    unset($test);
+                    continue;
                 }
             } elseif ($credential->type === 'ssh') {
                 log_message('debug', '(ssh_audit) Testing SSH credentials named: ' . $credential->name . ' for ' . $ip);
