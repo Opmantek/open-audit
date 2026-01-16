@@ -231,11 +231,17 @@ if (! function_exists('deviceMatch')) {
 
         if (function_exists('get_instance')) {
             $instance = & get_instance();
+            if (empty($instance)) {
+                $instance = new stdClass();
+            }
         } else {
             $instance = new stdClass();
             $instance->config = config('Openaudit');
         }
 
+        if (empty($instance->config)) {
+            $instance->config = new \Config\OpenAudit();
+        }
         // if (empty($log) and empty($discovery_id)) {
         //     log_message('error', 'Function deviceMatch called without log object or discovery id.');
         //     return false;
@@ -424,7 +430,7 @@ if (! function_exists('deviceMatch')) {
             }
         }
 
-        if (strtolower($match->match_hostname_uuid) === 'y' && empty($details->id) && ! empty($details->uuid) && ! empty($details->hostname)) {
+        if (strtolower($match->match_hostname_uuid) === 'y' && empty($details->id) && !empty($details->uuid) && !empty($details->hostname)) {
             $sql = "SELECT devices.id FROM devices WHERE devices.hostname LIKE ? AND devices.uuid LIKE ? AND devices.status != 'deleted' LIMIT 1";
             $data = array("{$details->hostname}", "{$details->uuid}");
             $query = $db->query($sql, $data);
@@ -2079,17 +2085,6 @@ function audit_format_system($parameters)
         $log->discovery_id = $parameters->input->discovery_id;
     }
 
-    if (!empty($parameters->ip)) {
-        $log->ip = ip_address_from_db($parameters->ip);
-    } elseif (!empty($parameters->input->ip)) {
-        $log->ip = ip_address_from_db($parameters->input->ip);
-    }
-
-    $log->message = 'Formatting system details';
-    $log->file = 'audit_helper';
-    $log->function = 'audit_format_system';
-    $log->command_ouput = '';
-    $log->command_status = 'notice';
 
     if (empty($parameters)) {
         log_message('error', 'Function audit_format_system called without parameters object.');
@@ -2103,6 +2098,29 @@ function audit_format_system($parameters)
         $input = $parameters->input;
     }
 
+    if (!filter_var($input->ip, FILTER_VALIDATE_IP)) {
+        $input->ip = '';
+    }
+
+    if (empty($input->ip) or $input->ip === '0.0.0.0' or $input->ip === '000.000.000.000') {
+        unset($input->ip);
+    }
+
+    if (!empty($input->ip) && filter_var($input->ip, FILTER_VALIDATE_IP)) {
+        $input->ip = ip_address_to_db($input->ip);
+    }
+
+    if (!empty($parameters->ip) and is_string($parameters->ip)) {
+        $log->ip = ip_address_from_db($parameters->ip);
+    } elseif (!empty($input->ip)) {
+        $log->ip = ip_address_from_db($input->ip);
+    }
+
+    $log->message = 'Formatting system details';
+    $log->file = 'audit_helper';
+    $log->function = 'audit_format_system';
+    $log->command_ouput = '';
+    $log->command_status = 'notice';
 
     if (empty($input->id)) {
         $input->id = '';
@@ -2212,14 +2230,6 @@ function audit_format_system($parameters)
         $input->os_name = str_ireplace('(tm)', '', $input->os_name);
     }
 
-    if (empty($input->ip) or $input->ip === '0.0.0.0' or $input->ip === '000.000.000.000') {
-        unset($input->ip);
-    }
-
-    if (!empty($input->ip) && filter_var($input->ip, FILTER_VALIDATE_IP)) {
-        $input->ip = ip_address_to_db($input->ip);
-    }
-
     if (empty($input->mac_address) or $input->mac_address === '00:00:00:00:00:00') {
         unset($input->mac_address);
     }
@@ -2227,6 +2237,7 @@ function audit_format_system($parameters)
     if (!empty($input->mac_address)) {
         $input->mac_address = strtolower($input->mac_address);
     }
-    log_message('debug', $input->ip . ' - returning from device_helper::audit_format_system.');
+    log_message('debug', @$input->ip . ' - returning from device_helper::audit_format_system.');
+    log_message('debug', json_encode($input));
     return $input;
 }
