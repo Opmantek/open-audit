@@ -223,6 +223,15 @@ class DiscoveryLogModel extends BaseModel
             if ($filter->name === 'ip') {
                 $filter->name = 'discovery_log.ip';
             }
+            if ($filter->name === 'discovery_log.ip') {
+                if ($filter->operator === 'like') {
+                    $filter->value = str_replace('%', '', $filter->value);
+                }
+                $filter->value = ip_address_from_db($filter->value);
+                if ($filter->operator === 'like') {
+                    $filter->value = '%'. $filter->value . '%';
+                }
+            }
             if (in_array($filter->operator, ['!=', '>=', '<=', '=', '>', '<', 'like', 'not like'])) {
                 $this->builder->{$filter->function}($filter->name . ' ' . $filter->operator, $filter->value);
             } else {
@@ -232,9 +241,6 @@ class DiscoveryLogModel extends BaseModel
         foreach ($resp->meta->filter as $filter) {
             if ($filter->name === 'search') {
                 $this->builder->where('(discovery_log.timestamp LIKE ' . $this->db->escape($filter->value) . ' OR discovery_log.ip LIKE ' . $this->db->escape(ip_address_from_db($filter->value)) . ' OR discovery_log.command_status LIKE ' . $this->db->escape($filter->value) . ' OR discovery_log.message LIKE ' . $this->db->escape($filter->value) . ' OR discovery_log.command LIKE ' . $this->db->escape($filter->value) . ' OR discovery_log.command_output LIKE ' . $this->db->escape($filter->value) . ')');
-            }
-            if ($filter->name === 'discovery_log.ip' or $filter->name === 'ip') {
-                $filter->value = ip_address_from_db($filter->value);
             }
         }
         if (!empty($resp->meta->groupby)) {
