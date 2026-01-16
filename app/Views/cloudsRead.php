@@ -9,16 +9,22 @@ if ($style === 'icontext') {
     $details_button = '<li class="nav-item" role="presentation"><a href="#details" class="nav-link" id="details-tab"><span style="margin-right:6px;" class="icon-eye text-success"></span>' . __('Details') . '</a></li>';
     $logs_button    = '<li class="nav-item" role="presentation"><a href="#logs"    class="nav-link" id="logs-tab"><span style="margin-right:6px;" class="icon-logs text-primary" ></span>' . __('Logs')    . '</a></li>';
     $devices_button = '<li class="nav-item" role="presentation"><a href="#devices" class="nav-link" id="devices-tab"><span style="margin-right:6px;" class="icon-computer text-primary" ></span>' . __('Devices') . '</a></li>';
+    $networks_button = '<li class="nav-item" role="presentation"><a href="#networkslist" class="nav-link" id="networkslist-tab"><span style="margin-right:6px;" class="icon-wifi text-primary" ></span>' . __('Networks') . '</a></li>';
+    $locations_button = '<li class="nav-item" role="presentation"><a href="#locationslist" class="nav-link" id="locationslist-tab"><span style="margin-right:6px;" class="icon-building text-primary" ></span>' . __('Locations') . '</a></li>';
 } elseif ($style === 'icon') {
     $summary_button = '<li class="nav-item" role="presentation"><a href="#summary" class="nav-link" id="summary-tab"><span title="' . __('Summary') . '" class="icon-book-check text-primary"></span></a></li>';
     $details_button = '<li class="nav-item" role="presentation"><a href="#details" class="nav-link" id="details-tab"><span title="' . __('Details') . '" class="icon-eye text-success"></span></a></li>';
     $logs_button    = '<li class="nav-item" role="presentation"><a href="#logs"    class="nav-link" id="logs-tab"   ><span title="' . __('Logs') .    '" class="icon-logs text-primary"></span></a></li>';
     $devices_button = '<li class="nav-item" role="presentation"><a href="#devices" class="nav-link" id="devices-tab"><span title="' . __('Devices') . '" class="icon-computer text-primary"></span></a></li>';
+    $networks_button = '<li class="nav-item" role="presentation"><a href="#networkslist" class="nav-link" id="networkslist-tab"><span title="' . __('Networks') . '" class="icon-wifi text-primary"></span></a></li>';
+    $locations_button = '<li class="nav-item" role="presentation"><a href="#locationslist" class="nav-link" id="locationslist-tab"><span title="' . __('Locations') . '" class="icon-building text-primary"></span></a></li>';
 } else {
     $summary_button = '<li class="nav-item" role="presentation"><a href="#summary" class="nav-link" id="summary-tab">' . __('Summary') . '</a></li>';
     $details_button = '<li class="nav-item" role="presentation"><a href="#details" class="nav-link" id="details-tab">' . __('Details') . '</a></li>';
     $logs_button    = '<li class="nav-item" role="presentation"><a href="#logs"    class="nav-link" id="logs-tab"   >' . __('Logs') .    '</a></li>';
     $devices_button = '<li class="nav-item" role="presentation"><a href="#devices" class="nav-link" id="devices-tab">' . __('Devices') . '</a></li>';
+    $networks_button = '<li class="nav-item" role="presentation"><a href="#networkslist" class="nav-link" id="networkslist-tab">' . __('Networks') . '</a></li>';
+    $locations_button = '<li class="nav-item" role="presentation"><a href="#locationslist" class="nav-link" id="locationslist-tab">' . __('Locations') . '</a></li>';
 }
 ?>
         <main class="container-fluid">
@@ -35,6 +41,8 @@ if ($style === 'icontext') {
                                 <?= $details_button ?>
                                 <?= $logs_button ?>
                                 <?= $devices_button ?>
+                                <?= $networks_button ?>
+                                <?= $locations_button ?>
                             </ul>
                         </div>
                     </div>
@@ -159,6 +167,9 @@ if ($style === 'icontext') {
                                                 <th style="min-width:6rem;"><?= __('IP') ?></th>
                                                 <th style="min-width:6rem;"><?= __('Name') ?></th>
                                                 <th style="min-width:6rem;"><?= __('OS Group') ?></th>
+                                                <th style="min-width:6rem;"><?= __('Environment') ?></th>
+                                                <th style="min-width:6rem;"><?= __('Type') ?></th>
+                                                <th style="min-width:6rem;"><?= __('Location') ?></th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -169,6 +180,9 @@ if ($style === 'icontext') {
                                                 <td><span style="display:none;"><?= $device->{'devices.padded_ip'} ?></span><?= $device->{'devices.ip'} ?></td>
                                                 <td><?= $device->{'devices.name'} ?></td>
                                                 <td><?= $device->{'devices.os_group'} ?></td>
+                                                <td><?= $device->{'devices.environment'} ?></td>
+                                                <td><?= $device->{'devices.instance_type'} ?></td>
+                                                <td><?= $device->{'locations.name'} ?></td>
                                             </tr>
                                             <?php } ?>
                                         </tbody>
@@ -178,7 +192,63 @@ if ($style === 'icontext') {
                         </div>
                     </div>
 
+                    <div class="tab-content">
+                        <div class="tab-pane" id="networkslist" role="tabpanel" tabindex="0" aria-labelledby="networkslist">
+                            <div class="row">
+                                <div class="col-12">
+                                    <table class="table <?= $GLOBALS['table'] ?> table-striped table-hover dataTable" data-order='[[0,"asc"]]'>
+                                        <thead>
+                                            <tr>
+                                                <th class="text-center"><?= __('View') ?></th>
+                                                <th><?= __('Name') ?></th>
+                                                <th><?= __('Network') ?></th>
+                                                <th><?= __('External ID') ?></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <?php foreach ($included['networks'] as $item) { ?>
+                                            <tr>
+                                                <td class="text-center"><a href="<?= url_to('networksRead', $item->id) ?>" role="button" class="btn btn-sm btn-devices" title="<?= __('View') ?>"><i class="icon-wifi" aria-hidden="true"></i></a></td>
+                                                <td><?= $item->name ?></td>
+                                                <td><?= $item->network ?></td>
+                                                <td><?= $item->external_ident ?></td>
+                                            </tr>
+                                            <?php } ?>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
+                    <div class="tab-content">
+                        <div class="tab-pane" id="locationslist" role="tabpanel" tabindex="0" aria-labelledby="locationslist">
+                            <div class="row">
+                                <div class="col-12">
+                                    <table class="table <?= $GLOBALS['table'] ?> table-striped table-hover dataTable" data-order='[[0,"asc"]]'>
+                                        <thead>
+                                            <tr>
+                                                <th class="text-center"><?= __('View') ?></th>
+                                                <th><?= __('Name') ?></th>
+                                                <th><?= __('City') ?></th>
+                                                <th><?= __('External ID') ?></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <?php foreach ($included['locations'] as $item) { ?>
+                                            <tr>
+                                                <td class="text-center"><a href="<?= url_to('locationsRead', $item->id) ?>" role="button" class="btn btn-sm btn-devices" title="<?= __('View') ?>"><i class="icon-building" aria-hidden="true"></i></a></td>
+                                                <td><?= $item->name ?></td>
+                                                <td><?= $item->city ?></td>
+                                                <td><?= $item->external_ident ?></td>
+                                            </tr>
+                                            <?php } ?>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
                 </div>
             </div>

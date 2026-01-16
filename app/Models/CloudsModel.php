@@ -205,11 +205,21 @@ class CloudsModel extends BaseModel
         $included['stats']->last_run = '';
         $included['stats']->duration = '';
 
-        $sql = "SELECT COUNT(*) as `count` FROM `locations` WHERE `cloud_id` = ?";
-        $included['stats']->locations = intval($this->db->query($sql, [$id])->getResult()[0]->count);
+        // $sql = "SELECT COUNT(*) as `count` FROM `locations` WHERE `cloud_id` = ?";
+        // $included['stats']->locations = intval($this->db->query($sql, [$id])->getResult()[0]->count);
 
-        $sql = "SELECT COUNT(*) as `count` FROM `networks` WHERE `cloud_id` = ?";
-        $included['stats']->networks = intval($this->db->query($sql, [$id])->getResult()[0]->count);
+        // $sql = "SELECT COUNT(*) as `count` FROM `networks` WHERE `cloud_id` = ?";
+        // $included['stats']->networks = intval($this->db->query($sql, [$id])->getResult()[0]->count);
+
+        $sql = "SELECT * FROM `locations` WHERE `cloud_id` = ?";
+        $result = $this->db->query($sql, [$id])->getResult();
+        $included['stats']->locations = count($result);
+        $included['locations'] = $result;
+
+        $sql = "SELECT * FROM `networks` WHERE `cloud_id` = ?";
+        $result = $this->db->query($sql, [$id])->getResult();
+        $included['stats']->networks = count($result);
+        $included['networks'] = $result;
 
         $sql = "SELECT `timestamp` FROM `cloud_log` WHERE `cloud_id` = ? ORDER BY `id` ASC LIMIT 1";
         $temp = $this->db->query($sql, [$id])->getResult();
@@ -220,7 +230,7 @@ class CloudsModel extends BaseModel
         $date2 = new \DateTime($finished);
         $included['stats']->duration = $date2->getTimestamp() - $date->getTimestamp();
 
-        $sql = "SELECT devices.id AS `devices.id`, devices.ip AS `devices.ip`, devices.name AS `devices.name`, devices.type AS `devices.type`, devices.os_group AS `devices.os_group`, devices.icon AS `devices.icon`, devices.serial AS `devices.serial`, devices.instance_state AS `devices.instance_state` FROM `devices` WHERE devices.cloud_id = ?";
+        $sql = "SELECT devices.id AS `devices.id`, devices.ip AS `devices.ip`, devices.name AS `devices.name`, devices.type AS `devices.type`, devices.os_group AS `devices.os_group`, devices.icon AS `devices.icon`, devices.serial AS `devices.serial`, devices.environment AS `devices.environment`, devices.instance_state AS `devices.instance_state`, devices.instance_type AS `devices.instance_type`, devices.location_id AS `devices.location_id`, locations.name AS `locations.name` FROM `devices` LEFT JOIN `locations` ON devices.location_id = locations.id WHERE devices.cloud_id = ?";
         $query = $this->db->query($sql, [$id]);
         $devices = $query->getResult();
         $count = count($devices);
