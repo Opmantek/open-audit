@@ -441,18 +441,24 @@ if (empty($resource->type)) {
                                         <div class="col-4">
                                             <?php $tags = $resource->instance_tags;
                                             if ($resource->{'instance_provider'} === 'Microsoft Azure') {
-                                                foreach ($tags as $key => $value) {
-                                                    echo read_field(__('Tags :: ') . $key, $value);
+                                                if (!empty($tags)) {
+                                                    foreach ($tags as $key => $value) {
+                                                        echo read_field(__('Tags :: ') . $key, $value);
+                                                    }
                                                 }
                                             }
                                             if ($resource->{'instance_provider'} === 'Google Compute') {
-                                                foreach ($tags as $key => $value) {
-                                                    echo read_field(__('Tags :: ') . $key, $value);
+                                                if (!empty($tags)) {
+                                                    foreach ($tags as $key => $value) {
+                                                        echo read_field(__('Tags :: ') . $key, $value);
+                                                    }
                                                 }
                                             }
                                             if ($resource->instance_provider === 'Amazon AWS') {
-                                                foreach ($tags as $tag) {
-                                                    echo read_field(__('Tags') . ' :: ' . $tag->Key, $tag->Value);
+                                                if (!empty($tags)) {
+                                                    foreach ($tags as $tag) {
+                                                        echo read_field(__('Tags') . ' :: ' . $tag->Key, $tag->Value);
+                                                    }
                                                 }
                                             } ?>
                                         </div>
