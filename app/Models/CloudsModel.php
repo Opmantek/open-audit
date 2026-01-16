@@ -413,6 +413,40 @@ class CloudsModel extends BaseModel
     }
 
     /**
+     * Insert a cloud_log row
+     *
+     * @param  cloud_id         The linked clouds.id
+     * @param  message          A message
+     * @param  severity_text    enum('debug','info','notice','warning','error','critical','alert','emergency') NOT NULL DEFAULT 'notice'
+     * @param  pid              The process ID
+     *
+     * @return int      The ID of the inserted row
+     */
+    public function log(int $cloud_id = 0, string $message = '', string $severity_text = 'info', int $pid = 0): int
+    {
+        if (empty($cloud_id)) {
+            log_message('warning', 'No cloud_id provided to CloudsModel::log.');
+            return 0;
+        }
+        if (empty($message)) {
+            log_message('warning', 'No message provided to CloudsModel::log.');
+            return 0;
+        }
+        $sev = array('debug','info','notice','warning','error','critical','alert','emergency');
+        if (!in_array($severity_text, $sev)) {
+            log_message('warning', 'Invalid severity provided to CloudsModel::log.');
+            return 0;
+        }
+        if (empty($pid)) {
+            $pid = getmypid();
+        }
+        $sql = "INSERT INTO cloud_log VALUES(null, ?, NOW(), ?, ?, ?)";
+        $this->db->query($sql, [$cloud_id, $severity_text, $pid, $message]);
+        $id = intval($this->db->insertID());
+        return $id;
+    }
+
+    /**
      * The dictionary item
      *
      * @return object  The stdClass object containing the dictionary
