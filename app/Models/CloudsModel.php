@@ -253,6 +253,12 @@ class CloudsModel extends BaseModel
         }
         $included['devices'] = $devices;
 
+        $sql = "SELECT id, name FROM discoveries WHERE cloud_id = ?";
+        $query = $this->db->query($sql, [$id]);
+        $result = $query->getResult();
+        if (!empty($result[0])) {
+            $included['discoveries'] = $result[0];
+        }
         return $included;
     }
 

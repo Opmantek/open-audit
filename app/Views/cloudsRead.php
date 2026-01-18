@@ -55,18 +55,28 @@ if ($style === 'icontext') {
                                     <?= read_field('status', $resource->status, $dictionary->columns->status, false, '', '', '', '', $meta->collection) ?>
                                     <?= read_field('last_run', $included['stats']->last_run, $dictionary->columns->last_run, false, '', '', '', '', $meta->collection) ?>
                                     <?= read_field('duration', $included['stats']->duration . __(' seconds'), $dictionary->columns->duration, false, '', '', '', '', $meta->collection) ?>
+
+                                    <?php $link = "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('discoveriesRead', @$included['discoveries']->id) . "\"><span title=\"" . __('View') . "\" class=\"icon-radar\" aria-hidden=\"true\"></span></a>"; ?>
+                                    <?= read_field('discovery', @$included['discoveries']->name, __('The associated discovery'), false, '', $link) ?>
+
                                     <?php $link = "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('locationsCollection') . "?locations.cloud_id=" . $resource->id . "\"><span title=\"" . __('View') . "\" class=\"icon-building\" aria-hidden=\"true\"></span></a>"; ?>
                                     <?= read_field('locations', $included['stats']->locations, $dictionary->columns->locations, false, '', $link) ?>
+
                                     <?php $link = "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('networksCollection') . "?networks.cloud_id=" . $resource->id . "\"><span title=\"" . __('View') . "\" class=\"icon-wifi\" aria-hidden=\"true\"></span></a>"; ?>
                                     <?= read_field('networks', $included['stats']->networks, $dictionary->columns->networks, false, '', $link) ?>
+
                                     <?php $link = "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('devicesCollection') . "?devices.cloud_id=" . $resource->id . "\"><span title=\"" . __('View') . "\" class=\"icon-computer\" aria-hidden=\"true\"></span></a>"; ?>
                                     <?= read_field('devices_retrieved', $included['stats']->devices_retrieved, $dictionary->columns->devices_retrieved, false, '', $link) ?>
+
                                     <?php $link = "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('devicesCollection') . "?devices.cloud_id=" . $resource->id . "&devices.serial=!=\"><span title=\"" . __('View') . "\" class=\"icon-computer\" aria-hidden=\"true\"></span></a>"; ?>
                                     <?= read_field('devices_audited', $included['stats']->devices_audited, $dictionary->columns->devices_audited, false, '', $link) ?>
+
                                     <?php $link = "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('devicesCollection') . "?devices.cloud_id=" . $resource->id . "&devices.serial=\"><span title=\"" . __('View') . "\" class=\"icon-computer\" aria-hidden=\"true\"></span></a>"; ?>
                                     <?= read_field('devices_not_audited', $included['stats']->devices_not_audited, $dictionary->columns->devices_not_audited, false, '', $link) ?>
+
                                     <?php $link = "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('devicesCollection') . "?devices.cloud_id=" . $resource->id . "&devices.instance_state=running\"><span title=\"" . __('View') . "\" class=\"icon-computer\" aria-hidden=\"true\"></span></a>"; ?>
                                     <?= read_field('devices_running', $included['stats']->devices_running, $dictionary->columns->devices_running, false, '', $link) ?>
+
                                     <?php $link = "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('devicesCollection') . "?devices.cloud_id=" . $resource->id . "&devices.instance_state=!=running\"><span title=\"" . __('View') . "\" class=\"icon-computer\" aria-hidden=\"true\"></span></a>"; ?>
                                     <?= read_field('devices_stopped', $included['stats']->devices_stopped, $dictionary->columns->devices_stopped, false, '', $link) ?>
                                 </div>
