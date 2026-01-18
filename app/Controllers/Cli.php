@@ -1245,7 +1245,7 @@ class Cli extends Controller
             $projects[0]->devices[] = $item;
         }
 
-        return $project[0];
+        return $projects[0];
     }
 
     public function google($cloud)
