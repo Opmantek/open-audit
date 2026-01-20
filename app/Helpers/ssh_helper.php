@@ -654,6 +654,11 @@ function ssh_connect(string $ip = '', array $credentials = array(), int $discove
                     $ssh->disconnect();
                     unset($ssh);
                     unset($test);
+                    $log->message = 'SSH Key credentials named: ' . $credential->name . ' on ' . $ip . ' failed.';
+                    $log->command_status = 'notice';
+                    $log->command_output = $banner;
+                    $log->severity = 5;
+                    $discoveryLogModel->create($log);
                 } else {
                     $log->message = "Valid credentials for {$credential->type} named {$credential->name} used to log in to {$ip}.";
                     $log->command_status = 'success';
@@ -667,6 +672,10 @@ function ssh_connect(string $ip = '', array $credentials = array(), int $discove
                 unset($ssh);
                 unset($test);
             }
+            $log->message = 'SSH Key credentials named: ' . $credential->name . ' on ' . $ip . ' failed.';
+            $log->command_status = 'notice';
+            $log->command_output = '';
+            $log->severity = 5;
         } elseif ($credential->type === 'ssh') {
             log_message('debug', '(ssh_connect) Testing SSH credentials named: ' . $credential->name . ' on ' . $ip);
             unset($test);
@@ -678,6 +687,11 @@ function ssh_connect(string $ip = '', array $credentials = array(), int $discove
                     $ssh->disconnect();
                     unset($ssh);
                     unset($test);
+                    $log->message = 'SSH credentials named: ' . $credential->name . ' on ' . $ip . ' failed.';
+                    $log->command_status = 'notice';
+                    $log->command_output = '';
+                    $log->severity = 5;
+                    $discoveryLogModel->create($log);
                     continue;
                 }
                 $banner = $ssh->getBannerMessage();
@@ -685,6 +699,11 @@ function ssh_connect(string $ip = '', array $credentials = array(), int $discove
                     $ssh->disconnect();
                     unset($ssh);
                     unset($test);
+                    $log->message = 'SSH credentials named: ' . $credential->name . ' on ' . $ip . ' failed.';
+                    $log->command_status = 'notice';
+                    $log->command_output = $banner;
+                    $log->severity = 5;
+                    $discoveryLogModel->create($log);
                 } else {
                     $log->message = "Valid credentials named {$credential->name} used to log in to {$ip}.";
                     $log->command_status = 'success';
@@ -697,6 +716,11 @@ function ssh_connect(string $ip = '', array $credentials = array(), int $discove
                 $ssh->disconnect();
                 unset($ssh);
                 unset($test);
+                $log->message = 'SSH credentials named: ' . $credential->name . ' on ' . $ip . ' failed.';
+                $log->command_status = 'notice';
+                $log->command_output = $e->getMessage();
+                $log->severity = 5;
+                $discoveryLogModel->create($log);
                 continue;
             } catch (\Exception $e) {
                 // Catch any other unexpected exceptions
@@ -704,6 +728,11 @@ function ssh_connect(string $ip = '', array $credentials = array(), int $discove
                 $ssh->disconnect();
                 unset($ssh);
                 unset($test);
+                $log->message = 'SSH credentials named: ' . $credential->name . ' on ' . $ip . ' failed.';
+                $log->command_status = 'warning';
+                $log->command_output = $e->getMessage();
+                $log->severity = 5;
+                $discoveryLogModel->create($log);
                 continue;
             }
         }
@@ -830,6 +859,11 @@ if (! function_exists('ssh_audit')) {
                 try {
                     if (!$ssh->login($credential->credentials->username, $key)) {
                         log_message('debug', '(ssh_audit) Testing SSH Key credentials named: ' . $credential->name . ' FAILED on ' . $ip);
+                        $log->message = 'SSH Key credentials named: ' . $credential->name . ' on ' . $ip . ' failed.';
+                        $log->command_status = 'notice';
+                        $log->command_output = '';
+                        $log->severity = 5;
+                        $discoveryLogModel->create($log);
                         $ssh->disconnect();
                         unset($ssh);
                         unset($test);
@@ -849,6 +883,11 @@ if (! function_exists('ssh_audit')) {
                     $ssh->disconnect();
                     unset($ssh);
                     unset($test);
+                    $log->message = 'SSH Key credentials named: ' . $credential->name . ' on ' . $ip . ' failed.';
+                    $log->command_status = 'notice';
+                    $log->command_output = $e->getMessage();
+                    $log->severity = 5;
+                    $discoveryLogModel->create($log);
                     continue;
                 } catch (\Exception $e) {
                     // Catch any other unexpected exceptions
@@ -856,6 +895,11 @@ if (! function_exists('ssh_audit')) {
                     $ssh->disconnect();
                     unset($ssh);
                     unset($test);
+                    $log->message = 'SSH Key credential with name: ' . $credential->name . ' on ' . $ip . ' failed.';
+                    $log->command_status = 'notice';
+                    $log->command_output = $e->getMessage();
+                    $log->severity = 5;
+                    $discoveryLogModel->create($log);
                     continue;
                 }
             } elseif ($credential->type === 'ssh') {
@@ -869,6 +913,11 @@ if (! function_exists('ssh_audit')) {
                         $ssh->disconnect();
                         unset($ssh);
                         unset($test);
+                        $log->message = 'SSH credentials named: ' . $credential->name . ' on ' . $ip . ' failed.';
+                        $log->command_status = 'notice';
+                        $log->command_output = '';
+                        $log->severity = 5;
+                        $discoveryLogModel->create($log);
                         continue;
                     }
                     $log->message = "Valid credentials named {$credential->name} used to log in to {$ip}.";
@@ -882,6 +931,11 @@ if (! function_exists('ssh_audit')) {
                     $ssh->disconnect();
                     unset($ssh);
                     unset($test);
+                    $log->message = 'SSH Key credentials named: ' . $credential->name . ' on ' . $ip . ' failed.';
+                    $log->command_status = 'notice';
+                    $log->command_output = $e->getMessage();
+                    $log->severity = 5;
+                    $discoveryLogModel->create($log);
                     continue;
                 } catch (\Exception $e) {
                     // Catch any other unexpected exceptions
@@ -889,6 +943,11 @@ if (! function_exists('ssh_audit')) {
                     $ssh->disconnect();
                     unset($ssh);
                     unset($test);
+                    $log->message = 'SSH Key credentials named: ' . $credential->name . ' on ' . $ip . ' failed.';
+                    $log->command_status = 'notice';
+                    $log->command_output = $e->getMessage();
+                    $log->severity = 5;
+                    $discoveryLogModel->create($log);
                     continue;
                 }
             }
