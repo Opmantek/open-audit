@@ -507,7 +507,7 @@ class DiscoveriesModel extends BaseModel
         $org_list = implode(', ', $temp);
         unset($temp);
         // And now get any credentials
-        $sql = "SELECT credentials.*, 'credentials' AS `foreign` FROM `credentials` WHERE `org_id` IN (" . $org_list . ')';
+        $sql = "SELECT credentials.*, 'credentials' AS `foreign` FROM `credentials` WHERE `org_id` IN (" . $org_list . ') ORDER BY credentials.name';
         $result = $this->db->query($sql)->getResult();
         if (!empty($result)) {
             for ($i = 0; $i < count($result); $i++) {
