@@ -2951,12 +2951,12 @@ if [ -z $(echo "$skip_sections" | grep "software,") ]; then
 					name=$(echo "$package" | awk '{print $1}')
 					version=$(echo "$package" | awk '{print $2}')
 					version_raw=$(echo "$package" | awk '{print $3}')
-					url=$(echo "$package" | awk '{print $4}')
+					pkg_url=$(echo "$package" | awk '{print $4}')
 					echo "		<item>" >> "$xml_file"
 					echo "			<name>$(escape_xml $name)</name>" >> "$xml_file"
 					echo "			<version>$(escape_xml $version)</version>" >> "$xml_file"
 					echo "			<version_raw>$(escape_xml $version_raw)</version_raw>" >> "$xml_file"
-					echo "			<url>$(escape_xml $description)</url>" >> "$xml_file"
+					echo "			<url>$(escape_xml $pkg_url)</url>" >> "$xml_file"
 					echo "		</item>" >> "$xml_file"
 				done
 				;;
@@ -2987,13 +2987,13 @@ if [ -z $(echo "$skip_sections" | grep "software,") ]; then
 				for package in $(pacman -Q 2>/dev/null | cut -d" " -f1); do
 					version=$(pacman -Q -i "$package" 2>/dev/null | grep "^Version" | cut -d: -f2)
 					description=$(pacman -Q -i "$package" 2>/dev/null | grep "^Description" | cut -d: -f2)
-					url=$(pacman -Q -i "$package" 2>/dev/null | grep "^URL" | cut -d: -f2)
+					pkg_url=$(pacman -Q -i "$package" 2>/dev/null | grep "^URL" | cut -d: -f2)
 					installed_on=$(pacman -Q -i "$package" 2>/dev/null | grep "^Install Date" | cut -d: -f2)
 					echo "		<item>" >> "$xml_file"
 					echo "			<name>$(escape_xml $package)</name>" >> "$xml_file"
 					echo "			<version>$(escape_xml $version)</version>" >> "$xml_file"
 					echo "			<description>$(escape_xml $description)</description>" >> "$xml_file"
-					echo "			<url>$(escape_xml $url)</url>" >> "$xml_file"
+					echo "			<url>$(escape_xml $pkg_url)</url>" >> "$xml_file"
 					echo "			<installed_on>$(escape_xml $installed_on)</installed_on>" >> "$xml_file"
 					echo "		</item>" >> "$xml_file"
 				done
