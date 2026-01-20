@@ -550,7 +550,7 @@ if (! function_exists('ssh_command')) {
             while (true) {
                 $output .= $ssh->read('[prompt]');
                 log_message('debug', $ip . ' - Output: ' . json_encode($output));
-                if (stripos($output, 'Audit Completed') !== false) {
+                if (stripos($output, 'Audit Completed') !== false or stripos($output, 'Exiting as other audits are currently running.') !== false) {
                     log_message('debug', $ip . ' - Detected Audit Completed, breaking.');
                     break;
                 }
