@@ -2,8 +2,7 @@
 # Copyright © 2023 FirstWave. All Rights Reserved.
 # SPDX-License-Identifier: AGPL-3.0-or-later
 ?>
-<br>
-<h2><?= __('WMI Credentials Requirements') ?></h2>
+<h1>WMI Credentials Requirements</h1>
 <br>
 <p><?= __('To audit a machine, you must have credentials and administrator level access.') ?><br>
 <ul class="list-group list-group-flush">

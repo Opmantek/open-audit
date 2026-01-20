@@ -2,8 +2,7 @@
 # Copyright © 2023 FirstWave. All Rights Reserved.
 # SPDX-License-Identifier: AGPL-3.0-or-later
 ?>
-<br>
-<h2>DCOM</h2>
+<h2>DCOM on Windows</h2>
 <br>
 <p><?= __('On the target Windows PC, run the DCOM utility and verify (or set) the below attributes. Start -> Run, Enter DCOMCNFG and press OK. This will open the DCOMCNFG window.') ?><br>
 
