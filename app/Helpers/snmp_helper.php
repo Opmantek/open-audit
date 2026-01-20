@@ -1811,7 +1811,7 @@ if (!function_exists('snmp_audit')) {
                 $details->type = 'network printer';
                 $item_start = microtime(true);
                 $temp_walk = my_snmp_walk($ip, $credentials, '1.3.6.1.2.1.43.13.4.1.10.1');
-                if (count($temp_walk) > 0) {
+                if (!empty($temp_walk) and count($temp_walk) > 0) {
                     $details->printer_duplex = 'n';
                     for ($key = 0; $key < count($temp_walk); $key++) {
                         if (mb_strpos($temp_walk[$key], 'Duplex') !== false) {
@@ -1938,7 +1938,7 @@ if (!function_exists('snmp_audit')) {
                     $discoveryLogModel->create($log);
                     unset($log->id, $log->command, $log->command_time_to_execute);
 
-                    if (count($temp_2) > 0) {
+                    if (!empty($temp_2) and count($temp_2) > 0) {
                         $details->printer_duplex = 'n';
                         for ($index = 0; $index < count($temp_2); $index++) {
                             if (mb_strpos($temp_2[$index], 'Duplex') !== false) {
@@ -1957,7 +1957,7 @@ if (!function_exists('snmp_audit')) {
                         $discoveryLogModel->create($log);
                         unset($log->id, $log->command, $log->command_time_to_execute);
 
-                        if (count($hex) > 0) {
+                        if (!empty($hex) and count($hex) > 0) {
                             if (isset($hex[1])) {
                                 if (mb_strpos($hex[1], 'Hex-STRING: ') !== false) {
                                     $hex[1] = str_replace('Hex-STRING: ', '', $hex[1]);
@@ -2181,7 +2181,7 @@ if (!function_exists('snmp_audit')) {
         $discoveryLogModel->create($log);
         unset($log->id, $log->command, $log->command_time_to_execute, $log->command_output);
 
-        if (is_array($interfaces) && count($interfaces) > 0) {
+        if (!empty($interfaces) and is_array($interfaces) && count($interfaces) > 0) {
             $item_start = microtime(true);
             $models = my_snmp_real_walk($ip, $credentials, '1.3.6.1.2.1.2.2.1.2');
             $log->command_time_to_execute = (microtime(true) - $item_start);
