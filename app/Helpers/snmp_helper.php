@@ -670,7 +670,7 @@ function my_snmp_real_walk_command($ip, $credentials, $oid)
     }
 
     if (empty($array) or !is_array($array)) {
-        log_message('notice', 'SNMPv' . $credentials->credentials->version . ' real walk using command line for ' . $oid . ' not working on ' . $ip);
+        log_message('notice', 'SNMPv' . $credentials->credentials->version . ' real walk using command line for ' . $oid . ' not working on ' . $ip . '. Output:' . @json_encode(@$output));
         return array();
     }
     return $array;

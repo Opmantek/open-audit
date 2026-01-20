@@ -1077,6 +1077,7 @@ if (!function_exists('wmi_audit')) {
         // Install Directory
         $command = 'os get windowsdirectory';
         $wmi_result = wmi_command($ip, $credentials, $command, $discovery_id);
+        $details->install_dir = 'c:\\windows';
         if ($wmi_result['status'] === 0) {
             if (!empty($wmi_result['output'][0])) {
                 $details->install_dir = trim($wmi_result['output'][0]);
@@ -1099,7 +1100,9 @@ if (!function_exists('wmi_audit')) {
         if ($wmi_result['status'] === 0) {
             if (!empty($wmi_result['output'][0])) {
                 $details->domain = trim(strtolower($wmi_result['output'][0]));
-                $details->fqdn = $details->hostname . '.' . $details->domain;
+                if (!empty($details->hostname)) {
+                    $details->fqdn = $details->hostname . '.' . $details->domain;
+                }
             }
         }
 

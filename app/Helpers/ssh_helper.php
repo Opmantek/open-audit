@@ -580,13 +580,16 @@ if (! function_exists('ssh_command')) {
             log_message('warning', $ip . ' - SSH command timed out (took more than ' . number_format($timeout) . ' seconds).');
             return false;
         }
-        for ($i = 0; $i < count($result); $i++) {
-            $result[$i] = trim((string)$result[$i]);
-            # Special Case
-            if (stripos($result[$i], 'Exiting as other audits are currently running.') !== false) {
-                log_message('warning', 'Multiple audits running on ' . $ip . ', not executing.');
-                return false;
-            }
+        # Special Case
+        if (stripos($output, 'Exiting as other audits are currently running.') !== false) {
+            log_message('warning', 'Multiple audits running on ' . $ip . ', not executing.');
+            $log->command_time_to_execute = ($item_end - $item_start);
+            $log->command_status = 'warning';
+            $log->command_output = '';
+            $log->message = 'Multiple audits running on ' . $ip . ', not executing this audit.';
+            $log->command_output = @json_encode(@$result);
+            $discoveryLogModel->create($log);
+            return false;
         }
         $log->command_time_to_execute = ($item_end - $item_start);
         $log->command_output = @json_encode($result);

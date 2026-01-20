@@ -9,7 +9,7 @@ if (!function_exists('all_ip_list')) {
     /**
      *
      * @param  object $discovery The discovery object with all its parameters
-     * @return array|false All the IP addresses in this discovery (excluding the excluded list)
+     * @return array|false       All the IP addresses in this discovery (excluding the excluded list)
      */
     function all_ip_list($discovery = null)
     {
