@@ -655,6 +655,7 @@ function ssh_connect(string $ip = '', array $credentials = array(), int $discove
                     unset($ssh);
                     unset($test);
                     $log->message = 'SSH Key credentials named: ' . $credential->name . ' on ' . $ip . ' failed.';
+                    $log->command = 'ssh ' . $credential->name . '@' . $ip;
                     $log->command_status = 'notice';
                     $log->command_output = $banner;
                     $log->severity = 5;
@@ -700,6 +701,7 @@ function ssh_connect(string $ip = '', array $credentials = array(), int $discove
                     unset($ssh);
                     unset($test);
                     $log->message = 'SSH credentials named: ' . $credential->name . ' on ' . $ip . ' failed.';
+                    $log->command = 'ssh ' . $credential->name . '@' . $ip;
                     $log->command_status = 'notice';
                     $log->command_output = $banner;
                     $log->severity = 5;
@@ -717,6 +719,7 @@ function ssh_connect(string $ip = '', array $credentials = array(), int $discove
                 unset($ssh);
                 unset($test);
                 $log->message = 'SSH credentials named: ' . $credential->name . ' on ' . $ip . ' failed.';
+                $log->command = 'ssh ' . $credential->name . '@' . $ip;
                 $log->command_status = 'notice';
                 $log->command_output = $e->getMessage();
                 $log->severity = 5;
@@ -729,6 +732,7 @@ function ssh_connect(string $ip = '', array $credentials = array(), int $discove
                 unset($ssh);
                 unset($test);
                 $log->message = 'SSH credentials named: ' . $credential->name . ' on ' . $ip . ' failed.';
+                $log->command = 'ssh ' . $credential->name . '@' . $ip;
                 $log->command_status = 'warning';
                 $log->command_output = $e->getMessage();
                 $log->severity = 5;
@@ -884,6 +888,7 @@ if (! function_exists('ssh_audit')) {
                     unset($ssh);
                     unset($test);
                     $log->message = 'SSH Key credentials named: ' . $credential->name . ' on ' . $ip . ' failed.';
+                    $log->command = 'ssh ' . $credential->name . '@' . $ip;
                     $log->command_status = 'notice';
                     $log->command_output = $e->getMessage();
                     $log->severity = 5;
@@ -896,6 +901,7 @@ if (! function_exists('ssh_audit')) {
                     unset($ssh);
                     unset($test);
                     $log->message = 'SSH Key credential with name: ' . $credential->name . ' on ' . $ip . ' failed.';
+                    $log->command = 'ssh ' . $credential->name . '@' . $ip;
                     $log->command_status = 'notice';
                     $log->command_output = $e->getMessage();
                     $log->severity = 5;
@@ -932,6 +938,7 @@ if (! function_exists('ssh_audit')) {
                     unset($ssh);
                     unset($test);
                     $log->message = 'SSH Key credentials named: ' . $credential->name . ' on ' . $ip . ' failed.';
+                    $log->command = 'ssh ' . $credential->name . '@' . $ip;
                     $log->command_status = 'notice';
                     $log->command_output = $e->getMessage();
                     $log->severity = 5;
@@ -944,6 +951,7 @@ if (! function_exists('ssh_audit')) {
                     unset($ssh);
                     unset($test);
                     $log->message = 'SSH Key credentials named: ' . $credential->name . ' on ' . $ip . ' failed.';
+                    $log->command = 'ssh ' . $credential->name . '@' . $ip;
                     $log->command_status = 'notice';
                     $log->command_output = $e->getMessage();
                     $log->severity = 5;
