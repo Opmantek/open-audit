@@ -1905,6 +1905,13 @@ if (! function_exists('ip_audit')) {
                     $log->command_status = 'fail';
                     $discoveryLogModel->create($log);
                 }
+                if (!empty($result) and is_string($result) and $result === 'multiple') {
+                    $log->severity = 5;
+                    $log->message = 'Audit script aborted because multiple executing.';
+                    $log->command_status = 'notice';
+                    $discoveryLogModel->create($log);
+                    $result = false;
+                }
             } else {
                 // $log->severity = 3;
                 // $log->message = 'No audit script for ' . $device->ip;
@@ -2059,6 +2066,7 @@ if (! function_exists('ip_audit')) {
                 $log->message = 'Could not convert audit result';
                 $log->command_status = 'fail';
                 $log->command_output = $audit_result;
+                $discoveryLogModel->create($log);
             }
         }
 
