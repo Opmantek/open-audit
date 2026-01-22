@@ -110,6 +110,7 @@ if (!empty($meta->filter)) {
                 </div>
                 <div class="card-body">
                     <br>
+                    <?php if ($total > 0) { ?>
                     <table class="table <?= $GLOBALS['table'] ?> table-striped table-hover dataTableAjax" data-order='[[2,"asc"]]' id="cveTable">
                         <thead>
                             <tr>
@@ -136,6 +137,15 @@ if (!empty($meta->filter)) {
                         <tbody>
                         </tbody>
                     </table>
+                    <?php } else { ?>
+                    <div class="alert alert-success" role="alert">
+                        <div class="row">
+                            <div class="col-8">
+                                <?= $included['task_retrieval'] ?> 
+                            </div>
+                        </div>
+                    </div>
+                    <?php } ?>
                 </div>
             </div>
         </main>

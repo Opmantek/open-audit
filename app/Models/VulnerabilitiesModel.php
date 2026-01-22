@@ -383,6 +383,20 @@ class VulnerabilitiesModel extends BaseModel
         $sql = "SELECT vulnerabilities.cve, vulnerabilities.base_severity, vulnerabilities_cache.vulnerability_id, SUM(vulnerabilities_cache.count) AS `count`, products FROM vulnerabilities_cache LEFT JOIN vulnerabilities ON vulnerabilities_cache.vulnerability_id = vulnerabilities.id WHERE vulnerabilities_cache.org_id IN (" . implode(',', $org_list) . ") GROUP BY vulnerability_id ORDER BY vulnerabilities_cache.count DESC, vulnerabilities.base_severity ASC LIMIT 5";
         $included['top_5'] =  $this->db->query($sql)->getResult();
 
+        $sql = "SELECT * FROM `tasks` WHERE `type` = 'vulnerabilities' LIMIT 1";
+        $query = $this->db->query($sql);
+        if (!empty($query)) {
+            $result = $query->getResult();
+        }
+        $included['task_retrieval'] = 'The vulnerability list is not being downloaded.';
+        if (!empty($result[0])) {
+            if ($result[0]->hour < 12) {
+                $included['task_retrieval'] = 'The vulnerability list will be updated at ' . $result[0]->hour . ':' . $result[0]->minute . 'am daily.';
+            } else {
+                $included['task_retrieval'] = 'The vulnerability list will be updated at ' . $result[0]->hour . ':' . $result[0]->minute . 'pm daily.';
+            }
+        }
+
         return $included;
     }
 
