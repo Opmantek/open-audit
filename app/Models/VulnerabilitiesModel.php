@@ -31,9 +31,12 @@ class VulnerabilitiesModel extends BaseModel
         $org_list = array_unique(array_merge($instance->user->orgs, $instance->orgsModel->getUserDescendants($instance->user->orgs, $instance->orgs)));
         $org_list = array_unique($org_list);
 
+        $start = microtime(true);
         $GLOBALS['recordsTotal'] = $this->db->table('vulnerabilities')->countAll();
+        log_message('debug', 'VulnerabilitiesModel::collection count all took ' . (microtime(true) - $start) . ' seconds.');
 
         // Our query without limit
+        $start = microtime(true);
         $this->builder = $this->db->table('vulnerabilities');
         if (!empty($resp->meta->groupby)) {
             $this->builder->groupBy($resp->meta->groupby);
@@ -74,6 +77,8 @@ class VulnerabilitiesModel extends BaseModel
                 $this->builder->{$filter->function}($filter->name, $filter->value);
             }
         }
+        log_message('debug', 'VulnerabilitiesModel::collection without filter took ' . (microtime(true) - $start) . ' seconds.');
+        $start = microtime(true);
         if (!empty($resp->meta->filter)) {
             $sql = '(vulnerabilities_cache.org_id IN (' . implode(',', $org_list) . ') OR vulnerabilities_cache.id IS NULL)';
             $this->builder->where($sql);
@@ -85,8 +90,10 @@ class VulnerabilitiesModel extends BaseModel
         $query = $this->builder->get();
         $result = $query->getResult();
         $GLOBALS['recordsFiltered'] = count($result);
+        log_message('debug', 'VulnerabilitiesModel::collection with filter took ' . (microtime(true) - $start) . ' seconds.');
 
         // Our query as the user asked
+        $start = microtime(true);
         $this->builder = $this->db->table('vulnerabilities');
         if (!empty($resp->meta->groupby)) {
             $this->builder->groupBy($resp->meta->groupby);
@@ -151,6 +158,7 @@ class VulnerabilitiesModel extends BaseModel
             return array();
         }
         $result = $query->getResult();
+        log_message('debug', 'VulnerabilitiesModel::collection with user took ' . (microtime(true) - $start) . ' seconds.');
         // log_message('debug', str_replace("\n", " ", (string)$this->db->getLastQuery()));
         return format_data($result, $resp->meta->collection);
     }
@@ -288,19 +296,27 @@ class VulnerabilitiesModel extends BaseModel
             }
         }
         // Update the cache
+        $start = microtime(true);
         $this->updateCacheSingle($id);
+        log_message('debug', 'VulnerabilitiesModel::execute updateCacheSingle took ' . (microtime(true) - $start) . ' seconds.');
+
+
         // Run the SQL for the required Orgs and return the result
+        $start = microtime(true);
         if (empty($device_id)) {
             $sql = $vulnerability->sql . " AND devices.org_id IN (" . implode(',', $orgs) . ") GROUP BY devices.id";
         } else {
             $sql = $vulnerability->sql . " AND devices.org_id IN (" . implode(',', $orgs) . ") AND devices.id = $device_id GROUP BY devices.id";
         }
         $query = $this->db->query($sql);
-        // log_message('debug', 'VulnerabilitiesModel::execute SQL: ' . str_replace("\n", " ", (string)$this->db->getLastQuery()));
+        log_message('debug', 'VulnerabilitiesModel::execute query took ' . (microtime(true) - $start) . ' seconds.');
+        $start = microtime(true);
         $devices = array();
         if (!empty($query)) {
             $devices = $query->getResult();
         }
+        log_message('debug', 'VulnerabilitiesModel::execute result took ' . (microtime(true) - $start) . ' seconds.');
+        // log_message('debug', 'VulnerabilitiesModel::execute SQL: ' . str_replace("\n", " ", (string)$this->db->getLastQuery()));
         return format_data($devices, 'devices');
     }
 
@@ -348,11 +364,15 @@ class VulnerabilitiesModel extends BaseModel
 
     public function includedCollection()
     {
+        $startFunction = microtime(true);
+
         $instance = & get_instance();
         $org_list = array_unique(array_merge($instance->user->orgs, $instance->orgsModel->getUserDescendants($instance->user->orgs, $instance->orgs)));
         $org_list = array_unique($org_list);
 
         $included = array();
+
+        $start = microtime(true);
         $included['severity'] = new stdClass();
         $included['severity']->critical = 0;
         $included['severity']->high = 0;
@@ -361,6 +381,12 @@ class VulnerabilitiesModel extends BaseModel
         $sql = "SELECT vulnerabilities.base_severity, COUNT(DISTINCT `vulnerabilities_cache`.`vulnerability_id`) AS `count` FROM `vulnerabilities` LEFT JOIN `vulnerabilities_cache` ON `vulnerabilities`.`id` = `vulnerabilities_cache`.`vulnerability_id` WHERE `vulnerabilities_cache`.`org_id` IN (" . implode(',', $org_list) . ") AND `count` > 0 GROUP BY `vulnerabilities`.`base_severity` ";
 
         $result = $this->db->query($sql)->getResult();
+
+        log_message('debug', 'VulnerabilitiesModel::includedCollection severity took ' . (microtime(true) - $start) . ' seconds.');
+        log_message('debug', str_replace("\n", " ", (string)$this->db->getLastQuery()));
+
+
+        $start = microtime(true);
         foreach($result as $row) {
             $included['severity']->{$row->base_severity} = intval($row->count);
         }
@@ -374,14 +400,23 @@ class VulnerabilitiesModel extends BaseModel
         foreach($result as $row) {
             $included['all_severity']->{$row->base_severity} = intval($row->count);
         }
+        log_message('debug', 'VulnerabilitiesModel::includedCollection all_severity took ' . (microtime(true) - $start) . ' seconds.');
+        log_message('debug', str_replace("\n", " ", (string)$this->db->getLastQuery()));
 
+
+        $start = microtime(true);
         $sql = "SELECT COUNT(devices.id) AS `count` FROM devices WHERE devices.cve LIKE '%CVE%' AND devices.org_id IN (" . implode(',', $org_list) . ")";
         $result = $this->db->query($sql)->getResult();
         // log_message('debug', str_replace("\n", " ", (string)$this->db->getLastQuery()));
         $included['device_count'] = $result[0]->count;
+        log_message('debug', 'VulnerabilitiesModel::includedCollection device_count took ' . (microtime(true) - $start) . ' seconds.');
+        log_message('debug', str_replace("\n", " ", (string)$this->db->getLastQuery()));
 
+        $start = microtime(true);
         $sql = "SELECT vulnerabilities.cve, vulnerabilities.base_severity, vulnerabilities_cache.vulnerability_id, SUM(vulnerabilities_cache.count) AS `count`, products FROM vulnerabilities_cache LEFT JOIN vulnerabilities ON vulnerabilities_cache.vulnerability_id = vulnerabilities.id WHERE vulnerabilities_cache.org_id IN (" . implode(',', $org_list) . ") GROUP BY vulnerability_id ORDER BY vulnerabilities_cache.count DESC, vulnerabilities.base_severity ASC LIMIT 5";
         $included['top_5'] =  $this->db->query($sql)->getResult();
+        log_message('debug', 'VulnerabilitiesModel::includedCollection top_5 took ' . (microtime(true) - $start) . ' seconds.');
+        log_message('debug', str_replace("\n", " ", (string)$this->db->getLastQuery()));
 
         $sql = "SELECT * FROM `tasks` WHERE `type` = 'vulnerabilities' LIMIT 1";
         $query = $this->db->query($sql);
@@ -397,6 +432,7 @@ class VulnerabilitiesModel extends BaseModel
             }
         }
 
+        log_message('debug', 'VulnerabilitiesModel::includedCollection took ' . (microtime(true) - $startFunction) . ' seconds.');
         return $included;
     }
 
@@ -441,7 +477,6 @@ class VulnerabilitiesModel extends BaseModel
             return array();
         }
 
-
         $instance = & get_instance();
         $org_list = array_unique(array_merge($instance->user->orgs, $instance->orgsModel->getUserDescendants($instance->user->orgs, $instance->orgs)));
         $org_list = array_unique($org_list);
@@ -484,20 +519,20 @@ class VulnerabilitiesModel extends BaseModel
      */
     public function listUser($where = array(), $orgs = array()): array
     {
-        if (empty($orgs)) {
-            $instance = & get_instance();
-            $orgs = array_unique(array_merge($instance->user->orgs, $instance->orgsModel->getUserDescendants($instance->user->orgs, $instance->orgs)));
-            $orgs[] = 1;
-            $orgs = array_unique($orgs);
-        }
+        // if (empty($orgs)) {
+        //     $instance = & get_instance();
+        //     $orgs = array_unique(array_merge($instance->user->orgs, $instance->orgsModel->getUserDescendants($instance->user->orgs, $instance->orgs)));
+        //     $orgs[] = 1;
+        //     $orgs = array_unique($orgs);
+        // }
 
-        $properties = array();
-        $properties[] = 'vulnerabilities.*';
-        $properties[] = 'orgs.name as `orgs.name`';
-        $this->builder->select($properties, false);
-        $this->builder->join('orgs', 'vulnerabilities.org_id = orgs.id', 'left');
-        $this->builder->whereIn('orgs.id', $orgs);
-        $this->builder->where($where);
+        // $properties = array();
+        // $properties[] = 'vulnerabilities.*';
+        // $properties[] = 'orgs.name as `orgs.name`';
+        // $this->builder->select($properties, false);
+        // $this->builder->join('orgs', 'vulnerabilities.org_id = orgs.id', 'left');
+        // $this->builder->whereIn('orgs.id', $orgs);
+        // $this->builder->where($where);
         $query = $this->builder->get();
         if ($this->sqlError($this->db->error())) {
             return array();
@@ -554,6 +589,11 @@ class VulnerabilitiesModel extends BaseModel
             return true;
         }
         return false;
+    }
+
+    public function total(): int
+    {
+        return $this->db->table('vulnerabilities')->countAll();
     }
 
     /**

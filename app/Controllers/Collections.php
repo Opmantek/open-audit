@@ -88,9 +88,18 @@ class Collections extends BaseController
         $this->resp->meta->total = 0;
         $this->resp->meta->filtered = 0;
         if (($this->resp->meta->collection !== 'devices' and $this->resp->meta->collection !== 'components' and $this->resp->meta->collection !== 'vulnerabilities') or $this->resp->meta->format !== 'html') {
+            $start = microtime(true);
             $this->resp->data = $this->{strtolower($this->resp->meta->collection) . "Model"}->collection($this->resp);
-            $this->resp->meta->total = count($this->{strtolower($this->resp->meta->collection) . "Model"}->listUser());
+            if ($this->resp->meta->collection !== 'vulnerabilities') {
+                $this->resp->meta->total = count($this->{strtolower($this->resp->meta->collection) . "Model"}->listUser());
+            } else {
+                $this->resp->meta->total = 0;
+                if (!empty($GLOBALS['recordsTotal'])) {
+                    $this->resp->meta->total = $GLOBALS['recordsTotal'];
+                }
+            }
             $this->resp->meta->filtered = (!empty($this->resp->data)) ? count($this->resp->data) : 0;
+            log_message('debug', $this->resp->meta->collection . 'Model::collection took ' . (microtime(true) - $start) . ' seconds.');
         }
 
         if (strpos($this->resp->meta->query_string, 'limit=') !== false and $this->resp->meta->filtered < $this->resp->meta->total and empty($_SESSION['warning']) and $this->resp->meta->format === 'html') {
@@ -169,7 +178,9 @@ class Collections extends BaseController
             $this->resp->meta->collection === 'vulnerabilities' or
             $this->resp->meta->collection === 'vendors'
         ) {
+            $start = microtime(true);
             $this->resp->included = array_merge($this->resp->included, $this->{strtolower($this->resp->meta->collection) . "Model"}->includedCollection());
+            log_message('debug', $this->resp->meta->collection . 'Model::includedCollection took ' . (microtime(true) - $start) . ' seconds.');
         }
 
         if ($this->resp->meta->format !== 'html') {
@@ -926,9 +937,14 @@ class Collections extends BaseController
             $this->resp->meta->id = intval($this->resp->meta->id);
         }
         $this->resp->data = $this->{$this->resp->meta->collection . 'Model'}->read($this->resp->meta->id);
-        $this->resp->meta->total = count($this->{$this->resp->meta->collection . 'Model'}->listUser());
+        if ($this->resp->meta->collection === 'vulnerabilities') {
+            $this->resp->meta->total = $this->{$this->resp->meta->collection . 'Model'}->total();
+        } else {
+            $this->resp->meta->total = count($this->{$this->resp->meta->collection . 'Model'}->listUser());
+        }
         $this->resp->meta->filtered = count($this->resp->data);
         $dictionary = $this->{$this->resp->meta->collection . 'Model'}->dictionary();
+
         if ($this->resp->meta->collection === 'database') {
             $filename = str_replace(' ', '', ucwords(str_replace('_', ' ', $this->resp->meta->id)));
             if (file_exists(APPPATH . 'Models/' . $filename . 'Model.php')) {

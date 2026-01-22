@@ -224,6 +224,7 @@ class SummariesModel extends BaseModel
             }
         }
         foreach ($collections as $name => $collection) {
+            $start = microtime(true);
             if ($this->db->tableExists($name) and $this->db->fieldExists('org_id', $name)) {
                 $collection->count = 0;
                 $table = str_replace(' ', '_', strtolower($name));
@@ -242,9 +243,13 @@ class SummariesModel extends BaseModel
                     $orgs = $instance->user->orgs;
                 }
                 $sql = "SELECT COUNT(*) AS `count` FROM `$table` WHERE `org_id` IN (" . implode(',', $orgs) . ")";
+                if ($table === 'vulnerabilities') {
+                    $sql = "SELECT COUNT(*) AS `count` FROM `$table`";
+                }
                 $count = intval($this->db->query($sql)->getResult()[0]->count);
                 $collection->count = $count;
             }
+            log_message('debug', $table . ' summary took ' . (microtime(true) - $start) . ' seconds.');
         }
         if (empty($instance->config->feature_executables) or $instance->config->feature_executables !== 'y') {
             unset($collections->executables);
