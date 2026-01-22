@@ -6,7 +6,7 @@
         <fqdn>desktop-marketing-01.open-audit.local</fqdn>
         <hostname>desktop-marketing-01</hostname>
         <icon>windows_7</icon>
-        <ip>192.168.001.150</ip>
+        <ip>192.168.1.150</ip>
         <manufacturer>VMware, Inc.</manufacturer>
         <memory_count>2097152</memory_count>
         <model>VMware Virtual Platform</model>

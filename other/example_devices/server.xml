@@ -9,7 +9,6 @@
 		<form_factor>Tower</form_factor>
 		<fqdn>server.open-audit.local</fqdn>
 		<hostname>server</hostname>
-		<id></id>
 		<ip>192.168.1.126</ip>
 		<manufacturer>HP</manufacturer>
 		<memory_count>8047780</memory_count>

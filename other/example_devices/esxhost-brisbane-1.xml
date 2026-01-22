@@ -6,7 +6,7 @@
 		<domain>open-audit.local</domain>
 		<form_factor>Desktop</form_factor>
 		<hostname>esxhost-brisbane-1</hostname>
-		<ip>192.168.001.009</ip>
+		<ip>192.168.1.9</ip>
 		<last_seen_by>audit</last_seen_by>
 		<manufacturer>Gigabyte Technology Co., Ltd.</manufacturer>
 		<memory_count>30517578125</memory_count>
