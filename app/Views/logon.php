@@ -230,7 +230,7 @@ include('shared/lang.php');
                                                                     <option value="solaris"><?= __('Solaris') ?></option>
                                                                     <option value="windows-ps1"><?= __('Windows') ?></option>
                                                                 </select>
-                                                                <a href="#" id="go_button" role="button" class="btn btn-success float-end"><?= __('Go') ?></a>
+                                                                <a href="#" id="go_button" role="button" class="btn btn-success float-end"><?= __('Download') ?></a>
                                                             </div>
                                                         </div>
                                                     </form>
