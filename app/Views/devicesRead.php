@@ -2353,7 +2353,7 @@ if (empty($resource->type)) {
                                                     <td><?= $row->size ?></td>
                                                     <td><?= $row->last_changed ?></td>
                                                     <td><?= $row->owner ?></td>
-                                                    <td><?= str_replace("\n", "<br>", $row->permission) ?></td>
+                                                    <td><?= str_replace(PHP_EOL, "<br>", $row->permission) ?></td>
                                                 </tr>
                                                 <?php } ?>
                                             <?php } ?>

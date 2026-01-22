@@ -58,7 +58,7 @@ function traffic_widget($widget)
             </div>
         </div>
     </div>';
-    $return = str_replace("\n", "", $return);
+    $return = str_replace(PHP_EOL, "", $return);
     return $return;
 }
 
@@ -101,6 +101,6 @@ function status_widget($widget)
             </div>
         </div>
     </div>';
-    $return = str_replace("\n", "", $return);
+    $return = str_replace(PHP_EOL, "", $return);
     return $return;
 }
