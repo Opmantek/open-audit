@@ -827,24 +827,26 @@ if (! function_exists('wmi_command')) {
         $log->discovery_id = $discovery_id;
         $log->ip = $ip;
         $log->message = 'Using credentials named ' . $credentials->name;
+        $log->command = '';
+        $log->command_output = '';
         $item_start = microtime(true);
 
         if (php_uname('s') == 'Linux') {
             if ($command === 'csproduct get uuid') {
                 $command = 'powershell -c Get-WmiObject -Class Win32_ComputerSystemProduct | Select-Object -ExpandProperty UUID';
-            } else if ($command === 'computersystem get name') {
+            } elseif ($command === 'computersystem get name') {
                 $command = 'powershell -c Get-WmiObject -Class Win32_ComputerSystem | Select-Object -ExpandProperty Name';
-            } else if ($command === 'computersystem get domain') {
+            } elseif ($command === 'computersystem get domain') {
                 $command = 'powershell -c Get-WmiObject -Class Win32_ComputerSystem | Select-Object -ExpandProperty Domain';
-            } else if ($command === 'csproduct get vendor') {
+            } elseif ($command === 'csproduct get vendor') {
                 $command = 'powershell -c Get-WmiObject -Class Win32_ComputerSystemProduct | Select-Object -ExpandProperty Vendor';
-            } else if ($command === 'csproduct get IdentifyingNumber') {
+            } elseif ($command === 'csproduct get IdentifyingNumber') {
                 $command = 'powershell -c Get-WmiObject -Class Win32_ComputerSystemProduct | Select-Object -ExpandProperty IdentifyingNumber';
-            } else if ($command === 'os get description') {
+            } elseif ($command === 'os get description') {
                 $command = 'powershell -c Get-WmiObject -Class Win32_OperatingSystem | Select-Object -ExpandProperty Description';
-            } else if ($command === 'os get name') {
+            } elseif ($command === 'os get name') {
                 $command = 'powershell -c Get-WmiObject -Class Win32_OperatingSystem | Select-Object -ExpandProperty Caption';
-            } else if ($command === 'os get windowsdirectory') {
+            } elseif ($command === 'os get windowsdirectory') {
                 $command = 'powershell -c Get-WmiObject -Class Win32_OperatingSystem | Select-Object -ExpandProperty WindowsDirectory';
             } else {
                 $command = 'wmic ' . $command;
@@ -854,7 +856,7 @@ if (! function_exists('wmi_command')) {
             $filename = credentials_file($ip, $credentials);
             // $command_string = "timeout 1m " . $filepath . "/winexe-static-2 -A {$filename} --uninstall //" . $ip . " \"wmic $command\" 2>&1";
             $command_string = "timeout 1m " . $filepath . "/winexe-static-2 -A {$filename} --uninstall //" . $ip . " \"$command\" 2>&1";
-            $log->command   = $command_string;
+            $log->command = $command_string;
             $log->message = 'Using credentials named ' . $credentials->name . ' to execute command using winexe-static-2';
             exec($command_string, $return['output'], $return['status']);
             unlink($filename);
@@ -874,24 +876,22 @@ if (! function_exists('wmi_command')) {
 
             if ($command === 'csproduct get uuid') {
                 $command = 'Get-WmiObject -Class Win32_ComputerSystemProduct –credential $credentials –computer ' . $ip . ' | Select-Object -ExpandProperty UUID';
-            }
-            if ($command === 'computersystem get domain') {
+            } elseif ($command === 'computersystem get domain') {
                 $command = 'Get-WmiObject -Class Win32_ComputerSystemProduct –credential $credentials –computer ' . $ip . ' | Select-Object -ExpandProperty Domain';
-            }
-            if ($command === 'csproduct get vendor') {
+            } elseif ($command === 'csproduct get vendor') {
                 $command = 'Get-WmiObject -Class Win32_ComputerSystemProduct –credential $credentials –computer ' . $ip . ' | Select-Object -ExpandProperty Vendor';
-            }
-            if ($command === 'csproduct get IdentifyingNumber') {
+            } elseif ($command === 'csproduct get IdentifyingNumber') {
                 $command = 'Get-WmiObject -Class Win32_ComputerSystemProduct –credential $credentials –computer ' . $ip . ' | Select-Object -ExpandProperty IdentifyingNumber';
-            }
-            if ($command === 'os get description') {
+            } elseif ($command === 'os get description') {
                 $command = 'Get-WmiObject -Class Win32_OperatingSystem –credential $credentials –computer ' . $ip . ' | Select-Object -ExpandProperty Description';
-            }
-            if ($command === 'os get name') {
+            } elseif ($command === 'os get name') {
                 $command = 'Get-WmiObject -Class Win32_OperatingSystem –credential $credentials –computer ' . $ip . ' | Select-Object -ExpandProperty Caption';
-            }
-            } else if ($command === 'os get windowsdirectory') {
+            } elseif ($command === 'os get windowsdirectory') {
                 $command = 'Get-WmiObject -Class Win32_OperatingSystem –credential $credentials –computer ' . $ip . ' | Select-Object -ExpandProperty WindowsDirectory';
+            }
+
+            $log->message = 'Using credentials named ' . $credentials->name . ' to execute powershell command';
+            $log->command = 'powershell -c "$password = \'REMOVED\' | ConvertTo-SecureString -AsPlainText -Force; $credentials = New-Object System.Management.Automation.PsCredential(\'' . $user . '\', $password); ' . $command . '" ';
 
             $command = 'powershell -c "$password = \'' . $password . '\' | ConvertTo-SecureString -AsPlainText -Force; $credentials = New-Object System.Management.Automation.PsCredential(\'' . $user . '\', $password); ' . $command . '" ';
             $item_start = microtime(true);
