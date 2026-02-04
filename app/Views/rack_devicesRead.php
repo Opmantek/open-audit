@@ -3,6 +3,8 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 include 'shared/read_functions.php';
 include 'shared/common_functions.php';
+$rack_link = "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('racksRead', $resource->rack_id) . "\"><span title=\"" . __('View') . "\" class=\"icon-link\" aria-hidden=\"true\"></span></a>";
+$device_link = "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('devicesRead', $resource->device_id) . "\"><span title=\"" . __('View') . "\" class=\"icon-link\" aria-hidden=\"true\"></span></a>";
 ?>
         <main class="container-fluid">
             <div class="card">
@@ -14,15 +16,12 @@ include 'shared/common_functions.php';
                         <div class="col-6">
                             <?= read_field('name', $resource->name, $dictionary->columns->name, $update, '', '', '', '', $meta->collection) ?>
                             <?= read_select('org_id', $resource->org_id, $dictionary->columns->org_id, $update, '', $orgs, $meta->collection) ?>
-                            <!--<?= read_field('rack_id', $resource->rack_id, $dictionary->columns->rack_id, false) ?>-->
-                            <?= read_field('rack_name', $resource->{'racks.name'}, $dictionary->columns->rack_name, false) ?>
-                            <!--<?= read_field('device_id', $resource->device_id, '', false) ?>-->
-                            <?= read_field('device_name', $resource->{'devices.name'}, $dictionary->columns->device_name, false) ?>
+                            <?= read_field('rack_name', $resource->{'racks.name'}, $dictionary->columns->rack_name, false, '', $rack_link) ?>
+                            <?= read_field('device_name', $resource->{'devices.name'}, $dictionary->columns->device_name, false, '', $device_link) ?>
                             <?= read_field('position', $resource->position, $dictionary->columns->position, $update, '', '', '', '', $meta->collection) ?>
                             <?= read_field('height', $resource->height, $dictionary->columns->height, $update, '', '', '', '', $meta->collection) ?>
                             <?= read_field('width', $resource->width, $dictionary->columns->width, $update, '', '', '', '', $meta->collection) ?>
                             <?= read_field('orientation', $resource->orientation, $dictionary->columns->orientation, false, '', '', '', '', $meta->collection) ?>
-
                             <?= read_field('edited_by', $resource->edited_by, $dictionary->columns->edited_by, false, '', '', '', '', $meta->collection) ?>
                             <?= read_field('edited_date', $resource->edited_date, $dictionary->columns->edited_date, false, '', '', '', '', $meta->collection) ?>
                         </div>
@@ -36,3 +35,11 @@ include 'shared/common_functions.php';
                 </div>
             </div>
         </main>
+
+<script {csp-script-nonce}>
+window.onload = function () {
+    $(document).ready(function() {
+        $("#button_list").remove();
+    });
+}
+</script>
