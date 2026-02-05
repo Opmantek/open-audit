@@ -10,6 +10,8 @@
 # Apps
 # https://learn.microsoft.com/en-us/windows/application-management/overview-windows-apps
 
+# powershell.exe -executionpolicy bypass -file .\audit_windows.ps1
+
 param (
     [int]$debugging = 0,
     [string]$url = '',
@@ -1257,7 +1259,7 @@ if ($skip_sections.Contains("share,") -eq $false) {
       $item.size = 0
       if (($_.Path) -and $_.Path -ne "C:\WINNT" -and $_.Path -ne "C:\WINDOWS" -and $_.Path -ne "C:\" -and ($_.Path.ToCharArray() | Select-Object -First 1) -ne "\" -and $_.Path.Length -gt 3) {
           try {
-              $item.size = [Int]((Get-ChildItem -Path $_.Path -Recurse | Measure-Object -Sum Length).Sum / 1024 / 1024)
+              $item.size = [Int]((Get-ChildItem -Path $_.Path -Recurse | Measure-Object -Sum Length -ErrorAction Ignore).Sum / 1024 / 1024)
           } catch {
               $item.size = 0
               if ($item.description -eq "") {
@@ -2390,7 +2392,168 @@ if ($skip_sections.Contains("software,") -eq $false) {
             }
         }
     }
-} # End of audit_software
+
+
+    $UserPaths = (Get-WmiObject win32_userprofile | Where-Object localpath -notmatch 'C:\\Windows').localpath
+
+    # Chrome / Edge browser extensions
+    $itimer = [Diagnostics.Stopwatch]::StartNew()
+    if ($debug -gt 0) {
+        Write-Host "Software 8:   " -NoNewline
+    }
+    $extCount = 0;
+    foreach ($Path in $UserPaths) {
+        $MSEdgeDir = $Path + '\AppData\Local\Microsoft\Edge\User Data'
+        $GoogDir = $Path + '\AppData\Local\Google\Chrome\User Data'
+        $CheckBrowserDir = New-Object Collections.Generic.List[string]
+        if (Test-Path $MSEdgeDir) {
+            $CheckBrowserDir.Add($MSEdgeDir)
+        }
+        if (Test-Path $GoogDir) {
+            $CheckBrowserDir.Add($GoogDir)
+        }
+        # For each browser found
+        foreach ($BrowserDir in $CheckBrowserDir) {
+            # Grab browser profiles
+            $ProfilePaths = (Get-ChildItem -Path $BrowserDir | Where-Object Name -match 'Default|Profile').FullName
+            # For each browser profile
+            foreach ($ProfilePath in $ProfilePaths) {
+                $ExtPath = $ProfilePath + '\Extensions'
+                if (Test-Path $ExtPath) {
+                    # Store variables for output (blegh I'm bad at Powershell)
+                    $BrowserProfileName = ($ProfilePath | Split-Path -Leaf)
+                    $Application = ($ProfilePath | Split-Path -Parent | Split-Path -Parent | Split-Path -Leaf)
+                    $Username = ($ProfilePath | Split-Path -Parent | Split-Path -Parent | Split-Path -Parent | Split-Path -Parent | Split-Path -Parent | Split-Path -Parent | Split-Path -Leaf)
+                    # Get extension folders
+                    $ExtFolders = Get-Childitem $ExtPath | Where-Object Name -ne 'Temp'
+                    foreach ($Folder in $ExtFolders) {
+                        # Extension version folders
+                        $VerFolders = Get-Childitem $Folder.FullName
+                        foreach ($Version in $VerFolders) {
+                            # Check for json manifest
+                            if (Test-Path -Path ($Version.FullName + '\manifest.json')) {
+                                $Manifest = Get-Content ($Version.FullName + '\manifest.json') | ConvertFrom-Json
+                                # If extension name looks like an App name
+                                if ($Manifest.name -like '__MSG*') {
+                                    $AppId = ($Manifest.name -replace '__MSG_', '').Trim('_')
+                                    # Check locales folders for additional json
+                                    @('\_locales\en_US\', '\_locales\en\') | ForEach-Object {
+                                        if (Test-Path -Path ($Version.Fullname + $_ + 'messages.json')) {
+                                            $AppManifest = Get-Content ($Version.Fullname + $_ +
+                                                'messages.json') | ConvertFrom-Json
+                                            # Check json for potential app names and save the first one found
+                                            @($AppManifest.appName.message, $AppManifest.extName.message,
+                                                $AppManifest.extensionName.message, $AppManifest.app_name.message,
+                                                $AppManifest.application_title.message, $AppManifest.$AppId.message) |
+                                            ForEach-Object {
+                                                if (($_) -and (-not($ExtName))) {
+                                                    $ExtName = $_
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                                else {
+                                    $ExtName = $Manifest.name
+                                }
+                                $item = @{}
+                                $item.name = [string] $ExtName
+                                $item.version = $Manifest.version
+                                $item.publisher = $Application + " Browser (" + $Username + ")"
+                                $item.type = "browser extension"
+                                if ($Manifest.author.email) {
+                                    $item.email = $Manifest.author.email
+                                }
+                                if (!$item.description -and $Manifest.description -and $manifest.description -notlike "__MSG*") {
+                                    $item.description = $AppManifest.description
+                                }
+                                if (!$item.description -and $AppManifest.popuphelptext.message -and $AppManifest.popuphelptext.message -notlike "__MSG*") {
+                                    $item.description = $AppManifest.popuphelptext.message
+                                }
+                                if (!$item.description -and $AppManifest.extDescription.message -and $AppManifest.extDescription.message -notlike "__MSG*") {
+                                    $item.description = $AppManifest.extDescription.message
+                                }
+                                if (!$item.description -and $AppManifest.extdesc.message -and $AppManifest.extdesc.message -notlike "__MSG*") {
+                                    $item.description = $AppManifest.extdesc.message
+                                }
+                                $item.location = $Version.Fullname
+
+                                $item.extension_id = $Folder.name
+                                $item.user = $Username
+                                $result.software += $item
+                                $extCount = $extCount + 1
+                                if ($ExtName) {
+                                    Remove-Variable -Name ExtName
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    $totalSecs =  [math]::Round($itimer.Elapsed.TotalSeconds,2)
+    if ($debug -gt 0) {
+        $count = [int]$result.software.count
+        Write-Host "$extCount entries took $totalSecs seconds"
+    }
+
+    # Firefox browser extensions
+    $itimer = [Diagnostics.Stopwatch]::StartNew()
+    if ($debug -gt 0) {
+        Write-Host "Software 9:   " -NoNewline
+    }
+    $extCount = 0;
+    foreach ($Path in $UserPaths) {
+        $testPath = $Path + "\AppData\Roaming\Mozilla\Firefox\Profiles"
+        if (!(Test-Path -Path "$testPath" -ErrorAction SilentlyContinue)) {
+            continue
+        }
+        $FirefoxProfileFolders = Get-ChildItem -Path "$testPath" -Directory | Where-Object { $_.Name -match "\.default-release$" } | Select-Object -ExpandProperty Fullname
+        foreach ( $FirefoxProfile in $FirefoxProfileFolders ) {
+            if (!(Test-Path -Path "$FirefoxProfile\extensions.json")) {
+                continue
+            }
+            $Extensions = Get-Content -Path "$FirefoxProfile\extensions.json" | ConvertFrom-Json
+            if ($extensions -ne $null) {
+                $Username = ($ProfilePath | Split-Path -Parent | Split-Path -Parent | Split-Path -Parent | Split-Path -Parent | Split-Path -Parent | Split-Path -Parent | Split-Path -Leaf)
+                foreach ($Extension in $Extensions.addons) {
+                    if ($Extension.type -and $Extension.type -eq "extension" -and $Extension.path -ne $null) {
+                        $item = @{}
+                        $item.name = $Extension.defaultlocale.name
+                        $item.version = $Extension.version
+                        $item.publisher = "Firefox Browser (" + $UserName + ")"
+                        $item.type = "browser extension"
+                        if ($Extension.installDate) {
+                            $date = (Get-Date "1970-01-01") + [System.TimeSpan]::FromSeconds(($Extension.installDate / 1000))
+                            $item.installed_on = $date.ToString("yyyy-MM-dd HH:mm:ss")
+                        }
+                        if ($Extension.path) {
+                            $item.location = $Extension.path
+                        }
+                        if ($Extension.sourceURI) {
+                            $item.install_source = $Extension.sourceURI
+                        }
+                        $item.description = $Extension.defaultlocale.description
+                        if ($Extension.defaultlocale.homepageURL) {
+                            $item.url = $Extension.defaultlocale.homepageURL
+                        }
+                        $item.user = $UserName
+                        $item.extension_id = $Extension.syncGUID
+                        $result.software += $item
+                        $extCount = $extCount + 1
+                    }
+                }
+            }
+        }
+    }
+    $totalSecs =  [math]::Round($itimer.Elapsed.TotalSeconds,2)
+    if ($debug -gt 0) {
+        $count = [int]$result.software.count
+        Write-Host "$extCount entries took $totalSecs seconds"
+    }
+}
+# End of audit_software
 
 
 if ($skip_sections.Contains("service,") -eq $false) {
