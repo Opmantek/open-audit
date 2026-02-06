@@ -817,6 +817,48 @@ echo "   <partition>" >> $xml_file
 echo "$partition_each</partition>" >> $xml_file
 
 
+
+if [ "$debugging" -gt "0" ]; then
+    echo "User Info"
+fi
+echo "  <user>" >> "$xml_file"
+for line in $(dscl . -list /Users | grep -v '^_' | grep -v -i daemon | grep -v -i root | grep -v -i nobody); do
+    name=$(echo "$line" | cut -d: -f1)
+    full_name=$(dscl . -read /Users/$name RealName | tail -n +2 | sed 's/^ *//')
+    sid=$(dscl . -read /Users/$name UniqueID | awk '{print $2}')
+    home=$(dscl . -read /Users/$name NFSHomeDirectory | awk '{print $2}')
+    shell=$(dscl . -read /Users/$name UserShell | awk '{print $2}')
+    password_last_changed=$(dscl . -read /Users/$name | grep -A 1 passwordLastSetTime | tail -1 | sed 's/.*<real>\(.*\)<\/real>/\1/' | cut -d. -f1 | xargs -I {} date -r {} '+%Y-%m-%d %H:%M:%S')
+    account_disabled=$(dscl . -read "/Users/$name" AuthenticationAuthority 2>/dev/null | grep -q "DisabledUser" && echo "Disabled")
+    if [[ $account_disabled == "Disabled" ]]; then
+        status=disabled
+        disabled=true
+    else
+        status=enabled
+        disabled=false
+    fi
+    {
+    echo "      <item>" >> $xml_file
+    echo "                  <name>$name</name>"
+    echo "                  <full_name>$full_name</full_name>"
+    echo "                  <sid>$sid</sid>"
+    echo "                  <home>$home</home>"
+    echo "                  <shell>$shell</shell>"
+    echo "                  <password_last_changed>$password_last_changed</password_last_changed>"
+    echo "                  <status>$status</status>"
+    echo "                  <disabled>$disabled</disabled>"
+    echo "                  <keys>"
+    for keyline in $(grep -v ^$ "/Users/$name/.ssh/id_rsa" 2>/dev/null | grep -v ^# |  tr '\n' ' '); do
+    echo "                          <key>$keyline</key>"
+    done
+    echo "                  </keys>"
+    echo "      </item>"
+    } >> "$xml_file"
+done
+echo "  </user>" >> "$xml_file"
+
+
+
 if [ "$debugging" -gt "0" ]; then
     echo "Arp Info"
 fi
