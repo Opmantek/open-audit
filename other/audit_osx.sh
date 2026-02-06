@@ -964,6 +964,278 @@ for line in $(system_profiler SPApplicationsDataType | grep "Location: " -B 8 -A
         software_publisher=""
     fi
 done
+
+
+
+# Firefox extensions
+if [ "$debugging" -gt "0" ]; then
+    echo "Firefox Extensions"
+fi
+for line in $(dscl . -list /Users | grep -v '^_' | grep -v -i daemon | grep -v -i root | grep -v -i nobody); do
+    name=$(echo "$line" | cut -d: -f1)
+    extfile=$(ls /Users/$name/Library/Application\ Support/Firefox/Profiles/*.default-release/extensions.json | head -n1)
+    if [ -n "$extfile" ]; then
+        count=$(plutil -extract addons raw -o - "$extfile" 2>/dev/null)
+        count=$(expr $count - 1)
+        for i in $(seq 0 $count); do
+            type=$(plutil -extract addons.$i.type raw -o - "$extfile" 2>/dev/null)
+            if [ "$type" = "extension" ]; then
+                software_type="browser extension"
+                software_name=$(plutil -extract addons.$i.defaultLocale.name raw -o - "$extfile" 2>/dev/null)
+                software_description=$(plutil -extract addons.$i.defaultLocale.description raw -o - "$extfile" 2>/dev/null)
+                software_version=$(plutil -extract addons.$i.version raw -o - "$extfile" 2>/dev/null)
+                software_location=$(plutil -extract addons.$i.path raw -o - "$extfile" 2>/dev/null)
+                software_publisher="Firefox Browser ($name)"
+                unixtime=`plutil -extract addons.$i.installDate raw -o - "$extfile" 2>/dev/null`
+                if [ -n "$unixtime" ]; then
+                    unixtime=$(expr "$unixtime" / 1000)
+                    software_installed_on=$(date -r "$unixtime" -u +"%Y-%m-%d %H:%M:%S")
+                fi
+                software_install_source=$(plutil -extract addons.$i.sourceURI raw -o - "$extfile" 2>/dev/null)
+                software_url=$(plutil -extract addons.$i.defaultlocale.homepageURL raw -o - "$extfile" 2>/dev/null)
+                if [ -n "$software_name" ]; then
+                    echo "      <item>" >> $xml_file
+                    echo "          <type><![CDATA[$software_type]]></type>" >> $xml_file
+                    echo "          <name><![CDATA[$software_name]]></name>" >> $xml_file
+                    echo "          <description><![CDATA[$software_description]]></description>" >> $xml_file
+                    echo "          <version><![CDATA[$software_version]]></version>" >> $xml_file
+                    echo "          <location><![CDATA[$software_location]]></location>" >> $xml_file
+                    echo "          <publisher><![CDATA[$software_publisher]]></publisher>" >> $xml_file
+                    echo "          <install_source><![CDATA[$software_install_source]]></install_source>" >> $xml_file
+                    echo "          <installed_on><![CDATA[$software_installed_on]]></installed_on>" >> $xml_file
+                    echo "          <url><![CDATA[$software_url]]></url>" >> $xml_file
+                    echo "      </item>" >> $xml_file
+                fi
+            fi
+            software_type=""
+            software_name=""
+            software_description=""
+            software_version=""
+            software_location=""
+            software_publisher=""
+            software_install_source=""
+            software_installed_on=""
+            software_url=""
+        done
+    fi
+done
+
+# Chrome extensions
+if [ "$debugging" -gt "0" ]; then
+    echo "Chrome Extensions"
+fi
+for line in $(dscl . -list /Users | grep -v '^_' | grep -v -i daemon | grep -v -i root | grep -v -i nobody); do
+    name=$(echo "$line" | cut -d: -f1)
+    base_dir="/Users/$name/Library/Application Support/Google/Chrome/Default/Extensions"
+    for dir in $(ls "$base_dir" 2>/dev/null | grep -v -i DS_Store); do
+        version=$(ls "$base_dir/${dir}/" 2>/dev/null | grep -v -i DS_Store | head -n1)
+        extfile="$base_dir/$dir/${version}/manifest.json"
+        if [ -f "$extfile" ]; then
+            software_type="browser extension"
+            software_name=$(plutil -extract name raw -o - "$extfile" 2>/dev/null)
+            if [[ "$software_name" == *"_MSG_"* ]]; then
+                software_name=""
+            fi
+            if [ -z "$software_name" ]; then
+                newExt="$base_dir/$dir/${version}/_locales/en/messages.json"
+                if [ -f "$newExt" ]; then
+                    software_name=$(plutil -extract app_name.message raw -o - "$newExt" 2>/dev/null)
+                    if [[ "$software_name" == *"_MSG_"* ]]; then
+                        software_name=""
+                    fi
+                    if [ -z "$software_name" ]; then
+                        software_name=$(plutil -extract extname.message raw -o - "$newExt" 2>/dev/null)
+                        if [[ "$software_name" == *"_MSG_"* ]]; then
+                            software_name=""
+                        fi
+                    fi
+                fi
+            fi
+            if [ -z "$software_name" ]; then
+                newExt="$base_dir/$dir/${version}/_locales/en_US/messages.json"
+                if [ -f "$newExt" ]; then
+                    software_name=$(plutil -extract app_name.message raw -o - "$newExt" 2>/dev/null)
+                    if [[ "$software_name" == *"_MSG_"* ]]; then
+                        software_name=""
+                    fi
+                    if [ -z "$software_name" ]; then
+                        software_name=$(plutil -extract extname.message raw -o - "$newExt" 2>/dev/null)
+                        if [[ "$software_name" == *"_MSG_"* ]]; then
+                            software_name=""
+                        fi
+                    fi
+                fi
+            fi
+
+            software_description=$(plutil -extract description raw -o - "$extfile" 2>/dev/null)
+            if [[ "$software_description" == *"_MSG_"* ]]; then
+                software_description=""
+            fi
+            if [ -z "$software_description" ]; then
+                newExt="$base_dir/$dir/${version}/_locales/en/messages.json"
+                if [ -f "$newExt" ]; then
+                    software_description=$(plutil -extract app_description.message raw -o - "$newExt" 2>/dev/null)
+                    if [[ "$software_description" == *"_MSG_"* ]]; then
+                        software_description=""
+                    fi
+                    if [ -z "$software_description" ]; then
+                        software_description=$(plutil -extract extdesc.message raw -o - "$newExt" 2>/dev/null)
+                        if [[ "$software_description" == *"_MSG_"* ]]; then
+                            software_description=""
+                        fi
+                    fi
+                fi
+            fi
+            if [ -z "$software_description" ]; then
+                newExt="$base_dir/$dir/${version}/_locales/en_US/messages.json"
+                if [ -f "$newExt" ]; then
+                    software_description=$(plutil -extract app_description.message raw -o - "$newExt" 2>/dev/null)
+                    if [[ "$software_description" == *"_MSG_"* ]]; then
+                        software_description=""
+                    fi
+                    if [ -z "$software_description" ]; then
+                        software_description=$(plutil -extract extdesc.message raw -o - "$newExt" 2>/dev/null)
+                        if [[ "$software_description" == *"_MSG_"* ]]; then
+                            software_description=""
+                        fi
+                    fi
+                fi
+            fi
+
+            software_version=$(plutil -extract version raw -o - "$extfile" 2>/dev/null)
+            software_location="$base_dir/$dir/$version"
+            software_publisher="Chrome Browser ($name)"
+            software_url=$(plutil -extract homepage_url raw -o - "$extfile" 2>/dev/null)
+            if [ -n "$software_name" ]; then
+                echo "      <item>" >> $xml_file
+                echo "          <type><![CDATA[$software_type]]></type>" >> $xml_file
+                echo "          <name><![CDATA[$software_name]]></name>" >> $xml_file
+                echo "          <description><![CDATA[$software_description]]></description>" >> $xml_file
+                echo "          <version><![CDATA[$software_version]]></version>" >> $xml_file
+                echo "          <location><![CDATA[$software_location]]></location>" >> $xml_file
+                echo "          <publisher><![CDATA[$software_publisher]]></publisher>" >> $xml_file
+                echo "          <url><![CDATA[$software_url]]></url>" >> $xml_file
+                echo "      </item>" >> $xml_file
+            fi
+        fi
+        software_type=""
+        software_name=""
+        software_description=""
+        software_version=""
+        software_location=""
+        software_publisher=""
+        software_url=""
+    done
+done
+
+# Edge extensions
+if [ "$debugging" -gt "0" ]; then
+    echo "Edge Extensions"
+fi
+for line in $(dscl . -list /Users | grep -v '^_' | grep -v -i daemon | grep -v -i root | grep -v -i nobody); do
+    name=$(echo "$line" | cut -d: -f1)
+    base_dir="/Users/$name/Library/Application Support/Microsoft Edge/Default/Extensions"
+    for dir in $(ls "$base_dir" 2>/dev/null | grep -v -i DS_Store | grep -v Temp); do
+        version=$(ls "$base_dir/${dir}/" 2>/dev/null | grep -v -i DS_Store | head -n1)
+        extfile="$base_dir/$dir/${version}/manifest.json"
+        if [ -f "$extfile" ]; then
+            software_type="browser extension"
+            software_name=$(plutil -extract name raw -o - "$extfile" 2>/dev/null)
+            if [[ "$software_name" == *"_MSG_"* ]]; then
+                software_name=""
+            fi
+            if [ -z "$software_name" ]; then
+                newExt="$base_dir/$dir/${version}/_locales/en/messages.json"
+                if [ -f "$newExt" ]; then
+                    software_name=$(plutil -extract app_name.message raw -o - "$newExt" 2>/dev/null)
+                    if [[ "$software_name" == *"_MSG_"* ]]; then
+                        software_name=""
+                    fi
+                    if [ -z "$software_name" ]; then
+                        software_name=$(plutil -extract extname.message raw -o - "$newExt" 2>/dev/null)
+                        if [[ "$software_name" == *"_MSG_"* ]]; then
+                            software_name=""
+                        fi
+                    fi
+                fi
+            fi
+            if [ -z "$software_name" ]; then
+                newExt="$base_dir/$dir/${version}/_locales/en_US/messages.json"
+                if [ -f "$newExt" ]; then
+                    software_name=$(plutil -extract app_name.message raw -o - "$newExt" 2>/dev/null)
+                    if [[ "$software_name" == *"_MSG_"* ]]; then
+                        software_name=""
+                    fi
+                    if [ -z "$software_name" ]; then
+                        software_name=$(plutil -extract extname.message raw -o - "$newExt" 2>/dev/null)
+                        if [[ "$software_name" == *"_MSG_"* ]]; then
+                            software_name=""
+                        fi
+                    fi
+                fi
+            fi
+
+            software_description=$(plutil -extract description raw -o - "$extfile" 2>/dev/null)
+            if [[ "$software_description" == *"_MSG_"* ]]; then
+                software_description=""
+            fi
+            if [ -z "$software_description" ]; then
+                newExt="$base_dir/$dir/${version}/_locales/en/messages.json"
+                if [ -f "$newExt" ]; then
+                    software_description=$(plutil -extract app_description.message raw -o - "$newExt" 2>/dev/null)
+                    if [[ "$software_description" == *"_MSG_"* ]]; then
+                        software_description=""
+                    fi
+                    if [ -z "$software_description" ]; then
+                        software_description=$(plutil -extract extdesc.message raw -o - "$newExt" 2>/dev/null)
+                        if [[ "$software_description" == *"_MSG_"* ]]; then
+                            software_description=""
+                        fi
+                    fi
+                fi
+            fi
+            if [ -z "$software_description" ]; then
+                newExt="$base_dir/$dir/${version}/_locales/en_US/messages.json"
+                if [ -f "$newExt" ]; then
+                    software_description=$(plutil -extract app_description.message raw -o - "$newExt" 2>/dev/null)
+                    if [[ "$software_description" == *"_MSG_"* ]]; then
+                        software_description=""
+                    fi
+                    if [ -z "$software_description" ]; then
+                        software_description=$(plutil -extract extdesc.message raw -o - "$newExt" 2>/dev/null)
+                        if [[ "$software_description" == *"_MSG_"* ]]; then
+                            software_description=""
+                        fi
+                    fi
+                fi
+            fi
+
+            software_version=$(plutil -extract version raw -o - "$extfile" 2>/dev/null)
+            software_location="$base_dir/$dir/$version"
+            software_publisher="Edge Browser ($name)"
+            software_url=$(plutil -extract homepage_url raw -o - "$extfile" 2>/dev/null)
+            if [ -n "$software_name" ]; then
+                echo "      <item>" >> $xml_file
+                echo "          <type><![CDATA[$software_type]]></type>" >> $xml_file
+                echo "          <name><![CDATA[$software_name]]></name>" >> $xml_file
+                echo "          <description><![CDATA[$software_description]]></description>" >> $xml_file
+                echo "          <version><![CDATA[$software_version]]></version>" >> $xml_file
+                echo "          <location><![CDATA[$software_location]]></location>" >> $xml_file
+                echo "          <publisher><![CDATA[$software_publisher]]></publisher>" >> $xml_file
+                echo "          <url><![CDATA[$software_url]]></url>" >> $xml_file
+                echo "      </item>" >> $xml_file
+            fi
+        fi
+        software_type=""
+        software_name=""
+        software_description=""
+        software_version=""
+        software_location=""
+        software_publisher=""
+        software_url=""
+    done
+done
+
 echo "  </software>" >> $xml_file
 
 
