@@ -45,6 +45,7 @@ class WidgetsModel extends BaseModel
      */
     public function collection(object $resp): array
     {
+        log_message('debug', 'WidgetsModel::collection start');
         $properties = $resp->meta->properties;
         $properties[] = "orgs.name as `orgs.name`";
         $properties[] = "orgs.id as `orgs.id`";
@@ -60,6 +61,7 @@ class WidgetsModel extends BaseModel
         $this->builder->orderBy($resp->meta->sort);
         $this->builder->limit($resp->meta->limit, $resp->meta->offset);
         $query = $this->builder->get();
+        log_message('debug', str_replace("\n", " ", (string)$this->db->getLastQuery()));
         if ($this->sqlError($this->db->error())) {
             return array();
         }
@@ -85,6 +87,7 @@ class WidgetsModel extends BaseModel
                 unset($name);
             }
         }
+        log_message('debug', 'WidgetsModel::collection finish');
         return format_data($result, $resp->meta->collection);
     }
 
@@ -196,6 +199,7 @@ class WidgetsModel extends BaseModel
      */
     private function lineData(object $widget, array $org_list)
     {
+        log_message('debug', 'WidgetsModel::lineData start.');
         $org_list = implode(',', $org_list);
         $instance = & get_instance();
         if (!empty($widget->sql)) {
@@ -207,6 +211,7 @@ class WidgetsModel extends BaseModel
                 $sql = str_replace('@filter', $filter, $sql);
             }
             $result = $this->db->query($sql)->getResult();
+            log_message('debug', str_replace("\n", " ", (string)$this->db->getLastQuery()));
             if (!empty($result)) {
                 foreach ($result as $row) {
                     $row->timestamp = strtotime($row->date);
@@ -274,6 +279,7 @@ class WidgetsModel extends BaseModel
                 $result[] = $item;
             }
             usort($result, array($this,'compareTimestamp'));
+            log_message('debug', 'WidgetsModel::lineData finish.');
             return $result;
         }
 
@@ -292,6 +298,7 @@ class WidgetsModel extends BaseModel
             }
             $sql = str_replace('@filter', $filter, $sql);
             $result = $this->db->query($sql)->getResult();
+            log_message('debug', str_replace("\n", " ", (string)$this->db->getLastQuery()));
             if (!empty($result)) {
                 foreach ($result as $row) {
                     if (empty($widget->link)) {
@@ -345,6 +352,7 @@ class WidgetsModel extends BaseModel
                 }
             }
             usort($result, array($this,'compareTimestamp'));
+            log_message('debug', 'WidgetsModel::lineData finish.');
             return $result;
         }
     }
@@ -356,6 +364,7 @@ class WidgetsModel extends BaseModel
      */
     public function listUser($where = array(), $orgs = array()): array
     {
+        log_message('debug', 'WidgetsModel::listUser start.');
         if (empty($orgs)) {
             $instance = & get_instance();
             $orgs = array_unique(array_merge($instance->user->orgs, $instance->orgsModel->getUserDescendants($instance->user->orgs, $instance->orgs)));
@@ -376,6 +385,7 @@ class WidgetsModel extends BaseModel
         if ($this->sqlError($this->db->error())) {
             return array();
         }
+        log_message('debug', 'WidgetsModel::listUser finish.');
         return format_data($query->getResult(), 'widgets');
     }
 
@@ -402,6 +412,7 @@ class WidgetsModel extends BaseModel
      */
     private function pieData(object $widget, array $org_list)
     {
+        log_message('debug', 'WidgetsModel::pieData start');
         $org_list = implode(',', $org_list);
         $device_tables = array('bios','connections','disk','dns','ip','license','log','memory','module','monitor','motherboard','netstat','network','nmap','optical','pagefile','partition','print_queue','processor','route','san','scsi','server','server_item','service','share','software','software_key','sound','task','user','user_group','variable','video','vm','warranty','windows');
 
@@ -501,6 +512,7 @@ class WidgetsModel extends BaseModel
             log_message('debug', 'Widget definition is bad. Widget: ' . json_encode($widget));
         }
         $result = $this->db->query($sql)->getResult();
+        log_message('debug', str_replace("\n", " ", (string)$this->db->getLastQuery()));
         if (!empty($result)) {
             for ($i = 0; $i < count($result); $i++) {
                 if (empty($result[$i]->name) and empty($result[$i]->count)) {
@@ -562,6 +574,7 @@ class WidgetsModel extends BaseModel
             $item->link = '';
             $result[] = $item;
         }
+        log_message('debug', 'WidgetsModel::pieData finish.');
         return $result;
     }
 
@@ -603,6 +616,7 @@ class WidgetsModel extends BaseModel
      */
     public function statusData(object $widget, array $org_list)
     {
+        log_message('debug', 'WidgetsModel::statusData start.');
         $instance = & get_instance();
         $org_list = implode(',', $org_list);
         $return = new stdClass();
@@ -630,12 +644,14 @@ class WidgetsModel extends BaseModel
                 return $return;
             }
             $result = $query->getResult();
+            log_message('debug', $sql);
             if (empty($result)) {
                 log_message('error', 'Could not retrieve result');
                 return $return;
             }
             if (isset($result[0]->count)) {
                 $return->result = $result[0]->count;
+                log_message('debug', 'Count in resulset, set to ' . $return->result);
             } elseif (!empty($result) and count($result) > 0) {
                 $return->result = count($result);
             }
@@ -650,13 +666,14 @@ class WidgetsModel extends BaseModel
                 $return->result = count($result);
             }
         }
-
+        log_message('debug', str_replace("\n", " ", (string)$this->db->getLastQuery()));
         if (empty($return->result)) {
             $return->result = 0;
             $return->color = $widget->status_secondary_color;
         } else {
             $return->color = $widget->status_primary_color;
         }
+        log_message('debug', 'Resulset is ' . $return->result);
         if (!empty($widget->status_secondary_sql)) {
             $sql = $widget->status_secondary_sql;
             if (strpos($sql, 'WHERE @filter') !== false) {
@@ -667,6 +684,7 @@ class WidgetsModel extends BaseModel
                 $sql = str_replace('@filter', $org_list, $sql);
             }
             $query = $this->db->query($sql);
+            log_message('debug', str_replace("\n", " ", (string)$this->db->getLastQuery()));
             if (empty($query)) {
                 log_message('error', 'Could not execute SQL: ' . $sql);
                 return $return;
@@ -680,6 +698,8 @@ class WidgetsModel extends BaseModel
                 $widget->secondary_text = $result[0]->secondary_text;
             }
         }
+        log_message('debug', json_encode($return));
+        log_message('debug', 'WidgetsModel::statusData finish.');
         return $return;
     }
 
@@ -691,6 +711,7 @@ class WidgetsModel extends BaseModel
      */
     private function trafficData(object $widget, array $org_list)
     {
+        log_message('debug', 'WidgetsModel::trafficData start.');
         $user = new stdClass();
         $user->org_list = $org_list;
 
@@ -705,6 +726,7 @@ class WidgetsModel extends BaseModel
 
         if (!empty($widget->traffic_primary_query_id)) {
             $query = $queriesModel->execute(intval($widget->traffic_primary_query_id), $user);
+            log_message('debug', 'Primary: ' . str_replace("\n", " ", (string)$this->db->getLastQuery()));
             $result->red = 0;
             if (!empty($query)) {
                 $result->red = count($query);
@@ -713,6 +735,7 @@ class WidgetsModel extends BaseModel
 
         if (!empty($widget->traffic_secondary_query_id)) {
             $query = $queriesModel->execute(intval($widget->traffic_secondary_query_id), $user);
+            log_message('debug', 'Secondary: ' . str_replace("\n", " ", (string)$this->db->getLastQuery()));
             $result->yellow = 0;
             if (!empty($query)) {
                 $result->yellow = count($query);
@@ -721,6 +744,7 @@ class WidgetsModel extends BaseModel
 
         if (!empty($widget->traffic_ternary_query_id)) {
             $query = $queriesModel->execute(intval($widget->traffic_ternary_query_id), $user);
+            log_message('debug', 'Ternary: ' . str_replace("\n", " ", (string)$this->db->getLastQuery()));
             $result->green = 0;
             if (!empty($query)) {
                 $result->green = count($query);
@@ -734,6 +758,7 @@ class WidgetsModel extends BaseModel
             $result->color = 'success';
         }
 
+        log_message('debug', 'WidgetsModel::trafficData finish.');
         return $result;
     }
 
