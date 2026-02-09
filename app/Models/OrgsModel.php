@@ -21,6 +21,7 @@ class OrgsModel extends BaseModel
      * Read the collection from the database
      *
      * @param  $resp object An object containing the properties, filter, sort and limit as passed by the user
+     * 
      * @return array        An array of formatted Orgs
      */
     public function collection(object $resp): array
