@@ -450,7 +450,7 @@ if (empty($resource->type)) {
                                             if ($resource->{'instance_provider'} === 'Google Compute') {
                                                 if (!empty($tags)) {
                                                     foreach ($tags as $key => $value) {
-                                                        echo read_field(__('Tags :: ') . $key, $value);
+                                                        echo read_field(__('Tags :: ') . $key, json_encode($value));
                                                     }
                                                 }
                                             }
