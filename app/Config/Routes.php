@@ -167,6 +167,8 @@ $routes->cli('discoveries/(:num)/execute', 'Cli::executeDiscovery/$1', ['as' => 
 $routes->cli('integrations/(:num)/execute', 'Cli::executeIntegration/$1', ['as' => 'executeIntegration']);
 $routes->cli('clouds/(:num)/execute', 'Cli::executeCloud/$1', ['as' => 'executeCloud']);
 
+$routes->cli('resetDeviceComponentTables', 'Cli::resetDeviceComponentTables', ['as' => 'resetDeviceComponentTables']);
+
 $routes->patch('devices/(:num)/reset', 'Devices::reset/$1', ['filter' => \App\Filters\Session::class, 'as' => 'DeviceReset']);
 
 foreach ($collections as $collection) {

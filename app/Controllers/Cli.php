@@ -40,6 +40,34 @@ use GuzzleHttp\HandlerStack;
  */
 class Cli extends Controller
 {
+
+    public function resetDeviceComponentTables()
+    {
+        $db = db_connect();
+        $tables = array();
+        $allTables = $db->listTables();
+        foreach ($allTables as $oneTable) {
+            if ($db->fieldExists('current', $oneTable) and $db->fieldExists('last_seen', $oneTable)) {
+                $tables[] = $oneTable;
+            }
+        }
+        foreach ($tables as $table) {
+            $sql = "SELECT COUNT(*) AS `count` FROM `$table`";
+            $result = $db->query($sql)->getResult();
+            $total = @intval($result[0]->count);
+            $sql = "SELECT COUNT(*) AS `count` FROM `$table` WHERE current = 'n'";
+            $result = $db->query($sql)->getResult();
+            $nonCurrent = @intval($result[0]->count);
+            if (!empty($nonCurrent)) {
+                log_message('info', 'Table ' . $table . ' is being reset. Deleting ' . $nonCurrent . ' non-current rows from ' . $result . ' total rows.');
+                echo 'Table ' . $table . ' is being reset. Deleting ' . $nonCurrent . ' non-current rows from ' . $result . " total rows.\n";
+                $sql = "DELETE FROM `$table` WHERE current = 'n'";
+                $db->query($sql);
+            }
+        }
+    }
+
+
     public function testBenchmarks()
     {
         helper('components');
