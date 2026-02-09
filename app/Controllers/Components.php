@@ -41,6 +41,7 @@ class Components extends BaseController
         if ($type === 'applications') {
             $this->applicationsModel = new \App\Models\ApplicationsModel();
             $this->resp->included['applications'] = $this->applicationsModel->listUser();
+            $dictionary = $this->applicationsModel->dictionary();
         }
         if ($type === 'clusters') {
             $this->clustersModel = new \App\Models\ClustersModel();
