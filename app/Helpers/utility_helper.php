@@ -420,6 +420,8 @@ function getLicenseDetails()
     $license->count = 0;
     $license->expires = '2000-01-01';
     $license->type = '';
+    $license->first_name = '';
+    $license->last_name = '';
     $license->string = (!empty($config->license_string)) ? hash('sha256', trim($config->license_string)) : '';
 
     // License info
@@ -454,6 +456,8 @@ function getLicenseDetails()
             $license->count = !empty($json->count) ? intval($json->count) : 0;
             $license->expires = !empty($json->expires) ? date('Y-m-d', intval($json->expires)) : '';
             $license->type = !empty($json->license) ? $json->license : '';
+            $license->first_name = !empty($json->first_name) ? $json->first_name : '';
+            $license->last_name = !empty($json->last_name) ? $json->last_name : '';
         }
         unset($output);
     } else {
