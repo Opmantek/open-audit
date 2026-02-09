@@ -821,15 +821,17 @@ class DevicesModel extends BaseModel
         }
 
         if ($instance->config->product === 'enterprise' and $this->db->fieldExists('cve', 'devices')) {
-            $sql = "SELECT `cve` FROM devices WHERE id = ?";
-            $query = $this->db->query($sql, [$id]);
-            $result = $query->getResult();
-            if (!empty($result[0]->cve)) {
-                $cves = explode(',', $result[0]->cve);
-                $cves = "'" . implode("','", $cves) . "'";
-                $sql = "SELECT id, name, base_severity, cve, vendor FROM vulnerabilities WHERE cve IN ($cves)";
-                $query = $this->db->query($sql);
-                $include['vulnerabilities'] = $query->getResult();
+            if (empty($resp_include) or in_array('vulnerabilities', $resp_include)) {
+                $sql = "SELECT `cve` FROM devices WHERE id = ?";
+                $query = $this->db->query($sql, [$id]);
+                $result = $query->getResult();
+                if (!empty($result[0]->cve)) {
+                    $cves = explode(',', $result[0]->cve);
+                    $cves = "'" . implode("','", $cves) . "'";
+                    $sql = "SELECT id, name, base_severity, cve, vendor FROM vulnerabilities WHERE cve IN ($cves)";
+                    $query = $this->db->query($sql);
+                    $include['vulnerabilities'] = $query->getResult();
+                }
             }
         }
 
