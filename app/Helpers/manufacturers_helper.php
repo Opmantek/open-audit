@@ -91,6 +91,7 @@ function manufacturerLogo (string $manufacturer = '')
     if ($logo === '' and mb_stripos($manufacturer, 'Palo Alto') !== false) { $logo = 'palo_alto'; }
     if ($logo === '' and mb_stripos($manufacturer, 'PCS Systemtechnik') !== false) { $logo = 'pcs'; }
     if ($logo === '' and mb_stripos($manufacturer, 'Pegatron') !== false) { $logo = 'pegatron'; }
+    if ($logo === '' and mb_stripos($manufacturer, 'Proxmox') !== false) { $logo = 'proxmox'; }
     if ($logo === '' and mb_stripos($manufacturer, 'Radwin') !== false) { $logo = 'radwin'; }
     if ($logo === '' and mb_stripos($manufacturer, 'Raritan') !== false) { $logo = 'raritan'; }
     if ($logo === '' and mb_stripos($manufacturer, 'Raspberry') !== false) { $logo = 'raspberry'; }
