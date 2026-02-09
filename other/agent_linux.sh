@@ -92,7 +92,7 @@ url="${url%/}"
 if [ "$help" = "y" ]; then
     echo ""
     echo "This is the Open-AudIT Agent version $version."
-    echo "This powershell script is normally called from cron."
+    echo "This script is normally called from cron."
     echo "Options for calling directly from the command line are:"
     echo " --debug: Set the debug output (default n)."
     echo " --uninstall: Uninstall this agent (default n)."
