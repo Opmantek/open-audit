@@ -122,7 +122,6 @@ class ComponentsModel extends BaseModel
                     $properties[] = "devices." . $column . " as `devices." . $column . "`";
                 }
             }
-            log_message('info', 'Properties: ' . json_encode($properties));
         }
         $this->builder->select($properties, false);
         $this->builder->join('devices', $table . '.device_id = devices.id', 'left');
@@ -313,10 +312,10 @@ class ComponentsModel extends BaseModel
                 redirect()->route('devicesRead', [$data->device_id]);
                 return null;
             }
-            if (!file_exists($_SERVER['DOCUMENT_ROOT'] . '/custom_images')) {
-                mkdir($_SERVER['DOCUMENT_ROOT'] . '/custom_images');
+            if (!file_exists(ROOTPATH . 'public/custom_images')) {
+                mkdir(ROOTPATH . 'public/custom_images');
             }
-            if (!file_exists($_SERVER['DOCUMENT_ROOT'] . '/custom_images')) {
+            if (!file_exists(ROOTPATH . 'public/custom_images')) {
                 log_message('error', 'Custom Images directory does not exist and cannot be created.');
                 \Config\Services::session()->setFlashdata('error', 'Custom Images directory does not exist and cannot be created. Check filesystem permissions.');
                 redirect()->route('devicesRead', [$data->device_id]);
@@ -344,7 +343,6 @@ class ComponentsModel extends BaseModel
                     redirect()->route('devicesRead', [$data->device_id]);
                     return null;
                 }
-                # $target = $_SERVER['DOCUMENT_ROOT'] . '/open-audit/custom_images/' . $filename;
                 $target = ROOTPATH . 'public/custom_images/' . $filename;
                 if (php_uname('s') === 'Windows NT') {
                     $target = 'c:\\xampp\\htdocs\\open-audit\\custom_images\\' . $filename;
