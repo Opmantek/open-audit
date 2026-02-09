@@ -64,7 +64,7 @@ function traffic_widget($widget)
 
 function status_widget($widget)
 {
-    $link = '';
+    $link = '<span style="font-weight: 700; font-size: 1.875rem; color:#494242;">' . $widget->result->result . '</span>';
     if (!empty($widget->status_link_query_id) and is_numeric($widget->status_link_query_id)) {
         $link = '<a href="' . url_to('queriesExecute', $widget->status_link_query_id) . '"><span style="font-weight: 700; font-size: 1.875rem; color:#494242;">' . $widget->result->result . '</span></a>';
     } else if (!empty($widget->link)) {
