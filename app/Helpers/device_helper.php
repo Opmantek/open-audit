@@ -282,7 +282,7 @@ if (! function_exists('deviceMatch')) {
                 $match->{$item} = @$instance->config->{$item};
             }
         }
-        $invalid_strings = array('To be filled by O.E.M.');
+        $invalid_strings = array('to be filled by o.e.m.');
 
         // TODO: fix this by making sure (snmp in particular) calls with the proper variable name
         if (!isset($details->mac_address) && (isset($details->mac))) {
@@ -540,7 +540,7 @@ if (! function_exists('deviceMatch')) {
             }
         }
 
-        if (strtolower($match->match_hostname_serial) === 'y' && empty($details->id) && ! empty($details->serial) && ! empty($details->hostname) && ! in_array($details->serial, $invalid_strings)) {
+        if (strtolower($match->match_hostname_serial) === 'y' && empty($details->id) && ! empty($details->serial) && ! empty($details->hostname) && ! in_array(strtolower($details->serial), $invalid_strings)) {
             $sql = "SELECT devices.id FROM devices WHERE devices.hostname LIKE ? AND devices.serial LIKE ? AND devices.status != 'deleted' LIMIT 1";
             $data = array("{$details->hostname}", "{$details->serial}");
             $query = $db->query($sql, $data);
@@ -586,7 +586,7 @@ if (! function_exists('deviceMatch')) {
                 $message->command_status = 'notice';
                 $message->command_output = '';
                 $log_message[] = $message;
-            } elseif (in_array($details->serial, $invalid_strings)) {
+            } elseif (in_array(strtolower($details->serial), $invalid_strings)) {
                 $message = new \StdClass();
                 $message->message = 'Not running match_hostname_serial, invalid serial.';
                 $message->command_status = 'notice';
@@ -846,7 +846,7 @@ if (! function_exists('deviceMatch')) {
             }
         }
 
-        if (strtolower($match->match_serial_type) === 'y' && empty($details->id) && ! empty($details->serial) && ! empty($details->type) && ! in_array($details->serial, $invalid_strings)) {
+        if (strtolower($match->match_serial_type) === 'y' && empty($details->id) && ! empty($details->serial) && ! empty($details->type) && ! in_array(strtolower($details->serial), $invalid_strings)) {
             $sql = "SELECT devices.id, devices.org_id FROM devices WHERE devices.serial LIKE ? AND devices.type LIKE ? AND devices.status != 'deleted' LIMIT 1";
 
             $data = array("{$details->serial}", "{$details->type}");
@@ -905,7 +905,7 @@ if (! function_exists('deviceMatch')) {
                 $message->command_status = 'notice';
                 $message->command_output = '';
                 $log_message[] = $message;
-            } elseif (in_array($details->serial, $invalid_strings)) {
+            } elseif (in_array(strtolower($details->serial), $invalid_strings)) {
                 $message = new \StdClass();
                 $message->message = 'Not running match_serial_type, invalid serial.';
                 $message->command_status = 'notice';
@@ -920,7 +920,7 @@ if (! function_exists('deviceMatch')) {
             }
         }
 
-        if (strtolower($match->match_serial) === 'y' && empty($details->id) && ! empty($details->serial) && ! in_array($details->serial, $invalid_strings)) {
+        if (strtolower($match->match_serial) === 'y' && empty($details->id) && ! empty($details->serial) && ! in_array(strtolower($details->serial), $invalid_strings)) {
             $sql = "SELECT devices.id, devices.org_id FROM devices WHERE devices.serial LIKE ? AND devices.status != 'deleted' LIMIT 1";
 
             $data = array("{$details->serial}");
@@ -973,7 +973,7 @@ if (! function_exists('deviceMatch')) {
                 $message->command_status = 'notice';
                 $message->command_output = '';
                 $log_message[] = $message;
-            } elseif (in_array($details->serial, $invalid_strings)) {
+            } elseif (in_array(strtolower($details->serial), $invalid_strings)) {
                 $message = new \StdClass();
                 $message->message = 'Not running match_serial, invalid serial.';
                 $message->command_status = 'notice';
@@ -988,7 +988,7 @@ if (! function_exists('deviceMatch')) {
             }
         }
 
-        if (strtolower($match->match_sysname_serial) === 'y' && empty($details->id) && ! empty($details->serial) && ! empty($details->sysName) && ! in_array($details->serial, $invalid_strings)) {
+        if (strtolower($match->match_sysname_serial) === 'y' && empty($details->id) && ! empty($details->serial) && ! empty($details->sysName) && ! in_array(strtolower($details->serial), $invalid_strings)) {
             $sql = "SELECT devices.id FROM devices WHERE devices.sysName LIKE ? AND devices.serial LIKE ? AND devices.status != 'deleted' LIMIT 1";
 
             $data = array("{$details->sysName}", "{$details->serial}");
@@ -1035,7 +1035,7 @@ if (! function_exists('deviceMatch')) {
                 $message->command_status = 'notice';
                 $message->command_output = '';
                 $log_message[] = $message;
-            } elseif (in_array($details->serial, $invalid_strings)) {
+            } elseif (in_array(strtolower($details->serial), $invalid_strings)) {
                 $message = new \StdClass();
                 $message->message = 'Not running match_sysname_serial, invalid serial.';
                 $message->command_status = 'notice';
