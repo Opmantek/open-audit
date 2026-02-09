@@ -261,6 +261,42 @@ class ApplicationsModel extends BaseModel
         $dictionary->columns->options  = 'Unused.';
         $dictionary->columns->edited_by = $instance->dictionary->edited_by;
         $dictionary->columns->edited_date = $instance->dictionary->edited_date;
+
+        $dictionary->relationships = new stdClass();
+        $dictionary->relationships->{'accessed-via'} = 'A network. Links to <code>networks.id</code>.';
+        $dictionary->relationships->{'authenticates-via'} = 'A device running a service. Links to <code>service.name</code>.';
+        $dictionary->relationships->{'calls-api'} = 'A device running a web service. Links to <code>server_item.name</code>.';
+        $dictionary->relationships->{'connected-via'} = 'A network. Links to <code>networks.id</code>';
+        $dictionary->relationships->{'consumes'} = 'An external service.';
+        $dictionary->relationships->{'depends-on'} = 'Another component of this application. Links to <code>application.name</code>.';
+        $dictionary->relationships->{'hosted-on'} = 'A VM host. Links to <code>devices.id</code>.';
+        $dictionary->relationships->{'publishes-to'} = 'An external service.';
+        $dictionary->relationships->{'relies-on'} = 'A device or hosted service. Links to <code>devices.id</code> or an external service.';
+        $dictionary->relationships->{'runs-on'} = 'A device. Links to <code>devices.id</code>';
+        $dictionary->relationships->{'used-by'} = 'Another component of this application. Links to <code>application.name</code>.';
+        $dictionary->relationships->{'uses-database'} = 'A database on a device or hosted service. Links to <code>server_item.name</code> or an external service.';
+        $dictionary->relationships->{'uses-storage'} = 'Storage on a device or hosted service. Links to <code>shares.name</code> or an external service.';
+        $dictionary->relationships->{'writes-to'} = 'Storage on a device or hosted service. Links to <code>share.name</code> or an external service.';
+
+        $dictionary->types = new stdClass();
+        $dictionary->types->{'api'} = 'Links to <code>server_item.name</code>';
+        $dictionary->types->{'application'} = 'Links to <code>software.name</code>';
+        $dictionary->types->{'authentication'} = 'Links to <code>service.name</code>';
+        $dictionary->types->{'certificate'} = 'Links to <code>certificates.id</code>';
+        $dictionary->types->{'client'} = 'Links to <code>devices.id</code>';
+        $dictionary->types->{'cluster'} = 'Links to <code>clusters.id</code>';
+        $dictionary->types->{'database'} = 'Links to <code>server_item.name</code>';
+        $dictionary->types->{'device'} = 'Links to <code>devices.id</code>';
+        $dictionary->types->{'dnsname'} = 'Text';
+        $dictionary->types->{'other'} = 'Text';
+        $dictionary->types->{'program'} = 'Links to <code>files.id</code>.';
+        $dictionary->types->{'queue'} = 'Links to <code>service.name</code>';
+        $dictionary->types->{'service'} = 'Links to <code>service.name</code>';
+        $dictionary->types->{'storage'} = 'Links to <code>share.name</code>';
+        $dictionary->types->{'website'} = 'Links to <code>server_item.name</code>';
+
+
+
         return $dictionary;
     }
 }
