@@ -794,6 +794,9 @@ function format_data($result, $type)
                 (strrpos((string)$key, 'destination') === strlen((string)$key) - 11) or
                 (string)$key === 'Device IP'
             ) {
+                if (is_null($value)) {
+                    $value = '';
+                }
                 $temp_name = $key . '_padded';
                 $item->$temp_name = ip_address_from_db($value);
                 $item->$temp_name = ip_address_to_db($item->$temp_name);
