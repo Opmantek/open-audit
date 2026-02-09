@@ -71,17 +71,18 @@ if (!empty($config->feature_agents_advanced) and $config->feature_agents_advance
                 </div>
             </div>
             <?php
-            if (count($data) === 1) {
-                @include 'help/' . $meta->collection . '.php';
-                echo collection_intro_header('Introduction to ' . $meta->heading, $meta->collection, $meta->icon, @$intro, @$body);
-            } else { ?>
+            // if (count($data) === 1) {
+            //     @include 'help/' . $meta->collection . '.php';
+            //     echo collection_intro_header('Introduction to ' . $meta->heading, $meta->collection, $meta->icon, @$intro, @$body);
+            // } else {
+            ?>
             <br>
             <div class="card">
-                <div class="card-header" style="height:46px;"><?= __('Installing on Windows') ?></div>
+                <div class="card-header" style="height:46px;"><h5 style="padding-top:4px;"><img src="/device_images/windows.svg" style="padding-right:10px; padding-bottom:2px; height:20px;" /><?= __('Installing on Windows') ?></h5></div>
                 <div class="card-body">
                     <p>Have your user open a command prompt (using 'Run as Administrator'). Paste the below into the prompt to download and run the Agent.<br><code>powershell.exe Invoke-WebRequest -UseBasicParsing <?= base_url()?>index.php/agents/windows/download -Outfile agent.ps1 -Method GET && powershell.exe -executionpolicy bypass -file .\agent.ps1 -install -debug 1</code><br>When complete, close the command window and you're done!</p>
 
-                    <p><strong>NOTE</strong>: If your user does not have 'Run as Administrator' rights, they can still download the agent and run it to submit an audit as below. It will be a one-off audit without the Agent being installed or scheduled. Note that the audit will be run without Administrator access, so not all attributes may be returned.<br>
+                    <p><strong>NOTE #1</strong>: If your user does not have 'Run as Administrator' rights, they can still download the agent and run it to submit an audit as below. It will be a one-off audit without the Agent being installed or scheduled. Note that the audit will be run without Administrator access, so not all attributes may be returned.<br>
                     <code>powershell.exe Invoke-WebRequest -UseBasicParsing <?= base_url()?>index.php/agents/windows/download -Outfile agent.ps1 -Method GET && powershell.exe -executionpolicy bypass -file .\agent.ps1 -debug 1</code><br></p>
 
                     <p><strong>NOTE #2</strong>: If you want to force your Agents to use a particular configuration, you can supply the ID of the agents entry to use, as below (replace $id with the id of the Agents entry). When this Agent is installed, it will check-in with the server and <strong>only</strong> check that one individual Agent entry's attributes (tests and actions). This may be useful if you're an MSP - create an Agents entry for a particular customer and have their devices all use this entry, which assigns them to an Org and Location.<br>
@@ -90,11 +91,11 @@ if (!empty($config->feature_agents_advanced) and $config->feature_agents_advance
             </div>
             <br>
             <div class="card">
-                <div class="card-header" style="height:46px;"><?= __('Installing on MacOS') ?></div>
+                <div class="card-header" style="height:46px;"><h5 style="padding-top:4px;"><img src="/device_images/macos.svg" style="padding-right:10px; padding-bottom:2px; height:20px;" /><?= __('Installing on MacOS') ?></h5></div>
                 <div class="card-body">
                     <p>Have your user open a terminal. Paste the below into the prompt to download and run the Agent.<br><code>curl -s <?= base_url()?>index.php/agents/macos/download | sudo bash -s -- --install</code><br>When complete, close the command window and you're done!</p>
 
-                    <p><strong>NOTE</strong>: If your user does not have 'sudo' rights, they can still download the agent and run it to submit an audit as below. It will be a one-off audit without the Agent being installed or scheduled. Note that the audit will be run without root access, so not all attributes may be returned.<br>
+                    <p><strong>NOTE #1</strong>: If your user does not have 'sudo' rights, they can still download the agent and run it to submit an audit as below. It will be a one-off audit without the Agent being installed or scheduled. Note that the audit will be run without root access, so not all attributes may be returned.<br>
                     <code>curl -s <?= base_url()?>index.php/agents/macos/download | bash -s -- --audit</code><br></p>
 
                     <p><strong>NOTE #2</strong>: If you want to force your Agents to use a particular configuration, you can supply the ID of the agents entry to use, as below (replace $id with the id of the Agents entry). When this Agent is installed, it will check-in with the server and <strong>only</strong> check that one individual Agent entry's attributes (tests and actions). This may be useful if you're an MSP - create an Agents entry for a particular customer and have their devices all use this entry, which assigns them to an Org and Location.<br>
@@ -105,16 +106,21 @@ if (!empty($config->feature_agents_advanced) and $config->feature_agents_advance
             </div>
             <br>
             <div class="card">
-                <div class="card-header" style="height:46px;"><?= __('Installing on Linux') ?></div>
+                <div class="card-header" style="height:46px;"><h5 style="padding-top:4px;"><img src="/device_images/linux.svg" style="padding-right:10px; padding-bottom:2px; height:20px;" /><?= __('Installing on Linux') ?></h5></div>
                 <div class="card-body">
                     <p>Have your user open a terminal. Paste the below into the prompt to download and run the Agent.<br><code>curl -s <?= base_url()?>index.php/agents/linux/download | sudo bash -s -- --install</code><br>When complete, close the command window and you're done!</p>
 
-                    <p><strong>NOTE</strong>: If your user does not have 'sudo' rights, they can still download the agent and run it to submit an audit as below. It will be a one-off audit without the Agent being installed or scheduled. Note that the audit will be run without root access, so not all attributes may be returned.<br><code>curl -s <?= base_url()?>index.php/agents/linux/download | bash -s -- --audit</code><br></p>
+                    <p><strong>NOTE #1</strong>: If your user does not have 'sudo' rights, they can still download the agent and run it to submit an audit as below. It will be a one-off audit without the Agent being installed or scheduled. Note that the audit will be run without root access, so not all attributes may be returned.<br><code>curl -s <?= base_url()?>index.php/agents/linux/download | bash -s -- --audit</code><br></p>
+
+                    <p><strong>NOTE #2</strong>: If you want to force your Agents to use a particular configuration, you can supply the ID of the agents entry to use, as below (replace $id with the id of the Agents entry). When this Agent is installed, it will check-in with the server and <strong>only</strong> check that one individual Agent entry's attributes (tests and actions). This may be useful if you're an MSP - create an Agents entry for a particular customer and have their devices all use this entry, which assigns them to an Org and Location.<br>
+                    <code>curl -s <?= base_url()?>index.php/agents/$id/download/linux | bash -s -- --audit</code>
 
                     <p><strong>NOTE #3</strong>: You can add <code>--debug</code> to the end of the command to see debugging output.</p><br><br>
                 </div>
             </div>
 
 
-            <?php } ?>
+            <?php
+            // }
+            ?>
         </main>
