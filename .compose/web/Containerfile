@@ -38,6 +38,8 @@ RUN apt-get update && apt-get install -y \
     && docker-php-source delete \
     && php -m
 
+ENV PHP_INI_SCAN_DIR=":/usr/local/open-audit/.compose/web/php/ini"
+
 COPY --from=docker.io/composer:latest /usr/bin/composer /usr/bin/composer
 COPY .compose/web/apache2/apache2.conf /etc/apache2/apache2.conf
 COPY .compose/web/apache2/sites-available/default.conf /etc/apache2/sites-available/000-default.conf
