@@ -1,0 +1,46 @@
+ARG PHP_VERSION=8.4
+
+FROM docker.io/php:${PHP_VERSION}-apache
+
+RUN apt-get update && apt-get install -y \
+        openssh-client \
+		git \
+		cron \
+		nmap \
+        snmp \
+        zip \
+        wget \
+        curl \
+        sshpass \
+        screen \
+        smbclient \
+        logrotate \
+        ipmitool \
+        libcrypt-cbc-perl \
+        # INTL Extension
+        libicu-dev \
+        # ZIP Extension
+        libzip-dev \
+        # GD Extension
+        libfreetype-dev \
+        # GD Extension
+        libjpeg62-turbo-dev \
+        # GD Extension
+        libpng-dev \
+        # LDAP Extension
+        libldap2-dev \
+        # SNMP Extension
+        libsnmp-dev \
+    && docker-php-source extract \
+    && docker-php-ext-configure gd --with-freetype --with-jpeg \
+	&& docker-php-ext-install -j$(nproc) gd intl ldap snmp zip \
+    && pecl install xdebug \
+    && docker-php-ext-enable xdebug \
+    && docker-php-source delete \
+    && php -m
+
+COPY --from=docker.io/composer:latest /usr/bin/composer /usr/bin/composer
+COPY .compose/web/apache2/apache2.conf /etc/apache2/apache2.conf
+COPY .compose/web/apache2/sites-available/default.conf /etc/apache2/sites-available/000-default.conf
+
+WORKDIR /usr/local/open-audit
