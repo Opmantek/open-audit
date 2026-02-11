@@ -1,36 +1,42 @@
 {
     "name": "codeigniter4/appstarter",
-    "type": "project",
     "description": "CodeIgniter4 starter app",
-    "homepage": "https://codeigniter.com",
     "license": "MIT",
+    "type": "project",
+    "homepage": "https://codeigniter.com",
+    "support": {
+        "forum": "http://forum.codeigniter.com/",
+        "source": "https://github.com/codeigniter4/CodeIgniter4",
+        "slack": "https://codeigniterchat.slack.com"
+    },
     "require": {
         "php": "^7.3 || ^8.0",
-        "codeigniter4/framework": "4.6.2",
         "ext-json": "*",
-        "phpseclib/phpseclib": "^3.0",
-        "google/auth": "^1.28",
         "aws/aws-sdk-php": "^3.281",
+        "codeigniter4/framework": "4.6.3.0",
+        "doctrine/instantiator": "1.5.0",
+        "foxworth42/oauth2-okta": "^1.0",
+        "google/auth": "^1.28",
+        "gravitypdf/querypath": "^4.1",
         "kint-php/kint": "^5.0",
         "laminas/laminas-escaper": "2.17.0",
-        "psr/cache": "1.0.1",
-        "symfony/deprecation-contracts": "v2.5.2",
-        "doctrine/instantiator": "1.5.0",
-        "masterminds/html5": "^2.9",
-        "gravitypdf/querypath": "^3.2",
-        "paragonie/sodium_compat": "^1",
-        "paragonie/random_compat": "^1",
         "league/oauth2-client": "^2.7",
         "league/oauth2-github": "^3.1",
-        "foxworth42/oauth2-okta": "^1.0",
-        "thenetworg/oauth2-azure": "^2.2",
-        "phpoffice/phpspreadsheet": "^4.3"
+        "masterminds/html5": "^2.9",
+        "paragonie/random_compat": "^2.0",
+        "paragonie/sodium_compat": "^1.24",
+        "phpoffice/phpspreadsheet": "^4.3",
+        "phpseclib/phpseclib": "^3.0",
+        "psr/cache": "1.0.1",
+        "symfony/deprecation-contracts": "2.5.2",
+        "thenetworg/oauth2-azure": "^2.2"
     },
     "require-dev": {
+        "codeigniter/coding-standard": "^1.8",
+        "ergebnis/composer-normalize": "^2.49",
         "fakerphp/faker": "^1.9",
         "mikey179/vfsstream": "^1.6",
-        "phpunit/phpunit": "^9.6",
-        "codeigniter/coding-standard": "^1.8"
+        "phpunit/phpunit": "^9.6"
     },
     "suggest": {
         "ext-fileinfo": "Improves mime type detection for files"
@@ -49,12 +55,18 @@
             "Tests\\Support\\": "tests/_support"
         }
     },
+    "config": {
+        "allow-plugins": {
+            "ergebnis/composer-normalize": true
+        },
+        "audit": {
+            "ignore": {
+                "PKSA-64jn-3d9t-gncx": "PhpSpreadsheet vulnerable to SSRF when reading a document in the browser",
+                "PKSA-cncr-q695-v65g": "Uses insecure CSPRNG openssl_random_pseudo_bytes"
+            }
+        }
+    },
     "scripts": {
         "test": "phpunit"
-    },
-    "support": {
-        "forum": "http://forum.codeigniter.com/",
-        "source": "https://github.com/codeigniter4/CodeIgniter4",
-        "slack": "https://codeigniterchat.slack.com"
     }
 }
