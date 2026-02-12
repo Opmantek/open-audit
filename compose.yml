@@ -26,6 +26,7 @@ services:
     restart: unless-stopped
     volumes:
       - .:/usr/local/open-audit:rw,z
+      - ./../oac:/usr/local/oac:rw,z
     ports:
       - "8087:80"
     networks:
