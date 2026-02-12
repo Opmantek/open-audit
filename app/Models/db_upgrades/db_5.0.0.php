@@ -40,7 +40,8 @@ $sql = "SELECT * FROM `attachment`";
 $result = $db->query($sql)->getResult();
 if (!empty($result)) {
     foreach ($result as $row) {
-        $filename = end(explode(DIRECTORY_SEPARATOR, $row->filename));
+        $array = explode(DIRECTORY_SEPARATOR, $row->filename);
+        $filename = end($array);
         $sql = "UPDATE `attachment` SET `filename` = ? WHERE id = ?";
         $query = $db->query($sql, [$filename, $row->id]);
     }
