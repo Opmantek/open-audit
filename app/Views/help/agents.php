@@ -25,7 +25,7 @@ $body = '<p>' . __('We have tests for:') . '
     </ul></p>
     <p>' . __('The agent and server are also intelligent enough to self-update the agent if a newer version is installed on the server (say after upgrading Open-AudIT).') . '</p>
     <br>
-    <h2>' . __('Installing') . '</h2>
+    <h2>' . __('Installing') . ' on Windows</h2>
     <p>' . __('Have your user open a command prompt (using <i>Run as Administrator</i>). Paste the below into the prompt to download the Agent.') . '<br>
     <code>powershell.exe Invoke-WebRequest -UseBasicParsing ' . base_url() . 'index.php/agents/windows/download -Outfile agent.ps1 -Method GET</code><br><br>
     ' . __('Wait for it to complete, then paste in this next line to install the Agent.') . '<br>
@@ -34,4 +34,4 @@ $body = '<p>' . __('We have tests for:') . '
     <p><strong>' . __('NOTE') . '</strong>: ' . __('If your user does not have <i>Run as Administrator</i> rights, they can still download the agent (first command above) and run it to submit an audit as below. It will be a one-off audit without the Agent being installed or scheduled.') . '<br><code>powershell.exe -executionpolicy bypass -file .\agent.ps1 -debug 1</code><br><br></p>
     <p><strong>' . __('NOTE #2') . '</strong>: ' . __('If you want to force your Agents to use a particular configuration, you can supply the ID of the agents entry to use, as below (replace $id with the number of the Agents entry). When this Agent is installed, it will check-in with the sevrer and <strong>only</strong> check that one individual Agent entrys attributes (tests and actions). This may be useful if you are an MSP - create an Agents entry for a particular customer and have their devices all use this entry, which assigns them to an Org and Location.') . '<br>
     <code>powershell.exe Invoke-WebRequest -UseBasicParsing ' . base_url() . 'index.php/agents/$id/download -Outfile agent.ps1 -Method GET</code><br><br>
-    ';
+';

@@ -642,6 +642,13 @@ class DevicesModel extends BaseModel
             }
             if (empty($resp_include) or in_array($table, $resp_include)) {
                 $sql = "SELECT * FROM `$table` WHERE device_id = ? and current = 'y'";
+                if (count($resp_include) === 1 and !empty($instance->resp->meta->sort) and strpos($instance->resp->meta->sort, $table . '.') !== false) {
+                    $explode = explode('.', $instance->resp->meta->sort);
+                    if ($this->db->fieldExists($explode[1], $explode[0])) {
+                        $sql = "SELECT * FROM `$table` WHERE device_id = ? and current = 'y' ORDER BY " . $explode[0] . '.' . $explode[1];
+                    }
+                }
+                log_message('debug', $sql);
                 $query = $this->db->query($sql, $id);
                 $result = $query->getResult();
                 if (!empty($result)) {
@@ -821,15 +828,17 @@ class DevicesModel extends BaseModel
         }
 
         if ($instance->config->product === 'enterprise' and $this->db->fieldExists('cve', 'devices')) {
-            $sql = "SELECT `cve` FROM devices WHERE id = ?";
-            $query = $this->db->query($sql, [$id]);
-            $result = $query->getResult();
-            if (!empty($result[0]->cve)) {
-                $cves = explode(',', $result[0]->cve);
-                $cves = "'" . implode("','", $cves) . "'";
-                $sql = "SELECT id, name, base_severity, cve, vendor FROM vulnerabilities WHERE cve IN ($cves)";
-                $query = $this->db->query($sql);
-                $include['vulnerabilities'] = $query->getResult();
+            if (empty($resp_include) or in_array('vulnerabilities', $resp_include)) {
+                $sql = "SELECT `cve` FROM devices WHERE id = ?";
+                $query = $this->db->query($sql, [$id]);
+                $result = $query->getResult();
+                if (!empty($result[0]->cve)) {
+                    $cves = explode(',', $result[0]->cve);
+                    $cves = "'" . implode("','", $cves) . "'";
+                    $sql = "SELECT id, name, base_severity, cve, vendor FROM vulnerabilities WHERE cve IN ($cves)";
+                    $query = $this->db->query($sql);
+                    $include['vulnerabilities'] = $query->getResult();
+                }
             }
         }
 

@@ -2,7 +2,7 @@
 # Copyright © 2023 FirstWave. All Rights Reserved.
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
-$intro = '<p>' . __('Open-AudIT can be configured to use LDAP servers (Microsoft Active Directory and/or OpenLDAP) to authenticate and authorize a user and in addition, to create a user account in Open-AudIT using assigned roles and orgs based on LDAP group membership. It can also use') . ' <a href="' . url_to('helpFAQ') . '?name=Using Azure AD for Auth">Azure Active Directory / Entra</a> and <a href="' . url_to('helpFAQ') . '?name=Using OKTA for Auth">OKTA</a> ' . __('for authentication') . '.</p>
+$intro = '<p>' . __('Open-AudIT can be configured to use LDAP servers (Microsoft Active Directory and/or OpenLDAP) to authenticate and authorize a user and in addition, to create a user account in Open-AudIT using assigned roles and orgs based on LDAP group membership. It can also use') . ' <a href="' . url_to('helpFAQ') . '?name=Using Entra for Auth">Azure Active Directory / Entra</a> and <a href="' . url_to('helpFAQ') . '?name=Using OKTA for Auth">OKTA</a> ' . __('for authentication') . '.</p>
     <br>
     <h2>' . __('How Does it Work?') . '</h2>
 <p>

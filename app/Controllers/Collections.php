@@ -991,6 +991,9 @@ class Collections extends BaseController
                     $db = db_connect();
                     foreach ($components_array as $table) {
                         $sql = "SELECT * FROM `{$table}` WHERE device_id = ? AND current = 'y'";
+                        if ($table === 'service') {
+                            $sql = "SELECT * FROM `{$table}` WHERE device_id = ? AND current = 'y' ORDER BY description";
+                        }
                         $result = $db->query($sql, [$this->resp->meta->id])->getResult();
                         if (!empty($result)) {
                             for ($i = 0; $i < count($result); $i++) {

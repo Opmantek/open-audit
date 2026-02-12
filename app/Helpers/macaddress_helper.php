@@ -43,6 +43,9 @@ if (! function_exists('get_manufacturer_from_mac')) {
         if (empty($mac)) {
             return('');
         }
+        if ($mac === '00:00:00:00:00:00') {
+            return '';
+        }
         $mac = substr(strtolower($mac), 0, 8);
         $manufacturer = '';
         switch ($mac) {
@@ -37104,7 +37107,7 @@ if (! function_exists('get_manufacturer_from_mac')) {
             case '78:52:37': $manufacturer = 'zte corporation'; break;
             case 'f8:e7:b5': $manufacturer = 'µTech Tecnologia LTDA'; break;
             case '00:1b:a1': $manufacturer = 'Åmic AB'; break;
-            case '48:bc:a6': $manufacturer = '​ASUNG TECHNO CO.,Ltd'; break;
+            case '48:bc:a6': $manufacturer = 'ASUNG TECHNO CO.,Ltd'; break;
             case '3c:2c:94': $manufacturer = '杭州德澜科技有限公司（HangZhou Delan Technology Co.,Ltd）'; break;
             case '04:20:8a': $manufacturer = '浙江路川科技有限公司'; break;
             default: $manufacturer = ''; break;
