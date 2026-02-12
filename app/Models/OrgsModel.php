@@ -168,8 +168,8 @@ class OrgsModel extends BaseModel
         foreach ($orgs as $org) {
             if (intval($org->parent_id) === $id && intval($org->id) !== 1) {
                 $org_list[] = intval($org->id);
-                foreach ($this->getDescendants($org->id) as $org) {
-                    $org_list[] = intval($org);
+                foreach ($this->getDescendants($org->id) as $childOrg) {
+                    $org_list[] = intval($childOrg);
                 }
             }
         }
