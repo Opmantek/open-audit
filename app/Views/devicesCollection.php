@@ -531,13 +531,23 @@ window.onload = function () {
             ],
         });
 
+        function debounce(callback, delay) {
+            var timer;
+            return function(...args) {
+                clearTimeout(timer);
+                timer = setTimeout(function () {
+                    callback.apply(this, args)
+                }, delay)
+            }
+        }
+
         /* This stops the sort when clicking in a search text box in the table header */
         $('.dataTableSearchField').on('click', function(e) { e.stopPropagation() });
 
         /* And don't automatically send the result - wait for the user to press <enter> / <return> */
-        $(".dataTableSearchField").on("keypress", function (evtObj) {
-            if (evtObj.keyCode == 13) {
-                myDataTable.ajax.reload();
+        $(".dataTableSearchField").on('keydown', function (evtObj) {
+            if (evtObj.key === 'Enter') {
+                debounce(myDataTable.ajax.reload, 300);
             }
         });
 
