@@ -2,6 +2,7 @@ ARG PHP_VERSION=8.4
 
 FROM docker.io/php:${PHP_VERSION}-apache
 
+# General packages and PHP extensions
 RUN apt-get update && apt-get install -y \
         openssh-client \
 		git \
@@ -37,6 +38,24 @@ RUN apt-get update && apt-get install -y \
     && pecl install xdebug \
     && docker-php-source delete \
     && php -m
+
+# Enterprise licensing
+RUN apt-get install -y \
+    libdbi-perl \
+    libmime-tools-perl \
+    libmojolicious-perl \
+    libnet-smtps-perl \
+    libtime-parsedate-perl \
+    libdbd-mysql-perl \
+    libcrypt-blowfish-perl \
+    cpanminus
+
+# Configure application
+RUN echo "Configuring application" \
+    && echo "Allow any user on the system to run nmap with root privileges" \
+    && chmod u+s /usr/bin/nmap \
+    && echo "Adding cron tasks" \
+    && echo "* * * * *	root	php /usr/local/open-audit/public/index.php tasks execute >/dev/null 2>&1" > /etc/cron.d/open-audit
 
 ENV PHP_INI_SCAN_DIR=":/usr/local/open-audit/.compose/web/php/ini"
 
