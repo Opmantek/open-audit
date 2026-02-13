@@ -8,9 +8,9 @@ services:
     restart: unless-stopped
     environment:
       MARIADB_DATABASE: openaudit
-      MARIADB_ROOT_PASSWORD: openauditrootpassword
+      MARIADB_ROOT_PASSWORD: openauditrootuserpassword
       MARIADB_USER: openaudit
-      MARIADB_PASSWORD: openaudituserpassword
+      MARIADB_PASSWORD: openauditpassword
     volumes:
       - database_storage:/var/lib/mysql
     ports:
