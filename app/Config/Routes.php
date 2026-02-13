@@ -171,6 +171,8 @@ $routes->cli('resetDeviceComponentTables', 'Cli::resetDeviceComponentTables', ['
 
 $routes->patch('devices/(:num)/reset', 'Devices::reset/$1', ['filter' => \App\Filters\Session::class, 'as' => 'DeviceReset']);
 
+$routes->get('cloudServices/(:any)', 'Util::cloudServices/$1', ['as' => 'cloudServices']);
+
 foreach ($collections as $collection) {
     // Account for users editing the config and including a space character
     $collection = trim((string)$collection);

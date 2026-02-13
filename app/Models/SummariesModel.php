@@ -214,6 +214,7 @@ class SummariesModel extends BaseModel
      */
     public function includedCollection(): array
     {
+        $included = array();
         $instance = & get_instance();
         $collections = clone $instance->collections;
         foreach ($collections as $name => $collection) {
@@ -258,19 +259,61 @@ class SummariesModel extends BaseModel
         $sql = "SELECT COUNT(*) AS `count` FROM `orgs` WHERE `id` IN (" . implode(',', $orgs) . ")";
         $count = intval($this->db->query($sql)->getResult()[0]->count);
         $collections->orgs->count = $count;
-        $sql = "SELECT COUNT(*) AS `count` FROM `roles`";
-        $count = intval($this->db->query($sql)->getResult()[0]->count);
-        $collections->roles->count = $count;
+        // $sql = "SELECT COUNT(*) AS `count` FROM `roles`";
+        // $count = intval($this->db->query($sql)->getResult()[0]->count);
+        // $collections->roles->count = $count;
         $sql = "SELECT COUNT(*) AS `count` FROM `news`";
         $count = intval($this->db->query($sql)->getResult()[0]->count);
         $collections->news->count = $count;
+
+        unset($collections->applications_components);
         unset($collections->baselines_policies);
         unset($collections->baselines_results);
-        unset($collections->rack_devices);
         unset($collections->benchmarks_exceptions);
+        unset($collections->rack_devices);
+        unset($collections->vendors);
+        // Admin collections
+        unset($collections->auth);
+        unset($collections->collectors);
+        unset($collections->roles);
+        unset($collections->tasks);
+        unset($collections->users);
 
-        $included = array();
         $included['collections'] = $collections;
+        unset($collections);
+
+
+        # Admin collections
+        // $included['admin_collections'] = array();
+        // $included['admin_collections'][] = $collections->auth;
+        // $included['admin_collections'][] = $collections->collectors;
+        // $included['admin_collections'][] = $collections->roles;
+        // $included['admin_collections'][] = $collections->tasks;
+        // $included['admin_collections'][] = $collections->users;
+
+
+        $collections = clone $instance->collections;
+
+        $included['admin_collections'] = new stdClass();
+        $included['admin_collections']->auth = $collections->auth;
+        $included['admin_collections']->collectors = $collections->collectors;
+        $included['admin_collections']->configuration = $collections->configuration;
+        $included['admin_collections']->database = $collections->database;
+        $included['admin_collections']->roles = $collections->roles;
+        $included['admin_collections']->tasks = $collections->tasks;
+        $included['admin_collections']->users = $collections->users;
+
+        foreach ($included['admin_collections'] as $name => $collection) {
+            if ($name !== 'database') {
+                $sql = "SELECT COUNT(*) AS `count` FROM `$name`";
+                $count = intval($this->db->query($sql)->getResult()[0]->count);
+                $included['admin_collections']->$name->count = $count;
+            }
+        }
+        $tables = $this->db->listTables();
+        $included['admin_collections']->database->count = count($tables);
+
+
         return $included;
     }
 

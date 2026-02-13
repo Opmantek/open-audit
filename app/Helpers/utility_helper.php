@@ -19,6 +19,43 @@ function &get_instance() # : \App\Controllers\BaseController
     return $CI_INSTANCE[0];
 }
 
+function getSVG(string $baseDir): array
+{
+    // $baseDir = '/usr/local/open-audit/public/azure_icons';
+    // $baseDir = '/usr/local/open-audit/public/aws_icons';
+    // $baseDir = '/usr/local/open-audit/public/brands';
+    $results = [];
+    if (!is_dir($baseDir)) {
+        log_message('critical', "'$baseDir' is not a directory.");
+        return $results;
+    }
+    $flags = \FilesystemIterator::SKIP_DOTS;
+    $directory = new \RecursiveDirectoryIterator($baseDir, $flags);
+    $iterator  = new \RecursiveIteratorIterator($directory, \RecursiveIteratorIterator::SELF_FIRST);
+    foreach ($iterator as $item) {
+        if ($item->isFile()) {
+            $filename = $item->getFilename();
+            if (preg_match('/\.svg$/i', $filename)) {
+                $pathName = $item->getPathname();
+                $directory = dirname($pathName);
+                $temp = explode('/', $directory);
+                $category = end($temp);
+                $category = str_replace('-', ' ', $category);
+                $filename = $item->getFilename();
+                // Azure
+                if (stripos($pathName, 'Azure') !== false) {
+                    $filename = preg_replace('/^[0-9].*\-icon\-service\-/', '', $filename);
+                }
+                $filename = str_replace('.svg', '', $filename);
+                $filename = str_replace('-', ' ', $filename);
+                $results[] = $category . ' :: ' . $filename;
+            }
+        }
+    }
+    sort($results);
+    return $results;
+}
+
 function getNews()
 {
     $newsModel = model('NewsModel');

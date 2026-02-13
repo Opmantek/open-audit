@@ -31,11 +31,12 @@ class BaseModel extends Model
         $db = db_connect();
         $insert_data = new stdClass();
 
-        $modelTable = ucfirst($table);
-        if ($modelTable === 'Rack_devices') {
-            $modelTable = 'RackDevices';
-        }
+        $modelTable = str_replace('_', ' ', $table);
+        $modelTable = ucwords($modelTable);
+        $modelTable = str_replace(' ', '', $modelTable);
+
         $dictionary = model('App\Models\\' . $modelTable . 'Model')->dictionary();
+        log_message('debug', 'ModelTable: ' . $modelTable);
 
         # Our MUST have attributes
         foreach ($dictionary->attributes->create as $field) {

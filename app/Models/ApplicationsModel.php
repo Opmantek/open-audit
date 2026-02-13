@@ -103,22 +103,8 @@ class ApplicationsModel extends BaseModel
         $org_list[] = 1;
         $org_list = array_unique($org_list);
 
-        $properties = array();
-        $properties[] = 'application.id AS `application.id`';
-        $properties[] = 'devices.id AS `devices.id`';
-        $properties[] = 'devices.name AS `devices.name`';
-        $properties[] = 'devices.ip AS `devices.ip`';
-        $properties[] = 'devices.description AS `devices.description`';
-        $this->builder->select($properties, false);
-        $this->builder->join('application', 'application.application_id = applications.id', 'left');
-        $this->builder->join('devices', 'application.device_id = devices.id', 'left');
-        $this->builder->where('applications.id', $id);
-        $this->builder->whereIn('devices.org_id', $org_list);
-        $query = $this->builder->get();
-        if ($this->sqlError($this->db->error())) {
-            return array();
-        }
-        $return = array();
+        $sql = "SELECT * FROM applications_components WHERE application_id = ?";
+        $query = $this->db->query($sql, [intval($id)]);
         $return['devices'] = format_data($query->getResult(), 'devices');
         return $return;
     }

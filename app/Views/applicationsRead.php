@@ -6,11 +6,11 @@ include 'shared/common_functions.php';
 $panel_add_button = '';
 if ($update) {
     if ($user->toolbar_style === 'icontext') {
-        $panel_add_button = "<a role=\"button\" class=\"btn btn-light mb-2\" tabindex=0 title=\"" . __('Add Device') . "\" href=\"" . url_to('componentsCreateForm', 'applications', $resource->id) . "?type=application\"><span style=\"margin-right:6px;\" class=\"icon-plus\"></span>" . __('Add Device') . "</a>";
+        $panel_add_button = "<a role=\"button\" class=\"btn btn-light mb-2\" tabindex=0 title=\"" . __('Add Component') . "\" href=\"" . url_to('applications_componentsCreateForm', 'applications', $resource->id) . "?application_id=" . $meta->id . "\"><span style=\"margin-right:6px;\" class=\"icon-plus\"></span>" . __('Add Component') . "</a>";
     } elseif ($user->toolbar_style === 'icon') {
-        $panel_add_button = "<a role=\"button\" class=\"btn btn-light mb-2\" tabindex=0 title=\"" . __('Add Device') . "\" href=\"" . url_to('componentsCreateForm', 'applications', $resource->id) . "?type=application\"><span class=\"icon-plus\"></span></a>";
+        $panel_add_button = "<a role=\"button\" class=\"btn btn-light mb-2\" tabindex=0 title=\"" . __('Add Component') . "\" href=\"" . url_to('applications_componentsCreateForm', 'applications', $resource->id) . "?application_id=" . $meta->id . "\"><span class=\"icon-plus\"></span></a>";
     } else {
-        $panel_add_button = "<a role=\"button\" class=\"btn btn-light mb-2\" tabindex=0 title=\"" . __('Add Device') . "\" href=\"" . url_to('componentsCreateForm', 'applications', $resource->id) . "?type=application\">" . __('Add Device') . "</a>";
+        $panel_add_button = "<a role=\"button\" class=\"btn btn-light mb-2\" tabindex=0 title=\"" . __('Add Component') . "\" href=\"" . url_to('applications_componentsCreateForm', 'applications', $resource->id) . "?application_id=" . $meta->id . "\">" . __('Add Component') . "</a>";
     }
 }
 ?>
@@ -21,18 +21,23 @@ if ($update) {
                 </div>
                 <div class="card-body">
                     <div class="row">
-                        <div class="col-6">
+                        <div class="col-4">
                             <?= read_field('name', $resource->name, $dictionary->columns->name, $update, '', '', '', '', $meta->collection) ?>
                             <?= read_select('org_id', $resource->org_id, $dictionary->columns->org_id, $update, '', $orgs, $meta->collection) ?>
                             <?= read_field('description', $resource->description, $dictionary->columns->description, $update, '', '', '', '', $meta->collection) ?>
+                            <?= read_field('owner', $resource->description, $dictionary->columns->description, $update, '', '', '', '', $meta->collection) ?>
+                            <?= read_field('vendor', $resource->description, $dictionary->columns->description, $update, '', '', '', '', $meta->collection) ?>
+                        </div>
+                        <div class="col-4">
+                            <?= read_field('class', $resource->description, $dictionary->columns->description, $update, '', '', '', '', $meta->collection) ?>
+                            <?= read_field('environment', $resource->description, $dictionary->columns->description, $update, '', '', '', '', $meta->collection) ?>
+                            <?= read_field('status', $resource->description, $dictionary->columns->description, $update, '', '', '', '', $meta->collection) ?>
+                            <?= read_field('replaces', $resource->description, $dictionary->columns->description, $update, '', '', '', '', $meta->collection) ?>
+                            <?= read_field('replaced_by', $resource->description, $dictionary->columns->description, $update, '', '', '', '', $meta->collection) ?>
+                        </div>
+                        <div class="col-4">
                             <?= read_field('edited_by', $resource->edited_by, $dictionary->columns->edited_by, false, '', '', '', '', $meta->collection) ?>
                             <?= read_field('edited_date', $resource->edited_date, $dictionary->columns->edited_date, false, '', '', '', '', $meta->collection) ?>
-                        </div>
-                        <div class="col-6">
-                            <br>
-                            <div class="offset-2 col-8">
-                                <?= aboutNotesDiv ($meta->collection, $dictionary) ?>
-                            </div>
                         </div>
                     </div>
                 </div>
@@ -43,7 +48,7 @@ if ($update) {
                 <div class="card-header" style="height:57px;">
                     <div class="row">
                         <div class="col-9 clearfix">
-                            <h6 style="padding-top:10px;"><span class="icon-computer oa-icon"></span><?= __('Devices') ?></h6>
+                            <h6 style="padding-top:10px;"><span class="icon-computer oa-icon"></span><?= __('Components') ?></h6>
                         </div>
                         <div class="col-3 clearfix">
                             <div class="btn-group btn-group-sm float-end" role="group" id="device_panel">
@@ -57,17 +62,23 @@ if ($update) {
                 <div class="card-body">
                     <br>
                     <div class="table-responsive">
-                    <table class="table <?= $GLOBALS['table'] ?> table-striped table-hover dataTable" data-order='[[1,"asc"]]'>
+                    <table class="table <?= $GLOBALS['table'] ?> table-striped table-hover dataTable" data-order='[[0,"asc"]]'>
                         <thead>
                             <tr>
                                 <th class="text-center"><?= __('View') ?></th>
                                 <th><?= __('Name') ?></th>
                                 <th><?= __('IP') ?></th>
-                                <th><?= __('Description') ?></th>
-                                <th class="text-center"><?= __('Delete from Application') ?></th>
+                                <th><?= __('Description') ?></th> -->
+                                <th><?= __('Component') ?></th>
+                                <th><?= __('Relationship') ?></th>
+                                <th><?= __('Details') ?></th>
+                                <th class="text-center" style="width:120px;"><?= __('Evironment') ?></th>
+                                <th><?= __('Owner') ?></th>
+                                <th class="text-center" style="width:40px;"><?= __('Delete') ?></th>
                             </tr>
                         </thead>
                         <tbody>
+                            <?php /**
                             <?php foreach ($included['devices'] as $item) { ?>
                             <tr>
                                 <td class="text-center"><a href="<?= url_to('devicesRead', $item->attributes->{'devices.id'}) ?>" role="button" class="btn btn-sm btn-devices" title="<?= __('View') ?>"><i class="icon-computer" aria-hidden="true"></i></a></td>
@@ -81,10 +92,11 @@ if ($update) {
                                 <?php } ?>
                             </tr>
                             <?php } ?>
+                            */ ?>
                         </tbody>
                     </table>
-                    </div>
-                </div>
-            </div>
+                    <pre>
+                        <?= json_encode($included['devices'], JSON_PRETTY_PRINT) ?>
+                    </pre>
 
         </main>

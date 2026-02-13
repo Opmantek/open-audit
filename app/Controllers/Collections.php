@@ -299,6 +299,9 @@ class Collections extends BaseController
                         return redirect()->route('dashboardCollector');
                     }
                     \Config\Services::session()->setFlashdata('success', "Item in {$this->resp->meta->collection} created successfully.");
+                    if ($this->resp->meta->collection === 'applications_components') {
+                        return redirect()->route('applicationsRead', [$this->resp->meta->received_data->attributes->application_id]);
+                    }
                     if ($this->resp->meta->collection === 'baselines_policies') {
                         return redirect()->route('baselinesRead', [$this->resp->meta->received_data->attributes->baseline_id]);
                     }

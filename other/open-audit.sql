@@ -136,35 +136,6 @@ LOCK TABLES `antivirus` WRITE;
 UNLOCK TABLES;
 
 --
--- Table structure for table `application`
---
-
-DROP TABLE IF EXISTS `application`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8mb4 */;
-CREATE TABLE `application` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `device_id` int(10) unsigned DEFAULT NULL,
-  `application_id` int(10) unsigned NOT NULL DEFAULT 0,
-  `current` enum('y','n') NOT NULL DEFAULT 'y',
-  `edited_by` varchar(200) NOT NULL DEFAULT '',
-  `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
-  PRIMARY KEY (`id`),
-  KEY `system_id` (`device_id`),
-  CONSTRAINT `application_system_id` FOREIGN KEY (`device_id`) REFERENCES `devices` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `application`
---
-
-LOCK TABLES `application` WRITE;
-/*!40000 ALTER TABLE `application` DISABLE KEYS */;
-/*!40000 ALTER TABLE `application` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `applications`
 --
 
@@ -190,6 +161,49 @@ CREATE TABLE `applications` (
 LOCK TABLES `applications` WRITE;
 /*!40000 ALTER TABLE `applications` DISABLE KEYS */;
 /*!40000 ALTER TABLE `applications` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `applications_components`
+--
+
+DROP TABLE IF EXISTS `applications_components`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8mb4 */;
+CREATE TABLE `applications_components` (
+    `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+    `name` varchar(200) NOT NULL DEFAULT '',
+    `org_id` int(10) unsigned NOT NULL DEFAULT 1,
+    `application_id` int(10) unsigned NOT NULL DEFAULT 0,
+    `description` varchar(200) NOT NULL DEFAULT '',
+    `primary_type` varchar(100) NOT NULL DEFAULT '',
+    `primary_internal_id_a` int(10) unsigned NOT NULL DEFAULT 0,
+    `primary_internal_id_b` varchar(100) NOT NULL DEFAULT '',
+    `primary_external_provider` varchar(100) NOT NULL DEFAULT '',
+    `primary_external_service` varchar(100) NOT NULL DEFAULT '',
+    `primary_description` varchar(100) NOT NULL DEFAULT '',
+    `primary_owner` varchar(200) NOT NULL DEFAULT '',
+    `relationship` varchar(100) NOT NULL DEFAULT '',
+    `secondary_type` varchar(100) NOT NULL DEFAULT '',
+    `secondary_internal_id_a` int(10) unsigned NOT NULL DEFAULT 0,
+    `secondary_internal_id_b` varchar(100) NOT NULL DEFAULT '',
+    `secondary_external_provider` varchar(100) NOT NULL DEFAULT '',
+    `secondary_external_service` varchar(100) NOT NULL DEFAULT '',
+    `secondary_description` varchar(100) NOT NULL DEFAULT '',
+    `secondary_owner` varchar(200) NOT NULL DEFAULT '',
+    `edited_by` varchar(200) NOT NULL DEFAULT '',
+    `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
+    PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `applications_components`
+--
+
+LOCK TABLES `applications_components` WRITE;
+/*!40000 ALTER TABLE `applications_components` DISABLE KEYS */;
+/*!40000 ALTER TABLE `applications_components` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
