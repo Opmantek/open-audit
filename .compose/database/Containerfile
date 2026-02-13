@@ -1,0 +1,3 @@
+ARG MARIADB_VERSION=12.1
+
+FROM docker.io/mariadb:${MARIADB_VERSION}
