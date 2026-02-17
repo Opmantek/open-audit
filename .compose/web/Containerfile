@@ -34,7 +34,7 @@ RUN apt-get update && apt-get install -y \
         libsnmp-dev \
     && docker-php-source extract \
     && docker-php-ext-configure gd --with-freetype --with-jpeg \
-	&& docker-php-ext-install -j$(nproc) gd intl ldap mysqli snmp zip \
+	&& docker-php-ext-install -j$(nproc) gd gettext intl ldap mysqli snmp zip \
     && pecl install xdebug \
     && docker-php-source delete \
     && php -m
