@@ -38,7 +38,7 @@ if (!empty($config->feature_agents_advanced) and $config->feature_agents_advance
                                         } ?>
                                         <th><?= collection_column_name($key) ?></th>
                                     <?php } ?>
-                                    <?php if (strpos($user->permissions[$meta->collection], 'd') !== false) { ?>
+                                    <?php if (str_contains($user->permissions[$meta->collection], 'd')) { ?>
                                     <th data-orderable="false" class="text-center"><?= __('Delete') ?></th>
                                     <?php } ?>
                                 </tr>
@@ -59,7 +59,7 @@ if (!empty($config->feature_agents_advanced) and $config->feature_agents_advance
                                         }
                                         ?>
                                     <?php } ?>
-                                    <?php if (strpos($user->permissions[$meta->collection], 'd') !== false) { ?>
+                                    <?php if (str_contains($user->permissions[$meta->collection], 'd')) { ?>
                                         <?= collection_button_delete(intval($item->id)) ?>
                                     <?php } ?>
                                 </tr>
