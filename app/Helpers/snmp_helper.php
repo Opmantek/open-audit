@@ -1617,7 +1617,7 @@ if (!function_exists('snmp_audit')) {
         $discoveryLogModel->create($log);
         if (!empty($temp_services)) {
             foreach ($temp_services as $line) {
-                if (strpos($line, 'Ubiquiti') !== false) {
+                if (is_string($line) && strpos($line, 'Ubiquiti') !== false) {
                     $details->manufacturer = 'Ubiquiti Networks Inc.';
                     $log->command_time_to_execute = 0;
                     $log->message = 'Manufacturer set to Ubiquiti ' . $ip . ', because in services list.';
