@@ -653,7 +653,7 @@ function my_snmp_real_walk_command($ip, $credentials, $oid)
         $privacy_protocol =             !empty($credentials->credentials->privacy_protocol) ?           ' -x ' . escapeshellarg($credentials->credentials->privacy_protocol) : '';
         $privacy_passphrase =           !empty($credentials->credentials->privacy_passphrase) ?         ' -X ' . escapeshellarg($credentials->credentials->privacy_passphrase) : '';
         $context_name =                 !empty($credentials->credentials->context_name) ?               ' -n ' . escapeshellarg($credentials->credentials->context_name) : '';
-        $context_engine_id =            !empty($credentials->credentials->context_engine_id) ?          ' -e ' . escapeshellarg(implode(unpack("H*", $credential->credentials->context_engine_id))) : '';
+        $context_engine_id =            !empty($credentials->credentials->context_engine_id) ?          ' -e ' . escapeshellarg(implode(unpack("H*", $credentials->credentials->context_engine_id))) : '';
         $command = 'snmpwalk -v3 -On ' . $security_level . $security_name . $authentication_protocol . $authentication_passphrase . $privacy_protocol . $privacy_passphrase . $context_name . $context_engine_id . ' ' . $ip . ' ' . $oid;
         exec($command, $output, $return_var);
         foreach ($output as $line) {
