@@ -1922,7 +1922,7 @@ if (! function_exists('ip_audit')) {
                 // $log->command_status = 'notice';
             }
             $audit_result = '';
-            if ($audit_script !== '' and !empty($result) and gettype($result) === 'array') {
+            if ($audit_script !== '' and !empty($result) and is_array($result)) {
                 $audit_file = '';
                 foreach ($result as $line) {
                     if (strpos($line, 'File  ') !== false) {
