@@ -1417,7 +1417,7 @@ if (! function_exists('ip_audit')) {
             if (!empty($device->mac_address)) {
                 $item->mac = (string)strtolower($device->mac_address);
             }
-            if (!empty($discovery->subnet) and strpos($discovery->subnet, '/') !== false) {
+            if (!empty($discovery->subnet) and str_contains($discovery->subnet, '/')) {
                 $network_details = network_details($discovery->subnet);
                 $item->netmask = $network_details->netmask;
                 $item->cidr = $network_details->network_slash;
@@ -1627,7 +1627,7 @@ if (! function_exists('ip_audit')) {
                 // We will loose the ability to retrieve certain items like files, netstat, tasks, etc
                 $log->message = 'Running discovery the old way using the code for Apache service account.';
                 $discoveryLogModel->create($log);
-                if (strpos($credentials_windows->credentials->password, '"') !== false or  strpos($credentials_windows->credentials->username, '"') !== false) {
+                if (str_contains($credentials_windows->credentials->password, '"') or str_contains($credentials_windows->credentials->username, '"')) {
                     // cscript cannot parse an arguement containing a "
                     $log->message = 'Incompatible credentials for audit script. Cannot use " (double quotes) in a wscript command line attribute.';
                     $log->command_status = 'fail';
@@ -1708,7 +1708,7 @@ if (! function_exists('ip_audit')) {
             $audit_file = false;
             if (!empty($output)) {
                 foreach ($output as $line) {
-                    if (strpos($line, 'File ') !== false) {
+                    if (str_contains($line, 'File ')) {
                         $audit_file = trim(str_replace('File ', '', $line));
                         break;
                     }
@@ -1817,7 +1817,7 @@ if (! function_exists('ip_audit')) {
             $discoveryLogModel->create($log);
             // copy the audit script to the target ip
             $destination = !empty($instance->config->discovery_linux_script_directory) ? $instance->config->discovery_linux_script_directory : '/tmp/';
-            if (!empty($destination) and substr($destination, -1) !== '/') {
+            if (!empty($destination) and !str_ends_with($destination, '/')) {
                 $destination .= '/';
             }
             if ($device->os_group === 'Windows') {
@@ -1925,7 +1925,7 @@ if (! function_exists('ip_audit')) {
             if ($audit_script !== '' and !empty($result) and is_array($result)) {
                 $audit_file = '';
                 foreach ($result as $line) {
-                    if (strpos($line, 'File  ') !== false) {
+                    if (str_contains($line, 'File  ')) {
                         $audit_file = $line;
                     }
                 }
@@ -1939,7 +1939,7 @@ if (! function_exists('ip_audit')) {
                     $log->command_status = 'notice';
                 } else {
                     $audit_file = trim(str_replace('File  ', '', $audit_file));
-                    if (strpos($audit_file, '//') === 0) {
+                    if (str_starts_with($audit_file, '//')) {
                         $audit_file = str_replace('//', '/', $audit_file);
                     }
                     $temp = explode('/', $audit_file);
@@ -2446,7 +2446,7 @@ if (! function_exists('ip_audit')) {
                             $log->command_output = 'IP ' . $value . ' found on device ' . $device->ip;
                             $log->function = 'ip_audit';
                             $discoveryLogModel->create($log);
-                        } elseif (strpos($instance->config->discovery_ip_exclude, $value) !== false or strpos($discovery->scan_options->exclude_ip, $value) !== false) {
+                        } elseif (str_contains($instance->config->discovery_ip_exclude, $value) or str_contains($discovery->scan_options->exclude_ip, $value)) {
                             $log->severity = 7;
                             $log->message = 'IP ' . $value . ' detected, but not adding to device list as this is on the exclude list.';
                             $log->command_output = 'IP ' . $value . ' detected but excluded.';
@@ -2612,7 +2612,7 @@ if (! function_exists('discover_ad')) {
         // Stored credential sets
         $credentials = $instance->credentialsModel->listUser([], explode(',', $orgs));
         // get the list of subnets from AD
-        if (strpos($discovery->ad_server, 'ldap') !== 0) {
+        if (!str_starts_with($discovery->ad_server, 'ldap')) {
             $ldapuri = 'ldap://' . $discovery->ad_server;
         } else {
             $ldapuri = $discovery->ad_server;

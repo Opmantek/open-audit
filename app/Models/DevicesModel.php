@@ -118,7 +118,7 @@ class DevicesModel extends BaseModel
         $properties = $resp->meta->properties;
         $count = count($properties);
         for ($i = 0; $i < $count; $i++) {
-            if (strpos($properties[$i], 'devices.') === false) {
+            if (!str_contains($properties[$i], 'devices.')) {
                 $properties[$i] = $properties[$i] . ' AS `' . $properties[$i] . '`';
             }
         }
@@ -194,8 +194,8 @@ class DevicesModel extends BaseModel
         // This is because if we don't use else statements and set a default orderBy
         // then change it based on the 'if', the orderBy's are chained, not replaced
         if (!empty($instance->resp->meta->sort)) {
-            if (strpos($instance->resp->meta->sort, 'devices.ip') !== false) {
-                if (strpos($instance->resp->meta->sort, ' DESC') === false) {
+            if (str_contains($instance->resp->meta->sort, 'devices.ip')) {
+                if (!str_contains($instance->resp->meta->sort, ' DESC')) {
                     $this->builder->orderBy('INET_ATON(devices.ip) DESC');
                 } else {
                     $this->builder->orderBy('INET_ATON(devices.ip)');
@@ -315,7 +315,7 @@ class DevicesModel extends BaseModel
             $name = ip_address_from_db($device->ip);
         }
         $name = strtolower($name);
-        if (strpos($name, '.') !== false and filter_var($name, FILTER_VALIDATE_IP) === false) {
+        if (str_contains($name, '.') and filter_var($name, FILTER_VALIDATE_IP) === false) {
             // We have a name, not an IP, that contains a 'dot'. Split it and use the first item as the name.
             $temp = explode('.', $name);
             $name = $temp[0];
@@ -642,7 +642,7 @@ class DevicesModel extends BaseModel
             }
             if (empty($resp_include) or in_array($table, $resp_include)) {
                 $sql = "SELECT * FROM `$table` WHERE device_id = ? and current = 'y'";
-                if (count($resp_include) === 1 and !empty($instance->resp->meta->sort) and strpos($instance->resp->meta->sort, $table . '.') !== false) {
+                if (count($resp_include) === 1 and !empty($instance->resp->meta->sort) and str_contains($instance->resp->meta->sort, $table . '.')) {
                     $explode = explode('.', $instance->resp->meta->sort);
                     if ($this->db->fieldExists($explode[1], $explode[0])) {
                         $sql = "SELECT * FROM `$table` WHERE device_id = ? and current = 'y' ORDER BY " . $explode[0] . '.' . $explode[1];
