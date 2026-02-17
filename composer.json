@@ -44,7 +44,8 @@
         "ergebnis/composer-normalize": "^2.49",
         "fakerphp/faker": "^1.9",
         "mikey179/vfsstream": "^1.6",
-        "phpunit/phpunit": "^9.6"
+        "phpunit/phpunit": "^9.6",
+        "vimeo/psalm":  "^6.15"
     },
     "suggest": {
         "ext-fileinfo": "Improves mime type detection for files"
@@ -75,6 +76,11 @@
         }
     },
     "scripts": {
-        "test": "phpunit"
+        "psalm:baseline": "psalm --set-baseline=psalm-baseline.xml",
+        "psalm:check": "psalm",
+        "psalm:report": "psalm --report=.report/psalm.xml  --report-show-info=false --show-info=false",
+        "test": "phpunit --colors=always",
+        "test:coverage": "phpunit --colors=always --coverage-text --display-all-issues",
+        "test:report": "phpunit --do-not-cache-result --log-junit=.report/phpunit.xml --coverage-clover=.report/coverage-clover.xml --coverage-cobertura=.report/coverage-cobertura.xml --colors=never --coverage-text"
     }
 }
