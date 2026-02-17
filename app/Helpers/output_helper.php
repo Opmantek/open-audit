@@ -39,11 +39,11 @@ if (!function_exists('output')) {
                 break;
 
             case 'html_data':
-                output_html_data($instance);
+                output_html_data();
                 break;
 
             case 'table':
-                output_table($instance);
+                output_table();
                 break;
 
             case 'xml':
