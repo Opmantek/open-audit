@@ -28,10 +28,10 @@ function traffic_widget($widget)
     }
 
     $icon = '';
-    if (strpos($widget->icon, 'icon-') !== false) {
+    if (str_contains($widget->icon, 'icon-')) {
         $icon = '<span class="' . $widget->icon . ' widget-icon" title=\"' . $widget->description . '\"></span>';
     }
-    if (strpos($widget->icon, 'icon-') === false) {
+    if (!str_contains($widget->icon, 'icon-')) {
         $icon = '<img src="' . base_url() . 'icons/' . $widget->icon . '.svg" style="width:32px; height:32px;" title=\"' . $widget->description . '\"/>';
     }
 
@@ -72,10 +72,10 @@ function status_widget($widget)
     }
 
     $icon = '';
-    if (strpos($widget->icon, 'icon-') !== false) {
+    if (str_contains($widget->icon, 'icon-')) {
         $icon = '<span class="' . $widget->icon . ' widget-icon" title=\"' . $widget->description . '\"></span>';
     }
-    if (strpos($widget->icon, 'icon-') === false) {
+    if (!str_contains($widget->icon, 'icon-')) {
         $icon = '<img src="' . base_url() . 'icons/' . $widget->icon . '.svg" style="width:32px; height:32px;" title=\"' . $widget->description . '\"/>';
     }
     $widget_link = "&nbsp;&nbsp;<a href=\\'" . url_to('widgetsRead', $widget->id) . "\\'>" . __('Edit') . "</a>";

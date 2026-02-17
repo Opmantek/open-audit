@@ -44,8 +44,8 @@ class VulnerabilitiesModel extends BaseModel
             $this->builder->groupBy('vulnerabilities.id');
         }
         if (!empty($instance->resp->meta->sort)) {
-            if (strpos($instance->resp->meta->sort, 'vulnerabilities.count') !== false) {
-                if (strpos($instance->resp->meta->sort, ' DESC') === false) {
+            if (str_contains($instance->resp->meta->sort, 'vulnerabilities.count')) {
+                if (!str_contains($instance->resp->meta->sort, ' DESC')) {
                     $this->builder->orderBy('`count` DESC');
                 } else {
                     $this->builder->orderBy('`count`');
@@ -101,15 +101,15 @@ class VulnerabilitiesModel extends BaseModel
             $this->builder->groupBy('vulnerabilities.id');
         }
         if (!empty($instance->resp->meta->sort)) {
-            if (strpos($instance->resp->meta->sort, 'vulnerabilities.count') !== false) {
-                if (strpos($instance->resp->meta->sort, ' DESC') === false) {
+            if (str_contains($instance->resp->meta->sort, 'vulnerabilities.count')) {
+                if (!str_contains($instance->resp->meta->sort, ' DESC')) {
                     $this->builder->orderBy('`count` DESC');
                 } else {
                     $this->builder->orderBy('`count`');
                 }
             } else {
-                if (strpos($instance->resp->meta->sort, 'vulnerabilities.base_score') !== false) {
-                    if (strpos($instance->resp->meta->sort, ' DESC') === false) {
+                if (str_contains($instance->resp->meta->sort, 'vulnerabilities.base_score')) {
+                    if (!str_contains($instance->resp->meta->sort, ' DESC')) {
                         $this->builder->orderBy('CAST(base_score AS FLOAT) DESC');
                     } else {
                         $this->builder->orderBy('CAST(base_score AS FLOAT)');
@@ -568,7 +568,7 @@ class VulnerabilitiesModel extends BaseModel
             return array();
         }
         $item = $query->getResult();
-        if (strpos($item[0]->filter, 'cpe:2.3:h:') !== false) {
+        if (str_contains($item[0]->filter, 'cpe:2.3:h:')) {
             $_SESSION['warning'] = 'The devices.hw_cpe attribute is not automatically populated during discovery. Use Rules to populate the hw_cpe attribute.';
         }
         $item[0]->filter = @json_decode($item[0]->filter);
