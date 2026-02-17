@@ -33,7 +33,7 @@ services:
       database_default_port: 3306
       database_default_DBDriver: MySQLi
     volumes:
-      - ./../:/usr/local/open-audit:rw,z
+      - ./:/usr/local/open-audit:rw,z
     ports:
       - "8087:80"
     networks:
