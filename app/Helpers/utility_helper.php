@@ -435,7 +435,7 @@ function getLicenseDetails()
             chdir($cwd);
         } else {
             $command = $config->enterprise_binary . " --license";
-            if (!empty($config->enterprise_env) and strpos($command, 'enterprise.bin') !== false) {
+            if (!empty($config->enterprise_env) and str_contains($command, 'enterprise.bin')) {
                 $command = 'export PAR_GLOBAL_TMPDIR=' . $config->enterprise_env . '; ' . $command;
             }
             $output = @exec($command, $output);
@@ -477,10 +477,10 @@ function createNewsData()
     $data->product_role = '';
     if (!empty($config->servers)) {
         if (is_string($config->servers)) {
-            if (strpos($config->servers, '"type":"stand-alone"') !== false) {
+            if (str_contains($config->servers, '"type":"stand-alone"')) {
                 $data->product_role = 'stand-alone';
             }
-            if (strpos($config->servers, '"type":"collector"') !== false) {
+            if (str_contains($config->servers, '"type":"collector"')) {
                 $data->product_role = 'collector';
             }
         } else if (is_object($config->servers) and !empty($config->servers->type)) {
@@ -549,12 +549,12 @@ function createNewsData()
     }
     $files = array_diff(scandir($path), array('.', '..', 'index.html'));
     foreach ($files as $file) {
-        if (strpos($file, 'log-') !== false and strpos($file, '.log') !== false) {
+        if (str_contains($file, 'log-') and str_contains($file, '.log')) {
             $lines = file($path . $file);
             $count = count($lines);
             # CRITICAL - 2024-11-18 16:06:29 --> ErrorException: Attempt to read property "name" on array in APPPATH/Models/NewsModel.php on line 191.
             for ($i = 0; $i < $count; $i++) {
-                if (strpos($lines[$i], 'CRITICAL') !== false and strpos($lines[$i], 'menuItem, no permission requested') === false) {
+                if (str_contains($lines[$i], 'CRITICAL') and !str_contains($lines[$i], 'menuItem, no permission requested')) {
                     $line = $lines[$i] . ' ' . $lines[$i + 1] . ' ' . $lines[$i + 2];
                     #$line = substr($line, strpos($line, '--> ') + 4);
                     $line = str_replace("\n", "", $line);
@@ -564,7 +564,7 @@ function createNewsData()
             }
             # ERROR - 2024-11-20 17:12:23 --> Could not convert audit submission.
             for ($i = 0; $i < $count; $i++) {
-                if (strpos($lines[$i], 'ERROR') !== false and strpos($lines[$i], 'Response:') === false) {
+                if (str_contains($lines[$i], 'ERROR') and !str_contains($lines[$i], 'Response:')) {
                     $line = $lines[$i];
                     #$line = substr($line, strpos($line, '--> ') + 4);
                     $line = str_replace("\n", "", $line);
@@ -574,7 +574,7 @@ function createNewsData()
             }
             # INFO - 2024-11-21 13:19:56 --> ACCESS:summaries:collection::Administrator
             for ($i = 0; $i < $count; $i++) {
-                if (strpos($lines[$i], 'ACCESS') !== false) {
+                if (str_contains($lines[$i], 'ACCESS')) {
                     $explode = explode(':', $lines[$i]);
                     $data->features->{$explode[3] . ':' . $explode[4]} = !empty($data->features->{$explode[3] . ':' . $explode[4]}) ? intval($data->features->{$explode[3] . ':' . $explode[4]}) + 1 : 1;
                 }
@@ -818,7 +818,7 @@ function format_data($result, $type)
                 $item->{$key . '_padded'} = $value;
                 $item->{$key} = ip_address_from_db($value);
             }
-            if (isset($GLOBALS['collection']) and strpos($key, '.') !== false) {
+            if (isset($GLOBALS['collection']) and str_contains($key, '.')) {
                 // We have dataTables output.
                 // dataTables cannot cope with an attribute that has a dot in the name, hence no orgs.name
                 // Replace any dot's with a double underscore

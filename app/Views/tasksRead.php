@@ -77,7 +77,7 @@ include 'shared/common_functions.php';
                                 </div>
                             <?php } ?>
 
-                            <?php if (strpos($resource->minute, "*/") === false) { ?>
+                            <?php if (!str_contains($resource->minute, "*/")) { ?>
                             <div class="row" style="padding-top:16px;">
                                 <div class="offset-2 col-8" style="position:relative;">
                                     <?= read_field_header($meta->collection, 'minute[]', $dictionary->columns->minute) ?>
@@ -103,7 +103,7 @@ include 'shared/common_functions.php';
                                 <?= read_field('minute', $resource->minute, $dictionary->columns->minute, $update, '', '', '', '', $meta->collection) ?>
                             <?php } ?>
   
-                            <?php if (strpos($resource->hour, "*/") === false) { ?>
+                            <?php if (!str_contains($resource->hour, "*/")) { ?>
                             <div class="row" style="padding-top:16px;">
                                 <div class="offset-2 col-8" style="position:relative;">
                                     <?= read_field_header($meta->collection, 'hour[]', $dictionary->columns->hour) ?>
@@ -129,7 +129,7 @@ include 'shared/common_functions.php';
                                 <?= read_field('hour', $resource->hour, $dictionary->columns->hour, $update, '', '', '', '', $meta->collection) ?>
                             <?php } ?>
 
-                            <?php if (strpos($resource->day_of_month, "*/") === false) { ?>
+                            <?php if (!str_contains($resource->day_of_month, "*/")) { ?>
                             <div class="row" style="padding-top:16px;">
                                 <div class="offset-2 col-8" style="position:relative;">
                                     <?= read_field_header($meta->collection, 'day_of_month[]', $dictionary->columns->day_of_month, __('Day of Month')) ?>
