@@ -51,13 +51,7 @@ if (!function_exists('output')) {
                 break;
 
             case 'json':
-                output_json($instance);
-                break;
-
             case 'json_data':
-                output_json($instance);
-                break;
-
             default:
                 output_json($instance);
                 break;
