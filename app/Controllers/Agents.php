@@ -98,7 +98,7 @@ class Agents extends BaseController
         }
 
         if (empty($id)) {
-            return;
+            return null;
         }
 
         $id = intval($id);
