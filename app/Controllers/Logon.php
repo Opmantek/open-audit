@@ -242,10 +242,10 @@ class Logon extends Controller
 
         $http_accept = (!empty($_SERVER['HTTP_ACCEPT'])) ? $_SERVER['HTTP_ACCEPT'] : '';
         $format = '';
-        if (strpos($http_accept, 'application/json') !== false) {
+        if (str_contains($http_accept, 'application/json')) {
             $format = 'json';
         }
-        if (strpos($http_accept, 'html') !== false) {
+        if (str_contains($http_accept, 'html')) {
             $format = 'html';
         }
         if (isset($_GET['format'])) {
@@ -329,7 +329,7 @@ class Logon extends Controller
                 pclose(popen($command, 'r'));
             } else {
                 $command = $enterprise_binary . " --license";
-                if (!empty($config->enterprise_env) and strpos($command, 'enterprise.bin') !== false) {
+                if (!empty($config->enterprise_env) and str_contains($command, 'enterprise.bin')) {
                     $command = 'export PAR_GLOBAL_TMPDIR=' . $config->enterprise_env . '; ' . $command;
                 }
                 exec($command, $output);

@@ -10,7 +10,7 @@ function read_card_header(string $collection = '', string $id = '', string $icon
     }
     $return = '';
 
-    if ($collection !== 'database' and strpos($user->permissions[$collection], 'c') !== false) {
+    if ($collection !== 'database' and str_contains($user->permissions[$collection], 'c')) {
         if ($style === 'icontext') {
             $create_button = "<a role=\"button\" id=\"button_create\" class=\"btn btn-light mb-2\" title=\"" . __('Create') . "\" href=\"" . url_to($collection . 'CreateForm') . "\"><span class=\"icon-plus text-oa-success\"></span>" . __('Create') . "</a>";
         } elseif ($style === 'icon') {
@@ -23,7 +23,7 @@ function read_card_header(string $collection = '', string $id = '', string $icon
     }
 
     $delete_button = "\n";
-    if ($collection !== 'database' and strpos($user->permissions[$collection], 'd') !== false) {
+    if ($collection !== 'database' and str_contains($user->permissions[$collection], 'd')) {
         if ((in_array($collection, ['orgs','locations','roles']) and $id == 1) or ($collection === 'scripts' and intval($id) < 8) or ($collection === 'discovery_scan_options' and intval($id) < 8)) {
             // Not allowed to delete these
         } else {
@@ -38,7 +38,7 @@ function read_card_header(string $collection = '', string $id = '', string $icon
     }
 
     $device_reset_button = "\n";
-    if ($collection === 'devices' and !empty($id) and strpos($user->permissions[$collection], 'u') !== false) {
+    if ($collection === 'devices' and !empty($id) and str_contains($user->permissions[$collection], 'u')) {
         if ($style === 'icontext') {
             $device_reset_button = "<button id=\"button_reset\" type=\"button\" class=\"btn btn-light mb-2\" title=\"" . __('Reset') . "\"><span class=\"icon-rotate-cw text-oa-warning\"></span>" . __('Reset') . "</button>";
         } elseif ($style === 'icon') {

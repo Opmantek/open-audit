@@ -191,7 +191,7 @@ if (!function_exists('output')) {
                     }
 
                     if (!empty($output_escape_csv) && $output_escape_csv === 'y') {
-                        if (strpos($value, '=') === 0 or strpos($value, '+') === 0 or strpos($value, '-') === 0 or strpos($value, '@') === 0) {
+                        if (str_starts_with($value, '=') or str_starts_with($value, '+') or str_starts_with($value, '-') or str_starts_with($value, '@')) {
                             $value = "'" . $value;
                         }
                     }
