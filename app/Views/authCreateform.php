@@ -4,7 +4,7 @@
 include 'shared/create_functions.php';
 include 'shared/common_functions.php';
 $test = '';
-if (strpos(base_url(), 'https:') === false) {
+if (!str_contains(base_url(), 'https:')) {
     $test = '<p><div class="container-fluid"><div class="alert alert-warning alert-dismissible fade show" role="alert">
                 <strong>IMPORTANT</strong>, you <i>must</i> be using https on your Open-AudIT server to use Entra for Auth. Please configure Apache to use <strong>https</strong> before configuring Entra for auth.
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>

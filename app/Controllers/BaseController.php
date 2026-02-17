@@ -272,7 +272,7 @@ abstract class BaseController extends Controller
 
         // Load our $this->{$collection}Model
         $collection = ucfirst($this->resp->meta->collection);
-        if (strpos($collection, '_') !== false) {
+        if (str_contains($collection, '_')) {
             $collection = str_replace('_', ' ', $collection);
             $collection = ucwords($collection);
             $collection = str_replace(' ', '', $collection);
@@ -308,7 +308,7 @@ abstract class BaseController extends Controller
                 $this->config->product = 'community';
             }
 
-            if (strpos($this->collections->{$this->resp->meta->collection}->actions->{$this->config->product}, $this->resp->meta->permission_requested[$this->resp->meta->action]) === false) {
+            if (!str_contains($this->collections->{$this->resp->meta->collection}->actions->{$this->config->product}, $this->resp->meta->permission_requested[$this->resp->meta->action])) {
                 log_message('error', $this->resp->meta->collection . '::' . $this->resp->meta->action . ' not permitted with a ' . $this->config->product . ' license.');
                 \Config\Services::session()->setFlashdata('error', $this->resp->meta->collection . '::' . $this->resp->meta->action . ' is limited to ' . $this->collections->{$this->resp->meta->collection}->edition . ' licenses. Please contact <a href="https://firstwave.com" target="_blank">FirstWave</a> for a license.');
                 header('Location: ' . url_to($this->resp->meta->collection . 'Help'));
