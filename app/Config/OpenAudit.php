@@ -329,7 +329,7 @@ class OpenAudit extends BaseConfig
             $this->page_size = 1000;
         }
 
-        if (!empty($this->discovery_linux_script_directory) && substr($this->discovery_linux_script_directory, -1) !== '/') {
+        if (!empty($this->discovery_linux_script_directory) && !str_ends_with($this->discovery_linux_script_directory, '/')) {
             $this->discovery_linux_script_directory .= '/';
         }
 
