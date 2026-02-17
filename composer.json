@@ -73,7 +73,8 @@
                 "PKSA-64jn-3d9t-gncx": "PhpSpreadsheet vulnerable to SSRF when reading a document in the browser",
                 "PKSA-cncr-q695-v65g": "Uses insecure CSPRNG openssl_random_pseudo_bytes"
             }
-        }
+        },
+        "process-timeout": 0
     },
     "scripts": {
         "psalm:baseline": "psalm --set-baseline=psalm-baseline.xml",
