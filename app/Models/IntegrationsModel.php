@@ -139,8 +139,8 @@ class IntegrationsModel extends BaseModel
         $instance->fieldsModel = new \App\Models\FieldsModel();
         if (!empty($integration->fields)) {
             foreach ($integration->fields as $field) {
-                if ($field->internal_field_name === '' or strpos($field->internal_field_name, 'fields.') === 0) {
-                    if (strpos($field->internal_field_name, 'fields.') === 0) {
+                if ($field->internal_field_name === '' or str_starts_with($field->internal_field_name, 'fields.')) {
+                    if (str_starts_with($field->internal_field_name, 'fields.')) {
                         $field_name = str_replace('fields.', '', $field->internal_field_name);
                     } else {
                         $field_name = $this->internalFieldFromEmpty($data->type, $field->external_field_name);
@@ -315,7 +315,7 @@ class IntegrationsModel extends BaseModel
             $integration->debug = true;
         }
 
-        if (substr($integration->attributes->attributes->url, -1) !== '/') {
+        if (!str_ends_with($integration->attributes->attributes->url, '/')) {
             $integration->attributes->attributes->url .= '/';
         }
 
@@ -466,7 +466,7 @@ class IntegrationsModel extends BaseModel
                     $result = $this->db->query($sql, [intval($device->devices->id)])->getResult();
                     foreach ($integration->attributes->fields as $field) {
                         $message = 'Not updating device ID: ' . $device->devices->id . ' for ' . $device->devices->name . ' in Open-AudIT because no changed fields.';
-                        if (($field->priority === 'external' or (empty($result[0]->uuid) and $integration->attributes->type === 'nmis')) and strpos($field->internal_field_name, 'devices.') !== false) {
+                        if (($field->priority === 'external' or (empty($result[0]->uuid) and $integration->attributes->type === 'nmis')) and str_contains($field->internal_field_name, 'devices.')) {
                             // a regular field in Open-AudIT that we should update
                             $system_field = str_replace('devices.', '', $field->internal_field_name);
                             if (!empty($device->devices->{$system_field})) { # TODO - something better than not empty
@@ -887,7 +887,7 @@ class IntegrationsModel extends BaseModel
         foreach ($external_formatted_devices as $device) {
             if (isset($device->devices->ip) and !empty($device->devices->ip)) {
                 if (!filter_var($device->devices->ip, FILTER_VALIDATE_IP)) {
-                    if (strpos('.', $device->devices->ip) !== false) {
+                    if (str_contains('.', $device->devices->ip)) {
                         $device->devices->dns_fqdn = $device->devices->ip;
                     } else {
                         $device->devices->dns_hostname = $device->devices->ip;
@@ -895,7 +895,7 @@ class IntegrationsModel extends BaseModel
                     $device->devices->ip = gethostbyname($device->devices->ip);
                 }
                 $fqdn = @gethostbyaddr($device->devices->ip);
-                if (empty($device->devices->dns_fqdn) and !empty($fqdn) and strpos($fqdn, '.') !== false) {
+                if (empty($device->devices->dns_fqdn) and !empty($fqdn) and str_contains($fqdn, '.')) {
                     $device->devices->dns_fqdn = $fqdn;
                 }
             }
@@ -971,7 +971,7 @@ class IntegrationsModel extends BaseModel
         // Default field population
         foreach ($devices as $device) {
             foreach ($integration->attributes->fields as $field) {
-                if (strpos($field->internal_field_name, 'devices.') !== false) {
+                if (str_contains($field->internal_field_name, 'devices.')) {
                     $name = str_replace('devices.', '', $field->internal_field_name);
                     if (!isset($device->{$name})) {
                         $device->{$name} = '';
@@ -994,7 +994,7 @@ class IntegrationsModel extends BaseModel
             // TODO - maybe be able to actually use the integration, overwriting blank field names
             $custom_fields = array();
             foreach ($integration->attributes->fields as $integration_field) {
-                if ($integration_field->internal_field_name === '' or strpos($integration_field->internal_field_name, 'fields.') !== false) {
+                if ($integration_field->internal_field_name === '' or str_contains($integration_field->internal_field_name, 'fields.')) {
                     $newfield = new \stdClass();
                     $newfield = clone $integration_field;
                     $newfield->internal_field_name = str_replace('fields.', '', $integration_field->internal_field_name);
@@ -1517,7 +1517,7 @@ class IntegrationsModel extends BaseModel
         $cred_fields = new \stdClass();
         foreach ($integration->attributes->fields as $field) {
             // check if we need to update various fields
-            if (strpos($field->internal_field_name, 'credentials.') !== false) {
+            if (str_contains($field->internal_field_name, 'credentials.')) {
                 $field_name = str_replace('credentials.', '', $field->internal_field_name);
                 $cred_fields->{$field_name} = $field->priority;
             }
@@ -1643,7 +1643,7 @@ class IntegrationsModel extends BaseModel
             $sql = "SELECT * FROM field WHERE device_id = ?";
             $device_fields = $this->db->query($sql, [$device->devices->id])->getResult();
             foreach ($integration->attributes->fields as $field) {
-                if ($field->priority === 'external' and (strpos($field->internal_field_name, 'fields.') !== false or $field->internal_field_name === '')) {
+                if ($field->priority === 'external' and (str_contains($field->internal_field_name, 'fields.') or $field->internal_field_name === '')) {
                     // a custom field in Open-AudIT that we should update
                     $field_name = str_replace('fields.', '', $field->internal_field_name);
                     if (empty($field_name)) {

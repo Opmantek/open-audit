@@ -31,7 +31,7 @@ include 'shared/common_functions.php';
                                         if (strrpos($key, 'ip_padded') === strlen($key) - 9) {
                                             continue;
                                         }
-                                        if (strpos($key, '.id') !== false and strpos($key, '.identification') === false) {
+                                        if (str_contains($key, '.id') and !str_contains($key, '.identification')) {
                                             $collection = substr($key, 0, strpos($key, '.'));
                                             if ($collection === 'system') {
                                                 $collection = 'devices';
