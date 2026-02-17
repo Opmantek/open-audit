@@ -12,7 +12,7 @@ if (!function_exists('snmp_credentials')) {
      * @param  array  $credentials  [description]
      * @param  [type] $log          [description]
      * @param  [type] $discovery_id [description]
-     * @return class                Returns an object of working credentials or false
+     * @return object|false         Returns an object of working credentials or false
      */
     function snmp_credentials(string $ip = '', array $credentials = array(), int $discovery_id = 0)
     {
