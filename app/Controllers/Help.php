@@ -7,15 +7,6 @@ declare(strict_types=1);
 
 namespace App\Controllers;
 
-use stdClass;
-use CodeIgniter\Controller;
-use CodeIgniter\HTTP\CLIRequest;
-use CodeIgniter\HTTP\IncomingRequest;
-use CodeIgniter\HTTP\RequestInterface;
-use CodeIgniter\HTTP\ResponseInterface;
-use Psr\Log\LoggerInterface;
-use CodeIgniter\Model;
-
 /**
  * PHP version 7.4
  *

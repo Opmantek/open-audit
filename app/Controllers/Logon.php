@@ -8,14 +8,7 @@
 namespace App\Controllers;
 
 use CodeIgniter\Controller;
-use CodeIgniter\HTTP\CLIRequest;
-use CodeIgniter\HTTP\IncomingRequest;
-use CodeIgniter\HTTP\RequestInterface;
-use CodeIgniter\HTTP\ResponseInterface;
-use Psr\Log\LoggerInterface;
-use Config\Services;
 use League\OAuth2\Client;
-use Foxworth42\OAuth2\Client\Provider\Okta;
 
 #[\AllowDynamicProperties]
 
