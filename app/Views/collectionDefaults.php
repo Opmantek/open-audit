@@ -69,7 +69,7 @@ include 'shared/common_functions.php';
                 </div>
             </div>
         </main>
-<?php if (strpos($user->permissions[$meta->collection], 'u') !== false) { ?>
+<?php if (str_contains($user->permissions[$meta->collection], 'u')) { ?>
 <script {csp-script-nonce}>
 window.onload = function () {
     $(document).ready(function() {

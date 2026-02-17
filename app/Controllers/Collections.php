@@ -68,7 +68,7 @@ class Collections extends BaseController
      */
     public function collection(string $export = '')
     {
-        if (strpos($this->collections->{$this->resp->meta->collection}->actions->{$this->config->product}, $this->resp->meta->permission_requested[$this->resp->meta->action]) === false) {
+        if (!str_contains($this->collections->{$this->resp->meta->collection}->actions->{$this->config->product}, $this->resp->meta->permission_requested[$this->resp->meta->action])) {
             log_message('error', $this->resp->meta->collection . '::' . $this->resp->meta->action . ' not permitted with a ' . $this->config->product . ' license.');
             if ($this->resp->meta->format === 'html') {
                 \Config\Services::session()->setFlashdata('error', $this->resp->meta->collection . '::' . $this->resp->meta->action . ' is limited to ' . $this->collections->{$this->resp->meta->collection}->edition . ' licenses. Please contact <a href="https://firstwave.com" target="_blank">FirstWave</a> for a license.');
@@ -81,7 +81,7 @@ class Collections extends BaseController
         }
 
         $update = false;
-        if (strpos($this->user->permissions[$this->resp->meta->collection], 'u') !== false and strpos($this->collections->{$this->resp->meta->collection}->actions->{$this->config->product}, 'u') !== false) {
+        if (str_contains($this->user->permissions[$this->resp->meta->collection], 'u') and str_contains($this->collections->{$this->resp->meta->collection}->actions->{$this->config->product}, 'u')) {
             $update = true;
         }
 
@@ -102,11 +102,11 @@ class Collections extends BaseController
             log_message('debug', $this->resp->meta->collection . 'Model::collection took ' . (microtime(true) - $start) . ' seconds.');
         }
 
-        if (strpos($this->resp->meta->query_string, 'limit=') !== false and $this->resp->meta->filtered < $this->resp->meta->total and empty($_SESSION['warning']) and $this->resp->meta->format === 'html') {
+        if (str_contains($this->resp->meta->query_string, 'limit=') and $this->resp->meta->filtered < $this->resp->meta->total and empty($_SESSION['warning']) and $this->resp->meta->format === 'html') {
             $_SESSION['success'] = 'Result limited to ' . $this->resp->meta->filtered . ' items as requested. There are actually ' . $this->resp->meta->total . ' ' . $this->resp->meta->collection . '.';
         }
 
-        if (strpos($this->resp->meta->query_string, 'limit=') === false and $this->resp->meta->filtered < $this->resp->meta->total and $this->resp->meta->filtered === $this->config->page_size and $this->resp->meta->format === 'html') {
+        if (!str_contains($this->resp->meta->query_string, 'limit=') and $this->resp->meta->filtered < $this->resp->meta->total and $this->resp->meta->filtered === $this->config->page_size and $this->resp->meta->format === 'html') {
             $_SESSION['success'] = 'Result limited to ' . $this->config->page_size . ' items as per configuration. There are actually ' . $this->resp->meta->total . ' ' . $this->resp->meta->collection . '. You can change this in the configuration, <a href="' . url_to('configurationRead', 'page_size') . '">here</a>.';
         }
         if ($this->resp->meta->collection === 'devices') {
@@ -140,7 +140,7 @@ class Collections extends BaseController
                     $table = str_replace('%', '', $filter->value);
                     $tables = explode(',', $table);
                     $table = $tables[0];
-                    if (strpos($filter->value, ',') !== false) {
+                    if (str_contains($filter->value, ',')) {
                         $_SESSION['warning'] = 'Can only ask for one type of component. Returning ' . $table . '.';
                         log_message('warning', $_SESSION['warning']);
                     }
@@ -204,7 +204,7 @@ class Collections extends BaseController
             $this->resp->included = array();
         }
         // A special case for the Bulk Update Form
-        if ($this->resp->meta->request_method === 'GET' and strpos($this->resp->meta->query_string, 'action=bulkupdateform') !== false) {
+        if ($this->resp->meta->request_method === 'GET' and str_contains($this->resp->meta->query_string, 'action=bulkupdateform')) {
             $view = $this->resp->meta->collection . 'BulkUpdateForm';
             $this->resp->included = $this->{strtolower($this->resp->meta->collection) . "Model"}->includedBulkUpdate();
             $this->resp->meta->action = 'bulkupdateform';
@@ -250,7 +250,7 @@ class Collections extends BaseController
      */
     public function create()
     {
-        if (strpos($this->collections->{$this->resp->meta->collection}->actions->{$this->config->product}, $this->resp->meta->permission_requested[$this->resp->meta->action]) === false) {
+        if (!str_contains($this->collections->{$this->resp->meta->collection}->actions->{$this->config->product}, $this->resp->meta->permission_requested[$this->resp->meta->action])) {
             log_message('error', $this->resp->meta->collection . '::' . $this->resp->meta->action . ' not permitted with a ' . $this->config->product . ' license.');
             if ($this->resp->meta->format === 'html') {
                 \Config\Services::session()->setFlashdata('error', $this->resp->meta->collection . '::' . $this->resp->meta->action . ' is limited to ' . $this->collections->{$this->resp->meta->collection}->edition . ' licenses. Please contact <a href="https://firstwave.com" target="_blank">FirstWave</a> for a license.');
@@ -352,7 +352,7 @@ class Collections extends BaseController
      */
     public function createForm()
     {
-        if (strpos($this->collections->{$this->resp->meta->collection}->actions->{$this->config->product}, $this->resp->meta->permission_requested[$this->resp->meta->action]) === false) {
+        if (!str_contains($this->collections->{$this->resp->meta->collection}->actions->{$this->config->product}, $this->resp->meta->permission_requested[$this->resp->meta->action])) {
             log_message('error', $this->resp->meta->collection . '::' . $this->resp->meta->action . ' not permitted with a ' . $this->config->product . ' license.');
             if ($this->resp->meta->format === 'html') {
                 \Config\Services::session()->setFlashdata('error', $this->resp->meta->collection . '::' . $this->resp->meta->action . ' is limited to ' . $this->collections->{$this->resp->meta->collection}->edition . ' licenses. Please contact <a href="https://firstwave.com" target="_blank">FirstWave</a> for a license.');
@@ -423,7 +423,7 @@ class Collections extends BaseController
      */
     public function delete()
     {
-        if (strpos($this->collections->{$this->resp->meta->collection}->actions->{$this->config->product}, $this->resp->meta->permission_requested[$this->resp->meta->action]) === false) {
+        if (!str_contains($this->collections->{$this->resp->meta->collection}->actions->{$this->config->product}, $this->resp->meta->permission_requested[$this->resp->meta->action])) {
             log_message('error', $this->resp->meta->collection . '::' . $this->resp->meta->action . ' not permitted with a ' . $this->config->product . ' license.');
             if ($this->resp->meta->format === 'html') {
                 \Config\Services::session()->setFlashdata('error', $this->resp->meta->collection . '::' . $this->resp->meta->action . ' is limited to ' . $this->collections->{$this->resp->meta->collection}->edition . ' licenses. Please contact <a href="https://firstwave.com" target="_blank">FirstWave</a> for a license.');
@@ -498,7 +498,7 @@ class Collections extends BaseController
      */
     public function import()
     {
-        if (strpos($this->collections->{$this->resp->meta->collection}->actions->{$this->config->product}, $this->resp->meta->permission_requested[$this->resp->meta->action]) === false) {
+        if (!str_contains($this->collections->{$this->resp->meta->collection}->actions->{$this->config->product}, $this->resp->meta->permission_requested[$this->resp->meta->action])) {
             log_message('error', $this->resp->meta->collection . '::' . $this->resp->meta->action . ' not permitted with a ' . $this->config->product . ' license.');
             if ($this->resp->meta->format === 'html') {
                 \Config\Services::session()->setFlashdata('error', $this->resp->meta->collection . '::' . $this->resp->meta->action . ' is limited to ' . $this->collections->{$this->resp->meta->collection}->edition . ' licenses. Please contact <a href="https://firstwave.com" target="_blank">FirstWave</a> for a license.');
@@ -609,7 +609,7 @@ class Collections extends BaseController
             if (($this->resp->meta->collection === 'credential' or $this->resp->meta->collection === 'credentials' or $this->resp->meta->collection === 'clouds') and empty($data->credentials)) {
                 $data->credentials = new stdClass();
                 foreach ($data as $key => $value) {
-                    if (strpos($key, 'credentials.') !== false) {
+                    if (str_contains($key, 'credentials.')) {
                         $data->credentials->{str_replace('credentials.', '', $key)} = $value;
                     }
                 }
@@ -619,7 +619,7 @@ class Collections extends BaseController
             if (($this->resp->meta->collection === 'dashboards' or $this->resp->meta->collection === 'scripts') and empty($data->options)) {
                 $data->options = new stdClass();
                 foreach ($data as $key => $value) {
-                    if (strpos($key, 'options.') !== false) {
+                    if (str_contains($key, 'options.')) {
                         $data->options->{str_replace('options.', '', $key)} = $value;
                     }
                 }
@@ -628,7 +628,7 @@ class Collections extends BaseController
             if ($this->resp->meta->collection === 'discoveries' and empty($data->scan_options)) {
                 $data->options = new stdClass();
                 foreach ($data as $key => $value) {
-                    if (strpos($key, 'scan_options.') !== false) {
+                    if (str_contains($key, 'scan_options.')) {
                         $data->options->{str_replace('scan_options.', '', $key)} = $value;
                     }
                 }
@@ -637,7 +637,7 @@ class Collections extends BaseController
             if ($this->resp->meta->collection === 'discoveries' and empty($data->match_options)) {
                 $data->options = new stdClass();
                 foreach ($data as $key => $value) {
-                    if (strpos($key, 'match_options.') !== false) {
+                    if (str_contains($key, 'match_options.')) {
                         $data->options->{str_replace('match_options.', '', $key)} = $value;
                     }
                 }
@@ -724,7 +724,7 @@ class Collections extends BaseController
      */
     public function importForm()
     {
-        if (strpos($this->collections->{$this->resp->meta->collection}->actions->{$this->config->product}, $this->resp->meta->permission_requested[$this->resp->meta->action]) === false) {
+        if (!str_contains($this->collections->{$this->resp->meta->collection}->actions->{$this->config->product}, $this->resp->meta->permission_requested[$this->resp->meta->action])) {
             log_message('error', $this->resp->meta->collection . '::' . $this->resp->meta->action . ' not permitted with a ' . $this->config->product . ' license.');
             if ($this->resp->meta->format === 'html') {
                 \Config\Services::session()->setFlashdata('error', $this->resp->meta->collection . '::' . $this->resp->meta->action . ' is limited to ' . $this->collections->{$this->resp->meta->collection}->edition . ' licenses. Please contact <a href="https://firstwave.com" target="_blank">FirstWave</a> for a license.');
@@ -759,7 +759,7 @@ class Collections extends BaseController
      */
     public function importJSONForm()
     {
-        if (strpos($this->collections->{$this->resp->meta->collection}->actions->{$this->config->product}, $this->resp->meta->permission_requested[$this->resp->meta->action]) === false) {
+        if (!str_contains($this->collections->{$this->resp->meta->collection}->actions->{$this->config->product}, $this->resp->meta->permission_requested[$this->resp->meta->action])) {
             log_message('error', $this->resp->meta->collection . '::' . $this->resp->meta->action . ' not permitted with a ' . $this->config->product . ' license.');
             if ($this->resp->meta->format === 'html') {
                 \Config\Services::session()->setFlashdata('error', $this->resp->meta->collection . '::' . $this->resp->meta->action . ' is limited to ' . $this->collections->{$this->resp->meta->collection}->edition . ' licenses. Please contact <a href="https://firstwave.com" target="_blank">FirstWave</a> for a license.');
@@ -794,7 +794,7 @@ class Collections extends BaseController
      */
     public function importJSON()
     {
-        if (strpos($this->collections->{$this->resp->meta->collection}->actions->{$this->config->product}, $this->resp->meta->permission_requested[$this->resp->meta->action]) === false) {
+        if (!str_contains($this->collections->{$this->resp->meta->collection}->actions->{$this->config->product}, $this->resp->meta->permission_requested[$this->resp->meta->action])) {
             log_message('error', $this->resp->meta->collection . '::' . $this->resp->meta->action . ' not permitted with a ' . $this->config->product . ' license.');
             if ($this->resp->meta->format === 'html') {
                 \Config\Services::session()->setFlashdata('error', $this->resp->meta->collection . '::' . $this->resp->meta->action . ' is limited to ' . $this->collections->{$this->resp->meta->collection}->edition . ' licenses. Please contact <a href="https://firstwave.com" target="_blank">FirstWave</a> for a license.');
@@ -922,7 +922,7 @@ class Collections extends BaseController
      */
     public function read($id, string $export = '')
     {
-        if (strpos($this->collections->{$this->resp->meta->collection}->actions->{$this->config->product}, $this->resp->meta->permission_requested[$this->resp->meta->action]) === false) {
+        if (!str_contains($this->collections->{$this->resp->meta->collection}->actions->{$this->config->product}, $this->resp->meta->permission_requested[$this->resp->meta->action])) {
             log_message('error', $this->resp->meta->collection . '::' . $this->resp->meta->action . ' not permitted with a ' . $this->config->product . ' license.');
             if ($this->resp->meta->format === 'html') {
                 \Config\Services::session()->setFlashdata('error', $this->resp->meta->collection . '::' . $this->resp->meta->action . ' is limited to ' . $this->collections->{$this->resp->meta->collection}->edition . ' licenses. Please contact <a href="https://firstwave.com" target="_blank">FirstWave</a> for a license.');
@@ -1076,7 +1076,7 @@ class Collections extends BaseController
                 nmapSuid(true);
             }
             $update = false;
-            if (strpos($this->user->permissions[$this->resp->meta->collection], 'u') !== false and strpos($this->collections->{$this->resp->meta->collection}->actions->{$this->config->product}, 'u') !== false) {
+            if (str_contains($this->user->permissions[$this->resp->meta->collection], 'u') and str_contains($this->collections->{$this->resp->meta->collection}->actions->{$this->config->product}, 'u')) {
                 $update = true;
             }
             $this->resp->included = $this->{$this->resp->meta->collection . 'Model'}->includedRead($this->resp->meta->id);
@@ -1126,7 +1126,7 @@ class Collections extends BaseController
      */
     public function reset()
     {
-        if (strpos($this->collections->{$this->resp->meta->collection}->actions->{$this->config->product}, $this->resp->meta->permission_requested[$this->resp->meta->action]) === false) {
+        if (!str_contains($this->collections->{$this->resp->meta->collection}->actions->{$this->config->product}, $this->resp->meta->permission_requested[$this->resp->meta->action])) {
             log_message('error', $this->resp->meta->collection . '::' . $this->resp->meta->action . ' not permitted with a ' . $this->config->product . ' license.');
             if ($this->resp->meta->format === 'html') {
                 \Config\Services::session()->setFlashdata('error', $this->resp->meta->collection . '::' . $this->resp->meta->action . ' is limited to ' . $this->collections->{$this->resp->meta->collection}->edition . ' licenses. Please contact <a href="https://firstwave.com" target="_blank">FirstWave</a> for a license.');
@@ -1168,7 +1168,7 @@ class Collections extends BaseController
      */
     public function update()
     {
-        if (strpos($this->collections->{$this->resp->meta->collection}->actions->{$this->config->product}, $this->resp->meta->permission_requested[$this->resp->meta->action]) === false) {
+        if (!str_contains($this->collections->{$this->resp->meta->collection}->actions->{$this->config->product}, $this->resp->meta->permission_requested[$this->resp->meta->action])) {
             log_message('error', $this->resp->meta->collection . '::' . $this->resp->meta->action . ' not permitted with a ' . $this->config->product . ' license.');
             if ($this->resp->meta->format === 'html') {
                 \Config\Services::session()->setFlashdata('error', $this->resp->meta->collection . '::' . $this->resp->meta->action . ' is limited to ' . $this->collections->{$this->resp->meta->collection}->edition . ' licenses. Please contact <a href="https://firstwave.com" target="_blank">FirstWave</a> for a license.');
