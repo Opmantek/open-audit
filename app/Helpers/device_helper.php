@@ -87,7 +87,7 @@ if (!function_exists('audit_convert')) {
         if (is_string($input)) {
             // See if we have stringified XML
             // Remove the data= from the start if it exists
-            if (strpos($input, 'data=') === 0) {
+            if (str_starts_with($input, 'data=')) {
                 log_message('debug', 'Removing data= from start of audit result.');
                 $input = substr($input, 5);
             }
@@ -292,7 +292,7 @@ if (! function_exists('deviceMatch')) {
         // check if we have an ip address or a hostname (possibly a fqdn)
         if (!empty($details->hostname)) {
             if (!filter_var($details->hostname, FILTER_VALIDATE_IP)) {
-                if (strpos($details->hostname, '.') !== false) {
+                if (str_contains($details->hostname, '.')) {
                     $message = new \StdClass();
                     $message->message = "Provided hostname contains a '.' and is not a valid IP. Assuming a FQDN.";
                     $message->command_status = 'notice';
@@ -1130,7 +1130,7 @@ if (! function_exists('deviceMatch')) {
             $message = new \StdClass();
             $message->message = 'MISS on Mac Address (ip table).';
             if (strtolower($match->match_mac_vmware) === 'n') {
-                if (strpos($details->mac_address, '00:0c:29:') === 0 or strpos($details->mac_address, '00:50:56:') === 0 or strpos($details->mac_address, '00:05:69:') === 0 or strpos($details->mac_address, '00:1c:14:') === 0) {
+                if (str_starts_with($details->mac_address, '00:0c:29:') or str_starts_with($details->mac_address, '00:50:56:') or str_starts_with($details->mac_address, '00:05:69:') or str_starts_with($details->mac_address, '00:1c:14:')) {
                     $message->message = 'MISS on Mac Address, VMware specified not match (ip table).';
                 }
             }
@@ -1188,7 +1188,7 @@ if (! function_exists('deviceMatch')) {
             $message = new \StdClass();
             $message->message = 'MISS on Mac Address (network table).';
             if (strtolower($match->match_mac_vmware) === 'n') {
-                if (strpos($details->mac_address, '00:0c:29:') === 0 or strpos($details->mac_address, '00:50:56:') === 0 or strpos($details->mac_address, '00:05:69:') === 0 or strpos($details->mac_address, '00:1c:14:') === 0) {
+                if (str_starts_with($details->mac_address, '00:0c:29:') or str_starts_with($details->mac_address, '00:50:56:') or str_starts_with($details->mac_address, '00:05:69:') or str_starts_with($details->mac_address, '00:1c:14:')) {
                     $message->message = 'MISS on Mac Address, VMware specified not match (network table).';
                 }
             }
@@ -1248,7 +1248,7 @@ if (! function_exists('deviceMatch')) {
                 $message = new \StdClass();
                 $message->message = 'MISS on Mac Address (network table) all.';
                 if (strtolower($match->match_mac_vmware) === 'n') {
-                    if (strpos($mac, '00:0c:29:') === 0 or strpos($mac, '00:50:56:') === 0 or strpos($mac, '00:05:69:') === 0 or strpos($mac, '00:1c:14:') === 0) {
+                    if (str_starts_with($mac, '00:0c:29:') or str_starts_with($mac, '00:50:56:') or str_starts_with($mac, '00:05:69:') or str_starts_with($mac, '00:1c:14:')) {
                         $message->message = 'MISS on Mac Address, VMware specified not match (network table) all.';
                     }
                 }
@@ -1313,7 +1313,7 @@ if (! function_exists('deviceMatch')) {
                 $message = new \StdClass();
                 $message->message = 'MISS on Mac Address (addresses).';
                 if (strtolower($match->match_mac_vmware) === 'n') {
-                    if (strpos($mac, '00:0c:29:') === 0 or strpos($mac, '00:50:56:') === 0 or strpos($mac, '00:05:69:') === 0 or strpos($mac, '00:1c:14:') === 0) {
+                    if (str_starts_with($mac, '00:0c:29:') or str_starts_with($mac, '00:50:56:') or str_starts_with($mac, '00:05:69:') or str_starts_with($mac, '00:1c:14:')) {
                         $message->message = 'MISS on Mac Address, VMware specified not match (ip) all.';
                     }
                 }
@@ -1728,13 +1728,13 @@ function cpe_create($device)
         }
 
         // HP 3PAR
-        if (strpos($device->sysDescr, 'HP_3PAR') !== false) {
+        if (str_contains($device->sysDescr, 'HP_3PAR')) {
             $explode = explode(',', $device->sysDescr);
             for ($i = 0; $i < count($explode); $i++) {
-                if (strpos($explode[$i], 'HP_3PAR') !== false) {
+                if (str_contains($explode[$i], 'HP_3PAR')) {
                     $cpe = 'o:hpe:3par_os';
                 }
-                if (strpos($explode[$i], 'InForm OS:') !== false) {
+                if (str_contains($explode[$i], 'InForm OS:')) {
                     $explode2 = explode(':', $explode[2]);
                     $device->os_version = trim($explode2[1]);
                     $cpe = 'o:hpe:3par_os';
@@ -1969,7 +1969,7 @@ function reset_icons($id = '')
             }
 
             // os name based
-            if ((strripos($details->os_name, 'osx') !== false) or (strpos(strtolower($details->os_name), 'ios') !== false)) {
+            if ((strripos($details->os_name, 'osx') !== false) or (str_contains(strtolower($details->os_name), 'ios'))) {
                 $details->icon = 'apple';
             }
             if (strripos($details->os_name, 'aix') !== false) {
@@ -2050,7 +2050,7 @@ function reset_icons($id = '')
         } else {
             // device is not type=computer
             // base the icon on the type
-            if (strpos($details->type, '|') === false) {
+            if (!str_contains($details->type, '|')) {
                 // if the type does not contain a |, use it.
                 // Nmap will often return a pipe separated list when it guesses
                 $details->icon = str_replace(' ', '_', $details->type);
@@ -2188,7 +2188,7 @@ function audit_format_system($parameters)
     unset($input->icon);
 
     if (!filter_var($input->hostname, FILTER_VALIDATE_IP)) {
-        if (strpos($input->hostname, '.') !== false) {
+        if (str_contains($input->hostname, '.')) {
             // we have a fqdn in the hostname field
             if (empty($input->fqdn)) {
                 $input->fqdn = $input->hostname;
