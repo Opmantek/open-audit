@@ -289,7 +289,7 @@ function my_snmp_get_command($ip, $credentials, $oid)
             $temp = explode(' = ', $line);
             $thisOid = substr($temp[0], 1);
             $value = '';
-            if (!empty($temp[1]) and strpos($temp[1], ':') !== false) {
+            if (!empty($temp[1]) and str_contains($temp[1], ':')) {
                 $values = explode(':', $temp[1]);
                 unset($values[0]);
                 $value = trim(implode(':', $values), ' "');
@@ -304,7 +304,7 @@ function my_snmp_get_command($ip, $credentials, $oid)
             $temp = explode(' = ', $line);
             $thisOid = substr($temp[0], 1);
             $value = '';
-            if (!empty($temp[1]) and strpos($temp[1], ':') !== false) {
+            if (!empty($temp[1]) and str_contains($temp[1], ':')) {
                 $values = explode(':', $temp[1]);
                 unset($values[0]);
                 $value = trim(implode(':', $values), ' "');
@@ -328,7 +328,7 @@ function my_snmp_get_command($ip, $credentials, $oid)
             $temp = explode(' = ', $line);
             $thisOid = substr($temp[0], 1);
             $value = '';
-            if (!empty($temp[1]) and strpos($temp[1], ':') !== false) {
+            if (!empty($temp[1]) and str_contains($temp[1], ':')) {
                 $values = explode(':', $temp[1]);
                 unset($values[0]);
                 $value = trim(implode(':', $values), ' "');
@@ -414,23 +414,23 @@ if (!function_exists('my_snmp_get')) {
         }
         $string = trim((string)$string);
         // if the first character is a '.', remove it.
-        if (strpos($string, '.') === 0) {
+        if (str_starts_with($string, '.')) {
             $string = substr($string, 1);
         }
         // remove the first and last characters if they are "
-        if (substr($string, 0, 1) === '"') {
+        if (str_starts_with($string, '"')) {
             $string = substr($string, 1, strlen($string));
         }
-        if (substr($string, -1, 1) === '"') {
+        if (str_ends_with($string, '"')) {
             $string = substr($string, 0, strlen($string) - 1);
         }
         // remove some return strings
         if (
-            strpos(strtolower($string), '/etc/snmp') !== false or
-            strpos(strtolower($string), 'no such instance') !== false or
-            strpos(strtolower($string), 'no such object') !== false or
-            strpos(strtolower($string), 'not set') !== false or
-            strpos(strtolower($string), 'unknown value type') !== false
+            str_contains(strtolower($string), '/etc/snmp') or
+            str_contains(strtolower($string), 'no such instance') or
+            str_contains(strtolower($string), 'no such object') or
+            str_contains(strtolower($string), 'not set') or
+            str_contains(strtolower($string), 'unknown value type')
         ) {
             $string = '';
         }
@@ -452,7 +452,7 @@ function my_snmp_walk_command($ip, $credentials, $oid)
             $temp = explode(' = ', $line);
             $thisOid = substr($temp[0], 1);
             $value = '';
-            if (!empty($temp[1]) and strpos($temp[1], ':') !== false) {
+            if (!empty($temp[1]) and str_contains($temp[1], ':')) {
                 $values = explode(':', $temp[1]);
                 unset($values[0]);
                 $value = trim(implode(':', $values), ' "');
@@ -467,7 +467,7 @@ function my_snmp_walk_command($ip, $credentials, $oid)
             $temp = explode(' = ', $line);
             $thisOid = substr($temp[0], 1);
             $value = '';
-            if (!empty($temp[1]) and strpos($temp[1], ':') !== false) {
+            if (!empty($temp[1]) and str_contains($temp[1], ':')) {
                 $values = explode(':', $temp[1]);
                 unset($values[0]);
                 $value = trim(implode(':', $values), ' "');
@@ -491,7 +491,7 @@ function my_snmp_walk_command($ip, $credentials, $oid)
             $temp = explode(' = ', $line);
             $thisOid = substr($temp[0], 1);
             $value = '';
-            if (!empty($temp[1]) and strpos($temp[1], ':') !== false) {
+            if (!empty($temp[1]) and str_contains($temp[1], ':')) {
                 $values = explode(':', $temp[1]);
                 unset($values[0]);
                 $value = trim(implode(':', $values), ' "');
@@ -581,23 +581,23 @@ if (!function_exists('my_snmp_walk')) {
             if ($array[$key] === '""') {
                 $array[$key] = '';
             }
-            if (strpos($array[$key], '.') === 0) {
+            if (str_starts_with($array[$key], '.')) {
                 $array[$key] = substr($array[$key], 1);
             }
             // remove the first and last characters if they are "
-            if (substr($array[$key], 0, 1) === '"') {
+            if (str_starts_with($array[$key], '"')) {
                 $array[$key] = substr($array[$key], 1, strlen($array[$key]));
             }
-            if (substr($array[$key], -1, 1) === '"') {
+            if (str_ends_with($array[$key], '"')) {
                 $array[$key] = substr($array[$key], 0, strlen($array[$key]) - 1);
             }
             // remove some return strings
             if (
-                strpos(strtolower($array[$key]), '/etc/snmp') !== false or
-                strpos(strtolower($array[$key]), 'no such instance') !== false or
-                strpos(strtolower($array[$key]), 'no such object') !== false or
-                strpos(strtolower($array[$key]), 'not set') !== false or
-                strpos(strtolower($array[$key]), 'unknown value type') !== false
+                str_contains(strtolower($array[$key]), '/etc/snmp') or
+                str_contains(strtolower($array[$key]), 'no such instance') or
+                str_contains(strtolower($array[$key]), 'no such object') or
+                str_contains(strtolower($array[$key]), 'not set') or
+                str_contains(strtolower($array[$key]), 'unknown value type')
             ) {
                 $array[$key] = '';
             }
@@ -621,7 +621,7 @@ function my_snmp_real_walk_command($ip, $credentials, $oid)
             $temp = explode(' = ', $line);
             $thisOid = substr($temp[0], 1);
             $value = '';
-            if (!empty($temp[1]) and strpos($temp[1], ':') !== false) {
+            if (!empty($temp[1]) and str_contains($temp[1], ':')) {
                 $values = explode(':', $temp[1]);
                 unset($values[0]);
                 $value = trim(implode(':', $values), ' "');
@@ -636,7 +636,7 @@ function my_snmp_real_walk_command($ip, $credentials, $oid)
             $temp = explode(' = ', $line);
             $thisOid = substr($temp[0], 1);
             $value = '';
-            if (!empty($temp[1]) and strpos($temp[1], ':') !== false) {
+            if (!empty($temp[1]) and str_contains($temp[1], ':')) {
                 $values = explode(':', $temp[1]);
                 unset($values[0]);
                 $value = trim(implode(':', $values), ' "');
@@ -659,7 +659,7 @@ function my_snmp_real_walk_command($ip, $credentials, $oid)
             $temp = explode(' = ', $line);
             $thisOid = substr($temp[0], 1);
             $value = '';
-            if (!empty($temp[1]) and strpos($temp[1], ':') !== false) {
+            if (!empty($temp[1]) and str_contains($temp[1], ':')) {
                 $values = explode(':', $temp[1]);
                 unset($values[0]);
                 $value = trim(implode(':', $values), ' "');
@@ -745,23 +745,23 @@ if (!function_exists('my_snmp_real_walk')) {
             if ($array[$key] === '""') {
                 $array[$key] = '';
             }
-            if (strpos($array[$key], '.') === 0) {
+            if (str_starts_with($array[$key], '.')) {
                 $array[$key] = substr($array[$key], 1);
             }
             // remove the first and last characters if they are "
-            if (substr($array[$key], 0, 1) === '"') {
+            if (str_starts_with($array[$key], '"')) {
                 $array[$key] = substr($array[$key], 1, strlen($array[$key]));
             }
-            if (substr($array[$key], -1, 1) === '"') {
+            if (str_ends_with($array[$key], '"')) {
                 $array[$key] = substr($array[$key], 0, strlen($array[$key]) - 1);
             }
             // remove some return strings
             if (
-                strpos(strtolower($array[$key]), '/etc/snmp') !== false or
-                strpos(strtolower($array[$key]), 'no such instance') !== false or
-                strpos(strtolower($array[$key]), 'no such object') !== false or
-                strpos(strtolower($array[$key]), 'not set') !== false or
-                strpos(strtolower($array[$key]), 'unknown value type') !== false
+                str_contains(strtolower($array[$key]), '/etc/snmp') or
+                str_contains(strtolower($array[$key]), 'no such instance') or
+                str_contains(strtolower($array[$key]), 'no such object') or
+                str_contains(strtolower($array[$key]), 'not set') or
+                str_contains(strtolower($array[$key]), 'unknown value type')
             ) {
                 $array[$key] = '';
             }
@@ -983,7 +983,7 @@ if (!function_exists('snmp_audit')) {
 
         $details->uptime = 0;
         if (!empty($details->sysUpTime)) {
-            if (strpos($details->sysUpTime, ')') !== false) {
+            if (str_contains($details->sysUpTime, ')')) {
                 $temp = explode('(', $details->sysUpTime);
                 $temp2 = explode(')', $temp[1]);
                 $details->uptime = intval($temp2[0] / 100);
@@ -1066,7 +1066,7 @@ if (!function_exists('snmp_audit')) {
         $details->snmp_oid = (string)$details->sysObjectID;
         $details->snmp_enterprise_id = '';
         if (!empty($details->snmp_oid)) {
-            if (substr($details->snmp_oid, 0, 1) === '.') {
+            if (str_starts_with($details->snmp_oid, '.')) {
                 $temp = substr($details->snmp_oid, 1, strlen($details->snmp_oid));
             } else {
                 $temp = $details->snmp_oid;
@@ -1615,7 +1615,7 @@ if (!function_exists('snmp_audit')) {
         $discoveryLogModel->create($log);
         if (!empty($temp_services)) {
             foreach ($temp_services as $line) {
-                if (is_string($line) && strpos($line, 'Ubiquiti') !== false) {
+                if (is_string($line) && str_contains($line, 'Ubiquiti')) {
                     $details->manufacturer = 'Ubiquiti Networks Inc.';
                     $log->command_time_to_execute = 0;
                     $log->message = 'Manufacturer set to Ubiquiti ' . $ip . ', because in services list.';
@@ -1863,7 +1863,7 @@ if (!function_exists('snmp_audit')) {
                 $log->command_status = 'notice';
                 $discoveryLogModel->create($log);
                 unset($log->id, $log->command, $log->command_time_to_execute);
-                if (strpos(strtolower($temp), 'cartridge') !== false) {
+                if (str_contains(strtolower($temp), 'cartridge')) {
                     // it's likely this is a colour printer
                     $details->printer_color = 'y';
                 }
@@ -1922,7 +1922,7 @@ if (!function_exists('snmp_audit')) {
                 $discoveryLogModel->create($log);
                 unset($log->id, $log->command, $log->command_time_to_execute);
 
-                if (!empty($temp) and strpos(strtolower($temp), 'counter32') !== false) {
+                if (!empty($temp) and str_contains(strtolower($temp), 'counter32')) {
                     $details->type = 'network printer';
                     // printer duplex
                     $details->printer_duplex = '';
@@ -1981,7 +1981,7 @@ if (!function_exists('snmp_audit')) {
                     $discoveryLogModel->create($log);
                     unset($log->id, $log->command, $log->command_time_to_execute);
 
-                    if (strpos(strtolower($i), 'cartridge') !== false) {
+                    if (str_contains(strtolower($i), 'cartridge')) {
                         // it's likely this is a colour printer
                         $details->printer_color = 'y';
                     }
@@ -2412,7 +2412,7 @@ if (!function_exists('snmp_audit')) {
                 }
                 if (isset($details->os_group) && $details->os_group === 'Windows') {
                     if (isset($interface->ip_addresses) && count($interface->ip_addresses) > 0) {
-                        if (strpos(strtolower($interface->type), 'loopback') === false) {
+                        if (!str_contains(strtolower($interface->type), 'loopback')) {
                             $interfaces_filtered[] = $interface;
                         }
                     }

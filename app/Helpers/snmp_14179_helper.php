@@ -15,7 +15,7 @@ $get_oid_details = function ($ip, $credentials, $oid) {
             $details->manufacturer = 'Cisco Systems';
             $temp2 = explode(',', $test);
             foreach ($temp2 as $test2) {
-                if (strpos($test2, 'Version') !== false) {
+                if (str_contains($test2, 'Version')) {
                     $version = str_ireplace('Version', '', $test2);
                     $version = trim((string)$version);
                 }

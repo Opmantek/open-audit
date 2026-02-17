@@ -522,7 +522,7 @@ if (! function_exists('ssh_command')) {
         $item_start = microtime(true);
         log_message('debug', $ip . ' - Executing SSH command: ' . $command);
         $output = '';
-        if (strpos($command, 'sudo') === false) {
+        if (!str_contains($command, 'sudo')) {
             $ssh->setTimeout($timeout);
             // Not using sudo, so no password prompt
             $result = $ssh->exec('export LANG=C 2>/dev/null;');
@@ -568,7 +568,7 @@ if (! function_exists('ssh_command')) {
         $ssh->disconnect();
         unset($ssh);
         log_message('debug', $ip . ' - SSH session destroyed.');
-        if ((($item_end - $item_start) > $timeout) and stripos($output, 'Audit Completed') === false and strpos($command, 'sudo rm ') === false) {
+        if ((($item_end - $item_start) > $timeout) and stripos($output, 'Audit Completed') === false and !str_contains($command, 'sudo rm ')) {
             if (!empty($parameters->discovery_id)) {
                 $log->command_time_to_execute = ($item_end - $item_start);
                 $log->command_status = 'warning';
@@ -1043,56 +1043,56 @@ if (! function_exists('ssh_audit')) {
             $device->os_family = '';
             if (!empty($device->os_name)) {
                 // Client
-                if (strpos($device->os_name, ' 95') !== false) {
+                if (str_contains($device->os_name, ' 95')) {
                     $device->os_family = 'Windows 95';
                 }
-                if (strpos($device->os_name, ' 98') !== false) {
+                if (str_contains($device->os_name, ' 98')) {
                     $device->os_family = 'Windows 98';
                 }
-                if (strpos($device->os_name, ' XP') !== false) {
+                if (str_contains($device->os_name, ' XP')) {
                     $device->os_family = 'Windows XP';
                 }
-                if (strpos($device->os_name, 'Vista') !== false) {
+                if (str_contains($device->os_name, 'Vista')) {
                     $device->os_family = 'Windows Vista';
                 }
-                if (strpos($device->os_name, 'Windows 7') !== false) {
+                if (str_contains($device->os_name, 'Windows 7')) {
                     $device->os_family = 'Windows 7';
                 }
-                if (strpos($device->os_name, 'Windows 8') !== false) {
+                if (str_contains($device->os_name, 'Windows 8')) {
                     $device->os_family = 'Windows 8';
                 }
-                if (strpos($device->os_name, 'Windows 10') !== false) {
+                if (str_contains($device->os_name, 'Windows 10')) {
                     $device->os_family = 'Windows 10';
                 }
-                if (strpos($device->os_name, 'Windows 11') !== false) {
+                if (str_contains($device->os_name, 'Windows 11')) {
                     $device->os_family = 'Windows 11';
                 }
                 // Server
-                if (strpos($device->os_name, ' NT') !== false) {
+                if (str_contains($device->os_name, ' NT')) {
                     $device->os_family = 'Windows NT';
                 }
-                if (strpos($device->os_name, '2000') !== false) {
+                if (str_contains($device->os_name, '2000')) {
                     $device->os_family = 'Windows 2000';
                 }
-                if (strpos($device->os_name, '2003') !== false) {
+                if (str_contains($device->os_name, '2003')) {
                     $device->os_family = 'Windows 2003';
                 }
-                if (strpos($device->os_name, '2008') !== false) {
+                if (str_contains($device->os_name, '2008')) {
                     $device->os_family = 'Windows 2008';
                 }
-                if (strpos($device->os_name, '2012') !== false) {
+                if (str_contains($device->os_name, '2012')) {
                     $device->os_family = 'Windows 2012';
                 }
-                if (strpos($device->os_name, '2016') !== false) {
+                if (str_contains($device->os_name, '2016')) {
                     $device->os_family = 'Windows 2016';
                 }
-                if (strpos($device->os_name, '2019') !== false) {
+                if (str_contains($device->os_name, '2019')) {
                     $device->os_family = 'Windows 2019';
                 }
-                if (strpos($device->os_name, '2022') !== false) {
+                if (str_contains($device->os_name, '2022')) {
                     $device->os_family = 'Windows 2022';
                 }
-                if (strpos($device->os_name, '2025') !== false) {
+                if (str_contains($device->os_name, '2025')) {
                     $device->os_family = 'Windows 2025';
                 }
             }
@@ -1112,7 +1112,7 @@ if (! function_exists('ssh_audit')) {
         if (!empty($device->shell) and stripos($device->shell, 'COMMAND NOT RECOGNIZED') !== false) {
             $device->shell = '';
         }
-        if (!empty($device->shell) and strpos($device->shell, 'bash') === false) {
+        if (!empty($device->shell) and !str_contains($device->shell, 'bash')) {
             $log->command_status = 'notice';
             $log->message = 'The default shell for ' . $username . ' is ' . $device->shell . ' (not bash)';
             $log->severity = 6;
@@ -1121,7 +1121,7 @@ if (! function_exists('ssh_audit')) {
         $discoveryLogModel->create($log);
         $log->severity = 7;
 
-        if (!empty($device->shell) and strpos($device->shell, 'bash') === false) {
+        if (!empty($device->shell) and !str_contains($device->shell, 'bash')) {
             $item_start = microtime(true);
             $device->bash = trim((string)$ssh->exec('which bash'));
             $log->command = 'which bash';
@@ -1166,7 +1166,7 @@ if (! function_exists('ssh_audit')) {
             unset($device->sh);
         }
 
-        if (!empty($device->shell) and strpos($device->shell, 'bash') === false and $device->bash === '') {
+        if (!empty($device->shell) and !str_contains($device->shell, 'bash') and $device->bash === '') {
             $log->command = '';
             $log->command_output = $device->shell;
             $log->command_time_to_execute = '';
@@ -1239,7 +1239,7 @@ if (! function_exists('ssh_audit')) {
         }
 
         foreach ($commands as $item => $command) {
-            if (!empty($device->shell) and strpos($device->shell, 'bash') === false and $device->bash !== '') {
+            if (!empty($device->shell) and !str_contains($device->shell, 'bash') and $device->bash !== '') {
                 $command = $device->bash . " -c '" . $command . "'";
             }
             $item_start = microtime(true);
@@ -1264,11 +1264,11 @@ if (! function_exists('ssh_audit')) {
             }
             if (!empty($temp1)) {
                 $log->command_status = 'success';
-                if (strpos($temp1, "\n") !== false) {
+                if (str_contains($temp1, "\n")) {
                     $array1 = explode("\n", $temp1);
                     foreach ($array1 as &$string) {
                         $string = trim((string)$string);
-                        if (strpos($string, '=') !== false) {
+                        if (str_contains($string, '=')) {
                             $temp2 = explode('=', $string);
                             $temp2[1] = str_replace("'", '', $temp2[1]);
                             $temp2[1] = str_replace('"', '', $temp2[1]);
@@ -1308,10 +1308,10 @@ if (! function_exists('ssh_audit')) {
                     $explode = explode("\t", $line);
                     $mac = '';
                     $ip = '';
-                    if (!empty($explode[1]) and strpos($explode[1], ':') !== false and $explode[1] !== 'ff:ff:ff:ff:ff:ff' and substr_count($explode[1], ':') === 5) {
+                    if (!empty($explode[1]) and str_contains($explode[1], ':') and $explode[1] !== 'ff:ff:ff:ff:ff:ff' and substr_count($explode[1], ':') === 5) {
                         $mac = $explode[1];
                     }
-                    if (!empty($explode[0]) and strpos($explode[0], '.') !== false and $explode[0] !== '255.255.255.255' and filter_var($explode[0], FILTER_VALIDATE_IP)) {
+                    if (!empty($explode[0]) and str_contains($explode[0], '.') and $explode[0] !== '255.255.255.255' and filter_var($explode[0], FILTER_VALIDATE_IP)) {
                         $ip = $explode[0];
                     }
                     if (!empty($ip) and !empty($mac)) {
@@ -1329,10 +1329,10 @@ if (! function_exists('ssh_audit')) {
                     $mac = '';
                     $ip = '';
                     $interface = '';
-                    if (!empty($explode[1]) and strpos($explode[1], ':') !== false and $explode[1] !== 'ff:ff:ff:ff:ff:ff' and substr_count($explode[1], ':') === 5) {
+                    if (!empty($explode[1]) and str_contains($explode[1], ':') and $explode[1] !== 'ff:ff:ff:ff:ff:ff' and substr_count($explode[1], ':') === 5) {
                         $mac = $explode[1];
                     }
-                    if (!empty($explode[0]) and strpos($explode[0], '.') !== false and $explode[0] !== '255.255.255.255' and filter_var($explode[0], FILTER_VALIDATE_IP)) {
+                    if (!empty($explode[0]) and str_contains($explode[0], '.') and $explode[0] !== '255.255.255.255' and filter_var($explode[0], FILTER_VALIDATE_IP)) {
                         $ip = $explode[0];
                     }
                     if (!empty($ip) and !empty($mac)) {
@@ -1613,7 +1613,7 @@ if (! function_exists('ssh_audit')) {
         if (empty($device->which_sudo) and !empty($instance->config->discovery_sudo_path)) {
             $sudo_paths = explode(',', $instance->config->discovery_sudo_path);
             foreach ($sudo_paths as $sudo_path) {
-                if (!empty($device->shell) and strpos($device->shell, 'bash') === false and $device->bash !== '') {
+                if (!empty($device->shell) and !str_contains($device->shell, 'bash') and $device->bash !== '') {
                     $command = $device->bash . " -c 'ls {$sudo_path} 2>/dev/null'";
                 } else {
                     $command = "ls {$sudo_path} 2>/dev/null";
@@ -1627,7 +1627,7 @@ if (! function_exists('ssh_audit')) {
                 $log->command_output = $temp1;
                 if (!empty($temp1)) {
                     $log->command_status = 'success';
-                    if (strpos($temp1, "\n") !== false) {
+                    if (str_contains($temp1, "\n")) {
                         $array1 = explode("\n", $temp1);
                         foreach ($array1 as &$string) {
                             $string = trim((string)$string);
@@ -1655,7 +1655,7 @@ if (! function_exists('ssh_audit')) {
                 if (!empty($device->which_sudo)) {
                     $item_start = microtime(true);
                     $command = $device->which_sudo . ' hostname 2>/dev/null';
-                    if (!empty($device->shell) and strpos($device->shell, 'bash') === false and $device->bash !== '') {
+                    if (!empty($device->shell) and !str_contains($device->shell, 'bash') and $device->bash !== '') {
                         $command = $device->bash . " -c '" . $command . "'\n";
                     } else {
                         $command .= "\n";
@@ -1710,7 +1710,7 @@ if (! function_exists('ssh_audit')) {
                 $output = '';
                 $item_start = microtime(true);
                 $command = $device->which_sudo . ' dmidecode -s system-uuid 2>/dev/null';
-                if (!empty($device->shell) and strpos($device->shell, 'bash') === false and $device->bash !== '') {
+                if (!empty($device->shell) and !str_contains($device->shell, 'bash') and $device->bash !== '') {
                     $command = $device->bash . " -c '" . $command . "'\n";
                 } else {
                     $command .= "\n";
@@ -1725,7 +1725,7 @@ if (! function_exists('ssh_audit')) {
                 if (!empty($lines[count($lines) - 2])) {
                     $device->uuid = trim((string)$lines[count($lines) - 2]);
                 }
-                if (!empty($device->uuid) and ($device->uuid === ':' or strpos($device->uuid, 'dmidecode -s system-uuid 2>/dev/null') !== false)) {
+                if (!empty($device->uuid) and ($device->uuid === ':' or str_contains($device->uuid, 'dmidecode -s system-uuid 2>/dev/null'))) {
                     $device->uuid = '';
                 }
                 if (empty($device->uuid)) {
@@ -1744,7 +1744,7 @@ if (! function_exists('ssh_audit')) {
                     $output = '';
                     $item_start = microtime(true);
                     $command = $device->which_sudo . ' cat /sys/class/dmi/id/product_uuid 2>/dev/null';
-                    if (!empty($device->shell) and strpos($device->shell, 'bash') === false and $device->bash !== '') {
+                    if (!empty($device->shell) and !str_contains($device->shell, 'bash') and $device->bash !== '') {
                         $command = $device->bash . " -c '" . $command . "'";
                     } else {
                         $command .= "\n";
@@ -1787,13 +1787,13 @@ if (! function_exists('ssh_audit')) {
         if (empty($device->uuid) && $username === 'root') {
             $item_start = microtime(true);
             $command = 'dmidecode -s system-uuid 2>/dev/null';
-            if (!empty($device->shell) and strpos($device->shell, 'bash') === false and $device->bash !== '') {
+            if (!empty($device->shell) and !str_contains($device->shell, 'bash') and $device->bash !== '') {
                 $command = $device->bash . " -c '" . $command . "'";
             }
             $device->uuid = trim((string)$ssh->exec($command));
             $log->command_output = json_encode(explode("\n", $device->uuid));
 
-            if (strpos($device->uuid, 'dmidecode -s system-uuid 2>/dev/null') !== false) {
+            if (str_contains($device->uuid, 'dmidecode -s system-uuid 2>/dev/null')) {
                 $device->uuid = '';
             }
             $log->message = 'SSH command';
@@ -1810,7 +1810,7 @@ if (! function_exists('ssh_audit')) {
 
                 $item_start = microtime(true);
                 $command = 'cat /sys/class/dmi/id/product_uuid 2>/dev/null';
-                if (!empty($device->shell) and strpos($device->shell, 'bash') === false and $device->bash !== '') {
+                if (!empty($device->shell) and !str_contains($device->shell, 'bash') and $device->bash !== '') {
                     $command = $device->bash . " -c '" . $command . "'";
                 }
                 $device->uuid = trim((string)$ssh->exec($command));

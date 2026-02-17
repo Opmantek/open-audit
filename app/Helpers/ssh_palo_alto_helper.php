@@ -86,7 +86,7 @@ function ssh_palo_alto_audit(string $ip = '', int $discovery_id = 0, array $cred
     $cli = new stdClass();
     $cli->config = new stdClass();
     foreach ($command_result as $line) {
-        if (strpos($line, ':') !== false and stripos($line, 'last login') === false and stripos($line, 'last successful login') === false) {
+        if (str_contains($line, ':') and stripos($line, 'last login') === false and stripos($line, 'last successful login') === false) {
             $explode = explode(':', $line);
             if (!empty($explode[0] and !empty($explode[1]))) {
                 $cli->config->{trim($explode[0])} = trim($explode[1]);
@@ -155,7 +155,7 @@ function ssh_palo_alto_audit(string $ip = '', int $discovery_id = 0, array $cred
         $cli = new stdClass();
         $cli->config = array();
         foreach ($command_result as $line) {
-            if (strpos($line, ':') !== false and stripos($line, 'last login') === false and stripos($line, 'last successful login') === false) {
+            if (str_contains($line, ':') and stripos($line, 'last login') === false and stripos($line, 'last successful login') === false) {
                 if (stripos($line, 'license entry:') === 0) {
                     if (!empty($license)) {
                         $cli->config[] = $license;
