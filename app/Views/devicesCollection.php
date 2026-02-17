@@ -21,7 +21,7 @@ if (!in_array('audit_status', $columns) and !empty($config->product) and $config
 }
 if (!empty($meta->data_order)) {
     for ($i = 0; $i < count($meta->data_order); $i++) {
-        if (strpos($meta->data_order[$i], '.') !== false) {
+        if (str_contains($meta->data_order[$i], '.')) {
             $meta->data_order[$i] = str_replace('.', '__', $meta->data_order[$i]);
         }
     }
@@ -48,7 +48,7 @@ if (in_array('cve_count', $meta->data_order)) {
     }
 }
 
-if (strpos($user->permissions[$meta->collection], 'd') !== false or strpos($user->permissions[$meta->collection], 'u') !== false) {
+if (str_contains($user->permissions[$meta->collection], 'd') or str_contains($user->permissions[$meta->collection], 'u')) {
     $meta->data_order[] = 'delete';
     $meta->data_order[] = 'update';
     $columns[] = 'delete';
@@ -190,7 +190,7 @@ if (!empty($meta->filter)) {
                                             <tr>
                                             <?php foreach ($meta->data_order as $key) {
                                                 $align = '';
-                                                if ($key === 'audit_status' or $key === 'icon' or $key === 'id' or strpos($key, '_id') !== false or $key === 'delete' or $key === 'update' or $key === 'cve_count') {
+                                                if ($key === 'audit_status' or $key === 'icon' or $key === 'id' or str_contains($key, '_id') or $key === 'delete' or $key === 'update' or $key === 'cve_count') {
                                                     $align = 'text-center dt-body-center';
                                                 } ?>
                                                 <th class="<?= $align ?>"><?= collection_column_name(str_replace('ip__', '', $key)) ?>
@@ -377,7 +377,7 @@ window.onload = function () {
                         $key = str_replace('devices.', '', $key);
                         if ($key !== 'delete' and $key !== 'update') {
                             $sort_key = $key;
-                            if (strpos($key, "__") !== false) {
+                            if (str_contains($key, "__")) {
                                 $sort_key = str_replace('__', '.', $key);
                             } else {
                                 $sort_key = 'devices.' . $key;

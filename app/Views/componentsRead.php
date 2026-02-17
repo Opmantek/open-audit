@@ -49,7 +49,7 @@ $user->permissions['components'] = '';
                             if ($key === 'devices.id' or $key === 'devices.name') {
                                 continue;
                             }
-                            if (strpos($key, 'ip_padded') !== false) {
+                            if (str_contains($key, 'ip_padded')) {
                                 continue;
                             }
                             if ($key === 'command_output') {

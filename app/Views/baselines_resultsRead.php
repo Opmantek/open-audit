@@ -8,7 +8,7 @@ $count_netstat = count($resource->result->notin->netstat);
 $count_user = count($resource->result->notin->user);
 $total = $count_software + $count_netstat + $count_user;
 $delete = false;
-if (strpos($user->permissions[$meta->collection], 'd') !== false) {
+if (str_contains($user->permissions[$meta->collection], 'd')) {
     $delete = true;
 }
 $extra = '';
@@ -188,16 +188,18 @@ if ($style === 'icontext') {
                         if ($count_software > 0) {
                             $string .= 'Software: <span class="text-primary">' . $count_software . '</span>';
                         }
-                        if ($count_netstat > 0 and strpos($string, 'Software:') !== false) {
+                        $containsSoftware = str_contains($string, 'Software:');
+                        $containsNetstat = str_contains($string, 'Netstat:');
+                        if ($count_netstat > 0 and $containsSoftware) {
                             $string .= ', Netstat: <span class="text-primary">' . $count_netstat . '</span>';
                         }
-                        if ($count_netstat > 0 and strpos($string, 'Software:') === false) {
+                        if ($count_netstat > 0 and !$containsSoftware) {
                             $string .= 'Netstat: <span class="text-primary">' . $count_netstat . '</span>';
                         }
-                        if ($count_user > 0 and (strpos($string, 'Software:') !== false or strpos($string, 'Netstat:') !== false)) {
+                        if ($count_user > 0 and ($containsSoftware or $containsNetstat)) {
                             $string .= ', User: <span class="text-primary">' . $count_user . '</span>';
                         }
-                        if ($count_user > 0 and (strpos($string, 'Software:') === false and strpos($string, 'Netstat:') === false)) {
+                        if ($count_user > 0 and (!$containsSoftware and !$containsNetstat)) {
                             $string .= 'User: <span class="text-primary">' . $count_user . '</span>';
                         }
                         $string .= '.';

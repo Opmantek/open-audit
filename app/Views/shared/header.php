@@ -642,7 +642,7 @@ if (!empty($config->modules)) {
                             <input type="hidden" name="data[access_token]" value="<?= $meta->access_token; ?>">
                             <input type="hidden" name="data[attributes][tables]"  value='["devices"]'>
                             <input type="hidden" name="data[attributes][columns]" value='["name","ip","hostname","domain","dns_hostname","dns_domain","sysName"]'>
-                            <?php if (!empty($user->permissions['devices']) and strpos($user->permissions['devices'], 'r') !== false) { ?>
+                            <?php if (!empty($user->permissions['devices']) and str_contains($user->permissions['devices'], 'r')) { ?>
                                  <div class="col-12">
                                     <label class="visually-hidden" for="data[attributes][value]"><?= __('Search') ?></label>
                                     <div class="input-group input-group-sm">
@@ -657,7 +657,7 @@ if (!empty($config->modules)) {
                                         <button class="btn btn-sm btn-outline-secondary" id="make_my_dashboard_button" title="<?= __('Make My Default Dashboard') ?>" type="button" aria-expanded="false"><span class="icon-house"></span></button>
                                 <?php } ?>
 
-                                <?php if ($meta->collection === 'dashboards' and $meta->action === 'execute' and strpos($user->permissions['devices'], 'u') !== false and $meta->id !== 7) { ?>
+                                <?php if ($meta->collection === 'dashboards' and $meta->action === 'execute' and str_contains($user->permissions['devices'], 'u') and $meta->id !== 7) { ?>
                                         <a href="<?= url_to('dashboardsRead', $meta->id) ?>" class="btn btn-sm btn-outline-secondary" title="<?= __('Edit') ?>" type="button" aria-expanded="false"><span class="icon-pencil"></span></a>
                                 <?php } ?>
                                 <?php if ($meta->collection === 'dashboards' and $meta->action === 'execute') { ?>
@@ -819,11 +819,11 @@ function menuItem($collection = '', $permission = '', $user = null, $route = '',
         return $return;
     }
     // Check if feature matches license
-    if (strpos($instance->collections->{$collection}->actions->{$instance->config->product}, $instance->resp->meta->permission_requested[$instance->resp->meta->action]) === false) {
+    if (!str_contains($instance->collections->{$collection}->actions->{$instance->config->product}, $instance->resp->meta->permission_requested[$instance->resp->meta->action])) {
         $return = "<li><a class=\"dropdown-item greyout toast" . $instance->collections->{$collection}->edition . "\" href=\"#\">" . $title . "</a></li>\n";
     }
     // Check if user has permission and a license
-    if (strpos($instance->collections->{$collection}->actions->{$instance->config->product}, $instance->resp->meta->permission_requested[$instance->resp->meta->action]) !== false) {
+    if (str_contains($instance->collections->{$collection}->actions->{$instance->config->product}, $instance->resp->meta->permission_requested[$instance->resp->meta->action])) {
         if (get_user_permission($collection, $permission, $user)) {
             $return = "<li><a class=\"dropdown-item\" href=\"" . url_to($route) . "{$routeExtra}\">" . $title . "</a></li>\n";
         }
@@ -833,7 +833,7 @@ function menuItem($collection = '', $permission = '', $user = null, $route = '',
 
 function get_user_permission($collection, $action, $user)
 {
-    if (!empty($user->permissions[$collection]) and strpos($user->permissions[$collection], $action) !== false) {
+    if (!empty($user->permissions[$collection]) and str_contains($user->permissions[$collection], $action)) {
         return true;
     }
     return false;

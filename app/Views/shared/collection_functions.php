@@ -30,7 +30,7 @@ function collection_card_header(string $collection = '', string $icon = '', ?obj
         $export_link = url_to($collection . 'Collection') . '?' . $url . '&format=';
     }
 
-    if (strpos($user->permissions[$collection], 'c') !== false and $collection !== 'database' and $collection !== 'vendors' and strpos($label, 'About') === false) {
+    if (str_contains($user->permissions[$collection], 'c') and $collection !== 'database' and $collection !== 'vendors' and !str_contains($label, 'About')) {
         if ($style === 'icontext') {
             $create_button      = "<a id=\"button_create\"     role=\"button\"  class=\"btn btn-light mb-2\" title=\"" . __('Create') . "\"      href=\"" . url_to($collection . 'CreateForm') . "\"><span class=\"icon-plus text-oa-success\"></span>" . __('Create') . "</a>";
 
@@ -52,7 +52,7 @@ function collection_card_header(string $collection = '', string $icon = '', ?obj
         }
     }
 
-    if (strpos($label, 'About') === false and $collection !== 'vendors') {
+    if (!str_contains($label, 'About') and $collection !== 'vendors') {
         if ($style === 'icontext') {
             $export_csv_button = "<a id=\"button_export_csv\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __('Export') . " CSV\" href=\"" . $export_link . "csv\"><span class=\"icon-chevrons-down text-oa-primary\"></span>" . __('Export') . " CSV</a>";
 
@@ -72,7 +72,7 @@ function collection_card_header(string $collection = '', string $icon = '', ?obj
         }
     }
 
-    if (strpos($label, 'About') === false) {
+    if (!str_contains($label, 'About')) {
         if ($style === 'icontext') {
             $help_button = "<a id=\"button_help\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __('Help') . "\" href=\"" . url_to($collection . 'Help') . "\"><span class=\"icon-circle-question-mark text-oa-primary\"></span>" . __('Help') . "</a>";
         } elseif ($style === 'icon') {
@@ -105,7 +105,7 @@ function collection_card_header(string $collection = '', string $icon = '', ?obj
     }
 
 
-    if (strpos($label, 'About') !== false) {
+    if (str_contains($label, 'About')) {
         if ($style === 'icontext') {
             $show_all_button = "<a id=\"button_all\" role=\"button\" class=\"btn btn-light mb-2\" title=\"" . __('List') . "\" href=\"" . url_to($collection . 'Collection') . "\"><span class=\"icon-list text-oa-primary\"></span>" . __('List') . "</a>";
         } elseif ($style === 'icon') {

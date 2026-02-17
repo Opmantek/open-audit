@@ -3,7 +3,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
 $test = '';
-if (strpos(base_url(), 'https:') === false) {
+if (!str_contains(base_url(), 'https:')) {
     $test = '<p><strong class="text-danger">' . __('IMPORTANT') . '</strong>' . __(', you <i>must</i> be using https on your Open-AudIT server to use Entra for Auth. Please configure Apache to use <strong>https</strong> before configuring Entra for auth.') . '</p>';
 }
 

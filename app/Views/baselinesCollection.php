@@ -23,7 +23,7 @@ include 'shared/collection_functions.php';
                                         } ?>
                                         <th><?= collection_column_name($key) ?></th>
                                     <?php } ?>
-                                    <?php if (strpos($user->permissions[$meta->collection], 'd') !== false) { ?>
+                                    <?php if (str_contains($user->permissions[$meta->collection], 'd')) { ?>
                                     <th data-orderable="false" class="text-center"><?= __('Delete') ?></th>
                                     <?php } ?>
                                 </tr>
@@ -48,7 +48,7 @@ include 'shared/collection_functions.php';
                                         }
                                         ?>
                                     <?php } ?>
-                                    <?php if (strpos($user->permissions[$meta->collection], 'd') !== false) { ?>
+                                    <?php if (str_contains($user->permissions[$meta->collection], 'd')) { ?>
                                         <?= collection_button_delete(intval($item->id)) ?>
                                     <?php } ?>
                                 </tr>

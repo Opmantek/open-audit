@@ -20,7 +20,7 @@ include 'shared/collection_functions.php';
                                 <tr>
                                 <?php foreach ($log_data_order as $key) {
                                     $align = '';
-                                    if ($key === 'id' or $key === 'view' or strpos($key, '_id') !== false) {
+                                    if ($key === 'id' or $key === 'view' or str_contains($key, '_id')) {
                                         $align = 'text-center dt-body-center';
                                     } ?>
                                     <th class="<?= $align ?>"><?= collection_column_name($key) ?></th>

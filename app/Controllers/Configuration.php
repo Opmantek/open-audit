@@ -121,7 +121,7 @@ class Configuration extends BaseController
         $result = $db->query($sql)->getResult();
         $this->resp->data = format_data($result, 'configuration');
         $update = false;
-        if (strpos($this->user->permissions['configuration'], 'u') !== false and strpos($this->collections->collectors->actions->{$this->config->product}, 'u') !== false) {
+        if (str_contains($this->user->permissions['configuration'], 'u') and str_contains($this->collections->collectors->actions->{$this->config->product}, 'u')) {
             $update = true;
         }
         $dictionary = $this->configurationModel->dictionary();
@@ -203,7 +203,7 @@ class Configuration extends BaseController
             $output->status = 'danger';
             $output->message = '';
             foreach ($this->config as $key => $value) {
-                if (strpos($key, 'mail') !== false) {
+                if (str_contains($key, 'mail')) {
                     if ($key === 'mail_password') {
                         $value = 'removed from display, but has been set';
                     }

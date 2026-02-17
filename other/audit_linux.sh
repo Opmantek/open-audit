@@ -1705,7 +1705,7 @@ if [ -z $(echo "$skip_sections" | grep "network,") ]; then
 			net_card_dhcp_enab=""
 			net_card_dhcp_server=""
 			net_card_dhcp_lease_obtained=""
-			net_card_dhcp_lease_expires=""
+			net_card_dhcp_lease_expire=""
 			net_card_dns_domain=""
 			net_card_domain_reg=""
 			net_card_dns_server=""
@@ -1920,7 +1920,7 @@ if [ -z $(echo "$skip_sections" | grep "network,") ]; then
 				net_card_dhcp_lease_expire=""
 				net_card_dhcp_lease_time=""
 				net_card_dhcp_lease_days=""
-				net_card_dhcp_serverp_lease_obtained=""
+				net_card_dhcp_lease_obtained=""
 
 			else
 				net_card_dhcp_enab="True"

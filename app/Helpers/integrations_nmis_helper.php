@@ -118,14 +118,14 @@ if (!function_exists('integrations_pre')) {
         curl_setopt($ch, CURLOPT_HEADER, true);
         $output = curl_exec($ch);
 
-        if (strpos($output, 'Set-Cookie') !== false) {
+        if (str_contains($output, 'Set-Cookie')) {
             // Success
             if ($integration->attributes->debug) {
                 $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'debug', '[integrations_pre] Logged on to NMIS.')";
                 $db->query($sql, [$integration->id, microtime(true)]);
             }
         } else {
-            if (strpos($output, 'HTTP/1.1 403 Forbidden') !== false) {
+            if (str_contains($output, 'HTTP/1.1 403 Forbidden')) {
                 // bad credentials
                 if ($integration->log) {
                     $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'error', '[integrations_pre] Could not logon to NMIS, check Username and Password.')";
@@ -134,7 +134,7 @@ if (!function_exists('integrations_pre')) {
                 curl_close($ch);
                 unlink($ckfile);
                 return false;
-            } elseif (strpos($output, 'HTTP/1.1 404 Not Found') !== false) {
+            } elseif (str_contains($output, 'HTTP/1.1 404 Not Found')) {
                 // bad URL
                 if ($integration->log) {
                     $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'error', '[integrations_pre] Could not logon to NMIS, check URL.')";
@@ -143,7 +143,7 @@ if (!function_exists('integrations_pre')) {
                 curl_close($ch);
                 unlink($ckfile);
                 return false;
-            } elseif (strpos($output, 'redirect_url=') !== false) {
+            } elseif (str_contains($output, 'redirect_url=')) {
                 // Likely a bad URL
                 if ($integration->log) {
                     $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'error', '[integrations_pre] Could not logon to NMIS, check URL.')";
@@ -692,7 +692,7 @@ if (!function_exists('integrations_collection')) {
         curl_setopt($ch, CURLOPT_HEADER, true);
         $output = curl_exec($ch);
 
-        if (strpos($output, 'Set-Cookie') !== false) {
+        if (str_contains($output, 'Set-Cookie')) {
             // Success
             if ($integration->attributes->debug) {
                 $message = '[integrations_collection] Logged on to NMIS.';
@@ -701,7 +701,7 @@ if (!function_exists('integrations_collection')) {
                 $db->query($sql, [$integration->id, microtime(true), $message]);
             }
         } else {
-            if (strpos($output, 'HTTP/1.1 403 Forbidden') !== false) {
+            if (str_contains($output, 'HTTP/1.1 403 Forbidden')) {
                 // bad credentials
                 $message = '[integrations_collection] Could not logon to NMIS, check Username and Password.';
                 log_message('error', $message);
@@ -710,7 +710,7 @@ if (!function_exists('integrations_collection')) {
                 curl_close($ch);
                 unlink($ckfile);
                 return false;
-            } elseif (strpos($output, 'HTTP/1.1 404 Not Found') !== false) {
+            } elseif (str_contains($output, 'HTTP/1.1 404 Not Found')) {
                 // bad URL
                 $message = '[integrations_collection] Could not logon to NMIS, check URL.';
                 log_message('error', $message);
@@ -719,7 +719,7 @@ if (!function_exists('integrations_collection')) {
                 curl_close($ch);
                 unlink($ckfile);
                 return false;
-            } elseif (strpos($output, 'redirect_url=') !== false) {
+            } elseif (str_contains($output, 'redirect_url=')) {
                 // Likely a bad URL
                 $message = '[integrations_collection] Could not logon to NMIS, check URL.';
                 log_message('error', $message);
@@ -853,28 +853,28 @@ if (!function_exists('integrations_update')) {
         curl_setopt($ch, CURLOPT_FOLLOWLOCATION, false);
         curl_setopt($ch, CURLOPT_HEADER, true);
         $output = curl_exec($ch);
-        if (strpos($output, 'Set-Cookie') !== false) {
+        if (str_contains($output, 'Set-Cookie')) {
             // Success
             if ($integration->attributes->debug) {
                 $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'debug', '[integrations_update] Logged on to NMIS.')";
                 $db->query($sql, [$integration->id, microtime(true)]);
             }
         } else {
-            if (strpos($output, 'HTTP/1.1 403 Forbidden') !== false) {
+            if (str_contains($output, 'HTTP/1.1 403 Forbidden')) {
                 // bad credentials
                 $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'error', '[integrations_update] Could not logon to NMIS, check Username and Password.')";
                 $db->query($sql, [$integration->id, microtime(true)]);
                 curl_close($ch);
                 unlink($ckfile);
                 return false;
-            } elseif (strpos($output, 'HTTP/1.1 404 Not Found') !== false) {
+            } elseif (str_contains($output, 'HTTP/1.1 404 Not Found')) {
                 // bad URL
                 $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'error', '[integrations_update] Could not logon to NMIS, check URL.')";
                 $db->query($sql, [$integration->id, microtime(true)]);
                 curl_close($ch);
                 unlink($ckfile);
                 return false;
-            } elseif (strpos($output, 'redirect_url=') !== false) {
+            } elseif (str_contains($output, 'redirect_url=')) {
                 // Likely a bad URL
                 $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'error', '[integrations_update] Could not logon to NMIS, check URL.')";
                 $db->query($sql, [$integration->id, microtime(true)]);
@@ -975,28 +975,28 @@ if (!function_exists('integrations_create')) {
         curl_setopt($ch, CURLOPT_FOLLOWLOCATION, false);
         curl_setopt($ch, CURLOPT_HEADER, true);
         $output = curl_exec($ch);
-        if (strpos($output, 'Set-Cookie') !== false) {
+        if (str_contains($output, 'Set-Cookie')) {
             // Success
             if ($integration->attributes->debug) {
                 $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'debug', '[integrations_create] Logged on to NMIS.')";
                 $db->query($sql, [$integration->id, microtime(true)]);
             }
         } else {
-            if (strpos($output, 'HTTP/1.1 403 Forbidden') !== false) {
+            if (str_contains($output, 'HTTP/1.1 403 Forbidden')) {
                 // bad credentials
                 $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'error', '[integrations_create] Could not logon to NMIS, check Username and Password.')";
                 $db->query($sql, [$integration->id, microtime(true)]);
                 curl_close($ch);
                 unlink($ckfile);
                 return false;
-            } elseif (strpos($output, 'HTTP/1.1 404 Not Found') !== false) {
+            } elseif (str_contains($output, 'HTTP/1.1 404 Not Found')) {
                 // bad URL
                 $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'error', '[integrations_create] Could not logon to NMIS, check URL.')";
                 $db->query($sql, [$integration->id, microtime(true)]);
                 curl_close($ch);
                 unlink($ckfile);
                 return false;
-            } elseif (strpos($output, 'redirect_url=') !== false) {
+            } elseif (str_contains($output, 'redirect_url=')) {
                 // Likely a bad URL
                 $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'error', '[integrations_create] Could not logon to NMIS, check URL.')";
                 $db->query($sql, [$integration->id, microtime(true)]);
@@ -1129,28 +1129,28 @@ if (!function_exists('integrations_delete')) {
         curl_setopt($ch, CURLOPT_FOLLOWLOCATION, false);
         curl_setopt($ch, CURLOPT_HEADER, true);
         $output = curl_exec($ch);
-        if (strpos($output, 'Set-Cookie') !== false) {
+        if (str_contains($output, 'Set-Cookie')) {
             // Success
             if ($integration->attributes->debug) {
                 $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'debug', '[integrations_delete] Logged on to NMIS.')";
                 $db->query($sql, [$integration->id, microtime(true)]);
             }
         } else {
-            if (strpos($output, 'HTTP/1.1 403 Forbidden') !== false) {
+            if (str_contains($output, 'HTTP/1.1 403 Forbidden')) {
                 // bad credentials
                 $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'error', '[integrations_delete] Could not logon to NMIS, check Username and Password.')";
                 $db->query($sql, [$integration->id, microtime(true)]);
                 curl_close($ch);
                 unlink($ckfile);
                 return false;
-            } elseif (strpos($output, 'HTTP/1.1 404 Not Found') !== false) {
+            } elseif (str_contains($output, 'HTTP/1.1 404 Not Found')) {
                 // bad URL
                 $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'error', '[integrations_delete] Could not logon to NMIS, check URL.')";
                 $db->query($sql, [$integration->id, microtime(true)]);
                 curl_close($ch);
                 unlink($ckfile);
                 return false;
-            } elseif (strpos($output, 'redirect_url=') !== false) {
+            } elseif (str_contains($output, 'redirect_url=')) {
                 // Likely a bad URL
                 $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'error', '[integrations_delete] Could not logon to NMIS, check URL.')";
                 $db->query($sql, [$integration->id, microtime(true)]);
@@ -1256,28 +1256,28 @@ if (!function_exists('integrations_post')) {
         curl_setopt($ch, CURLOPT_FOLLOWLOCATION, false);
         curl_setopt($ch, CURLOPT_HEADER, true);
         $output = curl_exec($ch);
-        if (strpos($output, 'Set-Cookie') !== false) {
+        if (str_contains($output, 'Set-Cookie')) {
             // Success
             if ($integration->attributes->debug) {
                 $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'debug', '[integrations_post] Logged on to NMIS.')";
                 $db->query($sql, [$integration->id, microtime(true)]);
             }
         } else {
-            if (strpos($output, 'HTTP/1.1 403 Forbidden') !== false) {
+            if (str_contains($output, 'HTTP/1.1 403 Forbidden')) {
                 // bad credentials
                 $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'error', '[integrations_post] Could not logon to NMIS, check Username and Password.')";
                 $db->query($sql, [$integration->id, microtime(true)]);
                 curl_close($ch);
                 unlink($ckfile);
                 return false;
-            } elseif (strpos($output, 'HTTP/1.1 404 Not Found') !== false) {
+            } elseif (str_contains($output, 'HTTP/1.1 404 Not Found')) {
                 // bad URL
                 $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'error', '[integrations_post] Could not logon to NMIS, check URL.')";
                 $db->query($sql, [$integration->id, microtime(true)]);
                 curl_close($ch);
                 unlink($ckfile);
                 return false;
-            } elseif (strpos($output, 'redirect_url=') !== false) {
+            } elseif (str_contains($output, 'redirect_url=')) {
                 // Likely a bad URL
                 $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'error', '[integrations_post] Could not logon to NMIS, check URL.')";
                 $db->query($sql, [$integration->id, microtime(true)]);

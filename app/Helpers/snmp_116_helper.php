@@ -10,7 +10,7 @@ declare(strict_types=1);
 $get_oid_details = function ($ip, $credentials, $oid) {
     $details = new \StdClass();
     $details->manufacturer = 'Hitachi, Ltd.';
-    if (!empty($oid) and strpos($oid, '1.3.6.1.4.1.116.3.11') === 0) {
+    if (!empty($oid) and str_starts_with($oid, '1.3.6.1.4.1.116.3.11')) {
         $details->model = 'Hitachi San';
         $details->type = 'san';
     }

@@ -22,7 +22,7 @@ include 'shared/collection_functions.php';
                                         <th><?= collection_column_name($key) ?></th>
                                     <?php } ?>
                                     <th data-orderable="false" class="text-center"><?= __('Users') ?></th>
-                                    <?php if (strpos($user->permissions[$meta->collection], 'd') !== false) { ?>
+                                    <?php if (str_contains($user->permissions[$meta->collection], 'd')) { ?>
                                     <th data-orderable="false" class="text-center"><?= __('Delete') ?></th>
                                     <?php } ?>
                                 </tr>
@@ -44,7 +44,7 @@ include 'shared/collection_functions.php';
                                         ?>
                                     <?php }
                                     echo '<td class="text-center"><a title="View" role="button" class="btn btn-sm btn-devices" href="' . url_to('usersCollection') .'?users.roles=like' . $item->attributes->name . '" style="width:2rem;">' . $included[$item->attributes->name] . '</a></td>';
-                                    if (strpos($user->permissions[$meta->collection], 'd') !== false) {
+                                    if (str_contains($user->permissions[$meta->collection], 'd')) {
                                         if (!in_array($item->attributes->name, ['admin', 'org_admin', 'user', 'collector'])) {
                                             echo collection_button_delete(intval($item->id));
                                         } else {

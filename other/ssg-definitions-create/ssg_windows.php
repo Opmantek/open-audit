@@ -3,10 +3,10 @@
 $dir = '/usr/local/open-audit/other/ssg-definitions/';
 $files = scandir($dir);
 foreach ($files as $file) {
-    if (strpos($file, 'Windows') === false) {
+    if (!str_contains($file, 'Windows')) {
         continue;
     }
-    if (strpos($file, 'xml') !== false and strpos($file, 'org') === false) {
+    if (str_contains($file, 'xml') and !str_contains($file, 'org')) {
         #echo "Processing $file\n";
         $temp = explode('-', $file);
         $os_family = 'Windows';

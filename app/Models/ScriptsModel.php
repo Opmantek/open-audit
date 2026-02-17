@@ -416,7 +416,7 @@ class ScriptsModel extends BaseModel
                     $files = $files . "'" . str_replace("'", "\'", $value) . "',";
                 }
                 if ($data->based_on === 'audit_windows.vbs') {
-                    if (strpos($value, '/') === 0) {
+                    if (str_starts_with($value, '/')) {
                         // skip this file as it starts with /, hence is a Unix style path
                     } else {
                         $replace = $find . "\nfiles(" . intval($key + 1) . ')="' . $value . '"';
@@ -487,10 +487,10 @@ class ScriptsModel extends BaseModel
         $included['files'] = array();
         if ($script[0]->attributes->based_on !== 'audit_windows.ps1') {
             foreach ($files as $file) {
-                if ($script[0]->attributes->based_on === 'audit_windows.vbs' and strpos($file->attributes->path, '/') !== 0) {
+                if ($script[0]->attributes->based_on === 'audit_windows.vbs' and !str_starts_with($file->attributes->path, '/')) {
                     $included['files'][] = $file;
                 }
-                if ($script[0]->attributes->based_on !== 'audit_windows.vbs' and strpos($file->attributes->path, '/') === 0) {
+                if ($script[0]->attributes->based_on !== 'audit_windows.vbs' and str_starts_with($file->attributes->path, '/')) {
                     $included['files'][] = $file;
                 }
             }

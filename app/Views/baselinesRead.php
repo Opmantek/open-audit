@@ -4,7 +4,7 @@
 include 'shared/read_functions.php';
 include 'shared/common_functions.php';
 $delete = false;
-if (strpos($user->permissions[$meta->collection], 'd') !== false) {
+if (str_contains($user->permissions[$meta->collection], 'd')) {
     $delete = true;
 }
 
