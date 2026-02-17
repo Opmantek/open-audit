@@ -228,7 +228,6 @@ class OpenAudit extends BaseConfig
             return;
         }
         // log_message('error', 'OpenAudit.php::_set called with bad key of ' . $key);
-        return;
     }
 
     public function __get($key)
@@ -237,7 +236,6 @@ class OpenAudit extends BaseConfig
             return $this->$key;
         }
         log_message('error', 'OpenAudit.php::_get called with bad key of ' . $key);
-        return;
     }
 
     public function __construct()
