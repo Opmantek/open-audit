@@ -106,7 +106,7 @@ if (! function_exists('network_details')) {
      * Return the network details derived from the supplied network
      *
      * @param string $network    Format as either '192.168.0.12/24' or '192.168.0.12 255.255.255.0'
-     * @return class        The details of the network
+     * @return object        The details of the network
      */
     function network_details($network)
     {
