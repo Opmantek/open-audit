@@ -2565,7 +2565,6 @@ if (! function_exists('discovery_check_finished')) {
                 }
             }
         }
-        return;
     }
 }
 
