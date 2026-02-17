@@ -18,6 +18,7 @@
         "ext-ldap": "*",
         "ext-libxml": "*",
         "ext-simplexml": "*",
+        "ext-snmp": "*",
         "ext-openssl": "*",
         "aws/aws-sdk-php": "^3.281",
         "codeigniter4/framework": "4.6.3.0",
