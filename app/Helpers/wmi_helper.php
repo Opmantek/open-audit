@@ -416,6 +416,7 @@ if (! function_exists('copy_to_windows')) {
 
             return $return;
         }
+        return false;
     }
 }
 
