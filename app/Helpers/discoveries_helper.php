@@ -274,7 +274,7 @@ if (! function_exists('discover_subnet')) {
             $log->message = 'Invalid subnet value supplied of ' . htmlentities($discovery->subnet);
             $log->severity = 5;
             $discoveryLogModel->create($log);
-            return;
+            return false;
         }
 
         $log->command_status = 'notice';
