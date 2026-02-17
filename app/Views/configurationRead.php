@@ -28,7 +28,7 @@ if ($resource->name === 'feature_agents_advanced') {
                             <?= read_field('editable', $resource->editable, $dictionary->columns->editable, false, '', '', '', '', $meta->collection) ?>
                             <?= read_field('type', $resource->type, $dictionary->columns->type, false, '', '', '', '', $meta->collection) ?>
                             <?php if ($resource->type !== 'bool') { ?>
-                                <?php if (strpos($resource->name, 'password') === false) { ?>
+                                <?php if (!str_contains($resource->name, 'password')) { ?>
                                     <?= read_field('value', html_entity_decode($resource->value), $dictionary->columns->value, $update, '', '', '', $resource->type, $meta->collection) ?>
                                 <?php } else { ?>
                                     <?= read_field('value', '', $dictionary->columns->value, $update, '', '', '', 'password', $meta->collection) ?>
@@ -58,7 +58,7 @@ window.onload = function () {
         $("#button_create").remove();
         $("#button_delete").remove();
 
-        <?php if (strpos($resource->name, 'password') !== false) {
+        <?php if (str_contains($resource->name, 'password')) {
             if ($resource->value !== '') { ?>
                 $("#value").attr("placeholder", "<?= __('removed from display, but has been set') ?>");
             <?php } else { ?>

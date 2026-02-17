@@ -20,7 +20,7 @@ include 'shared/common_functions.php';
                                 <div class="row" style="padding-top:16px;">
                                     <div class="offset-2 col-8" style="position:relative;">
                                     <?php if (intval($config->internal_version) < intval($config->appVersion)) {
-                                        if (strpos($user->permissions['database'], 'u') === false) { ?>
+                                        if (!str_contains($user->permissions['database'], 'u')) { ?>
                                             <br>
                                             <?= __('The database version and web version are inconsistent.') ?>
                                             <br>

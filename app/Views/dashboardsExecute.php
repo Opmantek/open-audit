@@ -51,7 +51,7 @@ if ($resource->name === 'Windows Security Dashboard') {
                         <?php if ($resource->sidebar === 'y') { ?>
                         <div class="col-3">
                              <ul class="list-group list-group-flush">
-                                <?php if (!empty($user->permissions['devices']) and strpos($user->permissions['devices'], 'r') !== false) { ?>
+                                <?php if (!empty($user->permissions['devices']) and str_contains($user->permissions['devices'], 'r')) { ?>
                                 <li class="list-group-item oa-li-hover">
                                     <div class="row">
                                         <div class="col-1"><span class="oa-menu-icon icon-computer"></span></div>
@@ -60,7 +60,7 @@ if ($resource->name === 'Windows Security Dashboard') {
                                 </li>
                                 <?php } ?>
                                 <?php if (!empty($summary_id)) { ?>
-                                    <?php if (!empty($user->permissions['devices']) and strpos($user->permissions['devices'], 'r') !== false) { ?>
+                                    <?php if (!empty($user->permissions['devices']) and str_contains($user->permissions['devices'], 'r')) { ?>
                                 <li class="list-group-item oa-li-hover">
                                     <div class="row">
                                         <div class="col-1"><span class="oa-menu-icon icon-router"></span></div>
@@ -70,7 +70,7 @@ if ($resource->name === 'Windows Security Dashboard') {
                                     <?php } ?>
                                 <?php } ?>
                                 <?php if (!empty($os_systems_id)) { ?>
-                                    <?php if (!empty($user->permissions['devices']) and strpos($user->permissions['devices'], 'r') !== false) { ?>
+                                    <?php if (!empty($user->permissions['devices']) and str_contains($user->permissions['devices'], 'r')) { ?>
                                 <li class="list-group-item oa-li-hover">
                                     <div class="row">
                                         <div class="col-1"><span class="oa-menu-icon icon-monitor-cloud"></span></div>
@@ -79,7 +79,7 @@ if ($resource->name === 'Windows Security Dashboard') {
                                 </li>
                                     <?php } ?>
                                 <?php } ?>
-                                <?php if (!empty($user->permissions['maps']) and strpos($user->permissions['maps'], 'r') !== false) { ?>
+                                <?php if (!empty($user->permissions['maps']) and str_contains($user->permissions['maps'], 'r')) { ?>
                                 <li class="list-group-item oa-li-hover">
                                     <div class="row">
                                         <div class="col-1"><span class="oa-menu-icon icon-map"></span></div>
@@ -87,7 +87,7 @@ if ($resource->name === 'Windows Security Dashboard') {
                                     </div>
                                 </li>
                                 <?php } ?>
-                                <?php if (!empty($user->permissions['discoveries']) and strpos($user->permissions['discoveries'], 'r') !== false) { ?>
+                                <?php if (!empty($user->permissions['discoveries']) and str_contains($user->permissions['discoveries'], 'r')) { ?>
                                 <li class="list-group-item oa-li-hover">
                                     <div class="row">
                                         <div class="col-1"><span class="oa-menu-icon icon-binoculars"></span></div>
@@ -95,7 +95,7 @@ if ($resource->name === 'Windows Security Dashboard') {
                                     </div>
                                 </li>
                                 <?php } ?>
-                                <?php if (!empty($user->permissions['devices']) and strpos($user->permissions['devices'], 'r') !== false) { ?>
+                                <?php if (!empty($user->permissions['devices']) and str_contains($user->permissions['devices'], 'r')) { ?>
                                 <li class="list-group-item oa-li-hover">
                                     <div class="row">
                                         <div class="col-1"><span class="oa-menu-icon icon-screen-share"></span></div>
