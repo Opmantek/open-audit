@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<psalm
+        xmlns="https://getpsalm.org/schema/config"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="https://getpsalm.com/schema/config vendor/vimeo/psalm/config.xsd"
+        errorLevel="1"
+        errorBaseline="psalm-baseline.xml">
+
+    <projectFiles>
+        <directory name="app"/>
+    </projectFiles>
+
+    <issueHandlers>
+        <ClassMustBeFinal type="suppress"/>
+        <MissingOverrideAttribute type="suppress"/>
+        <PossiblyUnusedMethod type="suppress"/>
+        <PossiblyUnusedReturnValue type="suppress"/>
+        <UnusedClass type="suppress"/>
+    </issueHandlers>
+
+</psalm>
