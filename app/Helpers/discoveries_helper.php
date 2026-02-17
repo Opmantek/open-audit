@@ -1816,7 +1816,6 @@ if (! function_exists('ip_audit')) {
             $log->message = 'Starting SSH audit script for ' . $device->ip;
             $discoveryLogModel->create($log);
             // copy the audit script to the target ip
-
             $destination = '/tmp/';
             if (isset($instance->config->discovery_linux_script_directory) and is_string($instance->config->discovery_linux_script_directory)) {
                 $destination = $instance->config->discovery_linux_script_directory;
