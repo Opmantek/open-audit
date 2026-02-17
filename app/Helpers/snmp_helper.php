@@ -577,7 +577,6 @@ if (!function_exists('my_snmp_walk')) {
             return false;
         }
         foreach ($array as $key => $value) {
-            $value = $value;
             $array[$key] = trim((string)$array[$key]);
             if ($array[$key] === '""') {
                 $array[$key] = '';
