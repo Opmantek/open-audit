@@ -194,7 +194,7 @@ if (! function_exists('network_details')) {
         }
 
         if (preg_match('/^(00001010)|(101011000001)|(1100000010101000)/', $bin_net)) {
-            $special = '<a href="http://www.ietf.org/rfc/rfc1918.txt">( RFC-1918 Private Internet Address. )</a>';
+            $special = '<a href="https://www.ietf.org/rfc/rfc1918.txt">( RFC-1918 Private Internet Address. )</a>';
         }
 
         // Print Results
