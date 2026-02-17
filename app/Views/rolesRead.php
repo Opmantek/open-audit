@@ -77,7 +77,7 @@ if ($config->product === 'enterprise') {
                                     <tr><td><?= $endpoint ?></td>
                                         <?php foreach ($permissions as $permission) {
                                             $checked = '';
-                                            if (!empty($item_permissions->{$endpoint}) and strpos($item_permissions->{$endpoint}, $permission) !== false) {
+                                            if (!empty($item_permissions->{$endpoint}) and str_contains($item_permissions->{$endpoint}, $permission)) {
                                                 $checked = 'checked';
                                             } else {
                                                 $checked = '';

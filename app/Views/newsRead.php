@@ -34,7 +34,7 @@ switch ($data[0]->attributes->type) {
         break;
 
     case 'config':
-        if (strpos($user->permissions['configuration'], 'c') !== false and strpos($user->permissions['configuration'], 'u') !== false) {
+        if (str_contains($user->permissions['configuration'], 'c') and str_contains($user->permissions['configuration'], 'u')) {
             $name .= "<span class=\"clearfix float-end\"><button class=\"btn btn-primary\">" . __('Activate') . "</button>";
         }
         $body = '<code><pre>' . json_encode($data[0]->attributes->body, JSON_PRETTY_PRINT) . '</pre></code>';
@@ -44,7 +44,7 @@ switch ($data[0]->attributes->type) {
         break;
 
     case 'query':
-        if (strpos($user->permissions['queries'], 'c') !== false and strpos($user->permissions['queries'], 'u') !== false) {
+        if (str_contains($user->permissions['queries'], 'c') and str_contains($user->permissions['queries'], 'u')) {
             $name .= "<span class=\"clearfix float-end\"><a href=\"" . url_to('newsExecute', $meta->id) . "\" type=\"button\" class=\"btn btn-primary\">" . __('Enable') . "</a>";
         }
         $body = '<code><pre>' . json_encode($data[0]->attributes->body, JSON_PRETTY_PRINT) . '</pre></code>';

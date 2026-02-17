@@ -43,7 +43,7 @@ class LogonModel extends Model
             $user->name = explode('@', $username)[0];
             $user->password = $password;
             $user->domain = '';
-            if (strpos($username, '@') !== false) {
+            if (str_contains($username, '@')) {
                 $user->domain = explode('@', $username)[1];
             }
             if (!empty($user->domain)) {
@@ -130,7 +130,7 @@ class LogonModel extends Model
                                 foreach ($entries[0]['memberof'] as $key => $group) {
                                     if (is_integer($key)) {
                                         $ad_users_groups[] = '<br>"' . $group . '"';
-                                        if (strpos($group, $role->ad_group) !== false) {
+                                        if (str_contains($group, $role->ad_group)) {
                                             log_message('debug', 'User ' . $user->name . ' is a member of LDAP group for Role ' . $role->ad_group);
                                             $user->roles[] = $role->name;
                                         }
@@ -144,7 +144,7 @@ class LogonModel extends Model
                             if (!empty($org->ad_group)) {
                                 foreach ($entries[0]['memberof'] as $key => $group) {
                                     if (is_integer($key)) {
-                                        if (strpos($group, $org->ad_group) !== false) {
+                                        if (str_contains($group, $org->ad_group)) {
                                             $user->orgs[] = intval($org->id);
                                             log_message('debug', "User {$user->name} is a member of LDAP group for Org {$org->ad_group}");
                                         }
@@ -310,7 +310,7 @@ class LogonModel extends Model
         $bind_string = '';
         $bind_password = '';
         if ($ldap->type === 'active directory') {
-            if (strpos($user->full, '@') !== false) {
+            if (str_contains($user->full, '@')) {
                 $bind_string = $user->full;
             } else {
                 $bind_string = $user->name . '@' . $ldap->domain;

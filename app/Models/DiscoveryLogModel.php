@@ -76,8 +76,8 @@ class DiscoveryLogModel extends BaseModel
         // This is because if we don't use else statements and set a default orderBy
         // then change it based on the 'if', the orderBy's are chained, not replaced
         if (!empty($instance->resp->meta->sort)) {
-            if (strpos($instance->resp->meta->sort, 'discovery_log.ip') !== false or strpos($instance->resp->meta->sort, 'ip') !== false) {
-                if (strpos($instance->resp->meta->sort, ' DESC') === false) {
+            if (str_contains($instance->resp->meta->sort, 'discovery_log.ip') or str_contains($instance->resp->meta->sort, 'ip')) {
+                if (!str_contains($instance->resp->meta->sort, ' DESC')) {
                     $this->builder->orderBy('INET_ATON(discovery_log.ip) DESC');
                 } else {
                     $this->builder->orderBy('INET_ATON(discovery_log.ip)');
@@ -163,8 +163,8 @@ class DiscoveryLogModel extends BaseModel
         // This is because if we don't use else statements and set a default orderBy
         // then change it based on the 'if', the orderBy's are chained, not replaced
         if (!empty($instance->resp->meta->sort)) {
-            if (strpos($instance->resp->meta->sort, 'discovery_log.ip') !== false or strpos($instance->resp->meta->sort, 'ip') !== false) {
-                if (strpos($instance->resp->meta->sort, ' DESC') === false) {
+            if (str_contains($instance->resp->meta->sort, 'discovery_log.ip') or str_contains($instance->resp->meta->sort, 'ip')) {
+                if (!str_contains($instance->resp->meta->sort, ' DESC')) {
                     $this->builder->orderBy('INET_ATON(discovery_log.ip) DESC');
                 } else {
                     $this->builder->orderBy('INET_ATON(discovery_log.ip)');
@@ -282,8 +282,8 @@ class DiscoveryLogModel extends BaseModel
         // This is because if we don't use else statements and set a default orderBy
         // then change it based on the 'if', the orderBy's are chained, not replaced
         if (!empty($resp->meta->sort)) {
-            if (strpos($resp->meta->sort, 'discovery_log.ip') !== false or strpos($resp->meta->sort, 'ip') !== false) {
-                if (strpos($resp->meta->sort, ' DESC') === false) {
+            if (str_contains($resp->meta->sort, 'discovery_log.ip') or str_contains($resp->meta->sort, 'ip')) {
+                if (!str_contains($resp->meta->sort, ' DESC')) {
                     $this->builder->orderBy('INET_ATON(discovery_log.ip) DESC');
                 } else {
                     $this->builder->orderBy('INET_ATON(discovery_log.ip)');
@@ -456,30 +456,30 @@ class DiscoveryLogModel extends BaseModel
         }
 
         // Note - Would not normally use @, but we want to ensure the discovery queue does not stop
-        if (strpos($data->message, 'Total IPs count: ') !== false) {
+        if (str_contains($data->message, 'Total IPs count: ')) {
             $temp = @intval(@str_replace('Total IPs count: ', '', $data->message));
             $sql = 'UPDATE `discoveries` SET `ip_all_count` = ? WHERE `id` = ?';
             $this->db->query($sql, [$temp, $data->discovery_id]);
         }
 
         // Note - Would not normally use @, but we want to ensure the discovery queue does not stop
-        if (strpos($data->message, 'Responding IPs count: ') !== false) {
+        if (str_contains($data->message, 'Responding IPs count: ')) {
             $temp = @intval(@str_replace('Responding IPs count: ', '', $data->message));
             $sql = 'UPDATE `discoveries` SET `ip_responding_count` = ? WHERE `id` = ?';
             $this->db->query($sql, [$temp, $data->discovery_id]);
         }
 
-        if (strpos($data->message, 'IP scan finish on device ') !== false) {
+        if (str_contains($data->message, 'IP scan finish on device ')) {
             $sql = 'UPDATE `discoveries` SET `ip_scanned_count` = `ip_scanned_count` + 1 WHERE `id` = ?';
             $this->db->query($sql, [$data->discovery_id]);
         }
 
-        if (strpos($data->message, 'Discovered device at ') !== false) {
+        if (str_contains($data->message, 'Discovered device at ')) {
             $sql = 'UPDATE `discoveries` SET `ip_discovered_count` = `ip_discovered_count` + 1 WHERE `id` = ?';
             $this->db->query($sql, [$data->discovery_id]);
         }
 
-        if (strpos($data->message, 'Audited device at ') !== false) {
+        if (str_contains($data->message, 'Audited device at ')) {
             $sql = 'UPDATE `discoveries` SET `ip_audited_count` = `ip_audited_count` + 1 WHERE `id` = ?';
             $this->db->query($sql, [$data->discovery_id]);
         }

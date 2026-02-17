@@ -11,19 +11,19 @@ $get_oid_details = function ($ip, $credentials, $oid) {
     $details = new \StdClass();
     $details->manufacturer = 'Hewlett Packard';
     $sysDescr = my_snmp_get($ip, $credentials, "1.3.6.1.2.1.1.1.0");
-    if (!empty($sysDescr) and strpos($sysDescr, 'HP_3PAR') !== false) {
+    if (!empty($sysDescr) and str_contains($sysDescr, 'HP_3PAR')) {
         $details->type = 'san';
         $explode = explode(',', $sysDescr);
         for ($i = 0; $i < count($explode); $i++) {
-            if (strpos($explode[$i], 'HP_3PAR') !== false) {
+            if (str_contains($explode[$i], 'HP_3PAR')) {
                 $details->model = trim($explode[$i]);
                 $details->os_cpe = 'cpe:2.3:o:hpe:3par_os';
             }
-            if (strpos($explode[$i], 'Serial number') !== false) {
+            if (str_contains($explode[$i], 'Serial number')) {
                 $explode2 = explode(':', $explode[2]);
                 $details->serial = trim($explode2[1]);
             }
-            if (strpos($explode[$i], 'InForm OS:') !== false) {
+            if (str_contains($explode[$i], 'InForm OS:')) {
                 $explode2 = explode(':', $explode[2]);
                 $details->os_version = trim($explode2[1]);
                 $details->os_group = '3PAR OS';

@@ -144,7 +144,7 @@ class SummariesModel extends BaseModel
         }
         $link = url_to($collection . 'Collection') . '?' . $dashboard[0]->table . '.' . $dashboard[0]->column . '=';
         for ($i = 0; $i < count($result); $i++) {
-            if (strpos($result[$i]->attributes->name, '&') !== false) {
+            if (str_contains($result[$i]->attributes->name, '&')) {
                 $result[$i]->attributes->link = $link . 'LIKE' . urlencode(str_replace('&', '%', $result[$i]->attributes->name)) . '&properties=' . $properties;
             } else {
                 $result[$i]->attributes->link = $link . urlencode($result[$i]->attributes->name) . '&properties=' . $properties;

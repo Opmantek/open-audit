@@ -8,10 +8,10 @@ $sort_column_index = 3;
 $url = base_url() . 'index.php/queries/' . $meta->id . '/execute?format=json';
 if (!empty($meta->data_order)) {
     for ($i = 0; $i < count($meta->data_order); $i++) {
-        if (strpos($meta->data_order[$i], '.') !== false) {
+        if (str_contains($meta->data_order[$i], '.')) {
             $meta->data_order[$i] = str_replace('.', '__', $meta->data_order[$i]);
         }
-        if (strpos($meta->data_order[$i], 'ip_padded') !== false) {
+        if (str_contains($meta->data_order[$i], 'ip_padded')) {
             unset($meta->data_order[$i]);
         }
     }
@@ -77,7 +77,7 @@ window.onload = function () {
                     foreach ($meta->data_order as $key) {
                         $key = str_replace('devices.', '', $key);
                         $sort_key = $key;
-                        if (strpos($key, "__") !== false) {
+                        if (str_contains($key, "__")) {
                             $sort_key = str_replace('__', '.', $key);
                         } else {
                             $sort_key = 'devices.' . $key;

@@ -33,7 +33,7 @@ include 'shared/common_functions.php';
                                             }
                                             echo "                                        <th id=\"" . str_replace('.', '_', $key) . "\">" . collection_column_name($key) . "</th>";
                                         }
-                                        if (strpos($user->permissions[$meta->collection], 'u') !== false) {
+                                        if (str_contains($user->permissions[$meta->collection], 'u')) {
                                             if (!empty($data[0]->id)) {
                                                     echo "\n                                        <th data-orderable=\"false\" class=\"text-center\">\n";
                                                     echo "                                            <button type=\"button\" class=\"btn btn-light mb2 bulk_edit_button\" style=\"--bs-btn-padding-y: .2rem; --bs-btn-padding-x: .2rem; --bs-btn-font-size: .5rem;\" title=\"" . __('Bulk Edit') . "\"><span style=\"font-size: 1.2rem;\" class=\"icon-pencil\"></span></button>\n";
@@ -41,7 +41,7 @@ include 'shared/common_functions.php';
                                                     echo "                                        </th>";
                                             }
                                         }
-                                        if (strpos($user->permissions[$meta->collection], 'd') !== false) {
+                                        if (str_contains($user->permissions[$meta->collection], 'd')) {
                                             echo "\n                                        <th data-orderable=\"false\" class=\"text-center\">" . __('Delete') . "</th>\n";
                                         } ?>
                                     </tr>
@@ -69,10 +69,10 @@ include 'shared/common_functions.php';
                                                 echo "                                    <td>" . $item->attributes->{$key} . "</td>\n";
                                             }
                                         }
-                                        if (strpos($user->permissions[$meta->collection], 'u') !== false and !empty($item->id)) {
+                                        if (str_contains($user->permissions[$meta->collection], 'u') and !empty($item->id)) {
                                             echo "                                    <td style=\"text-align: center;\"><input aria-label='" . __('Select') . "' type='checkbox' id='ids[" . $item->id . "]' value='" . $item->id . "' name='ids[" . $item->id . "]' /></td>\n";
                                         }
-                                        if (strpos($user->permissions[$meta->collection], 'd') !== false) {
+                                        if (str_contains($user->permissions[$meta->collection], 'd')) {
                                             echo "                                    " . collection_button_delete(intval($item->id)) . "\n";
                                         }
                                         echo "                                </tr>\n";

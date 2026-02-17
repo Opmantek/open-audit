@@ -41,7 +41,7 @@ class ComponentsModel extends BaseModel
                 // The request has populated components.type=memory or components.type=memory,processor - get those into the $table variable
                 $resp->meta->filter[$i]->value = str_replace('%', '', $resp->meta->filter[$i]->value);
                 $table = $resp->meta->filter[$i]->value;
-                if (strpos($table, ',') !== false) {
+                if (str_contains($table, ',')) {
                     # We have a comma separated list of tables
                     $tables = explode(',', $resp->meta->filter[$i]->value);
                     $table = $tables[0];
@@ -141,7 +141,7 @@ class ComponentsModel extends BaseModel
                 continue;
             }
             $filter->name = str_replace('__', '.', $filter->name);
-            if (strpos($filter->name, '.') === false) {
+            if (!str_contains($filter->name, '.')) {
                 $filter->name = $table . '.' . $filter->name;
             }
             if (in_array($filter->operator, ['!=', '>=', '<=', '=', '>', '<', 'like', 'not like'])) {
@@ -689,7 +689,7 @@ class ComponentsModel extends BaseModel
                             $data[$i]->valid_to = gmdate('Y-m-d H:i:s', $to);
                         }
                     }
-                    if (!empty($data[$i]->issuer) and strpos($data[$i]->issuer, 'O = ') !== false) {
+                    if (!empty($data[$i]->issuer) and str_contains($data[$i]->issuer, 'O = ')) {
                         $temp = explode('=', $data[$i]->issuer);
                         for ($j = 0; $j < count($temp); $j++) {
                             if (strpos($temp[$j], 'O ') === intval(strlen($temp[$j]) -2)) {
@@ -708,10 +708,10 @@ class ComponentsModel extends BaseModel
                         }
                     }
 
-                    if (empty($data[$i]->common_name) or strpos($data[$i]->common_name, 'CN = ') === false) {
+                    if (empty($data[$i]->common_name) or !str_contains($data[$i]->common_name, 'CN = ')) {
                         $data[$i]->common_name = 'not provided';
                     } else {
-                        if (!empty($data[$i]->common_name) and strpos($data[$i]->common_name, 'CN = ') !== false) {
+                        if (!empty($data[$i]->common_name) and str_contains($data[$i]->common_name, 'CN = ')) {
                             $temp = explode('=', $data[$i]->common_name);
                             for ($j = 0; $j < count($temp); $j++) {
                                 if (strpos($temp[$j], 'CN ') === intval(strlen($temp[$j]) -3)) {
@@ -978,19 +978,19 @@ class ComponentsModel extends BaseModel
                     unset($data[$item]);
                     continue;
                 }
-                if (strpos($attributes->ip, '.') !== false) {
-                    if (strpos($attributes->protocol, 'tcp') !== false) {
+                if (str_contains($attributes->ip, '.')) {
+                    if (str_contains($attributes->protocol, 'tcp')) {
                         $attributes->protocol = 'tcp4';
                     }
-                    if (strpos($attributes->protocol, 'udp') !== false) {
+                    if (str_contains($attributes->protocol, 'udp')) {
                         $attributes->protocol = 'udp4';
                     }
                 }
-                if (strpos($attributes->ip, ':') !== false) {
-                    if (strpos($attributes->protocol, 'tcp') !== false) {
+                if (str_contains($attributes->ip, ':')) {
+                    if (str_contains($attributes->protocol, 'tcp')) {
                         $attributes->protocol = 'tcp6';
                     }
-                    if (strpos($attributes->protocol, 'udp') !== false) {
+                    if (str_contains($attributes->protocol, 'udp')) {
                         $attributes->protocol = 'udp6';
                     }
                 }
@@ -1166,7 +1166,7 @@ class ComponentsModel extends BaseModel
                     unset($data[$i]->server_id);
                 }
                 if (!empty($data[$i]->certificate_name)) {
-                    if (strpos($data[$i]->certificate_name, 'CN = ') === false) {
+                    if (!str_contains($data[$i]->certificate_name, 'CN = ')) {
                         $data[$i]->certificate_name = '';
                     } else {
                         $temp = explode('=', $data[$i]->certificate_name);

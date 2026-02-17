@@ -106,7 +106,7 @@ if (! function_exists('network_details')) {
      * Return the network details derived from the supplied network
      *
      * @param string $network    Format as either '192.168.0.12/24' or '192.168.0.12 255.255.255.0'
-     * @return class        The details of the network
+     * @return object        The details of the network
      */
     function network_details($network)
     {
@@ -194,7 +194,7 @@ if (! function_exists('network_details')) {
         }
 
         if (preg_match('/^(00001010)|(101011000001)|(1100000010101000)/', $bin_net)) {
-            $special = '<a href="http://www.ietf.org/rfc/rfc1918.txt">( RFC-1918 Private Internet Address. )</a>';
+            $special = '<a href="https://www.ietf.org/rfc/rfc1918.txt">( RFC-1918 Private Internet Address. )</a>';
         }
 
         // Print Results
@@ -345,7 +345,7 @@ if (!function_exists('ip_address_from_db')) {
 function search_ip_to_db($ip = '')
 {
     $return_ip = '';
-    if (strpos($ip, '.') !== false) {
+    if (str_contains($ip, '.')) {
         $ip = explode('.', $ip);
         foreach ($ip as $value) {
             $return_ip .= ' ' . mb_substr("000" . $value, -3);
@@ -399,7 +399,7 @@ if (! function_exists('subnet_validate')) {
             return '';
         }
 
-        if (strpos($subnet, '/') !== false and strpos($subnet, '-') !== false) {
+        if (str_contains($subnet, '/') and str_contains($subnet, '-')) {
             // We cannot have both a range AND a slash
             $error->message = 'A subnet cannot contain / and -. Received (' . $subnet . ').';
             log_message('error', $error->message);
@@ -428,7 +428,7 @@ if (! function_exists('subnet_validate')) {
 
         $temp = explode('.', $net[0]);
         for ($i = 0; $i < count($temp); $i++) {
-            if (strpos($temp[$i], '-') !== false) {
+            if (str_contains($temp[$i], '-')) {
                 $temp2 = explode('-', $temp[$i]);
                 if ($temp2[0] < 0 or $temp2[0] > 255) {
                     $error->message = "Subnet octet " . ($i + 1) . " has a value of " . $temp[$i] . ' and is out of bounds. Received (' . $subnet . ').';
@@ -443,7 +443,7 @@ if (! function_exists('subnet_validate')) {
                     return '';
                 }
             }
-            if (strpos($temp[$i], '-') === false) {
+            if (!str_contains($temp[$i], '-')) {
                 if ($temp[$i] < 0 or $temp[$i] > 255) {
                     $error->message = "Subnet octet " . ($i + 1) . " has a value of " . $temp[$i] . ' and is out of bounds. Received (' . $subnet . ').';
                     log_message('error', $error->message);
@@ -482,7 +482,7 @@ if (! function_exists('dns_validate')) {
             $log->discovery_id = $details->discovery_id;
         }
         $details->dns_hostname = strtolower(gethostbyaddr($details->ip));
-        if (strpos($details->dns_hostname, ".") !== false) {
+        if (str_contains($details->dns_hostname, ".")) {
             if (!filter_var($details->dns_hostname, FILTER_VALIDATE_IP)) {
                 # we got a FQDN back from DNS - split it up
                 $details->dns_fqdn = strtolower($details->dns_hostname);

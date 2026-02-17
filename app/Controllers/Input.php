@@ -7,9 +7,6 @@ declare(strict_types=1);
 
 namespace App\Controllers;
 
-use CodeIgniter\Controller;
-use CodeIgniter\HTTP\RequestInterface;
-use App\Models\DiscoveryLogModel;
 use stdClass;
 
 /**

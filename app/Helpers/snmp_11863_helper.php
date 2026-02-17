@@ -11,16 +11,16 @@ $get_oid_details = function ($ip, $credentials, $oid) {
     $details = new \StdClass();
     $details->manufacturer = 'TP-Link';
     // generic types here
-    if (strpos($oid, '1.3.6.1.4.1.11863.1') !== false) {
+    if (str_contains($oid, '1.3.6.1.4.1.11863.1')) {
         $details->type = 'switch';
     }
-    if (strpos($oid, '1.3.6.1.4.1.11863.2') !== false) {
+    if (str_contains($oid, '1.3.6.1.4.1.11863.2')) {
         $details->type = 'router';
     }
-    if (strpos($oid, '1.3.6.1.4.1.11863.3') !== false) {
+    if (str_contains($oid, '1.3.6.1.4.1.11863.3')) {
         $details->type = 'wap';
     }
-    if (strpos($oid, '1.3.6.1.4.1.11863.4') !== false) {
+    if (str_contains($oid, '1.3.6.1.4.1.11863.4')) {
         $details->type = 'adsl modem';
     }
     if (empty($details->model)) {

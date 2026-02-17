@@ -320,7 +320,7 @@ class Devices extends BaseController
             if (filter_var($node['configuration']['host'], FILTER_VALIDATE_IP) === false) {
                 $device->hostname =  $node['configuration']['host'];
                 $device->ip = gethostbyname($device->hostname);
-                if (strpos($node['configuration']['host'], '.') !== false) {
+                if (str_contains($node['configuration']['host'], '.')) {
                     $device->fqdn =  $node['configuration']['host'];
                     $temp = explode('.', $device->fqdn);
                     $device->hostname = $temp[0];

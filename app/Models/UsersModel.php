@@ -291,7 +291,7 @@ class UsersModel extends BaseModel
                             if (empty($userRoles[$key])) {
                                 $userRoles[$key] = $value;
                             } else {
-                                if (!empty($value) and (empty($userRoles[$key]) or strpos($userRoles[$key], $value) === false)) {
+                                if (!empty($value) and (empty($userRoles[$key]) or !str_contains($userRoles[$key], $value))) {
                                     $userRoles[$key] = $userRoles[$key] . $value;
                                 }
                                 if (empty($value)) {

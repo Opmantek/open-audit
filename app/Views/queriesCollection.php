@@ -30,7 +30,7 @@ if (empty($config->product) or $config->product === 'community') {
                                         } ?>
                                         <th><?= collection_column_name($key) ?></th>
                                     <?php } ?>
-                                    <?php if (strpos($user->permissions[$meta->collection], 'd') !== false) { ?>
+                                    <?php if (str_contains($user->permissions[$meta->collection], 'd')) { ?>
                                     <th data-orderable="false" class="text-center"><?= __('Delete') ?></th>
                                     <?php } ?>
                                 </tr>
@@ -57,7 +57,7 @@ if (empty($config->product) or $config->product === 'community') {
                                         }
                                         ?>
                                     <?php } ?>
-                                    <?php if (strpos($user->permissions[$meta->collection], 'd') !== false) { ?>
+                                    <?php if (str_contains($user->permissions[$meta->collection], 'd')) { ?>
                                         <?= collection_button_delete(intval($item->id)) ?>
                                     <?php } ?>
                                 </tr>

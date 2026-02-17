@@ -220,14 +220,15 @@ class Diff
         foreach ($diff as $line) {
         // extend the HTML with the line
             switch ($line[1]) {
-                case self::UNMODIFIED:
-                    $element = 'span';
-                    break;
                 case self::DELETED:
                     $element = 'del';
                     break;
                 case self::INSERTED:
                     $element = 'ins';
+                    break;
+                case self::UNMODIFIED:
+                default:
+                    $element = 'span';
                     break;
             }
             $html .= '<' . $element . '>' . htmlspecialchars($line[0]) . '</' . $element . '>';

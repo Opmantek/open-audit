@@ -94,10 +94,10 @@ class Database extends BaseController
             // From the file
             $file_schema = '';
             for ($i = 0; $i < count($sql_file); $i++) {
-                if (strpos($sql_file[$i], "CREATE TABLE `$table`") !== false) {
+                if (str_contains($sql_file[$i], "CREATE TABLE `$table`")) {
                     $file_schema = $sql_file[$i];
                     for ($j = $i + 1; $j < count($sql_file); $j++) {
-                        if (strpos($sql_file[$j], '/*!') === false) {
+                        if (!str_contains($sql_file[$j], '/*!')) {
                             $file_schema .= $sql_file[$j];
                         } else {
                             break;

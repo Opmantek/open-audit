@@ -10,9 +10,7 @@ namespace App\Controllers;
 use CodeIgniter\HTTP\RequestInterface;
 use CodeIgniter\HTTP\ResponseInterface;
 use Psr\Log\LoggerInterface;
-use App\Models\AgentsModel;
 use Config\Services;
-use Config\OpenAudit;
 use DateTime;
 use Exception;
 use stdClass;
@@ -98,7 +96,7 @@ class Agents extends BaseController
         }
 
         if (empty($id)) {
-            return;
+            return null;
         }
 
         $id = intval($id);
