@@ -1,16 +1,23 @@
 <?php
 
+namespace Integration;
+
 use CodeIgniter\Test\CIUnitTestCase;
 use CodeIgniter\Test\DatabaseTestTrait;
-use Tests\Support\Database\Seeds\ExampleSeeder;
-use Tests\Support\Models\ExampleModel;
+use OpenAuditTest\Support\Database\Seeds\ExampleSeeder;
+use OpenAuditTest\Support\Models\ExampleModel;
 
-/**
- * @internal
- */
 final class ExampleDatabaseTest extends CIUnitTestCase
 {
     use DatabaseTestTrait;
+
+    /**
+     * MigrationRunner uses this namespace when gathering migration files.
+     * Files are expect under path <namespace>/Database/Migrations/
+     *
+     * @var string
+     */
+    protected $namespace = 'OpenAuditTest\Support';
 
     protected $seed = ExampleSeeder::class;
 

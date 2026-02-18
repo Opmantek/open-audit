@@ -1,14 +1,12 @@
 <?php
 
-namespace Tests\Helpers;
+namespace OpenAuditTest\Unit\App\Helpers;
 
 use CodeIgniter\Test\CIUnitTestCase;
 use CodeIgniter\Test\ControllerTestTrait;
 use CodeIgniter\Test\DatabaseTestTrait;
 
-#[\AllowDynamicProperties]
-
-class NetworkHelperTest extends CIUnitTestCase
+final class NetworkHelperTest extends CIUnitTestCase
 {
     use DatabaseTestTrait;
     use ControllerTestTrait;
@@ -19,11 +17,6 @@ class NetworkHelperTest extends CIUnitTestCase
 
         helper('network');
         helper('utility');
-
-        $this->config = new \Config\OpenAudit();
-        $this->config->blessed_subnets_use = 'n';
-
-        $db = db_connect();
 
         global $CI_INSTANCE;
         $CI_INSTANCE[0] = &$this;

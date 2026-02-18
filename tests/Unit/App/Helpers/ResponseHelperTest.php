@@ -1,14 +1,13 @@
 <?php
 
-namespace Tests\Helpers;
+namespace OpenAuditTest\Unit\App\Helpers;
 
 use CodeIgniter\Test\CIUnitTestCase;
-use CodeIgniter\Test\Mock\MockDatabaseConnection;
 
 /**
  * @coversNothing
  */
-class ResponseHelperTest extends CIUnitTestCase
+final class ResponseHelperTest extends CIUnitTestCase
 {
     protected function setUp(): void
     {

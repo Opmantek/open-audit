@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Support\Database\Migrations;
+namespace OpenAuditTest\Support\Database\Migrations;
 
 use CodeIgniter\Database\Migration;
 
