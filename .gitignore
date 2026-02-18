@@ -139,5 +139,6 @@ other/enterprise*
 other/ssg-results/*.html
 other/ssg-results/*.json
 
-
+public/aws_icons/*
+public/azure_icons/*
 
