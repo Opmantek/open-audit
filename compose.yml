@@ -13,6 +13,7 @@ services:
       MARIADB_USER: openaudit
       MARIADB_PASSWORD: openauditpassword
     volumes:
+      - ./other/open-audit.sql:/docker-entrypoint-initdb.d/01-schema.sql:ro
       - database_storage:/var/lib/mysql
     ports:
       - "33067:3306"

@@ -60,17 +60,11 @@ podman-compose up -d
 podman exec -it open-audit-community-web sh -c "composer install"
 ```
 
-#### 8. Setup database
-
-```shell
-podman exec -i open-audit-community-database mariadb -u root -popenauditrootuserpassword openaudit < ./other/open-audit.sql
-```
-
-#### 9. Test running application
+#### 8. Test running application
 
 > Login: http://localhost:8087/index.php
 
-#### 10. Bring down the containers
+#### 9. Bring down the containers
 
 ```shell
 podman-compose down
