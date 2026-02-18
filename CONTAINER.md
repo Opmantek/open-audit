@@ -63,7 +63,7 @@ podman exec -it open-audit-community-web sh -c "composer install"
 #### 8. Setup database
 
 ```shell
-podman exec -it open-audit-community-database mariadb -u root -popenauditrootuserpassword openaudit < ./open-audit/other/open-audit.sql
+podman exec -i open-audit-community-database mariadb -u root -popenauditrootuserpassword openaudit < ./other/open-audit.sql
 ```
 
 #### 9. Test running application
