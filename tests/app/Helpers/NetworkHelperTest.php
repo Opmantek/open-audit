@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models;
+namespace Tests\Helpers;
 
 use CodeIgniter\Test\CIUnitTestCase;
 use CodeIgniter\Test\ControllerTestTrait;
