@@ -5,7 +5,6 @@ namespace App\Models;
 use CodeIgniter\Test\CIUnitTestCase;
 use CodeIgniter\Test\ControllerTestTrait;
 use CodeIgniter\Test\DatabaseTestTrait;
-use PHPUnit\Framework\Attr;
 
 #[\AllowDynamicProperties]
 
