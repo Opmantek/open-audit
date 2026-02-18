@@ -28,7 +28,7 @@ services:
     restart: unless-stopped
     environment:
       app_baseURL: http://localhost:8088
-      database_default_hostname: open-audit-database
+      database_default_hostname: open-audit-community-database
       database_default_database: openaudit
       database_default_username: openaudit
       database_default_password: openauditpassword
