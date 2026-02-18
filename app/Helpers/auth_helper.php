@@ -8,10 +8,11 @@ declare(strict_types=1);
 function entra_redirect(object $auth): string
 {
     $session = \Config\Services::session();
+    $redir = (!empty($auth->redirect_uri)) ? $auth->redirect_uri : base_url() . 'index.php/logon/entra/auth';
     $provider = new \TheNetworg\OAuth2\Client\Provider\Azure([
         'clientId'          => $auth->client_ident,
         'clientSecret'      => $auth->client_secret,
-        'redirectUri'       => base_url() . 'logon/entra/auth',
+        'redirectUri'       => $redir,
         'scopes'            => ['openid'],
         'defaultEndPointVersion' => '2.0'
     ]);
@@ -43,7 +44,7 @@ function entra_auth(object $auth, string $ip = ''): string
     $session = \Config\Services::session();
     log_message('debug', json_encode($_GET));
     if (empty($_GET['code']) or empty($_GET['state'])) {
-        log_message('error', 'Missing GET items for OKTA from ' . $ip);
+        log_message('error', 'Missing GET items for Entra from ' . $ip);
         $session->set('oauth2state', '');
         return site_url('logon');
     }
@@ -52,10 +53,11 @@ function entra_auth(object $auth, string $ip = ''): string
         $session->set('oauth2state', '');
         return site_url('logon');
     }
+    $redir = (!empty($auth->redirect_uri)) ? $auth->redirect_uri : base_url() . 'index.php/logon/entra/auth';
     $provider = new \TheNetworg\OAuth2\Client\Provider\Azure([
         'clientId'          => $auth->client_ident,
         'clientSecret'      => $auth->client_secret,
-        'redirectUri'       => base_url() . 'logon/entra/auth',
+        'redirectUri'       => $redir,
         'scopes'            => ['openid'],
         'defaultEndPointVersion' => '2.0'
     ]);
@@ -107,10 +109,11 @@ function entra_auth(object $auth, string $ip = ''): string
 function github_redirect(object $auth): string
 {
     $session = \Config\Services::session();
+    $redir = (!empty($auth->redirect_uri)) ? $auth->redirect_uri : base_url() . 'index.php/logon/github/auth';
     $provider = new \League\OAuth2\Client\Provider\Github([
         'clientId'          => $auth->client_ident,
         'clientSecret'      => $auth->client_secret,
-        'redirectUri'       => base_url() . '/logon/github/auth'
+        'redirectUri'       => $redir
     ]);
     $options = [
         'state' => 'OPTIONAL_CUSTOM_CONFIGURED_STATE',
@@ -135,10 +138,11 @@ function github_auth(object $auth, string $ip = ''): string
         $session->set('oauth2state', '');
         return site_url('logon');
     }
+    $redir = (!empty($auth->redirect_uri)) ? $auth->redirect_uri : base_url() . 'index.php/logon/github/auth';
     $provider = new \League\OAuth2\Client\Provider\Github([
         'clientId'          => $auth->client_ident,
         'clientSecret'      => $auth->client_secret,
-        'redirectUri'       => base_url() . '/logon/github/auth'
+        'redirectUri'       => $redir
     ]);
     try {
         $token = $provider->getAccessToken('authorization_code', ['code' => $_GET['code']]);
@@ -178,10 +182,11 @@ function github_auth(object $auth, string $ip = ''): string
 function okta_redirect(object $auth): string
 {
     $session = \Config\Services::session();
+    $redir = (!empty($auth->redirect_uri)) ? $auth->redirect_uri : base_url() . 'index.php/logon/okta/auth';
     $provider = new \Foxworth42\OAuth2\Client\Provider\Okta([
         'clientId'          => $auth->client_ident,
         'clientSecret'      => $auth->client_secret,
-        'redirectUri'       => base_url() . 'logon/okta/auth',
+        'redirectUri'       => $redir,
         'issuer'            => $auth->issuer
     ]);
     $authUrl = $provider->getAuthorizationUrl();
@@ -209,10 +214,11 @@ function okta_auth(object $auth, string $ip = ''): string
         $session->set('oauth2state', '');
         return site_url('logon');
     }
+    $redir = (!empty($auth->redirect_uri)) ? $auth->redirect_uri : base_url() . 'index.php/logon/okta/auth';
     $provider = new \Foxworth42\OAuth2\Client\Provider\Okta([
         'clientId'          => $auth->client_ident,
         'clientSecret'      => $auth->client_secret,
-        'redirectUri'       => base_url() . 'logon/okta/auth',
+        'redirectUri'       => $redir,
         'issuer'            => $auth->issuer
     ]);
     try {
