@@ -98,7 +98,7 @@ final class AuditServiceTest extends CIUnitTestCase
     {
         $service = service('audit');
 
-        $input = '<?xml version="1.0" encoding="UTF-8"?><system><sys><ip>10.10.1.1</ip></sys></system>';
+        $input = 'data=<?xml version="1.0" encoding="UTF-8"?><system><sys><ip>10.10.1.1</ip></sys></system>';
 
         $audit = $service->convert($input);
 
