@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Support\Database\Seeds;
+namespace OpenAuditTest\Support\Database\Seeds;
 
 use CodeIgniter\Database\Seeder;
 

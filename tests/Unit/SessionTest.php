@@ -1,11 +1,10 @@
 <?php
 
+namespace OpenAuditTest\Unit;
+
 use CodeIgniter\Test\CIUnitTestCase;
 
-/**
- * @internal
- */
-final class ExampleSessionTest extends CIUnitTestCase
+final class SessionTest extends CIUnitTestCase
 {
     public function testSessionSimple(): void
     {

@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Support\Libraries;
+namespace OpenAuditTest\Support\Libraries;
 
 use Config\App;
 

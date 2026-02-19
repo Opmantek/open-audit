@@ -1,0 +1,51 @@
+services:
+  database:
+    build:
+      context: ./../
+      dockerfile: ./.compose/database/Containerfile
+    container_name: open-audit-community-test-database
+    image: opmantek/open-audit-community-test-database
+    restart: unless-stopped
+    stop_grace_period: 20s
+    environment:
+      MARIADB_DATABASE: openaudit
+      MARIADB_ROOT_PASSWORD: openauditrootuserpassword
+      MARIADB_USER: openaudit
+      MARIADB_PASSWORD: openauditpassword
+    volumes:
+      - ./../other/open-audit.sql:/docker-entrypoint-initdb.d/01-schema.sql:ro
+      - database_storage:/var/lib/mysql
+    ports:
+      - "33097:3306"
+    networks:
+      - open-audit-community-test
+  web:
+    build:
+      context: ./../
+      dockerfile: ./.compose/web/Containerfile
+    container_name: open-audit-community-test-web
+    image: opmantek/open-audit-community-test-web
+    restart: unless-stopped
+    environment:
+      CI_ENVIRONMENT: testing
+      app_baseURL: http://localhost
+      database_tests_hostname: open-audit-community-test-database
+      database_tests_database: openaudit
+      database_tests_username: openaudit
+      database_tests_password: openauditpassword
+      database_tests_port: 3306
+      database_tests_DBDriver: MySQLi
+    volumes:
+      - ./../:/usr/local/open-audit:rw,z
+    expose:
+      - 80
+    networks:
+      - open-audit-community-test
+    depends_on:
+      - database
+volumes:
+  database_storage:
+networks:
+  open-audit-community-test:
+    name: open-audit-community-test-network
+    driver: bridge

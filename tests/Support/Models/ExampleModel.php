@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Support\Models;
+namespace OpenAuditTest\Support\Models;
 
 use CodeIgniter\Model;
 

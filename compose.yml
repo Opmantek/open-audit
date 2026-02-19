@@ -6,12 +6,14 @@ services:
     container_name: open-audit-community-database
     image: opmantek/open-audit-community-database
     restart: unless-stopped
+    stop_grace_period: 20s
     environment:
       MARIADB_DATABASE: openaudit
       MARIADB_ROOT_PASSWORD: openauditrootuserpassword
       MARIADB_USER: openaudit
       MARIADB_PASSWORD: openauditpassword
     volumes:
+      - ./other/open-audit.sql:/docker-entrypoint-initdb.d/01-schema.sql:ro
       - database_storage:/var/lib/mysql
     ports:
       - "33067:3306"

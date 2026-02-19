@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Helpers;
+namespace OpenAuditTest\Unit\App\Helpers;
 
 use CodeIgniter\Test\CIUnitTestCase;
 
@@ -10,11 +10,12 @@ use CodeIgniter\Test\CIUnitTestCase;
  * These functions are critical for protecting stored credentials.
  * A failure here would mean credentials cannot be properly encrypted/decrypted.
  */
-class SecurityHelperTest extends CIUnitTestCase
+final class SecurityHelperTest extends CIUnitTestCase
 {
     protected function setUp(): void
     {
         parent::setUp();
+
         helper('security');
     }
 

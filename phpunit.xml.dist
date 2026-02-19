@@ -1,36 +1,39 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <phpunit
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/10.5/phpunit.xsd"
+    xsi:noNamespaceSchemaLocation="vendor/phpunit/phpunit/phpunit.xsd"
     bootstrap="vendor/codeigniter4/framework/system/Test/bootstrap.php"
-    backupGlobals="false"
+    executionOrder="depends,defects"
     beStrictAboutOutputDuringTests="true"
     colors="true"
     columns="max"
     failOnRisky="true"
     failOnWarning="true">
-    <coverage
-        includeUncoveredFiles="true"
-        pathCoverage="false"
-        ignoreDeprecatedCodeUnits="true"
-        disableCodeCoverageIgnore="true">
+
+    <testsuites>
+        <testsuite name="unit">
+            <directory>tests/Unit</directory>
+        </testsuite>
+        <testsuite name="integration">
+            <directory>tests/Integration</directory>
+        </testsuite>
+    </testsuites>
+
+    <coverage ignoreDeprecatedCodeUnits="true" disableCodeCoverageIgnore="true">
         <report>
             <clover outputFile="build/logs/clover.xml"/>
             <html outputDirectory="build/logs/html"/>
             <php outputFile="build/logs/coverage.serialized"/>
-            <text outputFile="php://stdout" showUncoveredFiles="false"/>
+            <text outputFile="php://stdout"/>
         </report>
     </coverage>
-    <testsuites>
-        <testsuite name="App">
-            <directory>./tests</directory>
-        </testsuite>
-    </testsuites>
+
     <logging>
         <testdoxHtml outputFile="build/logs/testdox.html"/>
         <testdoxText outputFile="build/logs/testdox.txt"/>
         <junit outputFile="build/logs/logfile.xml"/>
     </logging>
+
     <!--
     <source>
         <include>
@@ -42,6 +45,7 @@
         </exclude>
     </source>
     -->
+
     <php>
         <server name="app.baseURL" value="http://example.com/"/>
         <server name="CODEIGNITER_SCREAM_DEPRECATIONS" value="0"/>
