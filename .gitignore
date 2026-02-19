@@ -142,3 +142,5 @@ other/ssg-results/*.json
 public/aws_icons/*
 public/azure_icons/*
 
+.claude/
+.phpactor.json
