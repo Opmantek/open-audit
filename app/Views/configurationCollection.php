@@ -66,7 +66,7 @@ window.onload = function () {
         $("#button_create").remove();
         $("#button_default_items").remove();
         $("#button_help").remove();
-        <?php if (strpos($meta->query_string, 'configuration.name=likemail') !== false) { ?>
+        <?php if (str_contains($meta->query_string, 'configuration.name=likemail')) { ?>
             <?php if (empty($user->toolbar_style) or $user->toolbar_style === 'icontext') { ?>
                 $(".page-title-right").append("<a style=\"margin-right:6px;\" role=\"button\" id=\"button_test_email\" class=\"btn btn-light mb-2\" title=\"<?= __('Test Email') ?>\" href=\"<?= url_to('configurationExecuteFormEmail') ?>\"><span class=\"icon-mail text-oa-primary\"></span><?= __('Test Email') ?></a>");
             <?php } elseif ($user->toolbar_style === 'icon') { ?>

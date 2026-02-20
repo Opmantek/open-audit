@@ -25,7 +25,7 @@ $get_oid_details = function ($ip, $credentials, $oid) {
     }
     $temp = explode(',', $sysDescr);
     foreach ($temp as $piece) {
-        if (strpos($piece, 'kernel JUNOS') !== false) {
+        if (str_contains($piece, 'kernel JUNOS')) {
             $details->os_version = trim(str_replace('kernel JUNOS', '', $piece));
         }
     }

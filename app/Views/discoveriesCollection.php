@@ -38,7 +38,7 @@ if (count($included['issues']) > 0) {
                                     <div class="input-group">
                                         <input disabled title="<?= __('Queue Limit') ?>" type="text" class="form-control"  id="queue_limit" name="queue_limit" value="<?= $config->queue_limit ?>">
                                         <span class="pull-right">
-                                            <?php if (strpos($user->permissions['configuration'], 'u') !== false) { ?>
+                                            <?php if (str_contains($user->permissions['configuration'], 'u')) { ?>
                                             <a href="<?= url_to('configurationCollection') ?>/queue_limit" role="button" class="btn btn-default" title="<?= __('Discovery Queue Limit') ?>"><span style="width:1rem;" class="icon-cog" aria-hidden="true"></span></a>
                                             <?php } ?>
                                             <button type="button" class="btn btn-default" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="The maximum number of parrallel discovery threads.">?</button>
@@ -52,7 +52,7 @@ if (count($included['issues']) > 0) {
                                     <div class="input-group">
                                         <input disabled title="<?= __('Current Discovery Processes') ?>" type="text" class="form-control"  id="queue_count" name="queue_count" value="<?= $config->queue_count ?>">
                                         <span class="pull-right">
-                                            <?php if (strpos($user->permissions['configuration'], 'u') !== false and intval($config->queue_count) > 0) { ?>
+                                            <?php if (str_contains($user->permissions['configuration'], 'u') and intval($config->queue_count) > 0) { ?>
                                             <a id="delete_queue_count" href="#" role="button" class="btn btn-default" title="<?= __('Discovery Queue Count') ?>"><span style="width:1rem;" class="icon-trash-2" aria-hidden="true"></span></a>
                                             <?php } ?>
                                             <button type="button" class="btn btn-default" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="The number of running discovery threads.">?</button>
@@ -101,7 +101,7 @@ if (count($included['issues']) > 0) {
                                     <div class="input-group">
                                         <input disabled title="<?= __('Queued Items') ?>" type="text" class="form-control"  id="queue_items" name="queue_items" value="<?= $included['queue_items'] ?>">
                                         <span class="pull-right">
-                                            <?php if (strpos($user->permissions['configuration'], 'u') !== false and $included['queue_items'] > 0) { ?>
+                                            <?php if (str_contains($user->permissions['configuration'], 'u') and $included['queue_items'] > 0) { ?>
                                             <a id="delete_queue" href="#" role="button" class="btn btn-default" title="<?= __('All Queued Items') ?>"><span style="width:1rem;" class="icon-trash-2" aria-hidden="true"></span></a>
                                             <?php } ?>
                                             <button type="button" class="btn btn-default" data-bs-toggle="tooltip" data-bs-placement="left" data-bs-title="The number of discovery queue items waiting to be processed.">?</button>
@@ -219,7 +219,7 @@ if (count($included['issues']) > 0) {
                                         } ?>
                                         <th><?= collection_column_name($key) ?></th>
                                     <?php } ?>
-                                    <?php if (strpos($user->permissions[$meta->collection], 'd') !== false) { ?>
+                                    <?php if (str_contains($user->permissions[$meta->collection], 'd')) { ?>
                                     <th data-orderable="false" class="text-center"><?= __('Delete') ?></th>
                                     <?php } ?>
                                 </tr>
@@ -245,7 +245,7 @@ if (count($included['issues']) > 0) {
                                         }
                                         ?>
                                     <?php } ?>
-                                    <?php if (strpos($user->permissions[$meta->collection], 'd') !== false) { ?>
+                                    <?php if (str_contains($user->permissions[$meta->collection], 'd')) { ?>
                                         <?= collection_button_delete(intval($item->id)) ?>
                                     <?php } ?>
                                 </tr>

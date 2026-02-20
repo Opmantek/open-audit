@@ -529,7 +529,7 @@ class WidgetsModel extends BaseModel
         if (!empty($result)) {
             for ($i = 0; $i < count($result); $i++) {
                 foreach ($result[$i] as $key => $value) {
-                    if (strpos($key, 'my_') === 0) {
+                    if (str_starts_with($key, 'my_')) {
                         $new_key = str_replace('my_', '', $key);
                         $result[$i]->{$new_key} = $value;
                         unset($result[$i]->{$key});
@@ -631,11 +631,11 @@ class WidgetsModel extends BaseModel
 
         if (!empty($widget->sql)) {
             $sql = $widget->sql;
-            if (strpos($sql, 'WHERE @filter') !== false) {
+            if (str_contains($sql, 'WHERE @filter')) {
                 $filter = "WHERE devices.org_id in (" . $org_list . ")";
                 $sql = str_replace('WHERE @filter', $filter, $sql);
             }
-            if (strpos($sql, '(@filter)') !== false) {
+            if (str_contains($sql, '(@filter)')) {
                 $sql = str_replace('@filter', $org_list, $sql);
             }
             $query = $this->db->query($sql);
@@ -676,11 +676,11 @@ class WidgetsModel extends BaseModel
         log_message('debug', 'Resulset is ' . $return->result);
         if (!empty($widget->status_secondary_sql)) {
             $sql = $widget->status_secondary_sql;
-            if (strpos($sql, 'WHERE @filter') !== false) {
+            if (str_contains($sql, 'WHERE @filter')) {
                 $filter = "WHERE devices.org_id in (" . $org_list . ")";
                 $sql = str_replace('WHERE @filter', $filter, $sql);
             }
-            if (strpos($sql, '(@filter)') !== false) {
+            if (str_contains($sql, '(@filter)')) {
                 $sql = str_replace('@filter', $org_list, $sql);
             }
             $query = $this->db->query($sql);

@@ -228,7 +228,6 @@ class OpenAudit extends BaseConfig
             return;
         }
         // log_message('error', 'OpenAudit.php::_set called with bad key of ' . $key);
-        return;
     }
 
     public function __get($key)
@@ -237,7 +236,6 @@ class OpenAudit extends BaseConfig
             return $this->$key;
         }
         log_message('error', 'OpenAudit.php::_get called with bad key of ' . $key);
-        return;
     }
 
     public function __construct()
@@ -331,7 +329,7 @@ class OpenAudit extends BaseConfig
             $this->page_size = 1000;
         }
 
-        if (!empty($this->discovery_linux_script_directory) && substr($this->discovery_linux_script_directory, -1) !== '/') {
+        if (!empty($this->discovery_linux_script_directory) && !str_ends_with($this->discovery_linux_script_directory, '/')) {
             $this->discovery_linux_script_directory .= '/';
         }
 

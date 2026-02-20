@@ -175,7 +175,7 @@ class ConfigurationModel extends BaseModel
                     chdir($cwd);
                 } else {
                     $command = $instance->config->enterprise_binary . ' --license';
-                    if (!empty($instance->config->enterprise_env) and strpos($command, 'enterprise.bin') !== false) {
+                    if (!empty($instance->config->enterprise_env) and str_contains($command, 'enterprise.bin')) {
                         $command = 'export PAR_GLOBAL_TMPDIR=' . $instance->config->enterprise_env . '; ' . $command;
                     }
                     @exec($command, $output);

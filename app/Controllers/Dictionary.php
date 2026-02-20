@@ -7,9 +7,7 @@ declare(strict_types=1);
 
 namespace App\Controllers;
 
-use CodeIgniter\Controller;
 use stdClass;
-use \RecursiveIteratorIterator;
 
 /**
  * PHP version 7.4

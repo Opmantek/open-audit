@@ -14,10 +14,10 @@ $dir = '/usr/local/open-audit/other/ssg-definitions/';
 $dir = '/usr/local/open-audit/public/ssg-definitions/';
 $files = scandir($dir);
 foreach ($files as $file) {
-    if (strpos($file, 'Windows') !== false) {
+    if (str_contains($file, 'Windows')) {
         continue;
     }
-    if (strpos($file, 'xml') !== false) {
+    if (str_contains($file, 'xml')) {
         $os = str_replace('ssg-', '', $file);
         $os = str_replace('-ds-1.2.xml', '', $os);
         $os_family = ucfirst(preg_replace("/[^A-Za-z]/", '', $os));
@@ -57,7 +57,7 @@ foreach ($files as $file) {
         exec('oscap info ' . $dir . $file, $output);
         $count = count($output);
         for ($i=0; $i < $count; $i++) {
-            if (strpos($output[$i], 'Title:') !== false) {
+            if (str_contains($output[$i], 'Title:')) {
                 $title = trim(str_replace('Title: ', '', $output[$i]));
                 $benchmark = trim(str_replace('Id: ', '', $output[$i+1]));
                 echo "    \$item = new \\stdClass();\n    \$item->os_family = '$os_family';\n    \$item->os_version = '$os_version';\n    \$item->title = '$title';\n    \$item->file = '$file';\n    \$item->benchmark = '$benchmark';\n    \$ssg_definitions[] = \$item;\n\n";

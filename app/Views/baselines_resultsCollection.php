@@ -23,7 +23,7 @@ include 'shared/collection_functions.php';
                                     <th class="text-center"><?= __('Fail') ?></th>
                                     <th class="text-center"><?= __('Export by Policy') ?></th>
                                     <th class="text-center"><?= __('Export by Device') ?></th>
-                                    <?php if (strpos($user->permissions[$meta->collection], 'd') !== false) { ?>
+                                    <?php if (str_contains($user->permissions[$meta->collection], 'd')) { ?>
                                     <th data-orderable="false" class="text-center"><?= __('Delete') ?></th>
                                     <?php } ?>
                                 </tr>
@@ -41,7 +41,7 @@ include 'shared/collection_functions.php';
                                     <?php echo "<td class=\"text-center text-danger\">" . $item->attributes->result->fail . "</td>\n"; ?>
                                     <?php echo "<td class=\"text-center\"><a class=\"btn " . $GLOBALS['button'] . " btn-primary\" title=\"" . __('Export by Policy') . "\" role=\"button\" href=\"" . url_to('baselines_resultsExportPolicy', $item->attributes->id) . "\"><span style=\"width:1rem;\" class=\"icon-square-arrow-out-up-right\" aria-hidden=\"true\"></span></a></td>"; ?>
                                     <?php echo "<td class=\"text-center\"><a class=\"btn " . $GLOBALS['button'] . " btn-primary\" title=\"" . __('Export by Device') . "\" role=\"button\" href=\"" . url_to('baselines_resultsExportDevice', $item->attributes->id) . "\"><span style=\"width:1rem;\" class=\"icon-square-arrow-out-up-right\" aria-hidden=\"true\"></span></a></td>"; ?>
-                                    <?php if (strpos($user->permissions[$meta->collection], 'd') !== false) { ?>
+                                    <?php if (str_contains($user->permissions[$meta->collection], 'd')) { ?>
                                         <?= collection_button_delete(intval($item->id)) ?>
                                     <?php } ?>
                                 </tr>

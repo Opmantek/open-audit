@@ -9,7 +9,6 @@ namespace App\Controllers;
 
 use CodeIgniter\API\ResponseTrait;
 use CodeIgniter\Controller;
-use stdClass;
 
 /**
  * PHP version 7.4

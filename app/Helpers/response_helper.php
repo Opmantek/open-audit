@@ -75,7 +75,7 @@ if (!function_exists('response_create')) {
             $getPath = explode('/', $uri->getPath());
             if (!empty($getPath)) {
                 foreach ($getPath as $segment) {
-                    if (strpos($segment, 'format=') !== false) {
+                    if (str_contains($segment, 'format=')) {
                         $get_format = str_replace('format=', '', $segment);
                     }
                 }
@@ -141,11 +141,11 @@ if (!function_exists('response_create')) {
             $response->meta->action = 'create';
         }
         if ($response->meta->collection === 'users' and $response->meta->action === 'update' and $response->meta->id === $instance->user->id) {
-            if (strpos($instance->user->permissions['users'], 'r') === false) {
+            if (!str_contains($instance->user->permissions['users'], 'r')) {
                 // Allowed to read self
                 $instance->user->permissions['users'] .= 'r';
             }
-            if (strpos($instance->user->permissions['users'], 'u') === false) {
+            if (!str_contains($instance->user->permissions['users'], 'u')) {
                 // Allowed to update self
                 $instance->user->permissions['users'] .= 'u';
             }
@@ -159,7 +159,7 @@ if (!function_exists('response_create')) {
         // log_message('debug', 'UserID: ' . $instance->user->id . ' is a ' . gettype($instance->user->id));
 
         if ($response->meta->collection !== 'help') {
-            if (empty($instance->user->permissions[$response->meta->collection]) or strpos($instance->user->permissions[$response->meta->collection], $permission_requested[$response->meta->action]) === false) {
+            if (empty($instance->user->permissions[$response->meta->collection]) or !str_contains($instance->user->permissions[$response->meta->collection], $permission_requested[$response->meta->action])) {
                 $message = 'User ' . $instance->user->full_name . ' requested to perform ' . $response->meta->action . ' on ' . $response->meta->collection . ', but has no permission to do so.';
                 $response->errors = $message;
                 $response->meta->header = 403;
@@ -517,7 +517,7 @@ if (!function_exists('response_create')) {
                     $command = $config->enterprise_binary . " --debug $id 2>&1";
                     log_message('debug', $command);
                 }
-                if (!empty($config->enterprise_env) and strpos($command, 'enterprise.bin') !== false) {
+                if (!empty($config->enterprise_env) and str_contains($command, 'enterprise.bin')) {
                     $command = 'export PAR_GLOBAL_TMPDIR=' . $config->enterprise_env . '; ' . $command;
                 }
                 @exec($command, $output);
@@ -708,7 +708,7 @@ if (!function_exists('response_get_query_filter')) {
                 if (empty($item)) {
                     continue;
                 }
-                if (strpos($item, '=') === false) {
+                if (!str_contains($item, '=')) {
                     continue;
                 }
                 $name = substr($item, 0, strpos($item, '='));
@@ -719,7 +719,7 @@ if (!function_exists('response_get_query_filter')) {
                     if ($value === '') {
                         continue;
                     }
-                    if (in_array($name, ['draw', '_', 'search[regex]']) or strpos($name, 'column') !== false) {
+                    if (in_array($name, ['draw', '_', 'search[regex]']) or str_contains($name, 'column')) {
                         continue;
                     }
                     if ($name === 'search[value]') {
@@ -730,7 +730,7 @@ if (!function_exists('response_get_query_filter')) {
                         $name = 'discovery_log.command_status';
                     }
 
-                    if (strpos($name, '.') === false and $name !== 'search') {
+                    if (!str_contains($name, '.') and $name !== 'search') {
                         if ($db->tableExists($collection) and $db->fieldExists($name, $collection)) {
                             $name = $collection . '.' . $name;
                         }
@@ -750,7 +750,7 @@ if (!function_exists('response_get_query_filter')) {
 
                 if (strtolower(substr($query->value, 0, 8)) === 'not like') {
                     $query->value = substr($query->value, 8);
-                    if (strpos($query->value, '%') === false) {
+                    if (!str_contains($query->value, '%')) {
                         $query->value = '%' . $query->value . '%';
                     }
                     $query->function = 'where';
@@ -759,7 +759,7 @@ if (!function_exists('response_get_query_filter')) {
 
                 if (strtolower(substr($query->value, 0, 5)) === '!like') {
                     $query->value = substr($query->value, 5);
-                    if (strpos($query->value, '%') === false) {
+                    if (!str_contains($query->value, '%')) {
                         $query->value = '%' . $query->value . '%';
                     }
                     $query->function = 'where';
@@ -769,7 +769,7 @@ if (!function_exists('response_get_query_filter')) {
                 $operator = substr($query->value, 0, 4);
                 if (strtolower($operator) === 'like') {
                     $query->value = substr($query->value, 4);
-                    if (strpos($query->value, '%') === false) {
+                    if (!str_contains($query->value, '%')) {
                         $query->value = '%' . $query->value . '%';
                     }
                     $query->function = 'where';
@@ -798,7 +798,7 @@ if (!function_exists('response_get_query_filter')) {
                     }
                 }
 
-                if (is_string($query->value) and substr($query->value, 0, 3) === 'in(' && strpos($query->value, ')') === strlen($query->value) - 1) {
+                if (is_string($query->value) and str_starts_with($query->value, 'in(') && strpos($query->value, ')') === strlen($query->value) - 1) {
                     $query->value = substr($query->value, 2);
                     $query->function = 'whereIn';
                     $query->operator = 'in';
@@ -817,7 +817,7 @@ if (!function_exists('response_get_query_filter')) {
                     }
                 }
 
-                if (is_string($query->value) and substr($query->value, 0, 6) === 'notin(' && strpos($query->value, ')') === strlen($query->value) - 1) {
+                if (is_string($query->value) and str_starts_with($query->value, 'notin(') && strpos($query->value, ')') === strlen($query->value) - 1) {
                     $query->value = substr($query->value, 5);
                     $query->function = 'whereNotIn';
                     // $query->operator = 'not in'; // NOTE - changed to notin below so we can use it in the dataTables URL creation
@@ -875,7 +875,7 @@ if (!function_exists('response_get_query_filter')) {
                             // $query->value = ip_address_to_db($query->value);
                             $query->value = search_ip_to_db($query->value);
                         }
-                        if (strpos($query->value, '%') === false) {
+                        if (!str_contains($query->value, '%')) {
                             $query->value = '%' . $query->value . '%';
                         }
                         $query->function = 'where';
@@ -917,24 +917,24 @@ if (!function_exists('response_get_format')) {
             log_message('debug', "Set format according to POST ($post).");
             return $post;
         }
-        if (!empty($header) and strpos($header, 'application/json') !== false) {
+        if (!empty($header) and str_contains($header, 'application/json')) {
             log_message('debug', "Set format according to HEADER application/json (json).");
             return 'json';
         }
-        if (!empty($header) and strpos($header, 'html') !== false) {
+        if (!empty($header) and str_contains($header, 'html')) {
             log_message('debug', "Set format according to HEADER {$header} (html).");
             return 'html';
         }
-        if (!empty($header) and strpos($header, 'text/csv') !== false) {
+        if (!empty($header) and str_contains($header, 'text/csv')) {
             log_message('debug', "Set format according to HEADER {$header} (csv).");
             return 'csv';
         }
-        if (!empty($header) and strpos($header, 'text/xml') !== false) {
+        if (!empty($header) and str_contains($header, 'text/xml')) {
             log_message('debug', "Set format according to HEADER {$header} (xml).");
             return 'xml';
         }
         // Default
-        if (!empty($header) and strpos($header, '*/*') !== false) {
+        if (!empty($header) and str_contains($header, '*/*')) {
             log_message('debug', "Set format according to HEADER {$header} (json).");
             return 'json';
         }
@@ -954,7 +954,7 @@ if (!function_exists('response_get_groupby')) {
         $groupby = (!empty($get)) ? $get : '';
         if (!empty($groupby)) {
             $db = db_connect();
-            if (strpos($groupby, '.') !== false) {
+            if (str_contains($groupby, '.')) {
                 $temp = explode('.', $groupby);
                 if (!$db->fieldExists($temp[1], $temp[0])) {
                     $groupby = '';
@@ -1134,7 +1134,7 @@ if (!function_exists('response_get_ids')) {
         if (isset($device_ids) and $device_ids !== '') {
             if (is_string($device_ids)) {
                 // Remove a trailing comma if we have one
-                if (substr($device_ids, -1) === ',') {
+                if (str_ends_with($device_ids, ',')) {
                     $device_ids = substr($device_ids, 0, -1);
                 }
                 // Set all values to int's
@@ -1439,7 +1439,7 @@ if (!function_exists('response_get_properties')) {
             // Validate the properties are database columns
             $properties = explode(',', $properties);
             for ($i = 0; $i < count($properties); $i++) {
-                if (strpos($properties[$i], '.') !== false) {
+                if (str_contains($properties[$i], '.')) {
                     $temp = explode('.', $properties[$i]);
                     if (!$db->tableExists($temp[0])) {
                         log_message('warning', 'Invalid property supplied (' . (string)$properties[$i] . '), removed.');
@@ -1514,7 +1514,7 @@ if (!function_exists('response_get_sort')) {
                     $direction = 'DESC';
                 }
 
-                if (strpos($field, '.') !== false) {
+                if (str_contains($field, '.')) {
                     [$table, $column] = explode('.', $field, 2);
                 } else {
                     $table = $collection;

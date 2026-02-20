@@ -133,7 +133,7 @@ window.onload = function () {
         <?php
         $oss = [];
         foreach ($included['ssg_definitions'] as $ssg) {
-            if (strpos($ssg->os_family, 'Windows') !== false) {
+            if (str_contains($ssg->os_family, 'Windows')) {
                 $oss[] = $ssg->os_family;
             } else {
                 $oss[] = $ssg->os_family . ' ' . $ssg->os_version;

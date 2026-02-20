@@ -76,10 +76,10 @@ $get_oid_details = function ($ip, $credentials, $oid) {
 
     if (!empty($details->os_version)) {
         $details->os_cpe_version = !empty($details->os_version) ? $details->os_version : '';
-        if (strpos($details->os_cpe_version, '(') !== false) {
+        if (str_contains($details->os_cpe_version, '(')) {
             $details->os_cpe_version = str_replace($details->os_cpe_version, '(', '\(');
         }
-        if (strpos($details->os_cpe_version, ')') !== false) {
+        if (str_contains($details->os_cpe_version, ')')) {
             $details->os_cpe_version = str_replace($details->os_cpe_version, ')', '\)');
         }
     }

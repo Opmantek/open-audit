@@ -39,11 +39,11 @@ if (!function_exists('output')) {
                 break;
 
             case 'html_data':
-                output_html_data($instance);
+                output_html_data();
                 break;
 
             case 'table':
-                output_table($instance);
+                output_table();
                 break;
 
             case 'xml':
@@ -51,13 +51,7 @@ if (!function_exists('output')) {
                 break;
 
             case 'json':
-                output_json($instance);
-                break;
-
             case 'json_data':
-                output_json($instance);
-                break;
-
             default:
                 output_json($instance);
                 break;
@@ -197,7 +191,7 @@ if (!function_exists('output')) {
                     }
 
                     if (!empty($output_escape_csv) && $output_escape_csv === 'y') {
-                        if (strpos($value, '=') === 0 or strpos($value, '+') === 0 or strpos($value, '-') === 0 or strpos($value, '@') === 0) {
+                        if (str_starts_with($value, '=') or str_starts_with($value, '+') or str_starts_with($value, '-') or str_starts_with($value, '@')) {
                             $value = "'" . $value;
                         }
                     }

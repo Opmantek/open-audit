@@ -106,7 +106,7 @@ class NewsModel extends BaseModel
         }
 
         if ($item->type === 'config') {
-            if (empty($instance->user->permissions['configuration']) or strpos($instance->user->permissions['queries'], 'u') === false) {
+            if (empty($instance->user->permissions['configuration']) or !str_contains($instance->user->permissions['queries'], 'u')) {
                 log_message('info', $instance->user->full_name . ' does not have permission to execute news to update configuration.');
                 return false;
             }
@@ -119,7 +119,7 @@ class NewsModel extends BaseModel
             $this->db->query($sql, [$attributes->name, $attributes->value, $attributes->type, $attributes->editable, $attributes->description, $instance->user->full_name]);
         }
         if ($item->type === 'package') {
-            if (empty($instance->user->permissions['packages']) or strpos($instance->user->permissions['packages'], 'c') === false or strpos($instance->user->permissions['packages'], 'u') === false or strpos($instance->user->permissions['packages'], 'd') === false) {
+            if (empty($instance->user->permissions['packages']) or !str_contains($instance->user->permissions['packages'], 'c') or !str_contains($instance->user->permissions['packages'], 'u') or !str_contains($instance->user->permissions['packages'], 'd')) {
                 log_message('info', $instance->user->full_name . ' does not have permission to execute news to create/update/delete packages.');
                 return false;
             }
@@ -136,7 +136,7 @@ class NewsModel extends BaseModel
             model('App\Models\PackagesModel')->create($data);
         }
         if ($item->type === 'query') {
-            if (empty($instance->user->permissions['queries']) or strpos($instance->user->permissions['queries'], 'c') === false or strpos($instance->user->permissions['queries'], 'u') === false or strpos($instance->user->permissions['queries'], 'd') === false) {
+            if (empty($instance->user->permissions['queries']) or !str_contains($instance->user->permissions['queries'], 'c') or !str_contains($instance->user->permissions['queries'], 'u') or !str_contains($instance->user->permissions['queries'], 'd')) {
                 log_message('info', $instance->user->full_name . ' does not have permission to execute news to create/update/delete queries.');
                 return false;
             }
@@ -153,7 +153,7 @@ class NewsModel extends BaseModel
             model('App\Models\QueriesModel')->create($data);
         }
         if ($item->type === 'vulnerabilities') {
-            if (empty($instance->user->permissions['vulnerabilities']) or strpos($instance->user->permissions['vulnerabilities'], 'c') === false or strpos($instance->user->permissions['vulnerabilities'], 'u') === false or strpos($instance->user->permissions['vulnerabilities'], 'd') === false) {
+            if (empty($instance->user->permissions['vulnerabilities']) or !str_contains($instance->user->permissions['vulnerabilities'], 'c') or !str_contains($instance->user->permissions['vulnerabilities'], 'u') or !str_contains($instance->user->permissions['vulnerabilities'], 'd')) {
                 log_message('info', $instance->user->full_name . ' does not have permission to execute news to create/update/delete vulnerabilities.');
                 return false;
             }

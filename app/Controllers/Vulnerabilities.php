@@ -6,7 +6,6 @@
 declare(strict_types=1);
 
 namespace App\Controllers;
-use stdClass;
 
 /**
  * PHP version 7.4

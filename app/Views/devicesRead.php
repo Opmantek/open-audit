@@ -3112,7 +3112,7 @@ window.onload = function () {
                     <?php
                     foreach ($dataTableChangeLogColumns as $key) {
                         $sort_key = $key;
-                        if (strpos($key, "__") !== false) {
+                        if (str_contains($key, "__")) {
                             $sort_key = str_replace('__', '.', $key);
                         } else {
                             $sort_key = 'change_log' . '.' . $key;

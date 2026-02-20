@@ -220,14 +220,14 @@ class SupportModel extends BaseModel
             unset($output);
         }
 
-        if (php_uname('s') === 'Linux' and strpos(urldecode($_SERVER['QUERY_STRING']), 'demo=y') === false) {
+        if (php_uname('s') === 'Linux' and !str_contains(urldecode($_SERVER['QUERY_STRING']), 'demo=y')) {
             unset($output);
             $data->prereq->nmap = '';
             $command_string = 'nmap --version';
             exec($command_string, $output, $return_var);
             if (!empty($output)) {
                 foreach ($output as $line) {
-                    if (strpos($line, 'ersion') !== false) {
+                    if (str_contains($line, 'ersion')) {
                         $data->prereq->nmap = $line;
                     }
                 }
@@ -251,7 +251,7 @@ class SupportModel extends BaseModel
             // winexe version
             $command_string = ROOTPATH . 'other/winexe-static-2 --version 2>&1';
             exec($command_string, $output, $return_var);
-            if (isset($output[0]) && strpos($output[0], 'winexe') === 0) {
+            if (isset($output[0]) && str_starts_with($output[0], 'winexe')) {
                 $data->prereq->winexe = $output[0];
             }
             unset($output);

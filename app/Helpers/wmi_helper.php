@@ -416,6 +416,7 @@ if (! function_exists('copy_to_windows')) {
 
             return $return;
         }
+        return false;
     }
 }
 
@@ -955,7 +956,7 @@ if (!function_exists('windows_ips_found')) {
         $temp = execute_windows($ip, $credentials, 'arp -a', $discovery_id);
         $ips_found = array();
         foreach ($temp as $line) {
-            if (strpos($line, 'dynamic') === false) {
+            if (!str_contains($line, 'dynamic')) {
                 continue;
             }
             $line = trim(preg_replace("/ {2,}/", " ", $line));
