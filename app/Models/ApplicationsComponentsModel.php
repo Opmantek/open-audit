@@ -109,6 +109,8 @@ class ApplicationsComponentsModel extends BaseModel
                 }
             }
         }
+        $data->name = $data->primary_type;
+        $data->description = '';
         $data = $this->createFieldData('applications_components', $data);
         log_message('debug', json_encode($data, JSON_PRETTY_PRINT));
         if (empty($data)) {
@@ -132,6 +134,13 @@ class ApplicationsComponentsModel extends BaseModel
      */
     public function delete($id = null, bool $purge = false): bool
     {
+        $this->builder->delete(['id' => intval($id)]);
+        if ($this->sqlError($this->db->error())) {
+            return false;
+        }
+        if ($this->db->affectedRows() !== 1) {
+            return false;
+        }
         return true;
     }
 
@@ -139,7 +148,6 @@ class ApplicationsComponentsModel extends BaseModel
     {
         return true;
     }
-
 
     /**
      * Return an array containing arrays of related items to be stored in resp->included
@@ -203,7 +211,17 @@ class ApplicationsComponentsModel extends BaseModel
      */
     public function read(int $id = 0): array
     {
-        return array();
+        $properties = array();
+        $properties[] = 'applications_components.*';
+        $properties[] = 'applications.id AS `applications.id`';
+        $properties[] = 'applications.name AS `applications.name`';
+        $this->builder->select($properties, false);
+        $this->builder->join('applications', 'applications_components.application_id = applications.id', 'left');
+        $query = $this->builder->getWhere(['applications_components.id' => intval($id)]);
+        if ($this->sqlError($this->db->error())) {
+            return array();
+        }
+        return format_data($query->getResult(), 'applications_components');
     }
 
     /**
@@ -278,6 +296,7 @@ class ApplicationsComponentsModel extends BaseModel
         $dictionary->columns->primary_external_service = 'A text description of the external service.';
         $dictionary->columns->primary_description = 'A description (optional) of the primary component.';
         $dictionary->columns->primary_owner = 'The person or team responsible for this component.';
+        $dictionary->columns->primary_icon = 'Override the default icon per type. Should be the filename (without extension) of an SVG file in /icons/ directory.';
         $dictionary->columns->relationship = 'The relationship to the secondary component.';
         $dictionary->columns->secondary_type = 'The type of the primary component.';
         $dictionary->columns->secondary_internal_id_a = 'Links to either <code>devices.id</code> or <code>clusters.id</code>.';
@@ -286,6 +305,7 @@ class ApplicationsComponentsModel extends BaseModel
         $dictionary->columns->secondary_external_service = 'A text description of the external service.';
         $dictionary->columns->secondary_description = 'A description (optional) of the secondary component.';
         $dictionary->columns->secondary_owner = 'The person or team responsible for this component.';
+        $dictionary->columns->secondary_icon = 'Override the default icon per type. Should be the filename (without extension) of an SVG file in /icons/ directory.';
         $dictionary->columns->edited_by = $instance->dictionary->edited_by;
         $dictionary->columns->edited_date = $instance->dictionary->edited_date;
 
@@ -308,7 +328,7 @@ class ApplicationsComponentsModel extends BaseModel
         $dictionary->types->{'device_external'} = 'External Device';
         $dictionary->types->{'dnsname'} = 'Text';
         $dictionary->types->{'other'} = 'Text';
-        $dictionary->types->{'program'} = 'Links to <code>files.id</code>.';
+        $dictionary->types->{'program'} = 'Links to <code>file.name</code>.';
         $dictionary->types->{'program_external'} = 'External Program';
         $dictionary->types->{'queue'} = 'Links to <code>service.name</code>';
         $dictionary->types->{'queue_external'} = 'External Queue';

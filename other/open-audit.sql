@@ -147,6 +147,8 @@ CREATE TABLE `applications` (
   `name` varchar(200) NOT NULL DEFAULT '',
   `org_id` int(10) unsigned NOT NULL DEFAULT 1,
   `description` mediumtext NOT NULL,
+  `environment` varchar(200) NOT NULL DEFAULT '',
+  `status` varchar(200) NOT NULL DEFAULT '',
   `options` mediumtext NOT NULL,
   `edited_by` varchar(200) NOT NULL DEFAULT '',
   `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
@@ -183,6 +185,7 @@ CREATE TABLE `applications_components` (
     `primary_external_service` varchar(100) NOT NULL DEFAULT '',
     `primary_description` varchar(100) NOT NULL DEFAULT '',
     `primary_owner` varchar(200) NOT NULL DEFAULT '',
+    `primary_icon` varchar(200) NOT NULL DEFAULT '',
     `relationship` varchar(100) NOT NULL DEFAULT '',
     `secondary_type` varchar(100) NOT NULL DEFAULT '',
     `secondary_internal_id_a` int(10) unsigned NOT NULL DEFAULT 0,
@@ -191,9 +194,11 @@ CREATE TABLE `applications_components` (
     `secondary_external_service` varchar(100) NOT NULL DEFAULT '',
     `secondary_description` varchar(100) NOT NULL DEFAULT '',
     `secondary_owner` varchar(200) NOT NULL DEFAULT '',
+    `secondary_icon` varchar(200) NOT NULL DEFAULT '',
     `edited_by` varchar(200) NOT NULL DEFAULT '',
     `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
-    PRIMARY KEY (`id`)
+    PRIMARY KEY (`id`),
+    CONSTRAINT `applications_components_application_id` FOREIGN KEY (`application_id`) REFERENCES `applications` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -3954,6 +3959,12 @@ INSERT INTO `rules` VALUES (55,'Ubiquiti RP-5AC-Gen2 set type',1,'Set type based
 INSERT INTO `rules` VALUES (56,'NMIS Manage for SNMP devices',1,'Set nmis_manage to y if we detect an SNMP OID.',100,'[{\"attribute\":\"snmp_oid\",\"operator\":\"gt\",\"table\":\"devices\",\"value\":\"\"}]','[{\"attribute\":\"nmis_manage\",\"table\":\"devices\",\"value\":\"y\",\"value_type\":\"string\"}]','system','2000-01-01 00:00:00');
 INSERT INTO `rules` VALUES (57,'LENOVO to Lenovo for Manufacturer',1,'Change the manufacturer from LENOVO to Lenovo.',100,'[{\"attribute\":\"manufacturer\",\"operator\":\"li\",\"table\":\"devices\",\"value\":\"LENOVO\"}]','[{\"attribute\":\"manufacturer\",\"table\":\"devices\",\"value\":\"Lenovo\",\"value_type\":\"string\"}]','system','2000-01-01 00:00:00');
 INSERT INTO `rules` VALUES (58,'Class based on Form Factor and OS (Virtual Windows Client)',1,'Set the class based on the form factor and OS.',100,'[{\"table\":\"devices\",\"attribute\":\"form_factor\",\"operator\":\"eq\",\"value\":\"Virtual\"},{\"table\":\"devices\",\"attribute\":\"os_group\",\"operator\":\"eq\",\"value\":\"Windows\"},{\"table\":\"devices\",\"attribute\":\"os_name\",\"operator\":\"nl\",\"value\":\"%Server%\"},{\"table\":\"devices\",\"attribute\":\"os_group\",\"operator\":\"ne\",\"value\":\"\"},{\"table\":\"devices\",\"attribute\":\"class\",\"operator\":\"eq\",\"value\":\"\"}]','[{\"table\":\"devices\",\"attribute\":\"class\",\"value\":\"virtual desktop\",\"value_type\":\"string\"}]','system','2000-01-01 00:00:00');
+INSERT INTO `rules` VALUES (59,'Windows on Port 135, not working',1,'',100,'[{\"table\":\"nmap\",\"attribute\":\"port\",\"operator\":\"eq\",\"value\":\"135\"},{\"table\":\"devices\",\"attribute\":\"uuid\",\"operator\":\"eq\",\"value\":\"\"}]','[{\"table\":\"devices\",\"attribute\":\"type\",\"value_type\":\"string\",\"value\":\"computer\"},{\"table\":\"devices\",\"attribute\":\"os_group\",\"value_type\":\"string\",\"value\":\"Windows\"},{\"table\":\"devices\",\"attribute\":\"description\",\"value_type\":\"string\",\"value\":\"Discovery Issue\"}]','system','2000-01-01 00:00:00');
+INSERT INTO `rules` VALUES (60,'Windows on port 139, not working',1,'',100,'[{\"table\":\"nmap\",\"attribute\":\"port\",\"operator\":\"eq\",\"value\":\"139\"},{\"table\":\"devices\",\"attribute\":\"uuid\",\"operator\":\"eq\",\"value\":\"\"}]','[{\"table\":\"devices\",\"attribute\":\"type\",\"value_type\":\"string\",\"value\":\"computer\"},{\"table\":\"devices\",\"attribute\":\"os_group\",\"value_type\":\"string\",\"value\":\"Windows\"},{\"table\":\"devices\",\"attribute\":\"description\",\"value_type\":\"string\",\"value\":\"Discovery Issue\"}]','system','2000-01-01 00:00:00');
+INSERT INTO `rules` VALUES (61,'Windows on port 445, not working',1,'',100,'[{\"table\":\"nmap\",\"attribute\":\"port\",\"operator\":\"eq\",\"value\":\"445\"},{\"table\":\"devices\",\"attribute\":\"uuid\",\"operator\":\"eq\",\"value\":\"\"}]','[{\"table\":\"devices\",\"attribute\":\"type\",\"value\":\"computer\",\"value_type\":\"string\"},{\"table\":\"devices\",\"attribute\":\"os_group\",\"value\":\"Windows\",\"value_type\":\"string\"},{\"table\":\"devices\",\"attribute\":\"description\",\"value\":\"Discovery Issue\",\"value_type\":\"string\"}]','system','2000-01-01 00:00:00');
+INSERT INTO `rules` VALUES (62,'Windows on port 135, working',1,'',100,'[{\"table\":\"nmap\",\"attribute\":\"port\",\"operator\":\"eq\",\"value\":\"135\"},{\"table\":\"devices\",\"attribute\":\"uuid\",\"operator\":\"ne\",\"value\":\"\"},{\"table\":\"devices\",\"attribute\":\"description\",\"operator\":\"eq\",\"value\":\"Discovery Issue\"}]','[{\"table\":\"devices\",\"attribute\":\"description\",\"value\":\"\",\"value_type\":\"string\"}]','system','2000-01-01 00:00:00');
+INSERT INTO `rules` VALUES (63,'Windows on port 139, working',1,'',100,'[{\"table\":\"nmap\",\"attribute\":\"port\",\"operator\":\"eq\",\"value\":\"139\"},{\"table\":\"devices\",\"attribute\":\"uuid\",\"operator\":\"ne\",\"value\":\"\"},{\"table\":\"devices\",\"attribute\":\"description\",\"operator\":\"eq\",\"value\":\"Discovery Issue\"}]','[{\"table\":\"devices\",\"attribute\":\"description\",\"value\":\"\",\"value_type\":\"string\"}]','system','2000-01-01 00:00:00');
+INSERT INTO `rules` VALUES (64,'Windows on port 445, working',1,'',100,'[{\"table\":\"nmap\",\"attribute\":\"port\",\"operator\":\"eq\",\"value\":\"445\"},{\"table\":\"devices\",\"attribute\":\"uuid\",\"operator\":\"ne\",\"value\":\"\"},{\"table\":\"devices\",\"attribute\":\"description\",\"operator\":\"eq\",\"value\":\"Discovery Issue\"}]','[{\"table\":\"devices\",\"attribute\":\"description\",\"value\":\"\",\"value_type\":\"string\"}]','system','2000-01-01 00:00:00');
 /*!40000 ALTER TABLE `rules` ENABLE KEYS */;
 UNLOCK TABLES;
 

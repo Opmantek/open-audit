@@ -1,0 +1,90 @@
+<?php
+# Copyright © 2023 FirstWave. All Rights Reserved.
+# SPDX-License-Identifier: AGPL-3.0-or-later
+include 'shared/read_functions.php';
+include 'shared/common_functions.php';
+$style = @$user->toolbar_style;
+if ($style === 'icontext') {
+    $details_button = '<li class="nav-item" role="presentation"><a href="#details" class="nav-link" id="details-tab"><span style="margin-right:6px;" class="icon-eye text-success"></span>' . __('Details') . '</a></li>';
+    $devices_button = '<li class="nav-item" role="presentation"><a href="#devices" class="nav-link" id="devices-tab"><span style="margin-right:6px;" class="icon-computer text-primary" ></span>' . __('Devices') . '</a></li>';
+} elseif ($style === 'icon') {
+    $details_button = '<li class="nav-item" role="presentation"><a href="#details" class="nav-link" id="details-tab"><span style="margin-right:6px;" title="' . __('Details') . '" class="icon-eye text-success"></span></a></li>';
+    $devices_button = '<li class="nav-item" role="presentation"><a href="#devices" class="nav-link" id="devices-tab"><span style="margin-right:6px;" title="' . __('Devices') . '" class="icon-computer text-primary"></span></a></li>';
+} else {
+    $details_button = '<li class="nav-item" role="presentation"><a href="#details" class="nav-link" id="details-tab">' . __('Details') . '</a></li>';
+    $devices_button = '<li class="nav-item" role="presentation"><a href="#devices" class="nav-link" id="devices-tab">' . __('Devices') . '</a></li>';
+}
+?>
+        <main class="container-fluid">
+            <div class="card">
+                <div class="card-header">
+                    <?= read_card_header($meta->collection, $meta->id, $meta->icon, $user, $resource->name) ?>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-4">
+                            <?php $link_button = "<a role=\"button\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('applicationsRead', $resource->{'applications.id'}) . "\"><span title=\"" . $resource->{'applications.name'}  . "\" class=\"icon-link\" aria-hidden=\"true\"></span></a></div><div class=\"float-end\" style=\"padding-left:4px;\">";
+                            ?>
+                            <?= read_field('application', $resource->{'applications.name'}, '', false, '', $link_button, '', '', $meta->collection) ?>
+                            <?= read_field('name', $resource->name, $dictionary->columns->name, $update, '', '', '', '', $meta->collection) ?>
+                            <?= read_field('primary_type', $resource->primary_type, $dictionary->columns->primary_type, false, '', '', '', '', $meta->collection) ?>
+                        </div>
+                        <div class="col-4">
+                            <?= read_field('description', $resource->description, $dictionary->columns->description, $update, '', '', '', '', $meta->collection) ?>
+                            <?= read_field('org_id', $resource->org_id, $dictionary->columns->org_id, false, '', '', '', '', $meta->collection) ?>
+                            <?= read_field('relationship', $resource->relationship, $dictionary->columns->relationship, false, '', '', '', '', $meta->collection) ?>
+                        </div>
+                        <div class="col-4">
+                            <?= read_field('edited_by', $resource->edited_by, $dictionary->columns->edited_by, false, '', '', '', '', $meta->collection) ?>
+                            <?= read_field('edited_date', $resource->edited_date, $dictionary->columns->edited_date, false, '', '', '', '', $meta->collection) ?>
+                            <?= read_field('secondary_type', $resource->secondary_type, $dictionary->columns->secondary_type, false, '', '', '', '', $meta->collection) ?>
+                        </div>
+                    </div>
+
+
+                    <div class="row">
+                        <div class="col-5">
+                            <?= read_field('primary_internal_id_b', $resource->primary_internal_id_b, $dictionary->columns->primary_internal_id_b, false, '', '', '', '', $meta->collection) ?>
+                        </div>
+                        <div class="col-2">
+                            <?= read_field('relationship', $resource->relationship, $dictionary->columns->relationship, false, '', '', '', '', $meta->collection) ?>
+                        </div>
+                        <div class="col-5">
+                            <?= read_field('secondary_internal_id_b', $resource->secondary_internal_id_b, $dictionary->columns->secondary_internal_id_b, false, '', '', '', '', $meta->collection) ?>
+                        </div>
+                    </div>
+
+
+
+
+
+                    <br><hr><br>
+                    <div class="row">
+                        <div class="col-6">
+                            <?= read_field('primary_internal_id_a', $resource->primary_internal_id_a, $dictionary->columns->primary_internal_id_a, false, '', '', '', '', $meta->collection) ?>
+                            <?= read_field('primary_internal_id_b', $resource->primary_internal_id_b, $dictionary->columns->primary_internal_id_b, false, '', '', '', '', $meta->collection) ?>
+                            <?= read_field('primary_external_provider', $resource->primary_external_provider, $dictionary->columns->primary_external_provider, $update, '', '', '', '', $meta->collection) ?>
+                            <?= read_field('primary_external_service', $resource->primary_external_service, $dictionary->columns->primary_external_service, $update, '', '', '', '', $meta->collection) ?>
+                            <?= read_field('primary_description', $resource->primary_description, $dictionary->columns->primary_description, $update, '', '', '', '', $meta->collection) ?>
+                            <?= read_field('primary_owner', $resource->primary_owner, $dictionary->columns->primary_owner, $update, '', '', '', '', $meta->collection) ?>
+                            <?= read_field('primary_icon', $resource->primary_icon, $dictionary->columns->primary_icon, $update, '', '', '', '', $meta->collection) ?>
+                        </div>
+                        <div class="col-6">
+                            <?= read_field('secondary_internal_id_a', $resource->secondary_internal_id_a, $dictionary->columns->secondary_internal_id_a, false, '', '', '', '', $meta->collection) ?>
+                            <?= read_field('secondary_internal_id_b', $resource->secondary_internal_id_b, $dictionary->columns->secondary_internal_id_b, false, '', '', '', '', $meta->collection) ?>
+                            <?= read_field('secondary_external_provider', $resource->secondary_external_provider, $dictionary->columns->secondary_external_provider, $update, '', '', '', '', $meta->collection) ?>
+                            <?= read_field('secondary_external_service', $resource->secondary_external_service, $dictionary->columns->secondary_external_service, $update, '', '', '', '', $meta->collection) ?>
+                            <?= read_field('secondary_description', $resource->secondary_description, $dictionary->columns->secondary_description, $update, '', '', '', '', $meta->collection) ?>
+                            <?= read_field('secondary_owner', $resource->secondary_owner, $dictionary->columns->secondary_owner, $update, '', '', '', '', $meta->collection) ?>
+                            <?= read_field('secondary_icon', $resource->secondary_icon, $dictionary->columns->secondary_icon, $update, '', '', '', '', $meta->collection) ?>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <br>
+                        <pre>
+                            <?= json_encode($resource, JSON_PRETTY_PRINT) ?>
+                        </pre>
+                    </div>
+                </div>
+            </div>
+        </main>

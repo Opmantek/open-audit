@@ -386,7 +386,7 @@ class BaselinesPoliciesModel extends BaseModel
     {
         $properties = array();
         $properties[] = 'baselines_policies.*';
-        $properties[] = 'baselines.id AS `basleines.id`';
+        $properties[] = 'baselines.id AS `baselines.id`';
         $properties[] = 'baselines.name AS `baselines.name`';
         $properties[] = 'orgs.id AS `orgs.id`';
         $properties[] = 'orgs.name AS `orgs.name`';

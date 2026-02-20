@@ -13,6 +13,7 @@ class Collections extends BaseConfig
 {
     public $agents;
     public $applications;
+    public $applications_components;
     public $attributes;
     public $auth;
     public $baselines;
