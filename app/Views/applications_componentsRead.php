@@ -14,6 +14,38 @@ if ($style === 'icontext') {
     $details_button = '<li class="nav-item" role="presentation"><a href="#details" class="nav-link" id="details-tab">' . __('Details') . '</a></li>';
     $devices_button = '<li class="nav-item" role="presentation"><a href="#devices" class="nav-link" id="devices-tab">' . __('Devices') . '</a></li>';
 }
+
+
+if (!empty($resource->{'primary_devices.name'})) {
+    # $primary_notes = ucfirst($resource->primary_type) . ' ' . $resource->primary_internal_id_b . ' ' . __('on') . ' ' . $resource->{'primary_devices.name'};
+    $primary_notes = $resource->primary_internal_id_b . ' ' . __('on') . ' ' . $resource->{'primary_devices.name'};
+    if (empty($resource->primary_icon)) {
+        $resource->primary_icon = 'auto-assigned based on type';
+    }
+    $primary_dictionary = $dictionary->columns->secondary_internal_id_b;
+} else {
+    if (empty($resource->primary_icon)) {
+        $resource->primary_icon = 'auto-assigned based on external service';
+    }
+    #$primary_notes = $resource->primary_external_service . ' ' . __('on') . ' ' . $resource->primary_external_provider;
+    $primary_notes = $resource->primary_external_service;
+    $primary_dictionary = $dictionary->columns->primary_external_service;
+}
+if (!empty($resource->{'secondary_devices.name'})) {
+    #$secondary_notes = ucfirst($resource->secondary_type) . ' ' . $resource->secondary_internal_id_b . ' ' . __('on') . ' ' . $resource->{'secondary_devices.name'};
+    $secondary_notes = $resource->secondary_internal_id_b . ' ' . __('on') . ' ' . $resource->{'secondary_devices.name'};
+    if (empty($resource->secondary_icon)) {
+        $resource->secondary_icon = 'auto-assigned based on type';
+    }
+    $secondary_dictionary = $dictionary->columns->secondary_internal_id_b;
+} else {
+    #$secondary_notes = $resource->secondary_external_service . ' ' . __('on') . ' ' . $resource->secondary_external_provider;
+    $secondary_notes = $resource->secondary_external_service;
+    if (empty($resource->secondary_icon)) {
+        $resource->secondary_icon = 'auto-assigned based on external service';
+    }
+    $secondary_dictionary = $dictionary->columns->secondary_external_service;
+}
 ?>
         <main class="container-fluid">
             <div class="card">
@@ -27,62 +59,67 @@ if ($style === 'icontext') {
                             ?>
                             <?= read_field('application', $resource->{'applications.name'}, '', false, '', $link_button, '', '', $meta->collection) ?>
                             <?= read_field('name', $resource->name, $dictionary->columns->name, $update, '', '', '', '', $meta->collection) ?>
-                            <?= read_field('primary_type', $resource->primary_type, $dictionary->columns->primary_type, false, '', '', '', '', $meta->collection) ?>
+                            <!--<?= read_field('primary_type', $primary_notes, $dictionary->columns->primary_type, false, 'Primary', '', '', '', $meta->collection) ?>-->
                         </div>
                         <div class="col-4">
                             <?= read_field('description', $resource->description, $dictionary->columns->description, $update, '', '', '', '', $meta->collection) ?>
-                            <?= read_field('org_id', $resource->org_id, $dictionary->columns->org_id, false, '', '', '', '', $meta->collection) ?>
-                            <?= read_field('relationship', $resource->relationship, $dictionary->columns->relationship, false, '', '', '', '', $meta->collection) ?>
+                            <?= read_field('orgg.name', $resource->{'orgs.name'}, $dictionary->columns->org_id, false, 'Org', '', '', '', $meta->collection) ?>
+                            <!--<?= read_field('relationship', $resource->relationship, $dictionary->columns->relationship, false, '', '', '', '', $meta->collection) ?>-->
                         </div>
                         <div class="col-4">
                             <?= read_field('edited_by', $resource->edited_by, $dictionary->columns->edited_by, false, '', '', '', '', $meta->collection) ?>
                             <?= read_field('edited_date', $resource->edited_date, $dictionary->columns->edited_date, false, '', '', '', '', $meta->collection) ?>
-                            <?= read_field('secondary_type', $resource->secondary_type, $dictionary->columns->secondary_type, false, '', '', '', '', $meta->collection) ?>
+                            <!--<?= read_field('secondary_type', $secondary_notes, $dictionary->columns->secondary_type, false, 'Secondary', '', '', '', $meta->collection) ?>-->
                         </div>
                     </div>
 
-
+                    <br>
                     <div class="row">
-                        <div class="col-5">
-                            <?= read_field('primary_internal_id_b', $resource->primary_internal_id_b, $dictionary->columns->primary_internal_id_b, false, '', '', '', '', $meta->collection) ?>
+                        <hr>
+                        <div class="col-4">
+                            <?= read_field('primary_type', $primary_notes, $primary_dictionary, false, $resource->primary_type, '', '', '', $meta->collection) ?>
                         </div>
-                        <div class="col-2">
-                            <?= read_field('relationship', $resource->relationship, $dictionary->columns->relationship, false, '', '', '', '', $meta->collection) ?>
+                        <div class="col-4">
+                            <?= read_field('relationship', $resource->relationship, $dictionary->columns->relationship, false, '&nbsp;', '', '', '', $meta->collection) ?>
                         </div>
-                        <div class="col-5">
-                            <?= read_field('secondary_internal_id_b', $resource->secondary_internal_id_b, $dictionary->columns->secondary_internal_id_b, false, '', '', '', '', $meta->collection) ?>
+                        <div class="col-4">
+                            <?= read_field('secondary_type', $secondary_notes, $secondary_dictionary, false, $resource->secondary_type, '', '', '', $meta->collection) ?>
                         </div>
                     </div>
-
-
-
-
 
                     <br><hr><br>
                     <div class="row">
                         <div class="col-6">
-                            <?= read_field('primary_internal_id_a', $resource->primary_internal_id_a, $dictionary->columns->primary_internal_id_a, false, '', '', '', '', $meta->collection) ?>
-                            <?= read_field('primary_internal_id_b', $resource->primary_internal_id_b, $dictionary->columns->primary_internal_id_b, false, '', '', '', '', $meta->collection) ?>
-                            <?= read_field('primary_external_provider', $resource->primary_external_provider, $dictionary->columns->primary_external_provider, $update, '', '', '', '', $meta->collection) ?>
-                            <?= read_field('primary_external_service', $resource->primary_external_service, $dictionary->columns->primary_external_service, $update, '', '', '', '', $meta->collection) ?>
-                            <?= read_field('primary_description', $resource->primary_description, $dictionary->columns->primary_description, $update, '', '', '', '', $meta->collection) ?>
-                            <?= read_field('primary_owner', $resource->primary_owner, $dictionary->columns->primary_owner, $update, '', '', '', '', $meta->collection) ?>
-                            <?= read_field('primary_icon', $resource->primary_icon, $dictionary->columns->primary_icon, $update, '', '', '', '', $meta->collection) ?>
+                            <?php if (empty($resource->primary_external_provider)) { ?>
+                            <?= read_field('primary_internal_id_b', $resource->primary_internal_id_b, $dictionary->columns->primary_internal_id_b, false, ucfirst($resource->primary_type), '', '', '', $meta->collection) ?>
+                            <?= read_field('device', $resource->{'primary_devices.name'}, '', false, '', '', '', '', $meta->collection) ?>
+                            <?php } else { ?>
+                            <?= read_field('primary_external_provider', $resource->primary_external_provider, $dictionary->columns->primary_external_provider, false, '', '', '', '', $meta->collection) ?>
+                            <?= read_field('primary_external_service', $resource->primary_external_service, $dictionary->columns->primary_external_service, false, '', '', '', '', $meta->collection) ?>
+                            <?php } ?>
+                            <?= read_field('primary_description', $resource->primary_description, $dictionary->columns->primary_description, $update, __('Description'), '', '', '', $meta->collection) ?>
+
+                            <?= read_field('primary_owner', $resource->primary_owner, $dictionary->columns->primary_owner, $update, __('Owner'), '', '', '', $meta->collection) ?>
+                            <?= read_field('primary_icon', $resource->primary_icon, $dictionary->columns->primary_icon, $update, __('Icon'), '', '', '', $meta->collection) ?>
                         </div>
                         <div class="col-6">
-                            <?= read_field('secondary_internal_id_a', $resource->secondary_internal_id_a, $dictionary->columns->secondary_internal_id_a, false, '', '', '', '', $meta->collection) ?>
-                            <?= read_field('secondary_internal_id_b', $resource->secondary_internal_id_b, $dictionary->columns->secondary_internal_id_b, false, '', '', '', '', $meta->collection) ?>
-                            <?= read_field('secondary_external_provider', $resource->secondary_external_provider, $dictionary->columns->secondary_external_provider, $update, '', '', '', '', $meta->collection) ?>
-                            <?= read_field('secondary_external_service', $resource->secondary_external_service, $dictionary->columns->secondary_external_service, $update, '', '', '', '', $meta->collection) ?>
-                            <?= read_field('secondary_description', $resource->secondary_description, $dictionary->columns->secondary_description, $update, '', '', '', '', $meta->collection) ?>
-                            <?= read_field('secondary_owner', $resource->secondary_owner, $dictionary->columns->secondary_owner, $update, '', '', '', '', $meta->collection) ?>
-                            <?= read_field('secondary_icon', $resource->secondary_icon, $dictionary->columns->secondary_icon, $update, '', '', '', '', $meta->collection) ?>
+                            <?php if (empty($resource->secondary_external_provider)) { ?>
+                            <?= read_field('secondary_internal_id_b', $resource->secondary_internal_id_b, $dictionary->columns->secondary_internal_id_b, false, ucfirst($resource->secondary_type), '', '', '', $meta->collection) ?>
+                            <?= read_field('device', $resource->{'secondary_devices.name'}, '', false, '', '', '', '', $meta->collection) ?>
+                            <?php } else { ?>
+                            <?= read_field('secondary_external_provider', $resource->secondary_external_provider, $dictionary->columns->secondary_external_provider, false, '', '', '', '', $meta->collection) ?>
+                            <?= read_field('secondary_external_service', $resource->secondary_external_service, $dictionary->columns->secondary_external_service, false, '', '', '', '', $meta->collection) ?>
+                            <?php } ?>
+
+                            <?= read_field('secondary_description', $resource->secondary_description, $dictionary->columns->secondary_description, $update, __('Description'), '', '', '', $meta->collection) ?>
+                            <?= read_field('secondary_owner', $resource->secondary_owner, $dictionary->columns->secondary_owner, $update, __('Owner'), '', '', '', $meta->collection) ?>
+                            <?= read_field('secondary_icon', $resource->secondary_icon, $dictionary->columns->secondary_icon, $update, __('Icon'), '', '', '', $meta->collection) ?>
                         </div>
                     </div>
                     <div class="row">
                         <br>
                         <pre>
-                            <?= json_encode($resource, JSON_PRETTY_PRINT) ?>
+                            <!--<?= json_encode($resource, JSON_PRETTY_PRINT) ?>-->
                         </pre>
                     </div>
                 </div>

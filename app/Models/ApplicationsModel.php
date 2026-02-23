@@ -112,8 +112,20 @@ class ApplicationsModel extends BaseModel
      */
     public function includedRead(int $id = 0): array
     {
-        #$acModel = model('App\Models\ApplicationsComponents');
-        #$dictionary = $applicationsComponentsModel->dictionary();
+        $include = array();
+
+        $instance = & get_instance();
+        if ($instance->resp->meta->format === 'html') {
+            $attributesModel = new \App\Models\AttributesModel();
+            $attributes = $attributesModel->listUser(['attributes.resource' => 'devices', 'attributes.type' => 'environment']);
+            $include['environment'] = $attributes;
+            $attributes = $attributesModel->listUser(['attributes.resource' => 'devices', 'attributes.type' => 'status']);
+            $include['status'] = $attributes;
+            $attributes = $attributesModel->listUser(['attributes.resource' => 'devices', 'attributes.type' => 'criticality']);
+            $include['criticality'] = $attributes;
+            $attributes = $attributesModel->listUser(['attributes.resource' => 'devices', 'attributes.type' => 'sensitivity']);
+            $include['sensitivity'] = $attributes;
+        }
 
         $sql = "SELECT *, '' AS `primary`, '' AS `secondary` FROM applications_components WHERE application_id = ?";
         $result = $this->db->query($sql, [intval($id)])->getResult();
@@ -179,20 +191,20 @@ class ApplicationsModel extends BaseModel
             }
 
             if ($component->primary_type === 'dnsname') {
-                $component->primary = $this->getComponentExtName($component->primary_external_service, $component->primary_external_service);
+                $component->primary = $this->getComponentExtName($component->primary_external_provider, $component->primary_external_service);
                 $component->primary_icon = $this->getComponentExtIcon($component->primary_icon, $component->primary_external_provider, $component->primary_external_service);
             }
             if ($component->secondary_type === 'dnsname') {
-                $component->secondary = $this->getComponentExtName($component->secondary_external_service, $component->secondary_external_service);
+                $component->secondary = $this->getComponentExtName($component->secondary_external_provider, $component->secondary_external_service);
                 $component->secondary_icon = $this->getComponentExtIcon($component->secondary_icon, $component->secondary_external_provider, $component->secondary_external_service);
             }
 
             if ($component->primary_type === 'other') {
-                $component->primary = $this->getComponentExtName($component->primary_external_service, $component->primary_external_service);
+                $component->primary = $this->getComponentExtName($component->primary_external_provider, $component->primary_external_service);
                 $component->primary_icon = $this->getComponentExtIcon($component->primary_icon, $component->primary_external_provider, $component->primary_external_service);
             }
             if ($component->secondary_type === 'other') {
-                $component->secondary = $this->getComponentExtName($component->secondary_external_service, $component->secondary_external_service);
+                $component->secondary = $this->getComponentExtName($component->secondary_external_provider, $component->secondary_external_service);
                 $component->secondary_icon = $this->getComponentExtIcon($component->secondary_icon, $component->secondary_external_provider, $component->secondary_external_service);
             }
 
@@ -232,29 +244,29 @@ class ApplicationsModel extends BaseModel
             }
 
             if ($component->primary_external_provider === 'AWS') {
-                $component->primary = $this->getComponentExtName($component->primary_external_service, $component->primary_external_service);
+                $component->primary = $this->getComponentExtName($component->primary_external_provider, $component->primary_external_service);
                 $component->primary_icon = $this->getComponentExtIcon($component->primary_icon, $component->primary_external_provider, $component->primary_external_service);
             }
             if ($component->secondary_external_provider === 'AWS') {
-                $component->secondary = $this->getComponentExtName($component->secondary_external_service, $component->secondary_external_service);
+                $component->secondary = $this->getComponentExtName($component->secondary_external_provider, $component->secondary_external_service);
                 $component->secondary_icon = $this->getComponentExtIcon($component->secondary_icon, $component->secondary_external_provider, $component->secondary_external_service);
             }
 
             if ($component->primary_external_provider === 'Azure') {
-                $component->primary = $this->getComponentExtName($component->primary_external_service, $component->primary_external_service);
+                $component->primary = $this->getComponentExtName($component->primary_external_provider, $component->primary_external_service);
                 $component->primary_icon = $this->getComponentExtIcon($component->primary_icon, $component->primary_external_provider, $component->primary_external_service);
             }
             if ($component->secondary_external_provider === 'Azure') {
-                $component->secondary = $this->getComponentExtName($component->secondary_external_service, $component->secondary_external_service);
+                $component->secondary = $this->getComponentExtName($component->secondary_external_provider, $component->secondary_external_service);
                 $component->secondary_icon = $this->getComponentExtIcon($component->secondary_icon, $component->secondary_external_provider, $component->secondary_external_service);
             }
 
-            if (str_contains($component->primary_type, '_external')) {
-                $component->primary = $this->getComponentExtName($component->primary_external_service, $component->primary_external_service);
+            if (str_contains($component->primary_type, '_external') or $component->primary_type === '') {
+                $component->primary = $this->getComponentExtName($component->primary_external_provider, $component->primary_external_service);
                 $component->primary_icon = $this->getComponentExtIcon($component->primary_icon, $component->primary_external_provider, $component->primary_external_service);
             }
-            if (str_contains($component->secondary_type, '_external')) {
-                $component->secondary = $this->getComponentExtName($component->secondary_external_service, $component->secondary_external_service);
+            if (str_contains($component->secondary_type, '_external') or $component->secondary_type === '') {
+                $component->secondary = $this->getComponentExtName($component->secondary_external_provider, $component->secondary_external_service);
                 $component->secondary_icon = $this->getComponentExtIcon($component->secondary_icon, $component->secondary_external_provider, $component->secondary_external_service);
             }
 
@@ -266,8 +278,8 @@ class ApplicationsModel extends BaseModel
                 $component->secondary_icon = $this->getComponentExtIcon($component->secondary_icon, $component->secondary_external_provider, $component->secondary_external_service);
             }
         }
-        $return['components'] = $result;
-        return $return;
+        $include['components'] = $result;
+        return $include;
     }
 
     /**
@@ -357,6 +369,36 @@ class ApplicationsModel extends BaseModel
         return false;
     }
 
+    public function search(string $search): array
+    {
+        $exclude_fields = array('primary', 'primary_icon', 'secondary', 'secondary_icon');
+        $result = array();
+        $applications = $this->listUser();
+        foreach ($applications as $application) {
+            $include = $this->includedRead($application->id);
+            foreach ($include['components'] as $component) {
+                foreach ($component as $key => $value) {
+                    if (str_contains(strtolower($value), strtolower($search)) and !in_array($key, $exclude_fields)) {
+                        $item = new stdClass();
+                        $item->application_id = $application->id;
+                        $item->application_name = $application->attributes->name;
+                        $item->attribute = $key;
+                        $item->value = $value;
+                        $item->description = '';
+                        if (str_contains($key, 'primary')) {
+                            $item->description = $component->primary;
+                        }
+                        if (str_contains($key, 'secondary')) {
+                            $item->description = $component->secondary;
+                        }
+                        $result[] = $item;
+                    }
+                }
+            }
+        }
+        return $result;
+    }
+
     /**
      * Update an individual item in the database
      *
@@ -381,6 +423,7 @@ class ApplicationsModel extends BaseModel
     {
         $name = '';
         $name = "{$external_provider} / {$external_service}";
+        $name = "{$external_service} on {$external_provider}";
         if ($name === ' / ') {
             $name = '';
         }
@@ -546,18 +589,29 @@ class ApplicationsModel extends BaseModel
         } else {
             $component->{$section . '_icon'} = '<img src="' . BASE_URL() . 'icons/' . $component->{$section . '_type'} . '.svg" style="width:30px;">';
         }
-        if (!empty($component->{'devices.icon'})) {
-            $component->{$section . '_icon'} .= '<br><img src="' . BASE_URL() . 'device_images/' . @$component->{'devices.icon'} . '.svg" style="width:30px;">';
+        if (!empty($component->{$section . '.devices.icon'})) {
+            $component->{$section . '_icon'} .= '<br><img src="' . BASE_URL() . 'device_images/' . @$component->{$section . '.devices.icon'} . '.svg" style="width:30px;">';
         }
 
         // Primary Name
-        $component->{$section} = ucfirst($component->{$section . '_type'}) . ' named ' . $component->{$section . '_internal_id_b'} . '<br> Running on <a href="' . url_to('devicesRead', $component->{$section . '.devices.id'}) . '">' . $component->{$section . '.devices.name'} . '</a>';
-        if (!empty($component->{'devices.environment'})) {
-            $component->{$section} .= ' in ' . $component->{$section . '.devices.environment'};
+        $component->{$section} = '';
+        $url = '';
+        if (isset($component->{$section . '.devices.id'})) {
+            $url = url_to('devicesRead', $component->{$section . '.devices.id'});
         }
-        $component->{$section} .= '<br>';
-        if (!empty($component->{$section . '_owner'})) {
-            $component->{$section} .= 'Managed by ' . $component->{$section . '_owner'};
+        $name = '';
+        if (isset($component->{$section . '.devices.name'})) {
+            $name = $component->{$section . '.devices.name'};
+        }
+        if ($url !== '' and $name !== '') {
+            $component->{$section} = ucfirst($component->{$section . '_type'}) . ' named ' . $component->{$section . '_internal_id_b'} . '<br> Running on <a href="' . $url . '">' . $name . '</a>';
+            if (!empty($component->{'devices.environment'})) {
+                $component->{$section} .= ' in ' . $component->{$section . '.devices.environment'};
+            }
+            $component->{$section} .= '<br>';
+            if (!empty($component->{$section . '_owner'})) {
+                $component->{$section} .= 'Managed by ' . $component->{$section . '_owner'};
+            }
         }
         return $component;
     }
@@ -577,7 +631,7 @@ class ApplicationsModel extends BaseModel
         $dictionary->columns = new stdClass();
 
         $dictionary->attributes = new stdClass();
-        $dictionary->attributes->collection = array('id', 'name', 'description', 'orgs.name', 'edited_by', 'edited_date');
+        $dictionary->attributes->collection = array('id', 'name', 'orgs.name', 'environment', 'owner', 'criticality', 'sensitivity');
         $dictionary->attributes->create = array('name','org_id'); # We MUST have each of these present and assigned a value
         $dictionary->attributes->fields = $this->db->getFieldNames($collection); # All field names for this table
         $dictionary->attributes->fieldsMeta = $this->db->getFieldData($collection); # The meta data about all fields - name, type, max_length, primary_key, nullable, default
@@ -595,44 +649,43 @@ class ApplicationsModel extends BaseModel
         $dictionary->columns->name = $instance->dictionary->name;
         $dictionary->columns->description = $instance->dictionary->description;
         $dictionary->columns->org_id = $instance->dictionary->org_id;
+        $dictionary->columns->environment = 'Manually set by user, defaults to Production.';
+        $dictionary->columns->status = 'Manually set by user, defaults to Production.';
+        $dictionary->columns->owner = 'Manually set by user.';
+        $dictionary->columns->class = 'Manually set by user.';
+        $dictionary->columns->vendor = 'Who produced this application.';
+        $dictionary->columns->criticality = 'extreme - Without which, the organisation would fail.
+
+very high - Functions that are essential for the organisations survival and must be restored immediately.
+
+high - Important functions that should be restored quickly but may have a slightly longer recovery time.
+
+medium - Functions that are necessary but can tolerate longer downtime.
+
+low - Non-essential functions that can be delayed without significant impact.
+
+unassigned - The default until set.';
+        $dictionary->columns->sensitivity = 'top secret - Military / Government classification. Disclosure would cause exceptionally grave danger to national security.
+
+secret - Military / Government classification. Disclosure would cause serious damage to national security.
+
+confidential - Military / Government and Private Sector classification. Data that is confidential includes trade secrets, intellectual data, application programming code, and other data that could seriously affect the organization if unauthorized disclosure occurred. Data at this level would be available only to personnel in the organization whose work needs, or is directly related to, the accessed data. Access to confidential data usually requires authorization for each access.
+
+private - Private Sector classification. Data that is private includes any information related to personnel, including human resources records, medical records, and salary information, that is used only within the organization.
+
+sensitive - Military / Government and Private Sector classification. Data that is sensitive includes organizational financial information and requires extra measures to ensure its CIA and accuracy. Disclosure might harm national security.
+
+public - Private Sector classification. Public data is data that is generally shared with the public and would not cause a negative impact on the organization. Examples of public data include how many people work in the organization and what products an organization manufactures or sells.
+
+unclassified - Military / Government classification. Any information that can generally be distributed to the public without any threat to national interest.
+
+unassigned - The default until set.';
+
+        $dictionary->columns->replaces  = 'This is a new application that replaces this older application.';
+        $dictionary->columns->replaced_by  = 'This application was replaced by.';
         $dictionary->columns->options  = 'Unused.';
         $dictionary->columns->edited_by = $instance->dictionary->edited_by;
         $dictionary->columns->edited_date = $instance->dictionary->edited_date;
-
-        // $dictionary->relationships = new stdClass();
-        // $dictionary->relationships->{'accessed-via'} = 'A network. Links to <code>networks.id</code>.';
-        // $dictionary->relationships->{'authenticates-via'} = 'A device running a service. Links to <code>service.name</code>.';
-        // $dictionary->relationships->{'calls-api'} = 'A device running a web service. Links to <code>server_item.name</code>.';
-        // $dictionary->relationships->{'connected-via'} = 'A network. Links to <code>networks.id</code>';
-        // $dictionary->relationships->{'consumes'} = 'An external service.';
-        // $dictionary->relationships->{'depends-on'} = 'Another component of this application. Links to <code>application.name</code>.';
-        // $dictionary->relationships->{'hosted-on'} = 'A VM host. Links to <code>devices.id</code>.';
-        // $dictionary->relationships->{'publishes-to'} = 'An external service.';
-        // $dictionary->relationships->{'relies-on'} = 'A device or hosted service. Links to <code>devices.id</code> or an external service.';
-        // $dictionary->relationships->{'runs-on'} = 'A device. Links to <code>devices.id</code>';
-        // $dictionary->relationships->{'used-by'} = 'Another component of this application. Links to <code>application.name</code>.';
-        // $dictionary->relationships->{'uses-database'} = 'A database on a device or hosted service. Links to <code>server_item.name</code> or an external service.';
-        // $dictionary->relationships->{'uses-storage'} = 'Storage on a device or hosted service. Links to <code>shares.name</code> or an external service.';
-        // $dictionary->relationships->{'writes-to'} = 'Storage on a device or hosted service. Links to <code>share.name</code> or an external service.';
-
-        // $dictionary->types = new stdClass();
-        // $dictionary->types->{'api'} = 'Links to <code>server_item.name</code>';
-        // $dictionary->types->{'application'} = 'Links to <code>software.name</code>';
-        // $dictionary->types->{'authentication'} = 'Links to <code>service.name</code>';
-        // $dictionary->types->{'certificate'} = 'Links to <code>certificates.id</code>';
-        // $dictionary->types->{'client'} = 'Links to <code>devices.id</code>';
-        // $dictionary->types->{'cluster'} = 'Links to <code>clusters.id</code>';
-        // $dictionary->types->{'database'} = 'Links to <code>server_item.name</code>';
-        // $dictionary->types->{'device'} = 'Links to <code>devices.id</code>';
-        // $dictionary->types->{'dnsname'} = 'Text';
-        // $dictionary->types->{'other'} = 'Text';
-        // $dictionary->types->{'program'} = 'Links to <code>files.id</code>.';
-        // $dictionary->types->{'queue'} = 'Links to <code>service.name</code>';
-        // $dictionary->types->{'service'} = 'Links to <code>service.name</code>';
-        // $dictionary->types->{'storage'} = 'Links to <code>share.name</code>';
-        // $dictionary->types->{'website'} = 'Links to <code>server_item.name</code>';
-
-
 
         return $dictionary;
     }

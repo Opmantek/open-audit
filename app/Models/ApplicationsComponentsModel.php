@@ -211,17 +211,43 @@ class ApplicationsComponentsModel extends BaseModel
      */
     public function read(int $id = 0): array
     {
+        $device_links = array('api','application','authentication','certificate','client','database','device','program','queue','service','storage','website');
         $properties = array();
         $properties[] = 'applications_components.*';
         $properties[] = 'applications.id AS `applications.id`';
         $properties[] = 'applications.name AS `applications.name`';
+        $properties[] = 'orgs.name AS `orgs.name`';
         $this->builder->select($properties, false);
         $this->builder->join('applications', 'applications_components.application_id = applications.id', 'left');
+        $this->builder->join('orgs', 'applications_components.org_id = orgs.id', 'left');
         $query = $this->builder->getWhere(['applications_components.id' => intval($id)]);
         if ($this->sqlError($this->db->error())) {
             return array();
         }
-        return format_data($query->getResult(), 'applications_components');
+        $result = $query->getResult();
+        if (!empty($result)) {
+            $result[0]->{'primary_devices.name'} = '';
+            $result[0]->{'primary_devices.icon'} = '';
+            $result[0]->{'secondary_devices.name'} = '';
+            $result[0]->{'secondary_devices.icon'} = '';
+            if (in_array($result[0]->primary_type, $device_links)) {
+                $sql = "SELECT devices.name, devices.icon FROM devices WHERE id = ?";
+                $queryResult = $this->db->query($sql, [$result[0]->primary_internal_id_a])->getResult();
+                if (!empty($queryResult)) {
+                    $result[0]->{'primary_devices.name'} = $queryResult[0]->name;
+                    $result[0]->{'primary_devices.icon'} = $queryResult[0]->icon;
+                }
+            }
+            if (in_array($result[0]->secondary_type, $device_links)) {
+                $sql = "SELECT devices.name, devices.icon FROM devices WHERE id = ?";
+                $queryResult = $this->db->query($sql, [$result[0]->secondary_internal_id_a])->getResult();
+                if (!empty($queryResult)) {
+                    $result[0]->{'secondary_devices.name'} = $queryResult[0]->name;
+                    $result[0]->{'secondary_devices.icon'} = $queryResult[0]->icon;
+                }
+            }
+        }
+        return format_data($result, 'applications_components');
     }
 
     /**
@@ -305,7 +331,7 @@ class ApplicationsComponentsModel extends BaseModel
         $dictionary->columns->secondary_external_service = 'A text description of the external service.';
         $dictionary->columns->secondary_description = 'A description (optional) of the secondary component.';
         $dictionary->columns->secondary_owner = 'The person or team responsible for this component.';
-        $dictionary->columns->secondary_icon = 'Override the default icon per type. Should be the filename (without extension) of an SVG file in /icons/ directory.';
+        $dictionary->columns->secondary_icon = 'Override the default icon. Should be the filename (without extension) of an SVG file in /icons/ directory.';
         $dictionary->columns->edited_by = $instance->dictionary->edited_by;
         $dictionary->columns->edited_date = $instance->dictionary->edited_date;
 

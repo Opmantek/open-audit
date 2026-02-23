@@ -10,7 +10,7 @@ $body = __('<p>Microsoft Windows desktop systems have network limitations that m
 
 <br>
 <h2>' . __('Alternatives') . '?</h2>
-<p>' . __('You can always run the Firstwave VM on your virtual infrastructure (ESX, Azure, et al). The Firstwave VM runs Debian linux and is free from OS licensing concerns and limitations. Or install on your own Linux distro of choice. We support Redhat 9, Ubuntu 20.04, 22.04 and 24.04 as well as Debian 11 and 12.') . '<br><br></p>
+<p>' . __('You can always run the Firstwave VM on your virtual infrastructure (ESX, Azure, et al). The Firstwave VM runs Debian linux and is free from OS licensing concerns and limitations. Or install on your own Linux distro of choice. We support Redhat 9 and 10, Ubuntu 24.04 as well as Debian 12 and 13.') . '<br><br></p>
 
 <h2>' . __('But I Only Have Windows Client Machines Available!') . '</h2>
 <p>' . __('Then you can use Open-AudIT (unsupported) to receive audit data directly from the clients. Discovery <strong>will fail</strong>, but if youre not using Discovery (the main feature Open-AudIT was designed around), you can still get device data. You would need to run the audit scripts directly on the clients using cron, or use the Windows Agent feature (Enterprise only).') . '<br>

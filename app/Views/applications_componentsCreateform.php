@@ -71,7 +71,7 @@ if (!empty($_GET['application_id'])) {
                                     <div class="offset-2 col-8" style="position:relative;">
                                         <label for="hostname" class="form-label"><?= __('Search For a Device') ?></label><br>
                                         <div class="input-group">
-                                            <input class="form-control" type="text" id="hostname_primary" name="hostname_primary" placeholder="Device Name" value="apollo"/>
+                                            <input class="form-control" type="text" id="hostname_primary" name="hostname_primary" placeholder="Device Name"/>
                                             <div class="pull-right" style="padding-left:4px;">
                                                 <button type="button" class="btn btn-primary search_button" data-target="primary" id="search_primary_internal_id_a" name="search_primary_internal_id_a"><?= __('Search For a Device') ?></button>
                                             </div>
@@ -92,14 +92,14 @@ if (!empty($_GET['application_id'])) {
                                 <div class="row" id="primary_owner_div" style="padding-top:16px; display:none;">
                                     <div class="offset-2 col-8" style="position:relative;">
                                         <label class="form-label" for="data[attributes][primary_owner]"><?= __('Owner') ?></label>
-                                        <input class="form-control" type="text" id="data[attributes][primary_owner]" name="data[attributes][primary_owner]" value="opDev">
+                                        <input class="form-control" type="text" id="data[attributes][primary_owner]" name="data[attributes][primary_owner]">
                                     </div>
                                 </div>
 
                                 <div class="row" id="primary_description_div" style="padding-top:16px; display:none;">
                                     <div class="offset-2 col-8" style="position:relative;">
                                         <label class="form-label" for="data[attributes][primary_description]"><?= __('Description') ?></label>
-                                        <input class="form-control" type="text" id="data[attributes][primary_description]" name="data[attributes][primary_description]" value="An opDev thing">
+                                        <input class="form-control" type="text" id="data[attributes][primary_description]" name="data[attributes][primary_description]">
                                     </div>
                                 </div>
 
@@ -170,9 +170,9 @@ if (!empty($_GET['application_id'])) {
                                     <div class="offset-2 col-8" style="position:relative;">
                                         <label for="hostname" class="form-label"><?= __('Search For a Device') ?></label><br>
                                         <div class="input-group">
-                                            <input class="form-control" type="text" id="hostname_secondary" name="hostname_secondary" placeholder="Device Name" value="apollo"/>
+                                            <input class="form-control" type="text" id="hostname_secondary" name="hostname_secondary" placeholder="Device Name"/>
                                             <div class="pull-right" style="padding-left:4px;">
-                                                <button type="button" class="btn btn-secondary search_button" data-target="secondary" id="search_secondary_internal_id_a" name="search_secondary_internal_id_a"><?= __('Search For a Device') ?></button>
+                                                <button type="button" class="btn btn-primary search_button" data-target="secondary" id="search_secondary_internal_id_a" name="search_secondary_internal_id_a"><?= __('Search For a Device') ?></button>
                                             </div>
                                         </div>
                                     </div>
@@ -191,14 +191,14 @@ if (!empty($_GET['application_id'])) {
                                 <div class="row" id="secondary_owner_div" style="padding-top:16px; display:none;">
                                     <div class="offset-2 col-8" style="position:relative;">
                                         <label class="form-label" for="data[attributes][secondary_owner]"><?= __('Owner') ?></label>
-                                        <input class="form-control" type="text" id="data[attributes][secondary_owner]" name="data[attributes][secondary_owner]" value="Secondary Owner">
+                                        <input class="form-control" type="text" id="data[attributes][secondary_owner]" name="data[attributes][secondary_owner]">
                                     </div>
                                 </div>
 
                                 <div class="row" id="secondary_description_div" style="padding-top:16px; display:none;">
                                     <div class="offset-2 col-8" style="position:relative;">
                                         <label class="form-label" for="data[attributes][secondary_description]"><?= __('Description') ?></label>
-                                        <input class="form-control" type="text" id="data[attributes][secondary_description]" name="data[attributes][secondary_description]" value="The secondary description.">
+                                        <input class="form-control" type="text" id="data[attributes][secondary_description]" name="data[attributes][secondary_description]">
                                     </div>
                                 </div>
 
@@ -248,10 +248,6 @@ if (!empty($_GET['application_id'])) {
 <script {csp-script-nonce}>
 window.onload = function () {
     $(document).ready(function() {
-
-        //$("#alt").css("display", "none");
-        //$("#device_search").css("display", "none");
-        //$("#submit").attr("disabled", true);
 
         const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
         const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
@@ -377,8 +373,10 @@ window.onload = function () {
 
         // Retrieve the device list once we click Search and activate the "device_id" select
         $('.search_button').click(function($this) {
-            var $url = '<?= url_to('devicesCollection') ?>?properties=devices.id,devices.name&format=json&devices.name=like'+$("#hostname_primary").val();
+            //$value = $(this).val();
+            //var $url = '<?= url_to('devicesCollection') ?>?properties=devices.id,devices.name&format=json&devices.name=like'+$("#hostname_primary").val();
             $target = $(this).data('target');
+            var $url = '<?= url_to('devicesCollection') ?>?properties=devices.id,devices.name&format=json&devices.name=like'+$("#hostname_"+$target).val();
             $("#search_" + $target + "_internal_id_a").html('<div class="spinner-border spinner-border-sm text-light" role="status"><span class="visually-hidden">Loading...</span></div>');
             $include = $('#data\\[attributes\\]\\[' + $target + '_type\\]').val();
             $.ajax({
@@ -386,7 +384,6 @@ window.onload = function () {
               url: $url,
             })
             .done(function(data) {
-                console.log("search done");
                 if (data.data[0]) {
                     $("#hostname_" + $target).val(data.data[0].attributes.name);
                     $('#data\\[attributes\\]\\[' + $target + '_internal_id_b\\]').find('option').remove().end();
@@ -449,39 +446,44 @@ window.onload = function () {
                     $included = data.included;
                     $newData = $included[$include];
                     $("#" + $target + "_internal_id_b_div").css("display", "block");
-                    $newData.forEach((obj) => {
-                        if ($field === 'api' && obj.type === 'website') {
-                            $("#data\\[attributes\\]\\[" + $target + "_internal_id_b\\]").append($('<option></option>').val(obj.name).html(obj.parent_name + ' :: ' + obj.name + ' (on port ' + obj.port + ')'));
-                        }
-                        if ($field === 'application') {
-                            $("#data\\[attributes\\]\\[" + $target + "_internal_id_b\\]").append($('<option></option>').val(obj.name).html(obj.name));
-                        }
-                        if ($field === 'authentication') {
-                            $("#data\\[attributes\\]\\[" + $target + "_internal_id_b\\]").append($('<option></option>').val(obj.name).html(obj.name));
-                        }
-                        if ($field === 'client') {
-                            $("#data\\[attributes\\]\\[" + $target + "_internal_id_b\\]").append($('<option></option>').val(obj.name).html(obj.name));
-                        }
-                        if ($field === 'database' && obj.type === 'database') {
-                            $("#data\\[attributes\\]\\[" + $target + "_internal_id_b\\]").append($('<option></option>').val(obj.name).html(obj.parent_name + ' :: ' + obj.name + ' (on port ' + obj.port + ')'));
-                        }
-                        if ($field === 'program') {
-                            $("#data\\[attributes\\]\\[" + $target + "_internal_id_b\\]").append($('<option></option>').val(obj.name).html(obj.name));
-                        }
-                        if ($field === 'queue') {
-                            $("#data\\[attributes\\]\\[" + $target + "_internal_id_b\\]").append($('<option></option>').val(obj.name).html(obj.name));
-                        }
-                        if ($field === 'service') {
-                            $("#data\\[attributes\\]\\[" + $target + "_internal_id_b\\]").append($('<option></option>').val(obj.name).html(obj.name));
-                        }
-                        if ($field === 'storage') {
-                            $("#data\\[attributes\\]\\[" + $target + "_internal_id_b\\]").append($('<option></option>').val(obj.name).html(obj.name));
-                        }
-                        if ($field === 'website' && obj.type === 'website') {
-                            $("#data\\[attributes\\]\\[" + $target + "_internal_id_b\\]").append($('<option></option>').val(obj.name).html(obj.parent_name + ' :: ' + obj.name + ' (on port ' + obj.port + ')'));
-                        }
-                    });
-                    $("#search_" + $target + "_internal_id_a").html('<?= __('Search For a Device') ?>');
+                    if ($newData) {
+                        $newData.forEach((obj) => {
+                            if ($field === 'api' && obj.type === 'website') {
+                                $("#data\\[attributes\\]\\[" + $target + "_internal_id_b\\]").append($('<option></option>').val(obj.name).html(obj.parent_name + ' :: ' + obj.name + ' (on port ' + obj.port + ')'));
+                            }
+                            if ($field === 'application') {
+                                $("#data\\[attributes\\]\\[" + $target + "_internal_id_b\\]").append($('<option></option>').val(obj.name).html(obj.name));
+                            }
+                            if ($field === 'authentication') {
+                                $("#data\\[attributes\\]\\[" + $target + "_internal_id_b\\]").append($('<option></option>').val(obj.name).html(obj.name));
+                            }
+                            if ($field === 'client') {
+                                $("#data\\[attributes\\]\\[" + $target + "_internal_id_b\\]").append($('<option></option>').val(obj.name).html(obj.name));
+                            }
+                            if ($field === 'database' && obj.type === 'database') {
+                                $("#data\\[attributes\\]\\[" + $target + "_internal_id_b\\]").append($('<option></option>').val(obj.name).html(obj.parent_name + ' :: ' + obj.name + ' (on port ' + obj.port + ')'));
+                            }
+                            if ($field === 'program') {
+                                $("#data\\[attributes\\]\\[" + $target + "_internal_id_b\\]").append($('<option></option>').val(obj.name).html(obj.name));
+                            }
+                            if ($field === 'queue') {
+                                $("#data\\[attributes\\]\\[" + $target + "_internal_id_b\\]").append($('<option></option>').val(obj.name).html(obj.name));
+                            }
+                            if ($field === 'service') {
+                                $("#data\\[attributes\\]\\[" + $target + "_internal_id_b\\]").append($('<option></option>').val(obj.name).html(obj.name));
+                            }
+                            if ($field === 'storage') {
+                                $("#data\\[attributes\\]\\[" + $target + "_internal_id_b\\]").append($('<option></option>').val(obj.name).html(obj.name));
+                            }
+                            if ($field === 'website' && obj.type === 'website') {
+                                $("#data\\[attributes\\]\\[" + $target + "_internal_id_b\\]").append($('<option></option>').val(obj.name).html(obj.parent_name + ' :: ' + obj.name + ' (on port ' + obj.port + ')'));
+                            }
+                        });
+                        $("#search_" + $target + "_internal_id_a").html('<?= __('Search For a Device') ?>');
+                    } else {
+                        $("#data\\[attributes\\]\\[" + $target + "_internal_id_b\\]").append($('<option></option>').val("").html("<?= __('No') ?> " + $field + " <?= __('found') ?>"));
+                        $("#search_" + $target + "_internal_id_a").html('<?= __('Search For a Device') ?>');
+                    }
                 } else {
                     console.log("getDevice fail");
                 }

@@ -26,17 +26,20 @@ if ($update) {
                             <?= read_field('name', $resource->name, $dictionary->columns->name, $update, '', '', '', '', $meta->collection) ?>
                             <?= read_select('org_id', $resource->org_id, $dictionary->columns->org_id, $update, '', $orgs, $meta->collection) ?>
                             <?= read_field('description', $resource->description, $dictionary->columns->description, $update, '', '', '', '', $meta->collection) ?>
-                            <?= read_field('owner', $resource->description, $dictionary->columns->description, $update, '', '', '', '', $meta->collection) ?>
+                            <?= read_field('owner', $resource->owner, $dictionary->columns->owner, $update, '', '', '', '', $meta->collection) ?>
+                            <?= read_field('vendor', $resource->vendor, $dictionary->columns->vendor, $update, '', '', '', '', $meta->collection) ?>
                         </div>
                         <div class="col-4">
-                            <?= read_field('vendor', $resource->description, $dictionary->columns->description, $update, '', '', '', '', $meta->collection) ?>
-                            <?= read_field('class', $resource->description, $dictionary->columns->description, $update, '', '', '', '', $meta->collection) ?>
-                            <?= read_field('environment', $resource->description, $dictionary->columns->description, $update, '', '', '', '', $meta->collection) ?>
-                            <?= read_field('status', $resource->description, $dictionary->columns->description, $update, '', '', '', '', $meta->collection) ?>
+                            <?= read_field('class', $resource->class, $dictionary->columns->class, $update, '', '', '', '', $meta->collection) ?>
+                            <?= read_select('environment', $resource->environment, $dictionary->columns->environment, $update, __('Environment'), $included['environment'], $meta->collection) ?>
+                            <?= read_select('status', $resource->status, $dictionary->columns->status, $update, __('Status'), $included['status'], $meta->collection) ?>
+                            <?= read_select('criticality', $resource->criticality, $dictionary->columns->criticality, $update, __('Criticality'), $included['criticality'], $meta->collection) ?>
+                            <?= read_select('sensitivity', $resource->sensitivity, $dictionary->columns->sensitivity, $update, __('Sensitivity'), $included['sensitivity'], $meta->collection) ?>
+
                         </div>
                         <div class="col-4">
-                            <?= read_field('replaces', $resource->description, $dictionary->columns->description, $update, '', '', '', '', $meta->collection) ?>
-                            <?= read_field('replaced_by', $resource->description, $dictionary->columns->description, $update, '', '', '', '', $meta->collection) ?>
+                            <?= read_field('replaces', $resource->replaces, $dictionary->columns->replaces, $update, '', '', '', '', $meta->collection) ?>
+                            <?= read_field('replaced_by', $resource->replaced_by, $dictionary->columns->replaced_by, $update, '', '', '', '', $meta->collection) ?>
                             <?= read_field('edited_by', $resource->edited_by, $dictionary->columns->edited_by, false, '', '', '', '', $meta->collection) ?>
                             <?= read_field('edited_date', $resource->edited_date, $dictionary->columns->edited_date, false, '', '', '', '', $meta->collection) ?>
                         </div>
@@ -62,55 +65,55 @@ if ($update) {
                 </div>
                 <div class="card-body">
                     <br>
+
                     <div class="table-responsive">
-                    <table class="table <?= $GLOBALS['table'] ?> table-striped table-hover dataTable" data-order='[[2,"asc"]]'>
-                        <thead>
-                            <tr>
-                                <th data-orderable="false" class="text-center"><?= __('View') ?></th>
-                                <th data-orderable="false"></th>
-                                <th><?= __('Primary') ?></th>
-                                <th><?= __('Relationship') ?></th>
-                                <th><?= __('Secondary') ?></th>
-                                <th data-orderable="false"></th>
-                                <th data-orderable="false" class="text-center" style="width:40px;"><?= __('Delete') ?></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <?php foreach ($included['components'] as $component) { ?>
-                                <?php $class= getClass($component->relationship); ?>
-                            <tr>
-                                <td class="align-middle text-center"><a id="read_applications_components_<?= $component->id ?>" title="<?= __('View') ?>" role="button" class="btn <?= $GLOBALS['button'] ?> btn-primary" href="<?= url_to('applications_componentsRead', $component->id) ?>"><span style="width:1rem;" title="<?= __('View')?>" class="icon-eye" aria-hidden="true"></span></a></td>
+                        <table class="table <?= $GLOBALS['table'] ?> table-striped table-hover dataTable" data-order='[[1,"asc"]]'>
+                            <thead>
+                                <tr>
+                                    <th class="text-center" data-orderable="false" style="width:60px;"><?= __('View') ?></th>
+                                    <th class="text-end" style="width:40%;"><?= __('Primary') ?></th>
+                                    <th class="text-center" data-orderable="false" style="width:60px;"></th>
+                                    <th class="text-center"><?= __('Relationship') ?></th>
+                                    <th class="text-center" data-orderable="false" style="width:60px;"></th>
+                                    <th class="text-start" style="width:40%;"><?= __('Secondary') ?></th>
+                                    <th class="text-center" data-orderable="false" style="width:60px;"><?= __('Delete') ?></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php foreach ($included['components'] as $component) { ?>
+                                    <?php $class= getClass($component->relationship); ?>
+                                <tr>
+                                    <td class="align-middle text-center"><a id="read_applications_components_<?= $component->id ?>" title="<?= __('View') ?>" role="button" class="btn <?= $GLOBALS['button'] ?> btn-primary" href="<?= url_to('applications_componentsRead', $component->id) ?>"><span style="width:1rem;" title="<?= __('View')?>" class="icon-eye" aria-hidden="true"></span></a></td>
 
-                                <td class="align-middle text-center"><?= html_entity_decode($component->primary_icon) ?></td>
-                                <td class="align-middle"><?= html_entity_decode($component->primary) ?></td>
+                                    <td class="align-middle text-end"><?= html_entity_decode($component->primary) ?></td>
+                                    <td class="align-middle text-center"><?= html_entity_decode($component->primary_icon) ?></td>
 
-                                <td class="align-middle"><div class="alert alert-<?= $class ?> col-md-6 col-md-offset-3" style="margin-bottom: 0px; padding: 0.3rem; font-size: 0.9rem;" align="center"><?= $component->relationship ?></div></td>
-                                <td class="align-middle"><?= html_entity_decode($component->secondary) ?></td>
-                                <td class="align-middle text-center"><?= html_entity_decode($component->secondary_icon) ?></td>
+                                    <td class="align-middle"><div class="alert alert-<?= $class ?> col-md-12" style="margin-bottom: 0px; padding: 0.3rem; font-size: 0.9rem;" align="center"><?= $component->relationship ?></div></td>
+                                    <td class="align-middle text-center"><?= html_entity_decode($component->secondary_icon) ?></td>
+                                    <td class="align-middle"><?= html_entity_decode($component->secondary) ?></td>
 
-                                <td class="text-center align-middle" data-orderable="false">
-                                    <button type="button" class="btn <?= $GLOBALS['button'] ?>  btn-danger delete_link" data-redirect="applications/<?= $resource->id ?>" data-collection="applications_components" data-id="<?= $component->id ?>">
-                                        <span style="width:1rem;" title="<?= __('Delete') ?>" class="icon-trash-2"></span>
-                                    </button>
-                                </td>
-                            </tr>
-                            <?php } ?>
-
-
-
-
-
-
-
-
-                        </tbody>
-                    </table>
-                    <pre>
-                        <?= htmlentities(json_encode($included['components'], JSON_PRETTY_PRINT)) ?>
-                    </pre>
-
+                                    <td class="text-center align-middle">
+                                        <button type="button" class="btn <?= $GLOBALS['button'] ?>  btn-danger delete_link" data-redirect="applications/<?= $resource->id ?>" data-collection="applications_components" data-id="<?= $component->id ?>">
+                                            <span style="width:1rem;" title="<?= __('Delete') ?>" class="icon-trash-2"></span>
+                                        </button>
+                                    </td>
+                                </tr>
+                                <?php } ?>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
         </main>
 
+<script {csp-script-nonce}>
+window.onload = function () {
+    $(document).ready(function() {
+        $("#criticality").val("<?= $resource->criticality ?>");
+        $("#sensitivity").val("<?= $resource->sensitivity ?>");
+    });
+}
+</script>
 
 <?php
 function getClass($relationship) {

@@ -151,6 +151,7 @@ $routes->get('logout', 'Logon::delete');
 $routes->get('scripts/(:any)/download', 'Scripts::download/$1', ['as' => 'scriptsDownload']);
 
 $routes->post('search', 'Search::create', ['filter' => \App\Filters\Session::class, 'as' => 'searchCreate']);
+$routes->post('applications/search', 'Applications::search', ['filter' => \App\Filters\Session::class, 'as' => 'applicationsSearch']);
 
 $routes->post('util/subnet_size', 'Util::subnetSize');
 $routes->get('util/test_windows_client', 'Util::testWindowsClient');

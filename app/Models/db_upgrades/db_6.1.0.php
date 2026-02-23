@@ -2,6 +2,62 @@
 
 $output .= "Upgrade database to 6.1.0 commenced.\n\n";
 
+if (!$db->fieldExists('environment', 'applications')) {
+    $sql = "ALTER TABLE `applications` ADD `environment` varchar(200) NOT NULL DEFAULT 'production' AFTER `description`";
+    $db->query($sql);
+    $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+    log_message('info', (string)$db->getLastQuery());
+}
+
+if (!$db->fieldExists('status', 'applications')) {
+    $sql = "ALTER TABLE `applications` ADD `status` varchar(200) NOT NULL DEFAULT 'production' AFTER `environment`";
+    $db->query($sql);
+    $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+    log_message('info', (string)$db->getLastQuery());
+}
+
+if (!$db->fieldExists('owner', 'applications')) {
+    $sql = "ALTER TABLE `applications` ADD `owner` varchar(200) NOT NULL DEFAULT '' AFTER `status`";
+    $db->query($sql);
+    $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+    log_message('info', (string)$db->getLastQuery());
+}
+
+if (!$db->fieldExists('vendor', 'applications')) {
+    $sql = "ALTER TABLE `applications` ADD `vendor` varchar(200) NOT NULL DEFAULT '' AFTER `owner`";
+    $db->query($sql);
+    $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+    log_message('info', (string)$db->getLastQuery());
+}
+
+if (!$db->fieldExists('criticality', 'applications')) {
+    $sql = "ALTER TABLE `applications` ADD `criticality` varchar(200) NOT NULL DEFAULT 'unassigned' AFTER `vendor`";
+    $db->query($sql);
+    $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+    log_message('info', (string)$db->getLastQuery());
+}
+
+if (!$db->fieldExists('sensitivity', 'applications')) {
+    $sql = "ALTER TABLE `applications` ADD `sensitivity` varchar(200) NOT NULL DEFAULT 'unassigned' AFTER `criticality`";
+    $db->query($sql);
+    $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+    log_message('info', (string)$db->getLastQuery());
+}
+
+if (!$db->fieldExists('replaces', 'applications')) {
+    $sql = "ALTER TABLE `applications` ADD `replaces` varchar(200) NOT NULL DEFAULT '' AFTER `criticality`";
+    $db->query($sql);
+    $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+    log_message('info', (string)$db->getLastQuery());
+}
+
+if (!$db->fieldExists('replaced_by', 'applications')) {
+    $sql = "ALTER TABLE `applications` ADD `replaced_by` varchar(200) NOT NULL DEFAULT '' AFTER `replaces`";
+    $db->query($sql);
+    $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+    log_message('info', (string)$db->getLastQuery());
+}
+
 $sql = "DROP TABLE IF EXISTS `applications_components`";
 $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
@@ -35,13 +91,20 @@ $sql = "CREATE TABLE `applications_components` (
     PRIMARY KEY (`id`),
     CONSTRAINT `applications_components_application_id` FOREIGN KEY (`application_id`) REFERENCES `applications` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci";
-$roles = $db->query($sql)->getResult();
+$db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
 
 if ($db->tableExists('applications_components')) {
     $sql = "INSERT INTO applications_components VALUES (SELECT null, applications.name, applications.org_id, applications.id, 'Device imported.', 'application', application.device_id, 0, '', '', '', '', 'runs-on-device', '', 0, 0, '', '', '', '', application.edited_by, application.edited_date FROM application LEFT JOIN applications ON application.application_id = applications.id)";
-    $roles = $db->query($sql)->getResult();
+    $db->query($sql);
+    $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+    log_message('info', (string)$db->getLastQuery());
+}
+
+if ($db->tableExists('application')) {
+    $sql = "DROP TABLE `application`";
+    $db->query($sql);
     $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
     log_message('info', (string)$db->getLastQuery());
 }
@@ -56,6 +119,12 @@ foreach ($roles as $role) {
     if (!empty($permissions)) {
         if ($role->name === 'org_admin') {
             $permissions->applications_components = 'crud';
+            $sql = "UPDATE `roles` SET `permissions` = ? WHERE `id` = ?";
+            $query = $db->query($sql, [json_encode($permissions), $role->id]);
+            $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+            log_message('info', (string)$db->getLastQuery());
+        } if ($role->name === 'user') {
+            $permissions->applications_components = 'r';
             $sql = "UPDATE `roles` SET `permissions` = ? WHERE `id` = ?";
             $query = $db->query($sql, [json_encode($permissions), $role->id]);
             $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
@@ -126,6 +195,11 @@ $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
 
 $sql = "INSERT INTO `rules` VALUES (NULL,'Windows on port 445, working',1,'',100,'[{\"table\":\"nmap\",\"attribute\":\"port\",\"operator\":\"eq\",\"value\":\"445\"},{\"table\":\"devices\",\"attribute\":\"uuid\",\"operator\":\"ne\",\"value\":\"\"},{\"table\":\"devices\",\"attribute\":\"description\",\"operator\":\"eq\",\"value\":\"Discovery Issue\"}]','[{\"table\":\"devices\",\"attribute\":\"description\",\"value\":\"\",\"value_type\":\"string\"}]','system','2000-01-01 00:00:00')";
+$db->query($sql);
+$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+log_message('info', (string)$db->getLastQuery());
+
+$sql = "INSERT INTO `attributes` VALUES (null,1,'devices','environment','Research and Development','rnd','system','2000-01-01 00:00:00')";
 $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());

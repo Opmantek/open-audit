@@ -15,36 +15,23 @@ include 'shared/collection_functions.php';
                             <thead>
                                 <tr>
                                     <th data-orderable="false" class="text-center"><?= __('Details') ?></th>
-                                    <?php foreach ($meta->data_order as $key) {
-                                        if ($key === 'id' or $key === 'orgs.id') {
-                                            continue;
-                                        } ?>
-                                        <th><?= collection_column_name($key) ?></th>
-                                    <?php } ?>
-                                    <?php if (str_contains($user->permissions[$meta->collection], 'd')) { ?>
-                                    <th data-orderable="false" class="text-center"><?= __('Delete') ?></th>
-                                    <?php } ?>
+                                    <th><?= __('Application') ?></th>
+                                    <th><?= __('Attribute') ?></th>
+                                    <th><?= __('Value') ?></th>
+                                    <th><?= __('Component') ?></th>
                                 </tr>
                             </thead>
                             <tbody>
                             <?php if (!empty($data)) { ?>
                                 <?php foreach ($data as $item) { ?>
                                 <tr>
-                                    <?= collection_button_read($meta->collection, $item->id) ?>
-                                    <?php foreach ($meta->data_order as $key) {
-                                        if ($key === 'id' or $key === 'orgs.id') {
-                                            continue;
-                                        }
-                                        if ($key === 'orgs.name' and !empty($item->attributes->{'orgs.id'})) {
-                                            echo "<td><a href=\"" . url_to($meta->collection . 'Collection') . "?" . $meta->collection . ".org_id=" . $item->attributes->{'orgs.id'} . "\">" . $item->attributes->{$key} . "</a></td>\n";
-                                        } else {
-                                            echo "<td>" . $item->attributes->{$key} . "</td>\n";
-                                        }
-                                        ?>
-                                    <?php } ?>
-                                    <?php if (str_contains($user->permissions[$meta->collection], 'd')) { ?>
-                                        <?= collection_button_delete(intval($item->id)) ?>
-                                    <?php } ?>
+                                    <?php
+                                    echo collection_button_read($meta->collection, $item->application_id);
+                                    echo "<td>" . $item->application_name . "</td>\n";
+                                    echo "<td>" . $item->attribute . "</td>\n";
+                                    echo "<td>" . $item->value . "</td>\n";
+                                    echo "<td>" . html_entity_decode($item->description) . "</td>\n";
+                                    ?>
                                 </tr>
                                 <?php } ?>
                             <?php } ?>

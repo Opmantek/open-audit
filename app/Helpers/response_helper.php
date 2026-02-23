@@ -1550,7 +1550,7 @@ if (!function_exists('response_valid_actions')) {
      */
     function response_valid_actions(): array
     {
-        return ['bulk_update_form', 'collection', 'create', 'create_form', 'debug', 'defaults', 'delete', 'delete_form', 'dictionary', 'download', 'example', 'example_form', 'execute', 'export', 'export_form', 'help', 'import', 'importform', 'importjson', 'importjsonform', 'importnmisform', 'importnmis', 'read', 'reset', 'resetForm', 'test', 'update'];
+        return ['bulk_update_form', 'collection', 'create', 'create_form', 'debug', 'defaults', 'delete', 'delete_form', 'dictionary', 'download', 'example', 'example_form', 'execute', 'export', 'export_form', 'help', 'import', 'importform', 'importjson', 'importjsonform', 'importnmisform', 'importnmis', 'read', 'reset', 'resetForm', 'search', 'test', 'update'];
     }
 }
 
@@ -1651,6 +1651,7 @@ if (!function_exists('response_valid_permissions')) {
         $permission['reset'] = 'd';
         $permission['resetForm'] = 'd';
         $permission['resetform'] = 'd';
+        $permission['search'] = 'r';
         $permission['test'] = 'u';
         $permission['update'] = 'u';
 
