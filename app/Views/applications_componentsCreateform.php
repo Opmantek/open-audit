@@ -18,14 +18,6 @@ if (!empty($_GET['application_id'])) {
                 <div class="card-body">
                     <div class="row">
                         <div class="col-md-6">
-                            <!--
-                            <div class="row" style="padding-top:16px">
-                                <div class="offset-2 col-8" style="position:relative;">
-                                    <h6>
-                                    <?= __('Add Applicaiton Component') ?>
-                                    </h6>
-                                </div>
-                            </div-->
                             <form class="form-horizontal" method="post" action="<?= url_to($meta->collection . 'Create') ?>?type=application" accept-charset="utf-8">
                                 <input type="hidden" value="<?= $meta->access_token ?>" id="data[access_token]" name="data[access_token]" />
                                 <input type="hidden" value="<?= $application_id ?>" id="data[attributes][application_id]" name="data[attributes][application_id]" />

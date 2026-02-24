@@ -343,8 +343,12 @@ class Collections extends BaseController
                     return redirect()->route('dashboardsExecute', [1]);
                 }
                 log_message('error', 'Item in ' . $this->resp->meta->collection . ' not created.');
+                \Config\Services::session()->setFlashdata('error', 'Item in ' . $this->resp->meta->collection . ' not created. See logs for more information.');
                 if ($this->resp->meta->collection === 'components') {
                     $this->resp->meta->collection = 'devices';
+                }
+                if ($this->resp->meta->collection === 'applications_components') {
+                    $this->resp->meta->collection = 'applications';
                 }
                 return redirect()->route($this->resp->meta->collection . 'Collection');
             }

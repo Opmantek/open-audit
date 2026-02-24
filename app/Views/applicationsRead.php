@@ -104,11 +104,6 @@ if ($update) {
                     </div>
                 </div>
             </div>
-            
-            <pre>
-                <?= json_encode($included['components'], JSON_PRETTY_PRINT); ?>
-            </pre>
-
         </main>
 
 <script {csp-script-nonce}>

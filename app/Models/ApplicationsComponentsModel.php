@@ -100,29 +100,7 @@ class ApplicationsComponentsModel extends BaseModel
      */
     public function create($data = null): ?int
     {
-        if (empty($data->org_id)) {
-            if (!empty($data->application_id)) {
-                $sql = "SELECT org_id FROM applications WHERE id = " . intval($data->application_id);
-                $result = $this->db->query($sql)->getResult();
-                if (!empty($result[0]->org_id)) {
-                    $data->org_id = intval($result[0]->org_id);
-                }
-            }
-        }
-        $data->name = $data->primary_type;
-        $data->description = '';
-        $data = $this->createFieldData('applications_components', $data);
-        log_message('debug', json_encode($data, JSON_PRETTY_PRINT));
-        if (empty($data)) {
-            return null;
-        }
-        $this->builder->insert($data);
-        $error = $this->sqlError($this->db->error());
-        if ($error) {
-            session()->setFlashdata('error', json_encode($error));
-            return null;
-        }
-        return (intval($this->db->insertID()));
+        return null;
     }
 
     /**
