@@ -327,7 +327,7 @@ window.onload = function () {
                 $("#data\\[attributes\\]\\[primary_internal_id_b\\]").val('');
                 getClusters('primary');
 
-            } else if ($('#data\\[attributes\\]\\[primary_type\\]').val().includes('_external')) {
+            } else if ($('#data\\[attributes\\]\\[primary_type\\]').val().includes('_external') || $('#data\\[attributes\\]\\[primary_type\\]').val() == "dnsname" || $('#data\\[attributes\\]\\[primary_type\\]').val() == "other") {
                 $('#primary_external_service_div').css("display", "none");
                 $('#primary_external_service_div').html('<div class="offset-2 col-8" style="position:relative;"><label class="form-label" for="data[attributes][primary_external_service]">External Service</label><input class="form-control" type="text" id="data[attributes][primary_external_service]" name="data[attributes][primary_external_service]"></div>');
                 $('#data\\[attributes\\]\\[primary_external_provider\\]').val('');
@@ -402,7 +402,7 @@ window.onload = function () {
                 $("#data\\[attributes\\]\\[secondary_internal_id_b\\]").val('');
                 getCertificates('secondary');
 
-            } else if ($('#data\\[attributes\\]\\[secondary_type\\]').val().includes('_external')) {
+            } else if ($('#data\\[attributes\\]\\[secondary_type\\]').val().includes('_external') || $('#data\\[attributes\\]\\[secondary_type\\]').val() == "dnsname" || $('#data\\[attributes\\]\\[secondary_type\\]').val() == "other") {
                 $('#secondary_external_service_div').css("display", "none");
                 $('#data\\[attributes\\]\\[secondary_external_provider\\]').val('');
                 $('#data\\[attributes\\]\\[secondary_external_service\\]').val('');
@@ -567,14 +567,10 @@ window.onload = function () {
             if ($field === 'api') { $include = 'server_item'; }
             if ($field === 'application') { $include = 'software'; }
             if ($field === 'authentication') { $include = 'service'; }
-            // if ($field === 'certificate') { $include = 'certificates'; }
             if ($field === 'client') { $include = 'software'; }
             if ($field === 'container') { $include = 'vm'; }
-            // if ($field === 'cluster') { $include = 'clusters'; }
             if ($field === 'database') { $include = 'server_item'; }
             if ($field === 'device') { $include = 'devices'; }
-            // if ($field === 'dnsname') { $include = ''; }
-            // if ($field === 'other') { $include = ''; }
             if ($field === 'program') { $include = 'executable'; }
             if ($field === 'queue') { $include = 'service'; }
             if ($field === 'service') { $include = 'service'; }
