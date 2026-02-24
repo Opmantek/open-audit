@@ -246,6 +246,23 @@ class ApplicationsComponentsModel extends BaseModel
                     $result[0]->{'secondary_devices.icon'} = $queryResult[0]->icon;
                 }
             }
+            if ($result[0]->primary_type === 'cluster') {
+                $sql = "SELECT * FROM clusters WHERE id = ?";
+                $queryResult = $this->db->query($sql, [$result[0]->primary_internal_id_b])->getResult();
+                if (!empty($queryResult)) {
+                    $result[0]->{'primary_clusters.name'} = $queryResult[0]->name;
+                    $result[0]->{'primary_clusters.id'} = $queryResult[0]->id;
+                }
+            }
+            if ($result[0]->secondary_type === 'cluster') {
+                $sql = "SELECT * FROM clusters WHERE id = ?";
+                $queryResult = $this->db->query($sql, [$result[0]->secondary_internal_id_b])->getResult();
+                if (!empty($queryResult)) {
+                    $result[0]->{'secondary_clusters.name'} = $queryResult[0]->name;
+                    $result[0]->{'secondary_clusters.id'} = $queryResult[0]->id;
+                }
+            }
+
         }
         return format_data($result, 'applications_components');
     }
@@ -348,6 +365,8 @@ class ApplicationsComponentsModel extends BaseModel
         $dictionary->types->{'client_external'} = 'External Client';
         $dictionary->types->{'cluster'} = 'Links to <code>clusters.id</code>';
         $dictionary->types->{'cluster_external'} = 'External Cluster';
+        $dictionary->types->{'container'} = 'Links to <code>vm.name</code>';
+        $dictionary->types->{'container_external'} = 'External Docker, Podman, et al.';
         $dictionary->types->{'database'} = 'Links to <code>server_item.name</code>';
         $dictionary->types->{'database_external'} = 'External Database';
         $dictionary->types->{'device'} = 'Links to <code>devices.id</code>';

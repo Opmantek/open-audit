@@ -36,11 +36,6 @@ class Applications extends BaseController
     {
         $search = $_POST['search'];
         $this->resp->data = $this->applicationsModel->search($search);
-        // echo "<pre>\n";
-        // echo json_encode($this->resp->data, JSON_PRETTY_PRINT);
-        // echo "</pre>";
-        // exit;
-        // {"application_id":1,"application_name":"MyNewApp","attribute":"primary.devices.name","value":"apollo"}
         $meta = filter_response($this->resp->meta);
         return view('shared/header', [
             'config' => $this->config,

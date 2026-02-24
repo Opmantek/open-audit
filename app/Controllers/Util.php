@@ -51,8 +51,6 @@ class Util extends Controller
             $dir = '/usr/local/open-audit/public/azure_icons';
         }
         $services = getSVG($dir);
-        #echo json_encode($services);
-        #return;
         return $this->setResponseFormat('json')->respond($services);
     }
 

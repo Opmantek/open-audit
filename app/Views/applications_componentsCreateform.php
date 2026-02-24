@@ -57,7 +57,7 @@ if (!empty($_GET['application_id'])) {
                                 </div>
 
                                 <div class="row" id="primary_external_service_div" style="padding-top:16px; display:none;">
-                                    <div class="offset-2 col-8">
+                                    <div class="offset-2 col-8" style="position:relative;" width="100%">
                                         <label for="data[attributes][primary_external_service]" class="form-label"><?= __('External Service') ?></label><br>
                                         <div class="input-group">
                                             <select class="form-select select2" name="data[attributes][primary_external_service]" id="data[attributes][primary_external_service]">
@@ -65,7 +65,6 @@ if (!empty($_GET['application_id'])) {
                                         </div>
                                     </div>
                                 </div>
-
 
                                 <div id="primary_device_search" class="row" style="padding-top:16px; display:none;">
                                     <div class="offset-2 col-8" style="position:relative;">
@@ -75,6 +74,16 @@ if (!empty($_GET['application_id'])) {
                                             <div class="pull-right" style="padding-left:4px;">
                                                 <button type="button" class="btn btn-primary search_button" data-target="primary" id="search_primary_internal_id_a" name="search_primary_internal_id_a"><?= __('Search For a Device') ?></button>
                                             </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div id="primary_device_select" class="row" style="padding-top:16px; display:none;">
+                                    <div class="offset-2 col-8" style="position:relative;">
+                                        <label for="primary_hostname_select" class="form-label"><?= __('Select a Device') ?></label><br>
+                                        <div class="input-group">
+                                            <select class="form-select hostname_select" data-target="primary" name="primary_hostname_select" id="primary_hostname_select">
+                                            </select>
                                         </div>
                                     </div>
                                 </div>
@@ -104,14 +113,7 @@ if (!empty($_GET['application_id'])) {
                                 </div>
 
 
-
-
-
-
-
-
                                 <hr>
-
                                 <div class="row" style="padding-top:16px;">
                                     <div class="offset-2 col-8">
                                         <h3>Relationship</h3>
@@ -125,11 +127,9 @@ if (!empty($_GET['application_id'])) {
                                         </div>
                                     </div>
                                 </div>
-
-
-
-
                                 <hr>
+
+
 
                                 <div class="row" style="padding-top:16px;">
                                     <div class="offset-2 col-8">
@@ -174,6 +174,16 @@ if (!empty($_GET['application_id'])) {
                                             <div class="pull-right" style="padding-left:4px;">
                                                 <button type="button" class="btn btn-primary search_button" data-target="secondary" id="search_secondary_internal_id_a" name="search_secondary_internal_id_a"><?= __('Search For a Device') ?></button>
                                             </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div id="secondary_device_select" class="row" style="padding-top:16px; display:none;">
+                                    <div class="offset-2 col-8" style="position:relative;">
+                                        <label for="secondary_hostname_select" class="form-label"><?= __('Select a Device') ?></label><br>
+                                        <div class="input-group">
+                                            <select class="form-select hostname_select" data-target="secondary" name="secondary_hostname_select" id="secondary_hostname_select">
+                                            </select>
                                         </div>
                                     </div>
                                 </div>
@@ -252,27 +262,70 @@ window.onload = function () {
         const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
         const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
 
+        $("#data\\[attributes\\]\\[primary_external_service\\]").on("change", function(){
+            $(".selectDynamic").select2("destroy");
+            $(".selectDynamic").html("<option><option>");
+            //changeData( data[ $(this).val() ] );
+        });
+
+        $("#data\\[attributes\\]\\[secondary_external_service\\]").on("change", function(){
+            $(".selectDynamic").select2("destroy");
+            $(".selectDynamic").html("<option><option>");
+            //changeData( data[ $(this).val() ] );
+        });
+
         $('#data\\[attributes\\]\\[primary_type\\]').change(function() {
             if ($('#data\\[attributes\\]\\[primary_type\\]').val() == "aws") {
                 $('#primary_external_service_div').css("display", "none");
-                $('#primary_external_service_div').html('<div class="offset-2 col-8"><label for="data[attributes][primary_external_service]" class="form-label"><?= __('External Service') ?></label><br><div class="input-group"><select class="form-select select2" name="data[attributes][primary_external_service]" id="data[attributes][primary_external_service]"></select></div></div>');
+                //$('#primary_external_service_div').html('<div class="offset-2 col-8"><label for="data[attributes][primary_external_service]" class="form-label"><?= __('External Service') ?></label><br><div class="input-group"><select class="form-select select2" name="data[attributes][primary_external_service]" id="data[attributes][primary_external_service]"></select></div></div>');
                 $('#data\\[attributes\\]\\[primary_external_provider\\]').val('AWS');
-                $('#data\\[attributes\\]\\[primary_external_service\\]').val('');
+                //$('#data\\[attributes\\]\\[primary_external_service\\]').val('');
                 $("#primary_internal_id_b_div").css("display", "none");
                 getCloudService('aws', 'primary_external_service');
                 $('#primary_external_provider_div').css("display", "block");
                 $('#primary_external_service_div').css("display", "block");
                 $('#primary_device_search').css("display", "none");
+                $('#primary_device_select').css("display", "none");
 
             } else if ($('#data\\[attributes\\]\\[primary_type\\]').val() == "azure") {
-                $('#primary_external_service_div').html('<div class="offset-2 col-8"><label for="data[attributes][primary_external_service]" class="form-label"><?= __('External Service') ?></label><br><div class="input-group"><select class="form-select select2" name="data[attributes][primary_external_service]" id="data[attributes][primary_external_service]"></select></div></div>');
+                $('#primary_external_service_div').css("display", "none");
+                //$('#primary_external_service_div').html('<div class="offset-2 col-8"><label for="data[attributes][primary_external_service]" class="form-label"><?= __('External Service') ?></label><br><div class="input-group"><select class="form-select select2" name="data[attributes][primary_external_service]" id="data[attributes][primary_external_service]"></select></div></div>');
                 $('#data\\[attributes\\]\\[primary_external_provider\\]').val('Azure');
-                $('#data\\[attributes\\]\\[primary_external_service\\]').val('');
+                //$('#data\\[attributes\\]\\[primary_external_service\\]').val('');
                 $("#primary_internal_id_b_div").css("display", "none");
                 getCloudService('azure', 'primary_external_service');
                 $('#primary_external_provider_div').css("display", "block");
                 $('#primary_external_service_div').css("display", "block");
                 $('#primary_device_search').css("display", "none");
+                $('#primary_device_select').css("display", "none");
+
+            } else if ($('#data\\[attributes\\]\\[primary_type\\]').val() == "certificate") {
+                $('#data\\[attributes\\]\\[primary_external_provider\\]').val('');
+                $('#data\\[attributes\\]\\[primary_external_service\\]').val('');
+                $('#data\\[attributes\\]\\[primary_external_service\\]').find('option').remove().end();
+                $('#primary_external_provider_div').css("display", "none");
+                $('#primary_external_service_div').css("display", "none");
+                $("#primary_device_search").css("display", "none");
+                $("#primary_owner_div").css("display", "block");
+                $("#primary_description_div").css("display", "block");
+                $('#primary_device_select').css("display", "none");
+                $('#data\\[attributes\\]\\[primary_internal_id_b\\]').find('option').remove().end();
+                $("#data\\[attributes\\]\\[primary_internal_id_b\\]").val('');
+                getCertificates('primary');
+
+            } else if ($('#data\\[attributes\\]\\[primary_type\\]').val() == "cluster") {
+                $('#data\\[attributes\\]\\[primary_external_provider\\]').val('');
+                $('#data\\[attributes\\]\\[primary_external_service\\]').val('');
+                $('#data\\[attributes\\]\\[primary_external_service\\]').find('option').remove().end();
+                $('#primary_external_provider_div').css("display", "none");
+                $('#primary_external_service_div').css("display", "none");
+                $("#primary_device_search").css("display", "none");
+                $("#primary_owner_div").css("display", "block");
+                $("#primary_description_div").css("display", "block");
+                $('#primary_device_select').css("display", "none");
+                $('#data\\[attributes\\]\\[primary_internal_id_b\\]').find('option').remove().end();
+                $("#data\\[attributes\\]\\[primary_internal_id_b\\]").val('');
+                getClusters('primary');
 
             } else if ($('#data\\[attributes\\]\\[primary_type\\]').val().includes('_external')) {
                 $('#primary_external_service_div').css("display", "none");
@@ -284,6 +337,7 @@ window.onload = function () {
                 $('#primary_external_service_div').css("display", "block");
                 $("#primary_device_search").css("display", "none");
                 $("#primary_internal_id_b_div").css("display", "none");
+                $('#primary_device_select').css("display", "none");
 
             } else {
                 $('#data\\[attributes\\]\\[primary_external_provider\\]').val('');
@@ -294,15 +348,16 @@ window.onload = function () {
                 $("#primary_device_search").css("display", "block");
                 $("#primary_owner_div").css("display", "block");
                 $("#primary_description_div").css("display", "block");
+                $('#primary_device_select').css("display", "none");
             }
         });
 
         $('#data\\[attributes\\]\\[secondary_type\\]').change(function() {
             if ($('#data\\[attributes\\]\\[secondary_type\\]').val() == "aws") {
                 $('#secondary_external_service_div').css("display", "none");
-                $('#secondary_external_service_div').html('<div class="offset-2 col-8"><label for="data[attributes][secondary_external_service]" class="form-label"><?= __('External Service') ?></label><br><div class="input-group"><select class="form-select select2" name="data[attributes][secondary_external_service]" id="data[attributes][secondary_external_service]"></select></div></div>');
+                // $('#secondary_external_service_div').html('<div class="offset-2 col-8"><label for="data[attributes][secondary_external_service]" class="form-label"><?= __('External Service') ?></label><br><div class="input-group"><select class="form-select select2" name="data[attributes][secondary_external_service]" id="data[attributes][secondary_external_service]"></select></div></div>');
                 $('#data\\[attributes\\]\\[secondary_external_provider\\]').val('AWS');
-                $('#data\\[attributes\\]\\[secondary_external_service\\]').val('');
+                // $('#data\\[attributes\\]\\[secondary_external_service\\]').val('');
                 $("#secondary_internal_id_b_div").css("display", "none");
                 getCloudService('aws', 'secondary_external_service');
                 $('#secondary_external_provider_div').css("display", "block");
@@ -311,14 +366,41 @@ window.onload = function () {
 
             } else if ($('#data\\[attributes\\]\\[secondary_type\\]').val() == "azure") {
                 $('#secondary_external_service_div').css("display", "none");
-                $('#secondary_external_service_div').html('<div class="offset-2 col-8"><label for="data[attributes][secondary_external_service]" class="form-label"><?= __('External Service') ?></label><br><div class="input-group"><select class="form-select select2" name="data[attributes][secondary_external_service]" id="data[attributes][secondary_external_service]"></select></div></div>');
+                // $('#secondary_external_service_div').html('<div class="offset-2 col-8"><label for="data[attributes][secondary_external_service]" class="form-label"><?= __('External Service') ?></label><br><div class="input-group"><select class="form-select select2" name="data[attributes][secondary_external_service]" id="data[attributes][secondary_external_service]"></select></div></div>');
                 $('#data\\[attributes\\]\\[secondary_external_provider\\]').val('Azure');
-                $('#data\\[attributes\\]\\[secondary_external_service\\]').val('');
+                // $('#data\\[attributes\\]\\[secondary_external_service\\]').val('');
                 $("#secondary_internal_id_b_div").css("display", "none");
                 getCloudService('azure', 'secondary_external_service');
                 $('#secondary_external_provider_div').css("display", "block");
                 $('#secondary_external_service_div').css("display", "block");
                 $('#secondary_device_search').css("display", "none");
+
+            } else if ($('#data\\[attributes\\]\\[secondary_type\\]').val() == "cluster") {
+                $('#data\\[attributes\\]\\[secondary_external_provider\\]').val('');
+                $('#data\\[attributes\\]\\[secondary_external_service\\]').val('');
+                $('#data\\[attributes\\]\\[secondary_external_service\\]').find('option').remove().end();
+                $('#secondary_external_provider_div').css("display", "none");
+                $('#secondary_external_service_div').css("display", "none");
+                $("#secondary_device_search").css("display", "none");
+                $("#secondary_owner_div").css("display", "block");
+                $("#secondary_description_div").css("display", "block");
+                $('#data\\[attributes\\]\\[secondary_internal_id_b\\]').find('option').remove().end();
+                $("#data\\[attributes\\]\\[secondary_internal_id_b\\]").val('');
+                getClusters('secondary');
+
+            } else if ($('#data\\[attributes\\]\\[secondary_type\\]').val() == "certificate") {
+                $('#data\\[attributes\\]\\[secondary_external_provider\\]').val('');
+                $('#data\\[attributes\\]\\[secondary_external_service\\]').val('');
+                $('#data\\[attributes\\]\\[secondary_external_service\\]').find('option').remove().end();
+                $('#secondary_external_provider_div').css("display", "none");
+                $('#secondary_external_service_div').css("display", "none");
+                $("#secondary_device_search").css("display", "none");
+                $("#secondary_owner_div").css("display", "block");
+                $("#secondary_description_div").css("display", "block");
+                $('#secondary_device_select').css("display", "none");
+                $('#data\\[attributes\\]\\[secondary_internal_id_b\\]').find('option').remove().end();
+                $("#data\\[attributes\\]\\[secondary_internal_id_b\\]").val('');
+                getCertificates('secondary');
 
             } else if ($('#data\\[attributes\\]\\[secondary_type\\]').val().includes('_external')) {
                 $('#secondary_external_service_div').css("display", "none");
@@ -343,6 +425,44 @@ window.onload = function () {
             }
         });
 
+        function getClusters($target)
+        {
+            $url = '<?= url_to('clustersCollection') ?>';
+            $.ajax({
+              type: 'GET',
+              url: $url,
+            }).done(function(data) {
+                if (data) {
+                    $clusters = data.data;
+                    $("#" + $target + "_internal_id_b_div").css("display", "block");
+                    if ($clusters) {
+                        $clusters.forEach((obj) => {
+                            $("#data\\[attributes\\]\\[" + $target + "_internal_id_b\\]").append($('<option></option>').val(obj.id).html(obj.attributes.name));
+                        });
+                    }
+                }
+            });
+        }
+
+        function getCertificates($target)
+        {
+            $url = '<?= url_to('certificatesCollection') ?>';
+            $.ajax({
+              type: 'GET',
+              url: $url,
+            }).done(function(data) {
+                if (data) {
+                    $certificates = data.data;
+                    $("#" + $target + "_internal_id_b_div").css("display", "block");
+                    if ($certificates) {
+                        $certificates.forEach((obj) => {
+                            $("#data\\[attributes\\]\\[" + $target + "_internal_id_b\\]").append($('<option></option>').val(obj.id).html(obj.attributes.name));
+                        });
+                    }
+                }
+            });
+        }
+
         function getCloudService($id, $section) {
             var $url = '<?= url_to('home') ?>cloudServices/'+$id;
             console.log("URL: " + $url);
@@ -350,19 +470,13 @@ window.onload = function () {
               type: 'GET',
               url: $url,
             }).done(function(data) {
-                $('#data\\[attributes\\]\\[' + $section + '\\]').find('option').remove().end();
+                // $('#data\\[attributes\\]\\[' + $section + '\\]').find('option').remove().end();
                 if (data) {
-                    var hit = false;
-                    console.log("getCloudService success");
-                    console.log(data);
                     data.forEach(service => {
-                        hit = true;
                         $("#data\\[attributes\\]\\[" + $section + "\\]").append($('<option></option>').val(service).html(service));
                     });
                 } else {
                     console.log("getCloudService fail");
-                }
-                if (!hit) {
                     $("#data\\[attributes\\]\\[" + $section + "\\]").append($('<option></option>').val("").html('No services returned.'));
                 }
             })
@@ -371,14 +485,20 @@ window.onload = function () {
             });
         }
 
+        $('.hostname_select').change(function(){
+            var deviceId = $(this).val();
+            $target = $(this).data('target');
+            $("#data\\[attributes\\]\\[" + $target + "_internal_id_a\\]").val(deviceId);
+            getDevice(deviceId, 'container', $target);
+        });
+
         // Retrieve the device list once we click Search and activate the "device_id" select
         $('.search_button').click(function($this) {
-            //$value = $(this).val();
-            //var $url = '<?= url_to('devicesCollection') ?>?properties=devices.id,devices.name&format=json&devices.name=like'+$("#hostname_primary").val();
             $target = $(this).data('target');
-            var $url = '<?= url_to('devicesCollection') ?>?properties=devices.id,devices.name&format=json&devices.name=like'+$("#hostname_"+$target).val();
+            var $url = '<?= url_to('devicesCollection') ?>?properties=devices.id,devices.name,devices.ip,devices.os_group&format=json&devices.name=like'+$("#hostname_"+$target).val() + "&sort=name";
             $("#search_" + $target + "_internal_id_a").html('<div class="spinner-border spinner-border-sm text-light" role="status"><span class="visually-hidden">Loading...</span></div>');
             $include = $('#data\\[attributes\\]\\[' + $target + '_type\\]').val();
+            $("#" + $target + "_device_select").css('display', 'none');
             $.ajax({
               type: 'GET',
               url: $url,
@@ -387,15 +507,34 @@ window.onload = function () {
                 if (data.data[0]) {
                     $("#hostname_" + $target).val(data.data[0].attributes.name);
                     $('#data\\[attributes\\]\\[' + $target + '_internal_id_b\\]').find('option').remove().end();
-                    console.log('Length: ' + data.data.length);
                     if (data.data.length === 1) {
                         $("#data\\[attributes\\]\\[" + $target + "_internal_id_a\\]").val(data.data[0].id);
                         getDevice(data.data[0].id, $include, $target);
-                    } else {
-                        console.log('more than one');
-                        // TODO - Select from one of these devices
-                    }
 
+                    } else if (data.data.length > 1) {
+                        $('#' + $target + '_hostname_select').find('option').remove().end();
+                        $('#' + $target + '_hostname_select').append($('<option></option>').val("").html("Choose"));
+                        data.data.forEach((obj) => {
+                            $('#' + $target + '_hostname_select').append($('<option></option>').val(obj.id).html(obj.attributes.name + ' :: ' + obj.attributes.ip + ' :: ' + obj.attributes.os_group));
+                        });
+                        $("#search_" + $target + "_internal_id_a").html('<?= __('Search For a Device') ?>');
+                        $('#' + $target + '_device_select').css("display", "block");
+                        $("#" + $target + "_internal_id_b_div").css("display", "none");
+                    } else if (data.data == false) {
+                        // no data returned from device search
+                        $('#' + $target + '_hostname_select').find('option').remove().end();
+                        $('#' + $target + '_hostname_select').append($('<option></option>').val("").html("No devices found"));
+                        $('#' + $target + '_device_select').css("display", "block");
+                        $("#search_" + $target + "_internal_id_a").html('<?= __('Search For a Device') ?>');
+                        $("#" + $target + "_internal_id_b_div").css("display", "none");
+                    } else {
+                        // no data returned from device search
+                        $('#' + $target + '_hostname_select').find('option').remove().end();
+                        $('#' + $target + '_hostname_select').append($('<option></option>').val("").html("No devices found"));
+                        $('#' + $target + '_device_select').css("display", "block");
+                        $("#search_" + $target + "_internal_id_a").html('<?= __('Search For a Device') ?>');
+                        $("#" + $target + "_internal_id_b_div").css("display", "none");
+                    }
                 } else {
                     if (data.warning) {
                         console.log(data.warning);
@@ -408,6 +547,12 @@ window.onload = function () {
                     });
                     toastList.forEach(toast => toast.show());
                     console.log("search error");
+                    // search error
+                    $('#' + $target + '_hostname_select').find('option').remove().end();
+                    $('#' + $target + '_hostname_select').append($('<option></option>').val("").html("No devices found"));
+                    $('#' + $target + '_device_select').css("display", "block");
+                    $("#search_" + $target + "_internal_id_a").html('<?= __('Search For a Device') ?>');
+                    $("#" + $target + "_internal_id_b_div").css("display", "none");
                 }
             })
             .fail( function(jqXHR, textStatus, errorThrown ) {
@@ -424,6 +569,7 @@ window.onload = function () {
             if ($field === 'authentication') { $include = 'service'; }
             // if ($field === 'certificate') { $include = 'certificates'; }
             if ($field === 'client') { $include = 'software'; }
+            if ($field === 'container') { $include = 'vm'; }
             // if ($field === 'cluster') { $include = 'clusters'; }
             if ($field === 'database') { $include = 'server_item'; }
             if ($field === 'device') { $include = 'devices'; }
@@ -441,7 +587,6 @@ window.onload = function () {
               type: 'GET',
               url: $url,
             }).done(function(data) {
-
                 if (data) {
                     $included = data.included;
                     $newData = $included[$include];
@@ -458,6 +603,9 @@ window.onload = function () {
                                 $("#data\\[attributes\\]\\[" + $target + "_internal_id_b\\]").append($('<option></option>').val(obj.name).html(obj.name));
                             }
                             if ($field === 'client') {
+                                $("#data\\[attributes\\]\\[" + $target + "_internal_id_b\\]").append($('<option></option>').val(obj.name).html(obj.name));
+                            }
+                            if ($field === 'container') {
                                 $("#data\\[attributes\\]\\[" + $target + "_internal_id_b\\]").append($('<option></option>').val(obj.name).html(obj.name));
                             }
                             if ($field === 'database' && obj.type === 'database') {
@@ -491,9 +639,9 @@ window.onload = function () {
             .fail( function(jqXHR, textStatus, errorThrown ) {
                 console.log("fail");
             });
+            // $("#data\\[attributes\\]\\[" + $target + "_internal_id_b\\]").select2().trigger('change');
+            // initSelect();
         }
-
-
     });
 }
 </script>

@@ -175,6 +175,13 @@ class ApplicationsModel extends BaseModel
                 $component = $this->getComponentCluster($component, 'secondary');
             }
 
+            if ($component->primary_type === 'container') {
+                $component = $this->getComponentServerItem($component, 'primary');
+            }
+            if ($component->secondary_type === 'container') {
+                $component = $this->getComponentServerItem($component, 'secondary');
+            }
+
             if ($component->primary_type === 'device') {
                 $component = $this->getComponentDevice($component, 'primary');
             }
@@ -457,7 +464,7 @@ class ApplicationsModel extends BaseModel
         if (empty($icon) and $external_provider === 'Azure') {
             # app services :: App Service Certificates
             $temp = explode(' :: ', $external_service);
-            $directory = ROOTPATH . 'public/azure_icons/icons/' . $temp[0];
+            $directory = ROOTPATH . 'public/azure_icons/' . $temp[0];
             $file = str_replace(' ', '-', $temp[1]);
             $icon = '';
             if (is_dir($directory)) {
@@ -473,19 +480,40 @@ class ApplicationsModel extends BaseModel
                     closedir($handle);
                 }
             }
-            $icon = '<img src="' . BASE_URL() . 'azure_icons/icons/' . rawurlencode($temp[0]) . '/' . rawurlencode($icon) . '" style="width:' . $width . ';">';
+            $icon = '<img src="' . BASE_URL() . 'azure_icons/' . rawurlencode($temp[0]) . '/' . rawurlencode($icon) . '" style="width:' . $width . ';">';
             return $icon;
         }
         return $icon;
     }
 
+    public function getComponentApplication(object $component, string $section): object
+    {
+        return $component;
+    }
+
     public function getComponentCertificate(object $component, string $section): object
     {
+        $width = '40px';
+        $component->{$section} = '';
+        $sql = "SELECT * FROM certificates WHERE id = ?";
+        $result = $this->db->query($sql, [$component->{$section . '_internal_id_b'}])->getResult();
+        if (!empty($result[0])) {
+            $component->{$section} = '<a href="' . url_to('certificatesRead', $result[0]->id) . '">' . $result[0]->name . '</a>';
+            $component->{$section . '_icon'} = '<img src="' . BASE_URL() . 'icons/certificates.svg" style="width:' . $width . ';">';
+        }
         return $component;
     }
 
     public function getComponentCluster(object $component, string $section): object
     {
+        $width = '40px';
+        $component->{$section} = '';
+        $sql = "SELECT * FROM clusters WHERE id = ?";
+        $result = $this->db->query($sql, [$component->{$section . '_internal_id_b'}])->getResult();
+        if (!empty($result[0])) {
+            $component->{$section} = '<a href="' . url_to('clustersRead', $result[0]->id) . '">' . $result[0]->name . '</a>';
+            $component->{$section . '_icon'} = '<img src="' . BASE_URL() . 'icons/clusters.svg" style="width:' . $width . ';">';
+        }
         return $component;
     }
 
@@ -524,17 +552,22 @@ class ApplicationsModel extends BaseModel
             $thisResult = $this->db->query($sql, $fields)->getResult();
 
         } else if ($component->{$section . '_type'} === 'application') {
-            $sql = "SELECT software.id AS `software.id`, software.name AS `software.name`, devices.id AS `devices.id`, devices.environment AS `devices.environment`, devices.name AS `devices.name`, devices.type AS `devices.type`, devices.os_family AS `devices.os_family`, devices.icon AS `devices.icon` FROM software LEFT JOIN devices ON software.device_id = devices.id WHERE devices.id = ? AND software.name = ? AND software.current = 'y' LIMIT 1";
+            $sql = "SELECT software.id AS `{$section}.software.id`, software.name AS `{$section}.software.name`, devices.id AS `{$section}.devices.id`, devices.environment AS `{$section}.devices.environment`, devices.name AS `{$section}.devices.name`, devices.type AS `{$section}.devices.type`, devices.os_family AS `{$section}.devices.os_family`, devices.icon AS `{$section}.devices.icon` FROM software LEFT JOIN devices ON software.device_id = devices.id WHERE devices.id = ? AND software.name = ? AND software.current = 'y' LIMIT 1";
             $fields = array(intval($component->{$section . '_internal_id_a'}), $component->{$section . '_internal_id_b'});
             $thisResult = $this->db->query($sql, $fields)->getResult();
 
         } else if ($component->{$section . '_type'} === 'authentication') {
-            $sql = "SELECT service.id AS `service.id`, service.name AS `service.name`, devices.id AS `devices.id`, devices.environment AS `devices.environment`, devices.name AS `devices.name`, devices.type AS `devices.type`, devices.os_family AS `devices.os_family`, devices.icon AS `devices.icon` FROM service LEFT JOIN devices ON service.device_id = devices.id WHERE devices.id = ? AND service.name = ? AND service.current = 'y' LIMIT 1";
+            $sql = "SELECT service.id AS `{$section}.service.id`, service.name AS `{$section}.service.name`, devices.id AS `{$section}.devices.id`, devices.environment AS `{$section}.devices.environment`, devices.name AS `{$section}.devices.name`, devices.type AS `{$section}.devices.type`, devices.os_family AS `{$section}.devices.os_family`, devices.icon AS `{$section}.devices.icon` FROM service LEFT JOIN devices ON service.device_id = devices.id WHERE devices.id = ? AND service.name = ? AND service.current = 'y' LIMIT 1";
             $fields = array(intval($component->{$section . '_internal_id_a'}), $component->{$section . '_internal_id_b'});
             $thisResult = $this->db->query($sql, $fields)->getResult();
 
         } else if ($component->{$section . '_type'} === 'client') {
-            $sql = "SELECT software.id AS `software.id`, software.name AS `software.name`, devices.id AS `devices.id`, devices.environment AS `devices.environment`, devices.name AS `devices.name`, devices.type AS `devices.type`, devices.os_family AS `devices.os_family`, devices.icon AS `devices.icon` FROM software LEFT JOIN devices ON software.device_id = devices.id WHERE devices.id = ? AND software.name = ? AND software.current = 'y' LIMIT 1";
+            $sql = "SELECT software.id AS `{$section}.software.id`, software.name AS `{$section}.software.name`, devices.id AS `{$section}.devices.id`, devices.environment AS `{$section}.devices.environment`, devices.name AS `{$section}.devices.name`, devices.type AS `{$section}.devices.type`, devices.os_family AS `{$section}.devices.os_family`, devices.icon AS `{$section}.devices.icon` FROM software LEFT JOIN devices ON software.device_id = devices.id WHERE devices.id = ? AND software.name = ? AND software.current = 'y' LIMIT 1";
+            $fields = array(intval($component->{$section . '_internal_id_a'}), $component->{$section . '_internal_id_b'});
+            $thisResult = $this->db->query($sql, $fields)->getResult();
+
+        } else if ($component->{$section . '_type'} === 'container') {
+            $sql = "SELECT vm.id AS `{$section}.vm.id`, vm.name AS `{$section}.vm.name`, devices.id AS `{$section}.devices.id`, devices.environment AS `{$section}.devices.environment`, devices.name AS `{$section}.devices.name`, devices.type AS `{$section}.devices.type`, devices.os_family AS `{$section}.devices.os_family`, devices.icon AS `{$section}.devices.icon` FROM vm LEFT JOIN devices ON vm.device_id = devices.id WHERE devices.id = ? AND vm.name = ? AND vm.current = 'y' LIMIT 1";
             $fields = array(intval($component->{$section . '_internal_id_a'}), $component->{$section . '_internal_id_b'});
             $thisResult = $this->db->query($sql, $fields)->getResult();
 
@@ -544,7 +577,7 @@ class ApplicationsModel extends BaseModel
             $thisResult = $this->db->query($sql, $fields)->getResult();
 
         } else if ($component->{$section . '_type'} === 'program') {
-            $sql = "SELECT executable.id AS `executable.id`, executable.name AS `executable.name`, devices.id AS `devices.id`, devices.environment AS `devices.environment`, devices.name AS `devices.name`, devices.type AS `devices.type`, devices.os_family AS `devices.os_family`, devices.icon AS `devices.icon` FROM executable LEFT JOIN devices ON executable.device_id = devices.id WHERE devices.id = ? AND executable.name = ? AND executable.current = 'y' LIMIT 1";
+            $sql = "SELECT executable.id AS `{$section}.executable.id`, executable.name AS `{$section}.executable.name`, devices.id AS `{$section}.devices.id`, devices.environment AS `{$section}.devices.environment`, devices.name AS `{$section}.devices.name`, devices.type AS `{$section}.devices.type`, devices.os_family AS `{$section}.devices.os_family`, devices.icon AS `{$section}.devices.icon` FROM executable LEFT JOIN devices ON executable.device_id = devices.id WHERE devices.id = ? AND executable.name = ? AND executable.current = 'y' LIMIT 1";
             $fields = array(intval($component->{$section . '_internal_id_a'}), $component->{$section . '_internal_id_b'});
             $thisResult = $this->db->query($sql, $fields)->getResult();
 
@@ -571,12 +604,16 @@ class ApplicationsModel extends BaseModel
         } else {
             return $component;
         }
-        log_message('debug', str_replace("\n", " ", (string) $this->db->getLastQuery()));
+        // log_message('debug', str_replace("\n", " ", (string) $this->db->getLastQuery()));
         if (!empty($thisResult[0])) {
             foreach ($thisResult[0] as $key => $value) {
                 $component->$key = $value;
             }
         }
+        // if ($component->{$section . '_type'} === 'application') {
+        //     echo "<pre>" . json_encode($component);
+        //     exit;
+        // }
         // Icon(s)
         if (!empty($component->{$section . '_icon'})) {
             if (file_exists(ROOTPATH . 'public/icons/' . $component->{$section . '_icon'} . '.svg')) {
@@ -612,6 +649,10 @@ class ApplicationsModel extends BaseModel
             if (!empty($component->{$section . '_owner'})) {
                 $component->{$section} .= 'Managed by ' . $component->{$section . '_owner'};
             }
+        }
+        if ($component->primary_type === 'container') {
+        #    echo "<pre>" . json_encode($component, JSON_PRETTY_PRINT);
+        #    exit;
         }
         return $component;
     }

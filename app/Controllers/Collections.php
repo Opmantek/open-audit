@@ -377,6 +377,24 @@ class Collections extends BaseController
             output($this);
             return true;
         }
+        if ($this->resp->meta->collection === 'applications_components') {
+            $applicationsModel = model('ApplicationsModel');
+            $applications = $applicationsModel->read(intval($_GET['application_id']));
+            if (empty($applications)) {
+                \Config\Services::session()->setFlashdata('error', 'Invalid application id provided.');
+                return redirect('applicationsCollection');
+            }
+            $this->resp->meta->breadcrumbs = array();
+            $breadcrumb = new stdClass();
+            $breadcrumb->url = url_to('applicationsCollection');
+            $breadcrumb->name = 'Applications';
+            $this->resp->meta->breadcrumbs[] = $breadcrumb;
+            $breadcrumb = new stdClass();
+            $breadcrumb->url = url_to('applicationsRead', intval($_GET['application_id']));
+            $breadcrumb->name = $applications[0]->attributes->name;
+            $this->resp->meta->breadcrumbs[] = $breadcrumb;
+        }
+
         return view('shared/header', [
             'config' => $this->config,
             'dashboards' => filter_response($this->dashboards),
@@ -1024,6 +1042,18 @@ class Collections extends BaseController
                 \Config\Services::session()->setFlashdata('warning', 'Invalid ID provided to ' . $this->resp->meta->collection . ' read function (ID: ' . $this->resp->meta->id . ')');
                 return redirect()->route($this->resp->meta->collection . 'Collection');
             }
+            if ($this->resp->meta->collection === 'applications_components') {
+                $this->resp->meta->breadcrumbs = array();
+                $breadcrumb = new stdClass();
+                $breadcrumb->url = url_to('applicationsCollection');
+                $breadcrumb->name = 'Applications';
+                $this->resp->meta->breadcrumbs[] = $breadcrumb;
+                $breadcrumb = new stdClass();
+                $breadcrumb->url = url_to('applicationsRead', $this->resp->data[0]->attributes->application_id);
+                $breadcrumb->name = $this->resp->data[0]->attributes->{'applications.name'};
+                $this->resp->meta->breadcrumbs[] = $breadcrumb;
+            }
+
             if ($this->resp->meta->collection === 'baselines_results') {
                 $this->resp->meta->breadcrumbs = array();
                 $breadcrumb = new stdClass();
