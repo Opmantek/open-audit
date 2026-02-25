@@ -735,7 +735,7 @@ if (! function_exists('check_nmap_output')) {
                             if ($keywords[0] === '22/tcp') {
                                 $device['ssh_status'] = 'true';
                             }
-                            if ($keywords[0] === '135/tcp') {
+                            if ($keywords[0] === '135/tcp' or $keywords[0] === '445/tcp') {
                                 $device['wmi_status'] = 'true';
                             }
                             if ($keywords[0] === '161/udp') {
@@ -1811,12 +1811,16 @@ if (! function_exists('ip_audit')) {
         }
         $temp_audit_script = @$audit_script;
         // Audit via SSH
-        if ($ip_scan->ssh_status === 'true' and $device->os_family !== 'DD-WRT' and $device->os_family !== 'LEDE' and ! empty($credentials_ssh) and ! empty($audit_script)) {
+        if ($ip_scan->ssh_status === 'true' and $device->os_family !== 'DD-WRT' and $device->os_family !== 'LEDE' and !empty($credentials_ssh) and !empty($audit_script)) {
             $result = '';
             $log->message = 'Starting SSH audit script for ' . $device->ip;
             $discoveryLogModel->create($log);
             // copy the audit script to the target ip
-            $destination = !empty($instance->config->discovery_linux_script_directory) ? $instance->config->discovery_linux_script_directory : '/tmp/';
+
+            $destination = '/tmp/';
+            if (isset($instance->config->discovery_linux_script_directory) and is_string($instance->config->discovery_linux_script_directory)) {
+                $destination = $instance->config->discovery_linux_script_directory;
+            }
             if (!empty($destination) and !str_ends_with($destination, '/')) {
                 $destination .= '/';
             }
@@ -1867,8 +1871,17 @@ if (! function_exists('ip_audit')) {
             }
             unset($destination);
             if ($audit_script !== '') {
-                // $command = $instance->config->discovery_linux_script_directory . $script_name . ' submit_online=n create_file=y debugging=1 self_delete=y system_id=' . $device->id . ' last_seen_by=audit_ssh discovery_id=' . $discovery->id;
-                $command = $instance->config->discovery_linux_script_directory . $script_name . ' submit_online=n create_file=y debugging=1 system_id=' . $device->id . ' last_seen_by=audit_ssh discovery_id=' . $discovery->id;
+                $path = '/tmp/';
+                if (isset($instance->config->discovery_linux_script_directory) and is_string($instance->config->discovery_linux_script_directory)) {
+                    $path = $instance->config->discovery_linux_script_directory;
+                }
+                if (!empty($path) and substr($path, -1) !== '/') {
+                    $path .= '/';
+                }
+                if ($path === '') {
+                    $path = './';
+                }
+                $command = $path . $script_name . ' submit_online=n create_file=y debugging=1 system_id=' . $device->id . ' last_seen_by=audit_ssh discovery_id=' . $discovery->id;
                 $log->message = 'Running audit using ' . $credentials_ssh->credentials->username . '.';
                 $log->command_output = '';
                 $log->command_status = 'notice';
@@ -1882,11 +1895,10 @@ if (! function_exists('ip_audit')) {
                 } elseif (empty($device->which_sudo)) {
                     $log->message = 'Running audit using ' . $credentials_ssh->credentials->username . ' as sudo not present.';
                 }
-                if ($device->os_group === 'Windows') {
-                    if (!empty($instance->config->feature_powershell_audit) and $instance->config->feature_powershell_audit === 'y' and strtolower($device->os_group) === 'windows') {
+                if (strtolower($device->os_group) === 'windows') {
+                    if (!empty($instance->config->feature_powershell_audit) and $instance->config->feature_powershell_audit === 'y') {
                         $command = 'powershell -executionpolicy bypass -file ' . $script_name . ' -submit_online n -create_file y -debugging 1 -system_id ' . $device->id . ' -last_seen_by audit_ssh -discovery_id ' . $discovery->id;
                     } else {
-                        // $command = 'cscript ' . $script_name . ' submit_online=n create_file=y debugging=1 self_delete=y system_id=' . $device->id . ' last_seen_by=audit_ssh discovery_id=' . $discovery->id;
                         $command = 'cscript ' . $script_name . ' submit_online=n create_file=y debugging=1 system_id=' . $device->id . ' last_seen_by=audit_ssh discovery_id=' . $discovery->id;
                     }
                 }

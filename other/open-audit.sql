@@ -136,35 +136,6 @@ LOCK TABLES `antivirus` WRITE;
 UNLOCK TABLES;
 
 --
--- Table structure for table `application`
---
-
-DROP TABLE IF EXISTS `application`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8mb4 */;
-CREATE TABLE `application` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `device_id` int(10) unsigned DEFAULT NULL,
-  `application_id` int(10) unsigned NOT NULL DEFAULT 0,
-  `current` enum('y','n') NOT NULL DEFAULT 'y',
-  `edited_by` varchar(200) NOT NULL DEFAULT '',
-  `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
-  PRIMARY KEY (`id`),
-  KEY `system_id` (`device_id`),
-  CONSTRAINT `application_system_id` FOREIGN KEY (`device_id`) REFERENCES `devices` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `application`
---
-
-LOCK TABLES `application` WRITE;
-/*!40000 ALTER TABLE `application` DISABLE KEYS */;
-/*!40000 ALTER TABLE `application` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `applications`
 --
 
@@ -175,7 +146,16 @@ CREATE TABLE `applications` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(200) NOT NULL DEFAULT '',
   `org_id` int(10) unsigned NOT NULL DEFAULT 1,
-  `description` mediumtext NOT NULL,
+  `description` text NOT NULL,
+  `environment` varchar(200) NOT NULL DEFAULT 'production',
+  `status` varchar(200) NOT NULL DEFAULT 'production',
+  `owner` varchar(200) NOT NULL DEFAULT '',
+  `class` varchar(200) NOT NULL DEFAULT '',
+  `vendor` varchar(200) NOT NULL DEFAULT '',
+  `criticality` varchar(200) NOT NULL DEFAULT 'unassigned',
+  `sensitivity` varchar(200) NOT NULL DEFAULT 'unassigned',
+  `replaces` varchar(200) NOT NULL DEFAULT '',
+  `replaced_by` varchar(200) NOT NULL DEFAULT '',
   `options` mediumtext NOT NULL,
   `edited_by` varchar(200) NOT NULL DEFAULT '',
   `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
@@ -190,6 +170,52 @@ CREATE TABLE `applications` (
 LOCK TABLES `applications` WRITE;
 /*!40000 ALTER TABLE `applications` DISABLE KEYS */;
 /*!40000 ALTER TABLE `applications` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `applications_components`
+--
+
+DROP TABLE IF EXISTS `applications_components`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8mb4 */;
+CREATE TABLE `applications_components` (
+    `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+    `name` varchar(200) NOT NULL DEFAULT '',
+    `org_id` int(10) unsigned NOT NULL DEFAULT 1,
+    `application_id` int(10) unsigned NOT NULL DEFAULT 0,
+    `description` varchar(200) NOT NULL DEFAULT '',
+    `primary_type` varchar(100) NOT NULL DEFAULT '',
+    `primary_internal_id_a` int(10) unsigned NOT NULL DEFAULT 0,
+    `primary_internal_id_b` varchar(100) NOT NULL DEFAULT '',
+    `primary_external_provider` varchar(100) NOT NULL DEFAULT '',
+    `primary_external_service` varchar(100) NOT NULL DEFAULT '',
+    `primary_description` varchar(100) NOT NULL DEFAULT '',
+    `primary_owner` varchar(200) NOT NULL DEFAULT '',
+    `primary_icon` varchar(200) NOT NULL DEFAULT '',
+    `relationship` varchar(100) NOT NULL DEFAULT '',
+    `secondary_type` varchar(100) NOT NULL DEFAULT '',
+    `secondary_internal_id_a` int(10) unsigned NOT NULL DEFAULT 0,
+    `secondary_internal_id_b` varchar(100) NOT NULL DEFAULT '',
+    `secondary_external_provider` varchar(100) NOT NULL DEFAULT '',
+    `secondary_external_service` varchar(100) NOT NULL DEFAULT '',
+    `secondary_description` varchar(100) NOT NULL DEFAULT '',
+    `secondary_owner` varchar(200) NOT NULL DEFAULT '',
+    `secondary_icon` varchar(200) NOT NULL DEFAULT '',
+    `edited_by` varchar(200) NOT NULL DEFAULT '',
+    `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
+    PRIMARY KEY (`id`),
+    CONSTRAINT `applications_components_application_id` FOREIGN KEY (`application_id`) REFERENCES `applications` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `applications_components`
+--
+
+LOCK TABLES `applications_components` WRITE;
+/*!40000 ALTER TABLE `applications_components` DISABLE KEYS */;
+/*!40000 ALTER TABLE `applications_components` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -509,6 +535,7 @@ INSERT INTO `attributes` VALUES (224,1,'devices','sensitivity','sensitive','sens
 INSERT INTO `attributes` VALUES (225,1,'devices','sensitivity','public','public','system','2000-01-01 00:00:00');
 INSERT INTO `attributes` VALUES (226,1,'devices','sensitivity','unclassified','unclassified','system','2000-01-01 00:00:00');
 INSERT INTO `attributes` VALUES (227,1,'devices','sensitivity','unassigned','unassigned','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (228,1,'devices','environment','Research and Development','rnd','system','2000-01-01 00:00:00');
 /*!40000 ALTER TABLE `attributes` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -3812,9 +3839,9 @@ CREATE TABLE `roles` (
 LOCK TABLES `roles` WRITE;
 /*!40000 ALTER TABLE `roles` DISABLE KEYS */;
 set autocommit=0;
-INSERT INTO `roles` VALUES (1,'admin','This role can change global options.','{\"agents\":\"crud\",\"applications\":\"crud\",\"attributes\":\"crud\",\"auth\":\"crud\",\"baselines\":\"crud\",\"clusters\":\"r\",\"collectors\":\"crud\",\"configuration\":\"crud\",\"dashboards\":\"crud\",\"database\":\"crud\",\"devices\":\"r\",\"executables\":\"r\",\"errors\":\"r\",\"groups\":\"crud\",\"logs\":\"crud\",\"nmis\":\"crud\",\"news\":\"crud\",\"orgs\":\"crud\",\"queue\":\"crud\",\"queries\":\"crud\",\"roles\":\"crud\",\"search\":\"crud\",\"sessions\":\"crud\",\"summaries\":\"crud\",\"tasks\":\"crud\",\"users\":\"crud\",\"widgets\":\"crud\",\"certificates\":\"crud\",\"standards\":\"crud\",\"standards_results\":\"crud\",\"vendors\":\"crud\",\"vulnerabilities\":\"crud\"}','open-audit_roles_admin','system','2000-01-01 00:00:00');
-INSERT INTO `roles` VALUES (2,'org_admin','This role is used for administration of endpoints that contain an org_id.','{\"agents\":\"crud\",\"applications\":\"crud\",\"attributes\":\"crud\",\"baselines\":\"crud\",\"benchmarks\":\"crud\",\"benchmarks_exceptions\":\"crud\",\"benchmarks_policies\":\"crud\",\"buildings\":\"crud\",\"clouds\":\"crud\",\"clusters\":\"crud\",\"connections\":\"crud\",\"credentials\":\"crud\",\"dashboards\":\"crud\",\"errors\":\"r\",\"floors\":\"crud\",\"queue\":\"cr\",\"summaries\":\"r\",\"devices\":\"crud\",\"discoveries\":\"crud\",\"discovery_scan_options\":\"crud\",\"executables\":\"crud\",\"fields\":\"crud\",\"files\":\"crud\",\"graph\":\"crud\",\"groups\":\"r\",\"integrations\":\"crud\",\"invoice\":\"crud\",\"licenses\":\"crud\",\"locations\":\"crud\",\"networks\":\"crud\",\"news\":\"crud\",\"orgs\":\"crud\",\"packages\":\"crud\",\"queries\":\"r\",\"racks\":\"crud\",\"rack_devices\":\"crud\",\"rooms\":\"crud\",\"rows\":\"crud\",\"rules\":\"crud\",\"scripts\":\"crud\",\"search\":\"crud\",\"sessions\":\"crud\",\"tasks\":\"crud\",\"users\":\"r\",\"widgets\":\"r\",\"certificates\":\"crud\",\"standards\":\"crud\",\"standards_results\":\"crud\",\"vendors\":\"r\",\"vulnerabilities\":\"r\"}','open-audit_roles_org_admin','system','2000-01-01 00:00:00');
-INSERT INTO `roles` VALUES (3,'user','A standard role that can read all endpoints that contain an org_id.','{\"agents\":\"r\",\"applications\":\"r\",\"baselines\":\"r\",\"buildings\":\"r\",\"clouds\":\"r\",\"clusters\":\"r\",\"connections\":\"r\",\"credentials\":\"r\",\"dashboards\":\"r\",\"summaries\":\"r\",\"devices\":\"r\",\"errors\":\"r\",\"executables\":\"r\",\"floors\":\"r\",\"fields\":\"r\",\"files\":\"r\",\"graph\":\"r\",\"groups\":\"r\",\"invoice\":\"r\",\"licenses\":\"r\",\"locations\":\"r\",\"networks\":\"r\",\"orgs\":\"r\",\"packages\":\"r\",\"queue\":\"cr\",\"queries\":\"r\",\"racks\":\"r\",\"rack_devices\":\"r\",\"rooms\":\"r\",\"rows\":\"r\",\"rules\":\"r\",\"search\":\"crud\",\"sessions\":\"crud\",\"widgets\":\"r\",\"news\":\"\",\"certificates\":\"r\",\"standards\":\"\",\"standards_results\":\"\",\"vendors\":\"r\",\"vulnerabilities\":\"r\"}','open-audit_roles_user','system','2000-01-01 00:00:00');
+INSERT INTO `roles` VALUES (1,'admin','This role can change global options.','{\"agents\":\"crud\",\"applications\":\"crud\",\"applications_components\":\"\",\"attributes\":\"crud\",\"auth\":\"crud\",\"baselines\":\"crud\",\"clusters\":\"r\",\"collectors\":\"crud\",\"configuration\":\"crud\",\"dashboards\":\"crud\",\"database\":\"crud\",\"devices\":\"r\",\"executables\":\"r\",\"errors\":\"r\",\"groups\":\"crud\",\"logs\":\"crud\",\"nmis\":\"crud\",\"news\":\"crud\",\"orgs\":\"crud\",\"queue\":\"crud\",\"queries\":\"crud\",\"roles\":\"crud\",\"search\":\"crud\",\"sessions\":\"crud\",\"summaries\":\"crud\",\"tasks\":\"crud\",\"users\":\"crud\",\"widgets\":\"crud\",\"certificates\":\"crud\",\"standards\":\"crud\",\"standards_results\":\"crud\",\"vendors\":\"crud\",\"vulnerabilities\":\"crud\"}','open-audit_roles_admin','system','2000-01-01 00:00:00');
+INSERT INTO `roles` VALUES (2,'org_admin','This role is used for administration of endpoints that contain an org_id.','{\"agents\":\"crud\",\"applications\":\"crud\",\"applications_components\":\"crud\",\"attributes\":\"crud\",\"baselines\":\"crud\",\"benchmarks\":\"crud\",\"benchmarks_exceptions\":\"crud\",\"benchmarks_policies\":\"crud\",\"buildings\":\"crud\",\"clouds\":\"crud\",\"clusters\":\"crud\",\"connections\":\"crud\",\"credentials\":\"crud\",\"dashboards\":\"crud\",\"errors\":\"r\",\"floors\":\"crud\",\"queue\":\"cr\",\"summaries\":\"r\",\"devices\":\"crud\",\"discoveries\":\"crud\",\"discovery_scan_options\":\"crud\",\"executables\":\"crud\",\"fields\":\"crud\",\"files\":\"crud\",\"graph\":\"crud\",\"groups\":\"r\",\"integrations\":\"crud\",\"invoice\":\"crud\",\"licenses\":\"crud\",\"locations\":\"crud\",\"networks\":\"crud\",\"news\":\"crud\",\"orgs\":\"crud\",\"packages\":\"crud\",\"queries\":\"r\",\"racks\":\"crud\",\"rack_devices\":\"crud\",\"rooms\":\"crud\",\"rows\":\"crud\",\"rules\":\"crud\",\"scripts\":\"crud\",\"search\":\"crud\",\"sessions\":\"crud\",\"tasks\":\"crud\",\"users\":\"r\",\"widgets\":\"r\",\"certificates\":\"crud\",\"standards\":\"crud\",\"standards_results\":\"crud\",\"vendors\":\"r\",\"vulnerabilities\":\"r\"}','open-audit_roles_org_admin','system','2000-01-01 00:00:00');
+INSERT INTO `roles` VALUES (3,'user','A standard role that can read all endpoints that contain an org_id.','{\"agents\":\"r\",\"applications\":\"r\",\"applications_components\":\"r\",\"baselines\":\"r\",\"buildings\":\"r\",\"clouds\":\"r\",\"clusters\":\"r\",\"connections\":\"r\",\"credentials\":\"r\",\"dashboards\":\"r\",\"summaries\":\"r\",\"devices\":\"r\",\"errors\":\"r\",\"executables\":\"r\",\"floors\":\"r\",\"fields\":\"r\",\"files\":\"r\",\"graph\":\"r\",\"groups\":\"r\",\"invoice\":\"r\",\"licenses\":\"r\",\"locations\":\"r\",\"networks\":\"r\",\"orgs\":\"r\",\"packages\":\"r\",\"queue\":\"cr\",\"queries\":\"r\",\"racks\":\"r\",\"rack_devices\":\"r\",\"rooms\":\"r\",\"rows\":\"r\",\"rules\":\"r\",\"search\":\"crud\",\"sessions\":\"crud\",\"widgets\":\"r\",\"news\":\"\",\"certificates\":\"r\",\"standards\":\"\",\"standards_results\":\"\",\"vendors\":\"r\",\"vulnerabilities\":\"r\"}','open-audit_roles_user','system','2000-01-01 00:00:00');
 INSERT INTO `roles` VALUES (4,'collector','The collector specific role.','{\"collectors\":\"crud\",\"configuration\":\"r\",\"credentials\":\"crud\",\"dashboards\":\"r\",\"devices\":\"crud\",\"discoveries\":\"crud\",\"discovery_scan_options\":\"crud\",\"locations\":\"crud\",\"networks\":\"crud\",\"orgs\":\"crud\",\"sessions\":\"crud\",\"tasks\":\"crud\",\"users\":\"r\",\"widgets\":\"r\",\"news\":\"\",\"certificates\":\"r\",\"standards\":\"\",\"standards_results\":\"\",\"vendors\":\"r\",\"vulnerabilities\":\"r\"}','open-audit_roles_collector','system','2000-01-01 00:00:00');
 /*!40000 ALTER TABLE `roles` ENABLE KEYS */;
 UNLOCK TABLES;
@@ -3940,6 +3967,12 @@ INSERT INTO `rules` VALUES (55,'Ubiquiti RP-5AC-Gen2 set type',1,'Set type based
 INSERT INTO `rules` VALUES (56,'NMIS Manage for SNMP devices',1,'Set nmis_manage to y if we detect an SNMP OID.',100,'[{\"attribute\":\"snmp_oid\",\"operator\":\"gt\",\"table\":\"devices\",\"value\":\"\"}]','[{\"attribute\":\"nmis_manage\",\"table\":\"devices\",\"value\":\"y\",\"value_type\":\"string\"}]','system','2000-01-01 00:00:00');
 INSERT INTO `rules` VALUES (57,'LENOVO to Lenovo for Manufacturer',1,'Change the manufacturer from LENOVO to Lenovo.',100,'[{\"attribute\":\"manufacturer\",\"operator\":\"li\",\"table\":\"devices\",\"value\":\"LENOVO\"}]','[{\"attribute\":\"manufacturer\",\"table\":\"devices\",\"value\":\"Lenovo\",\"value_type\":\"string\"}]','system','2000-01-01 00:00:00');
 INSERT INTO `rules` VALUES (58,'Class based on Form Factor and OS (Virtual Windows Client)',1,'Set the class based on the form factor and OS.',100,'[{\"table\":\"devices\",\"attribute\":\"form_factor\",\"operator\":\"eq\",\"value\":\"Virtual\"},{\"table\":\"devices\",\"attribute\":\"os_group\",\"operator\":\"eq\",\"value\":\"Windows\"},{\"table\":\"devices\",\"attribute\":\"os_name\",\"operator\":\"nl\",\"value\":\"%Server%\"},{\"table\":\"devices\",\"attribute\":\"os_group\",\"operator\":\"ne\",\"value\":\"\"},{\"table\":\"devices\",\"attribute\":\"class\",\"operator\":\"eq\",\"value\":\"\"}]','[{\"table\":\"devices\",\"attribute\":\"class\",\"value\":\"virtual desktop\",\"value_type\":\"string\"}]','system','2000-01-01 00:00:00');
+INSERT INTO `rules` VALUES (59,'Windows on Port 135, not working',1,'',100,'[{\"table\":\"nmap\",\"attribute\":\"port\",\"operator\":\"eq\",\"value\":\"135\"},{\"table\":\"devices\",\"attribute\":\"uuid\",\"operator\":\"eq\",\"value\":\"\"}]','[{\"table\":\"devices\",\"attribute\":\"type\",\"value_type\":\"string\",\"value\":\"computer\"},{\"table\":\"devices\",\"attribute\":\"os_group\",\"value_type\":\"string\",\"value\":\"Windows\"},{\"table\":\"devices\",\"attribute\":\"description\",\"value_type\":\"string\",\"value\":\"Discovery Issue\"}]','system','2000-01-01 00:00:00');
+INSERT INTO `rules` VALUES (60,'Windows on port 139, not working',1,'',100,'[{\"table\":\"nmap\",\"attribute\":\"port\",\"operator\":\"eq\",\"value\":\"139\"},{\"table\":\"devices\",\"attribute\":\"uuid\",\"operator\":\"eq\",\"value\":\"\"}]','[{\"table\":\"devices\",\"attribute\":\"type\",\"value_type\":\"string\",\"value\":\"computer\"},{\"table\":\"devices\",\"attribute\":\"os_group\",\"value_type\":\"string\",\"value\":\"Windows\"},{\"table\":\"devices\",\"attribute\":\"description\",\"value_type\":\"string\",\"value\":\"Discovery Issue\"}]','system','2000-01-01 00:00:00');
+INSERT INTO `rules` VALUES (61,'Windows on port 445, not working',1,'',100,'[{\"table\":\"nmap\",\"attribute\":\"port\",\"operator\":\"eq\",\"value\":\"445\"},{\"table\":\"devices\",\"attribute\":\"uuid\",\"operator\":\"eq\",\"value\":\"\"}]','[{\"table\":\"devices\",\"attribute\":\"type\",\"value\":\"computer\",\"value_type\":\"string\"},{\"table\":\"devices\",\"attribute\":\"os_group\",\"value\":\"Windows\",\"value_type\":\"string\"},{\"table\":\"devices\",\"attribute\":\"description\",\"value\":\"Discovery Issue\",\"value_type\":\"string\"}]','system','2000-01-01 00:00:00');
+INSERT INTO `rules` VALUES (62,'Windows on port 135, working',1,'',100,'[{\"table\":\"nmap\",\"attribute\":\"port\",\"operator\":\"eq\",\"value\":\"135\"},{\"table\":\"devices\",\"attribute\":\"uuid\",\"operator\":\"ne\",\"value\":\"\"},{\"table\":\"devices\",\"attribute\":\"description\",\"operator\":\"eq\",\"value\":\"Discovery Issue\"}]','[{\"table\":\"devices\",\"attribute\":\"description\",\"value\":\"\",\"value_type\":\"string\"}]','system','2000-01-01 00:00:00');
+INSERT INTO `rules` VALUES (63,'Windows on port 139, working',1,'',100,'[{\"table\":\"nmap\",\"attribute\":\"port\",\"operator\":\"eq\",\"value\":\"139\"},{\"table\":\"devices\",\"attribute\":\"uuid\",\"operator\":\"ne\",\"value\":\"\"},{\"table\":\"devices\",\"attribute\":\"description\",\"operator\":\"eq\",\"value\":\"Discovery Issue\"}]','[{\"table\":\"devices\",\"attribute\":\"description\",\"value\":\"\",\"value_type\":\"string\"}]','system','2000-01-01 00:00:00');
+INSERT INTO `rules` VALUES (64,'Windows on port 445, working',1,'',100,'[{\"table\":\"nmap\",\"attribute\":\"port\",\"operator\":\"eq\",\"value\":\"445\"},{\"table\":\"devices\",\"attribute\":\"uuid\",\"operator\":\"ne\",\"value\":\"\"},{\"table\":\"devices\",\"attribute\":\"description\",\"operator\":\"eq\",\"value\":\"Discovery Issue\"}]','[{\"table\":\"devices\",\"attribute\":\"description\",\"value\":\"\",\"value_type\":\"string\"}]','system','2000-01-01 00:00:00');
 /*!40000 ALTER TABLE `rules` ENABLE KEYS */;
 UNLOCK TABLES;
 

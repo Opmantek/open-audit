@@ -9,8 +9,19 @@ namespace App\Models;
 
 use stdClass;
 
+/**
+ * Model for the 'applications' table.
+ *
+ * Provides CRUD operations and helper methods for Application records,
+ * including resolution of component details for both on-premises (server
+ * items) and cloud-hosted (AWS / Azure) resources.
+ */
 class ApplicationsModel extends BaseModel
 {
+    /**
+     * Constructor. Initialises the database connection and sets the query
+     * builder to target the 'applications' table.
+     */
     public function __construct()
     {
         $this->db = db_connect();
@@ -20,7 +31,7 @@ class ApplicationsModel extends BaseModel
     /**
      * Read the collection from the database
      *
-     * @param  $resp object An object containing the properties, filter, sort and limit as passed by the user
+     * @param  object $resp An object containing the properties, filter, sort and limit as passed by the user
      *
      * @return array        An array of formatted entries
      */
@@ -52,34 +63,25 @@ class ApplicationsModel extends BaseModel
      *
      * @param  object $data The data attributes
      *
-     * @return int|false    The Integer ID of the newly created item, or false
+     * @return int|null     The integer ID of the newly created item, or null on failure
      */
     public function create($data = null): ?int
     {
-        if (empty($data)) {
-            return null;
-        }
-        $data = $this->createFieldData('applications', $data);
-        if (empty($data)) {
-            return null;
-        }
-        $this->builder->insert($data);
-        if ($error = $this->sqlError($this->db->error())) {
-            \Config\Services::session()->setFlashdata('error', json_encode($error));
-            return null;
-        }
-        return (intval($this->db->insertID()));
+        return null;
     }
 
     /**
      * Delete an individual item from the database, by ID
      *
-     * @param  int $id The ID of the requested item
+     * @param  int  $id    The ID of the item to delete
+     * @param  bool $purge Unused; present for interface compatibility
      *
-     * @return bool    true || false depending on success
+     * @return bool        true on success, false on failure
      */
     public function delete($id = null, bool $purge = false): bool
     {
+        $sql = "DELETE FROM applications_components WHERE application_id = ?";
+
         $this->builder->delete(['id' => intval($id)]);
         if ($this->sqlError($this->db->error())) {
             return false;
@@ -98,29 +100,181 @@ class ApplicationsModel extends BaseModel
      */
     public function includedRead(int $id = 0): array
     {
-        $instance = & get_instance();
-        $org_list = array_unique(array_merge($instance->user->orgs, $instance->orgsModel->getUserDescendants($instance->user->orgs, $instance->orgs)));
-        $org_list[] = 1;
-        $org_list = array_unique($org_list);
+        $include = array();
 
-        $properties = array();
-        $properties[] = 'application.id AS `application.id`';
-        $properties[] = 'devices.id AS `devices.id`';
-        $properties[] = 'devices.name AS `devices.name`';
-        $properties[] = 'devices.ip AS `devices.ip`';
-        $properties[] = 'devices.description AS `devices.description`';
-        $this->builder->select($properties, false);
-        $this->builder->join('application', 'application.application_id = applications.id', 'left');
-        $this->builder->join('devices', 'application.device_id = devices.id', 'left');
-        $this->builder->where('applications.id', $id);
-        $this->builder->whereIn('devices.org_id', $org_list);
-        $query = $this->builder->get();
-        if ($this->sqlError($this->db->error())) {
-            return array();
+        $instance = & get_instance();
+        if ($instance->resp->meta->format === 'html') {
+            $attributesModel = new \App\Models\AttributesModel();
+            $attributes = $attributesModel->listUser(['attributes.resource' => 'devices', 'attributes.type' => 'environment']);
+            $include['environment'] = $attributes;
+            $attributes = $attributesModel->listUser(['attributes.resource' => 'devices', 'attributes.type' => 'status']);
+            $include['status'] = $attributes;
+            $attributes = $attributesModel->listUser(['attributes.resource' => 'devices', 'attributes.type' => 'criticality']);
+            $include['criticality'] = $attributes;
+            $attributes = $attributesModel->listUser(['attributes.resource' => 'devices', 'attributes.type' => 'sensitivity']);
+            $include['sensitivity'] = $attributes;
         }
-        $return = array();
-        $return['devices'] = format_data($query->getResult(), 'devices');
-        return $return;
+
+        $sql = "SELECT *, '' AS `primary`, '' AS `secondary` FROM applications_components WHERE application_id = ?";
+        $result = $this->db->query($sql, [intval($id)])->getResult();
+
+        foreach ($result as $component) {
+            if ($component->primary_type === 'api') {
+                $component = $this->getComponentServerItem($component, 'primary');
+            }
+            if ($component->secondary_type === 'api') {
+                $component = $this->getComponentServerItem($component, 'secondary');
+            }
+
+            if ($component->primary_type === 'application') {
+                $component = $this->getComponentServerItem($component, 'primary');
+            }
+            if ($component->secondary_type === 'application') {
+                $component = $this->getComponentServerItem($component, 'secondary');
+            }
+
+            if ($component->primary_type === 'authentication') {
+                $component = $this->getComponentServerItem($component, 'primary');
+            }
+            if ($component->secondary_type === 'authentication') {
+                $component = $this->getComponentServerItem($component, 'secondary');
+            }
+
+            if ($component->primary_type === 'certificate') {
+                $component = $this->getComponentCertificate($component, 'primary');
+            }
+            if ($component->secondary_type === 'certificate') {
+                $sql = "SELECT * FROM certificates WHERE id = ? LIMIT 1";
+                $component = $this->getComponentCertificate($component, 'secondary');
+            }
+
+            if ($component->primary_type === 'client') {
+                $component = $this->getComponentServerItem($component, 'primary');
+            }
+            if ($component->secondary_type === 'client') {
+                $component = $this->getComponentServerItem($component, 'secondary');
+            }
+
+            if ($component->primary_type === 'cluster') {
+                $component = $this->getComponentCluster($component, 'primary');
+            }
+            if ($component->secondary_type === 'cluster') {
+                $sql = "SELECT * FROM clusters WHERE id = ? LIMIT 1";
+                $component = $this->getComponentCluster($component, 'secondary');
+            }
+
+            if ($component->primary_type === 'container') {
+                $component = $this->getComponentServerItem($component, 'primary');
+            }
+            if ($component->secondary_type === 'container') {
+                $component = $this->getComponentServerItem($component, 'secondary');
+            }
+
+            if ($component->primary_type === 'device') {
+                $component = $this->getComponentDevice($component, 'primary');
+            }
+            if ($component->secondary_type === 'device') {
+                $sql = "SELECT * FROM devices WHERE id = ? LIMIT 1";
+                $component = $this->getComponentDevice($component, 'secondary');
+            }
+
+            if ($component->primary_type === 'database') {
+                $component = $this->getComponentServerItem($component, 'primary');
+            }
+            if ($component->secondary_type === 'database') {
+                $component = $this->getComponentServerItem($component, 'secondary');
+            }
+
+            if ($component->primary_type === 'dnsname') {
+                $component->primary = $this->getComponentExtName($component->primary_external_provider, $component->primary_external_service);
+                $component->primary_icon = $this->getComponentExtIcon($component->primary_icon, $component->primary_external_provider, $component->primary_external_service);
+            }
+            if ($component->secondary_type === 'dnsname') {
+                $component->secondary = $this->getComponentExtName($component->secondary_external_provider, $component->secondary_external_service);
+                $component->secondary_icon = $this->getComponentExtIcon($component->secondary_icon, $component->secondary_external_provider, $component->secondary_external_service);
+            }
+
+            if ($component->primary_type === 'other') {
+                $component->primary = $this->getComponentExtName($component->primary_external_provider, $component->primary_external_service);
+                $component->primary_icon = $this->getComponentExtIcon($component->primary_icon, $component->primary_external_provider, $component->primary_external_service);
+            }
+            if ($component->secondary_type === 'other') {
+                $component->secondary = $this->getComponentExtName($component->secondary_external_provider, $component->secondary_external_service);
+                $component->secondary_icon = $this->getComponentExtIcon($component->secondary_icon, $component->secondary_external_provider, $component->secondary_external_service);
+            }
+
+            if ($component->primary_type === 'program') {
+                $component = $this->getComponentServerItem($component, 'primary');
+            }
+            if ($component->secondary_type === 'program') {
+                $component = $this->getComponentServerItem($component, 'secondary');
+            }
+
+            if ($component->primary_type === 'queue') {
+                $component = $this->getComponentServerItem($component, 'primary');
+            }
+            if ($component->secondary_type === 'queue') {
+                $component = $this->getComponentServerItem($component, 'secondary');
+            }
+
+            if ($component->primary_type === 'service') {
+                $component = $this->getComponentServerItem($component, 'primary');
+            }
+            if ($component->secondary_type === 'service') {
+                $component = $this->getComponentServerItem($component, 'secondary');
+            }
+
+            if ($component->primary_type === 'storage') {
+                $component = $this->getComponentServerItem($component, 'primary');
+            }
+            if ($component->secondary_type === 'storage') {
+                $component = $this->getComponentServerItem($component, 'secondary');
+            }
+
+            if ($component->primary_type === 'website') {
+                $component = $this->getComponentServerItem($component, 'primary');
+            }
+            if ($component->secondary_type === 'website') {
+                $component = $this->getComponentServerItem($component, 'secondary');
+            }
+
+            if ($component->primary_external_provider === 'AWS') {
+                $component->primary = $this->getComponentExtName($component->primary_external_provider, $component->primary_external_service);
+                $component->primary_icon = $this->getComponentExtIcon($component->primary_icon, $component->primary_external_provider, $component->primary_external_service);
+            }
+            if ($component->secondary_external_provider === 'AWS') {
+                $component->secondary = $this->getComponentExtName($component->secondary_external_provider, $component->secondary_external_service);
+                $component->secondary_icon = $this->getComponentExtIcon($component->secondary_icon, $component->secondary_external_provider, $component->secondary_external_service);
+            }
+
+            if ($component->primary_external_provider === 'Azure') {
+                $component->primary = $this->getComponentExtName($component->primary_external_provider, $component->primary_external_service);
+                $component->primary_icon = $this->getComponentExtIcon($component->primary_icon, $component->primary_external_provider, $component->primary_external_service);
+            }
+            if ($component->secondary_external_provider === 'Azure') {
+                $component->secondary = $this->getComponentExtName($component->secondary_external_provider, $component->secondary_external_service);
+                $component->secondary_icon = $this->getComponentExtIcon($component->secondary_icon, $component->secondary_external_provider, $component->secondary_external_service);
+            }
+
+            if (str_contains($component->primary_type, '_external') or $component->primary_type === '') {
+                $component->primary = $this->getComponentExtName($component->primary_external_provider, $component->primary_external_service);
+                $component->primary_icon = $this->getComponentExtIcon($component->primary_icon, $component->primary_external_provider, $component->primary_external_service);
+            }
+            if (str_contains($component->secondary_type, '_external') or $component->secondary_type === '') {
+                $component->secondary = $this->getComponentExtName($component->secondary_external_provider, $component->secondary_external_service);
+                $component->secondary_icon = $this->getComponentExtIcon($component->secondary_icon, $component->secondary_external_provider, $component->secondary_external_service);
+            }
+
+            // catch all for icon-
+            if (strpos($component->primary_icon, 'icon-') === 0) {
+                $component->primary_icon = $this->getComponentExtIcon($component->primary_icon, $component->primary_external_provider, $component->primary_external_service);
+            }
+            if (strpos($component->secondary_icon, 'icon-') === 0) {
+                $component->secondary_icon = $this->getComponentExtIcon($component->secondary_icon, $component->secondary_external_provider, $component->secondary_external_service);
+            }
+        }
+        $include['components'] = $result;
+        return $include;
     }
 
     /**
@@ -137,7 +291,11 @@ class ApplicationsModel extends BaseModel
     /**
      * Read the entire collection from the database that the user is allowed to read
      *
-     * @return array  An array of formatted entries
+     * @param  array $where Additional WHERE conditions to apply to the query
+     * @param  array $orgs  List of org IDs to restrict results to; if empty,
+     *                      the current user's accessible orgs are used
+     *
+     * @return array        An array of formatted entries
      */
     public function listUser($where = array(), $orgs = array()): array
     {
@@ -207,11 +365,56 @@ class ApplicationsModel extends BaseModel
     }
 
     /**
+     * Search all user-accessible applications and their components for a string
+     *
+     * Iterates every application visible to the current user and inspects each
+     * component field for a case-insensitive match against $search. Presentation
+     * fields ('primary', 'primary_icon', 'secondary', 'secondary_icon') are
+     * excluded from the search.
+     *
+     * @param  string $search The string to search for
+     *
+     * @return array          Array of stdClass objects, each with:
+     *                        application_id, application_name, attribute (field name),
+     *                        value (matched value), and description (human-readable label)
+     */
+    public function search(string $search): array
+    {
+        $exclude_fields = array('primary', 'primary_icon', 'secondary', 'secondary_icon');
+        $result = array();
+        $applications = $this->listUser();
+        foreach ($applications as $application) {
+            $include = $this->includedRead($application->id);
+            foreach ($include['components'] as $component) {
+                foreach ($component as $key => $value) {
+                    if (str_contains(strtolower($value), strtolower($search)) and !in_array($key, $exclude_fields)) {
+                        $item = new stdClass();
+                        $item->application_id = $application->id;
+                        $item->application_name = $application->attributes->name;
+                        $item->attribute = $key;
+                        $item->value = $value;
+                        $item->description = '';
+                        if (str_contains($key, 'primary')) {
+                            $item->description = $component->primary;
+                        }
+                        if (str_contains($key, 'secondary')) {
+                            $item->description = $component->secondary;
+                        }
+                        $result[] = $item;
+                    }
+                }
+            }
+        }
+        return $result;
+    }
+
+    /**
      * Update an individual item in the database
      *
-     * @param  object  $data The data attributes
+     * @param  int|null        $id   The ID of the item to update
+     * @param  object|array|null $data The data attributes to apply
      *
-     * @return bool    true || false depending on success
+     * @return bool                  true on success, false on failure
      */
     public function update($id = null, $data = null): bool
     {
@@ -223,6 +426,313 @@ class ApplicationsModel extends BaseModel
             return false;
         }
         return true;
+    }
+
+    /**
+     * Build a human-readable display name for an external (cloud) component
+     *
+     * Combines the provider and service names into a single string of the form
+     * "{service} on {provider}". Returns an empty string when both values are
+     * empty.
+     *
+     * @param  string $external_provider The cloud provider name (e.g. 'AWS', 'Azure')
+     * @param  string $external_service  The specific service name within that provider
+     *
+     * @return string                    A display name such as "EC2 on AWS", or '' if both are empty
+     */
+    public function getComponentExtName(string $external_provider, string $external_service): string
+    {
+        $name = '';
+        $name = "{$external_provider} / {$external_service}";
+        $name = "{$external_service} on {$external_provider}";
+        if ($name === ' / ') {
+            $name = '';
+        }
+        return $name;
+    }
+
+    /**
+     * Resolve an HTML icon tag for a component, with cloud-provider fallback
+     *
+     * Resolution order:
+     *  1. If $icon is a known local SVG file under public/icons/, return an <img> tag.
+     *  2. If $icon starts with 'icon-', return a <span> using that CSS class.
+     *  3. If $icon is empty and $external_provider is 'AWS', resolve from public/aws_icons/.
+     *  4. If $icon is empty and $external_provider is 'Azure', resolve from public/azure_icons/.
+     *  5. Otherwise return $icon unchanged.
+     *
+     * @param  string $icon              Existing icon value (filename stem or CSS class) or ''
+     * @param  string $external_provider The cloud provider name (e.g. 'AWS', 'Azure')
+     * @param  string $external_service  The specific service name, used to locate provider icons
+     *
+     * @return string                    An HTML <img> tag, <span> tag, or the original $icon string
+     */
+    public function getComponentExtIcon(string $icon, string $external_provider, string $external_service): string
+    {
+        $width = '40px';
+        if (!empty($icon)) {
+            if (file_exists(ROOTPATH . 'public/icons/' . $icon . '.svg')) {
+                $icon = '<img src="' . BASE_URL() . 'icons/' . $icon . '.svg" style="width:' . $width . ';">';
+                return $icon;
+            } else {
+                if (strpos($icon, 'icon-') === 0) {
+                    $icon = "<span class=\"{$icon}\" style=\"font-size:2.5rem; strokeWidth:2px;\">";
+                    return $icon;
+                }
+            }
+        }
+        if (empty($icon) and $external_provider === 'AWS') {
+            # AWS Logo :: AWS -> AWS-Logo/AWS.svg
+            $temp = explode(' :: ', $external_service);
+            $directory = str_replace(' ', '-', $temp[0]);
+            $file = str_replace(' ', '-', $temp[1]);
+            if (file_exists(ROOTPATH . 'public/aws_icons/' . $directory . '/' . $file . '.svg')) {
+                $icon = '<img src="' . BASE_URL() . 'aws_icons/' . rawurlencode($directory) . '/' . rawurlencode($file) . '.svg" style="width:' . $width . ';">';
+                return $icon;
+            }
+        }
+        if (empty($icon) and $external_provider === 'Azure') {
+            # app services :: App Service Certificates
+            $temp = explode(' :: ', $external_service);
+            $directory = ROOTPATH . 'public/azure_icons/' . $temp[0];
+            $file = str_replace(' ', '-', $temp[1]);
+            $icon = '';
+            if (is_dir($directory)) {
+                if ($handle = opendir($directory)) {
+                    while (false !== ($entry = readdir($handle))) {
+                        if ($entry === '.' || $entry === '..') {
+                            continue;
+                        }
+                        if (stripos($entry, $file . '.svg') !== false) {
+                            $icon = $entry;
+                        }
+                    }
+                    closedir($handle);
+                }
+            }
+            $icon = '<img src="' . BASE_URL() . 'azure_icons/' . rawurlencode($temp[0]) . '/' . rawurlencode($icon) . '" style="width:' . $width . ';">';
+            return $icon;
+        }
+        return $icon;
+    }
+
+    /**
+     * Resolve application-type component details (stub)
+     *
+     * Reserved for future implementation. Currently returns the component
+     * object unchanged.
+     *
+     * @param  object $component The application component object to enrich
+     * @param  string $section   Which side of the component to resolve: 'primary' or 'secondary'
+     *
+     * @return object            The component object, unmodified
+     */
+    public function getComponentApplication(object $component, string $section): object
+    {
+        return $component;
+    }
+
+    /**
+     * Resolve certificate details for a component and enrich it with a display link and icon
+     *
+     * Queries the `certificates` table using the component's internal ID field
+     * ({$section}_internal_id_b). On success, sets $component->{$section} to an
+     * HTML anchor linking to the certificate read page, and sets
+     * $component->{$section}_icon to an <img> tag for the certificates icon.
+     *
+     * @param  object $component The application component object to enrich
+     * @param  string $section   Which side of the component to resolve: 'primary' or 'secondary'
+     *
+     * @return object            The enriched component object
+     */
+    public function getComponentCertificate(object $component, string $section): object
+    {
+        $width = '40px';
+        $component->{$section} = '';
+        $sql = "SELECT * FROM certificates WHERE id = ?";
+        $result = $this->db->query($sql, [$component->{$section . '_internal_id_b'}])->getResult();
+        if (!empty($result[0])) {
+            $component->{$section} = '<a href="' . url_to('certificatesRead', $result[0]->id) . '">' . $result[0]->name . '</a>';
+            $component->{$section . '_icon'} = '<img src="' . BASE_URL() . 'icons/certificates.svg" style="width:' . $width . ';">';
+        }
+        return $component;
+    }
+
+    /**
+     * Resolve cluster details for a component and enrich it with a display link and icon
+     *
+     * Queries the `clusters` table using the component's internal ID field
+     * ({$section}_internal_id_b). On success, sets $component->{$section} to an
+     * HTML anchor linking to the cluster read page, and sets
+     * $component->{$section}_icon to an <img> tag for the clusters icon.
+     *
+     * @param  object $component The application component object to enrich
+     * @param  string $section   Which side of the component to resolve: 'primary' or 'secondary'
+     *
+     * @return object            The enriched component object
+     */
+    public function getComponentCluster(object $component, string $section): object
+    {
+        $width = '40px';
+        $component->{$section} = '';
+        $sql = "SELECT * FROM clusters WHERE id = ?";
+        $result = $this->db->query($sql, [$component->{$section . '_internal_id_b'}])->getResult();
+        if (!empty($result[0])) {
+            $component->{$section} = '<a href="' . url_to('clustersRead', $result[0]->id) . '">' . $result[0]->name . '</a>';
+            $component->{$section . '_icon'} = '<img src="' . BASE_URL() . 'icons/clusters.svg" style="width:' . $width . ';">';
+        }
+        return $component;
+    }
+
+    /**
+     * Resolve device-type component details (stub)
+     *
+     * Reserved for future implementation. Currently returns the component
+     * object unchanged.
+     *
+     * @param  object $component The application component object to enrich
+     * @param  string $section   Which side of the component to resolve: 'primary' or 'secondary'
+     *
+     * @return object            The component object, unmodified
+     */
+    public function getComponentDevice(object $component, string $section): object
+    {
+        return $component;
+    }
+
+    /**
+     * Resolve server item and device details for a component hosted on a
+     * local (on-premises) device.
+     *
+     * Queries the `server_item` and `devices` tables using the internal IDs
+     * stored on the component, then merges the resulting fields onto the
+     * component object. Also builds an HTML icon tag and a human-readable
+     * display string (e.g. "Service named foo\nRunning on <a>bar</a>") and
+     * assigns it to `$component->{$section}`.
+     *
+     * @param  object $component The application component object to enrich
+     * @param  string $section   Which side of the component to resolve:
+     *                           'primary' or 'secondary'
+     *
+     * @return object|null       The enriched component object, or null if the
+     *                           supplied component was empty
+     */
+    public function getComponentServerItem(object $component, string $section): object
+    {
+        if (empty($component)) {
+            log_message('warning', 'Empty component passed to ApplicationsComponentsModel::getComponentServerItem');
+            return null;
+        }
+        // server_item and device details
+        if ($component->{$section . '_type'} === 'api') {
+            $sql = "SELECT server_item.id AS `{$section}.server_item.id`, server_item.name AS `{$section}.server_item.name`, devices.id AS `{$section}.devices.id`, devices.environment AS `{$section}.devices.environment`, devices.name AS `{$section}.devices.name`, devices.type AS `{$section}.devices.type`, devices.os_family AS `{$section}.devices.os_family`, devices.icon AS `{$section}.devices.icon` FROM server_item LEFT JOIN devices ON server_item.device_id = devices.id WHERE devices.id = ? AND server_item.type = 'website' AND server_item.name = ? AND server_item.current = 'y' LIMIT 1";
+            $fields = array(intval($component->{$section . '_internal_id_a'}), $component->{$section . '_internal_id_b'});
+            $thisResult = $this->db->query($sql, $fields)->getResult();
+
+        } else if ($component->{$section . '_type'} === 'application') {
+            $sql = "SELECT software.id AS `{$section}.software.id`, software.name AS `{$section}.software.name`, devices.id AS `{$section}.devices.id`, devices.environment AS `{$section}.devices.environment`, devices.name AS `{$section}.devices.name`, devices.type AS `{$section}.devices.type`, devices.os_family AS `{$section}.devices.os_family`, devices.icon AS `{$section}.devices.icon` FROM software LEFT JOIN devices ON software.device_id = devices.id WHERE devices.id = ? AND software.name = ? AND software.current = 'y' LIMIT 1";
+            $fields = array(intval($component->{$section . '_internal_id_a'}), $component->{$section . '_internal_id_b'});
+            $thisResult = $this->db->query($sql, $fields)->getResult();
+
+        } else if ($component->{$section . '_type'} === 'authentication') {
+            $sql = "SELECT service.id AS `{$section}.service.id`, service.name AS `{$section}.service.name`, devices.id AS `{$section}.devices.id`, devices.environment AS `{$section}.devices.environment`, devices.name AS `{$section}.devices.name`, devices.type AS `{$section}.devices.type`, devices.os_family AS `{$section}.devices.os_family`, devices.icon AS `{$section}.devices.icon` FROM service LEFT JOIN devices ON service.device_id = devices.id WHERE devices.id = ? AND service.name = ? AND service.current = 'y' LIMIT 1";
+            $fields = array(intval($component->{$section . '_internal_id_a'}), $component->{$section . '_internal_id_b'});
+            $thisResult = $this->db->query($sql, $fields)->getResult();
+
+        } else if ($component->{$section . '_type'} === 'client') {
+            $sql = "SELECT software.id AS `{$section}.software.id`, software.name AS `{$section}.software.name`, devices.id AS `{$section}.devices.id`, devices.environment AS `{$section}.devices.environment`, devices.name AS `{$section}.devices.name`, devices.type AS `{$section}.devices.type`, devices.os_family AS `{$section}.devices.os_family`, devices.icon AS `{$section}.devices.icon` FROM software LEFT JOIN devices ON software.device_id = devices.id WHERE devices.id = ? AND software.name = ? AND software.current = 'y' LIMIT 1";
+            $fields = array(intval($component->{$section . '_internal_id_a'}), $component->{$section . '_internal_id_b'});
+            $thisResult = $this->db->query($sql, $fields)->getResult();
+
+        } else if ($component->{$section . '_type'} === 'container') {
+            $sql = "SELECT vm.id AS `{$section}.vm.id`, vm.name AS `{$section}.vm.name`, devices.id AS `{$section}.devices.id`, devices.environment AS `{$section}.devices.environment`, devices.name AS `{$section}.devices.name`, devices.type AS `{$section}.devices.type`, devices.os_family AS `{$section}.devices.os_family`, devices.icon AS `{$section}.devices.icon` FROM vm LEFT JOIN devices ON vm.device_id = devices.id WHERE devices.id = ? AND vm.name = ? AND vm.current = 'y' LIMIT 1";
+            $fields = array(intval($component->{$section . '_internal_id_a'}), $component->{$section . '_internal_id_b'});
+            $thisResult = $this->db->query($sql, $fields)->getResult();
+
+        } else if ($component->{$section . '_type'} === 'database') {
+            $sql = "SELECT server_item.id AS `{$section}.server_item.id`, server_item.name AS `{$section}.server_item.name`, devices.id AS `{$section}.devices.id`, devices.environment AS `{$section}.devices.environment`, devices.name AS `{$section}.devices.name`, devices.type AS `{$section}.devices.type`, devices.os_family AS `{$section}.devices.os_family`, devices.icon AS `{$section}.devices.icon` FROM server_item LEFT JOIN devices ON server_item.device_id = devices.id WHERE devices.id = ? AND server_item.type = 'database' AND server_item.name = ? AND server_item.current = 'y' LIMIT 1";
+            $fields = array(intval($component->{$section . '_internal_id_a'}), $component->{$section . '_internal_id_b'});
+            $thisResult = $this->db->query($sql, $fields)->getResult();
+
+        } else if ($component->{$section . '_type'} === 'program') {
+            $sql = "SELECT executable.id AS `{$section}.executable.id`, executable.name AS `{$section}.executable.name`, devices.id AS `{$section}.devices.id`, devices.environment AS `{$section}.devices.environment`, devices.name AS `{$section}.devices.name`, devices.type AS `{$section}.devices.type`, devices.os_family AS `{$section}.devices.os_family`, devices.icon AS `{$section}.devices.icon` FROM executable LEFT JOIN devices ON executable.device_id = devices.id WHERE devices.id = ? AND executable.name = ? AND executable.current = 'y' LIMIT 1";
+            $fields = array(intval($component->{$section . '_internal_id_a'}), $component->{$section . '_internal_id_b'});
+            $thisResult = $this->db->query($sql, $fields)->getResult();
+
+        } else if ($component->{$section . '_type'} === 'queue') {
+            $sql = "SELECT service.id AS `{$section}.service.id`, service.name AS `{$section}.service.name`, devices.id AS `{$section}.devices.id`, devices.environment AS `{$section}.devices.environment`, devices.name AS `{$section}.devices.name`, devices.type AS `{$section}.devices.type`, devices.os_family AS `{$section}.devices.os_family`, devices.icon AS `{$section}.devices.icon` FROM service LEFT JOIN devices ON service.device_id = devices.id WHERE devices.id = ? AND service.name = ? AND service.current = 'y' LIMIT 1";
+            $fields = array(intval($component->{$section . '_internal_id_a'}), $component->{$section . '_internal_id_b'});
+            $thisResult = $this->db->query($sql, $fields)->getResult();
+
+        } else if ($component->{$section . '_type'} === 'service') {
+            $sql = "SELECT service.id AS `{$section}.service.id`, service.name AS `{$section}.service.name`, devices.id AS `{$section}.devices.id`, devices.environment AS `{$section}.devices.environment`, devices.name AS `{$section}.devices.name`, devices.type AS `{$section}.devices.type`, devices.os_family AS `{$section}.devices.os_family`, devices.icon AS `{$section}.devices.icon` FROM service LEFT JOIN devices ON service.device_id = devices.id WHERE devices.id = ? AND service.name = ? AND service.current = 'y' LIMIT 1";
+            $fields = array(intval($component->{$section . '_internal_id_a'}), $component->{$section . '_internal_id_b'});
+            $thisResult = $this->db->query($sql, $fields)->getResult();
+
+        } else if ($component->{$section . '_type'} === 'storage') {
+            $sql = "SELECT share.id AS `{$section}.share.id`, share.name AS `{$section}.share.name`, devices.id AS `{$section}.devices.id`, devices.environment AS `{$section}.devices.environment`, devices.name AS `{$section}.devices.name`, devices.type AS `{$section}.devices.type`, devices.os_family AS `{$section}.devices.os_family`, devices.icon AS `{$section}.devices.icon` FROM share LEFT JOIN devices ON share.device_id = devices.id WHERE devices.id = ? AND share.name = ? AND share.current = 'y' LIMIT 1";
+            $fields = array(intval($component->{$section . '_internal_id_a'}), $component->{$section . '_internal_id_b'});
+            $thisResult = $this->db->query($sql, $fields)->getResult();
+
+        } else if ($component->{$section . '_type'} === 'website') {
+            $sql = "SELECT server_item.id AS `{$section}.server_item.id`, server_item.name AS `{$section}.server_item.name`, devices.id AS `{$section}.devices.id`, devices.environment AS `{$section}.devices.environment`, devices.name AS `{$section}.devices.name`, devices.type AS `{$section}.devices.type`, devices.os_family AS `{$section}.devices.os_family`, devices.icon AS `{$section}.devices.icon` FROM server_item LEFT JOIN devices ON server_item.device_id = devices.id WHERE devices.id = ? AND server_item.type = 'website' AND server_item.name = ? AND server_item.current = 'y' LIMIT 1";
+            $fields = array(intval($component->{$section . '_internal_id_a'}), $component->{$section . '_internal_id_b'});
+            $thisResult = $this->db->query($sql, $fields)->getResult();
+
+        } else {
+            return $component;
+        }
+        // log_message('debug', str_replace("\n", " ", (string) $this->db->getLastQuery()));
+        if (!empty($thisResult[0])) {
+            foreach ($thisResult[0] as $key => $value) {
+                $component->$key = $value;
+            }
+        }
+        // if ($component->{$section . '_type'} === 'application') {
+        //     echo "<pre>" . json_encode($component);
+        //     exit;
+        // }
+        // Icon(s)
+        if (!empty($component->{$section . '_icon'})) {
+            if (file_exists(ROOTPATH . 'public/icons/' . $component->{$section . '_icon'} . '.svg')) {
+                $component->{$section . '_icon'} = '<img src="' . BASE_URL() . 'icons/' . $component->{$section . '_icon'} . '.svg" style="width:' . $width . ';">';
+            } else {
+                if (str_contains($component->{$section . '_icon'}, 'icon-')) {
+                    $component->{$section . '_icon'} = '<span class="' . $component->{$section . '_icon'} . '" style="font-size:2.5rem; strokeWidth:2px;">';
+                }
+            }
+        } else {
+            $component->{$section . '_icon'} = '<img src="' . BASE_URL() . 'icons/' . $component->{$section . '_type'} . '.svg" style="width:30px;">';
+        }
+        if (!empty($component->{$section . '.devices.icon'})) {
+            $component->{$section . '_icon'} .= '<br><img src="' . BASE_URL() . 'device_images/' . @$component->{$section . '.devices.icon'} . '.svg" style="width:30px;">';
+        }
+
+        // Primary Name
+        $component->{$section} = '';
+        $url = '';
+        if (isset($component->{$section . '.devices.id'})) {
+            $url = url_to('devicesRead', $component->{$section . '.devices.id'});
+        }
+        $name = '';
+        if (isset($component->{$section . '.devices.name'})) {
+            $name = $component->{$section . '.devices.name'};
+        }
+        if ($url !== '' and $name !== '') {
+            $component->{$section} = ucfirst($component->{$section . '_type'}) . ' named ' . $component->{$section . '_internal_id_b'} . '<br> Running on <a href="' . $url . '">' . $name . '</a>';
+            if (!empty($component->{'devices.environment'})) {
+                $component->{$section} .= ' in ' . $component->{$section . '.devices.environment'};
+            }
+            $component->{$section} .= '<br>';
+            if (!empty($component->{$section . '_owner'})) {
+                $component->{$section} .= 'Managed by ' . $component->{$section . '_owner'};
+            }
+        }
+        if ($component->primary_type === 'container') {
+        #    echo "<pre>" . json_encode($component, JSON_PRETTY_PRINT);
+        #    exit;
+        }
+        return $component;
     }
 
     /**
@@ -240,7 +750,7 @@ class ApplicationsModel extends BaseModel
         $dictionary->columns = new stdClass();
 
         $dictionary->attributes = new stdClass();
-        $dictionary->attributes->collection = array('id', 'name', 'description', 'orgs.name', 'edited_by', 'edited_date');
+        $dictionary->attributes->collection = array('id', 'name', 'orgs.name', 'environment', 'owner', 'criticality', 'sensitivity');
         $dictionary->attributes->create = array('name','org_id'); # We MUST have each of these present and assigned a value
         $dictionary->attributes->fields = $this->db->getFieldNames($collection); # All field names for this table
         $dictionary->attributes->fieldsMeta = $this->db->getFieldData($collection); # The meta data about all fields - name, type, max_length, primary_key, nullable, default
@@ -258,44 +768,43 @@ class ApplicationsModel extends BaseModel
         $dictionary->columns->name = $instance->dictionary->name;
         $dictionary->columns->description = $instance->dictionary->description;
         $dictionary->columns->org_id = $instance->dictionary->org_id;
+        $dictionary->columns->environment = 'Manually set by user, defaults to Production.';
+        $dictionary->columns->status = 'Manually set by user, defaults to Production.';
+        $dictionary->columns->owner = 'Manually set by user.';
+        $dictionary->columns->class = 'Manually set by user.';
+        $dictionary->columns->vendor = 'Who produced this application.';
+        $dictionary->columns->criticality = 'extreme - Without which, the organisation would fail.
+
+very high - Functions that are essential for the organisations survival and must be restored immediately.
+
+high - Important functions that should be restored quickly but may have a slightly longer recovery time.
+
+medium - Functions that are necessary but can tolerate longer downtime.
+
+low - Non-essential functions that can be delayed without significant impact.
+
+unassigned - The default until set.';
+        $dictionary->columns->sensitivity = 'top secret - Military / Government classification. Disclosure would cause exceptionally grave danger to national security.
+
+secret - Military / Government classification. Disclosure would cause serious damage to national security.
+
+confidential - Military / Government and Private Sector classification. Data that is confidential includes trade secrets, intellectual data, application programming code, and other data that could seriously affect the organization if unauthorized disclosure occurred. Data at this level would be available only to personnel in the organization whose work needs, or is directly related to, the accessed data. Access to confidential data usually requires authorization for each access.
+
+private - Private Sector classification. Data that is private includes any information related to personnel, including human resources records, medical records, and salary information, that is used only within the organization.
+
+sensitive - Military / Government and Private Sector classification. Data that is sensitive includes organizational financial information and requires extra measures to ensure its CIA and accuracy. Disclosure might harm national security.
+
+public - Private Sector classification. Public data is data that is generally shared with the public and would not cause a negative impact on the organization. Examples of public data include how many people work in the organization and what products an organization manufactures or sells.
+
+unclassified - Military / Government classification. Any information that can generally be distributed to the public without any threat to national interest.
+
+unassigned - The default until set.';
+
+        $dictionary->columns->replaces  = 'This is a new application that replaces this older application.';
+        $dictionary->columns->replaced_by  = 'This application was replaced by.';
         $dictionary->columns->options  = 'Unused.';
         $dictionary->columns->edited_by = $instance->dictionary->edited_by;
         $dictionary->columns->edited_date = $instance->dictionary->edited_date;
-
-        $dictionary->relationships = new stdClass();
-        $dictionary->relationships->{'accessed-via'} = 'A network. Links to <code>networks.id</code>.';
-        $dictionary->relationships->{'authenticates-via'} = 'A device running a service. Links to <code>service.name</code>.';
-        $dictionary->relationships->{'calls-api'} = 'A device running a web service. Links to <code>server_item.name</code>.';
-        $dictionary->relationships->{'connected-via'} = 'A network. Links to <code>networks.id</code>';
-        $dictionary->relationships->{'consumes'} = 'An external service.';
-        $dictionary->relationships->{'depends-on'} = 'Another component of this application. Links to <code>application.name</code>.';
-        $dictionary->relationships->{'hosted-on'} = 'A VM host. Links to <code>devices.id</code>.';
-        $dictionary->relationships->{'publishes-to'} = 'An external service.';
-        $dictionary->relationships->{'relies-on'} = 'A device or hosted service. Links to <code>devices.id</code> or an external service.';
-        $dictionary->relationships->{'runs-on'} = 'A device. Links to <code>devices.id</code>';
-        $dictionary->relationships->{'used-by'} = 'Another component of this application. Links to <code>application.name</code>.';
-        $dictionary->relationships->{'uses-database'} = 'A database on a device or hosted service. Links to <code>server_item.name</code> or an external service.';
-        $dictionary->relationships->{'uses-storage'} = 'Storage on a device or hosted service. Links to <code>shares.name</code> or an external service.';
-        $dictionary->relationships->{'writes-to'} = 'Storage on a device or hosted service. Links to <code>share.name</code> or an external service.';
-
-        $dictionary->types = new stdClass();
-        $dictionary->types->{'api'} = 'Links to <code>server_item.name</code>';
-        $dictionary->types->{'application'} = 'Links to <code>software.name</code>';
-        $dictionary->types->{'authentication'} = 'Links to <code>service.name</code>';
-        $dictionary->types->{'certificate'} = 'Links to <code>certificates.id</code>';
-        $dictionary->types->{'client'} = 'Links to <code>devices.id</code>';
-        $dictionary->types->{'cluster'} = 'Links to <code>clusters.id</code>';
-        $dictionary->types->{'database'} = 'Links to <code>server_item.name</code>';
-        $dictionary->types->{'device'} = 'Links to <code>devices.id</code>';
-        $dictionary->types->{'dnsname'} = 'Text';
-        $dictionary->types->{'other'} = 'Text';
-        $dictionary->types->{'program'} = 'Links to <code>files.id</code>.';
-        $dictionary->types->{'queue'} = 'Links to <code>service.name</code>';
-        $dictionary->types->{'service'} = 'Links to <code>service.name</code>';
-        $dictionary->types->{'storage'} = 'Links to <code>share.name</code>';
-        $dictionary->types->{'website'} = 'Links to <code>server_item.name</code>';
-
-
 
         return $dictionary;
     }

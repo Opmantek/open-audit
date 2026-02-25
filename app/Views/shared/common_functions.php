@@ -25,7 +25,7 @@ function fieldsInfoDiv (object $dictionary = null, array $fieldsList = [])
     foreach ($dictionary->columns as $key => $value) {
         if ($value !== 'Unused.' and $value !== '' and $key !== 'id' and $key !== 'edited_by' and $key !== 'edited_date' and (in_array($key, $fieldsList) or empty($fieldsList))) {
             // $key = ($key === 'org_id') ? strtolower(__('Organisation')) : $key;
-            $return .= "<code>$key:</code> " . html_entity_decode(__($value)) . "<br><br>";
+            $return .= "<code>$key:</code> " . nl2br(html_entity_decode(__($value))) . "<br><br>";
         }
     }
     return $return;

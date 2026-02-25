@@ -13,6 +13,7 @@ class Collections extends BaseConfig
 {
     public $agents;
     public $applications;
+    public $applications_components;
     public $attributes;
     public $auth;
     public $baselines;
@@ -90,6 +91,16 @@ class Collections extends BaseConfig
         $this->applications->actions->enterprise = 'crud';
         $this->applications->actions->professional = 'r';
         $this->applications->actions->community = '';
+
+        $this->applications_components = new \StdClass();
+        $this->applications_components->icon = 'icon-computer';
+        $this->applications_components->name = 'Applications Components';
+        $this->applications_components->edition = 'Enterprise';
+        $this->applications_components->orgs = 'd';
+        $this->applications_components->actions = new \stdClass();
+        $this->applications_components->actions->enterprise = 'crud';
+        $this->applications_components->actions->professional = 'r';
+        $this->applications_components->actions->community = '';
 
         $this->attributes = new \StdClass();
         $this->attributes->icon = 'icon-list';

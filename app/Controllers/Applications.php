@@ -31,4 +31,24 @@ namespace App\Controllers;
  */
 class Applications extends BaseController
 {
+
+    public function search()
+    {
+        $search = $_POST['search'];
+        $this->resp->data = $this->applicationsModel->search($search);
+        $meta = filter_response($this->resp->meta);
+        return view('shared/header', [
+            'config' => $this->config,
+            'dictionary' => $this->applicationsModel->dictionary(),
+            'meta' => $meta,
+            'orgs' => filter_response($this->orgsUser),
+            'queries' => filter_response($this->queriesUser),
+            'roles' => filter_response($this->roles),
+            'user' => filter_response($this->user)]) .
+            view('applicationsSearch', [
+                'data' => filter_response($this->resp->data),
+                'meta' => $meta,
+                'included' => filter_response($this->resp->included)])
+            . view('shared/footer', ['license_string' => $this->resp->meta->license_string]);
+    }
 }

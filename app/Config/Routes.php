@@ -151,6 +151,7 @@ $routes->get('logout', 'Logon::delete');
 $routes->get('scripts/(:any)/download', 'Scripts::download/$1', ['as' => 'scriptsDownload']);
 
 $routes->post('search', 'Search::create', ['filter' => \App\Filters\Session::class, 'as' => 'searchCreate']);
+$routes->post('applications/search', 'Applications::search', ['filter' => \App\Filters\Session::class, 'as' => 'applicationsSearch']);
 
 $routes->post('util/subnet_size', 'Util::subnetSize');
 $routes->get('util/test_windows_client', 'Util::testWindowsClient');
@@ -170,6 +171,8 @@ $routes->cli('clouds/(:num)/execute', 'Cli::executeCloud/$1', ['as' => 'executeC
 $routes->cli('resetDeviceComponentTables', 'Cli::resetDeviceComponentTables', ['as' => 'resetDeviceComponentTables']);
 
 $routes->patch('devices/(:num)/reset', 'Devices::reset/$1', ['filter' => \App\Filters\Session::class, 'as' => 'DeviceReset']);
+
+$routes->get('cloudServices/(:any)', 'Util::cloudServices/$1', ['as' => 'cloudServices']);
 
 foreach ($collections as $collection) {
     // Account for users editing the config and including a space character

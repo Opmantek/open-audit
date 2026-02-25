@@ -394,7 +394,13 @@ class OpenAudit extends BaseConfig
         }
 
         if (php_uname('s') === 'Darwin' and file_exists('/usr/local/oac/enterprise.pl')) {
-            $this->enterprise_binary = '/opt/homebrew/bin/perl /usr/local/oac/enterprise.pl';
+            if (file_exists('/opt/homebrew/bin/perl')) {
+                $this->enterprise_binary = '/opt/homebrew/bin/perl /usr/local/oac/enterprise.pl';
+            }
+            if (file_exists('/Users/mark/perl5/perlbrew/perls/perl-5.40.3/bin/perl')) {
+                $this->enterprise_binary = '/Users/mark/perl5/perlbrew/perls/perl-5.40.3/bin/perl /usr/local/oac/enterprise.pl';
+            }
+            $this->enterprise_binary = 'perl /usr/local/oac/enterprise.pl';
         }
 
         $modules = array();

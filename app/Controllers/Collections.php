@@ -292,12 +292,19 @@ class Collections extends BaseController
                 output($this);
                 return true;
             } else {
+                log_message('debug', 'HTML');
+                log_message('debug', json_encode($this->resp->meta, JSON_PRETTY_PRINT));
                 if ($this->resp->meta->collection !== 'components') {
+                    log_message('debug', 'Not components');
                     if ($this->resp->meta->collection === 'collectors') {
                         \Config\Services::session()->setFlashdata('success', "This server was registered as a Collector successfully.");
                         return redirect()->route('dashboardCollector');
                     }
                     \Config\Services::session()->setFlashdata('success', "Item in {$this->resp->meta->collection} created successfully.");
+                    if ($this->resp->meta->collection === 'applications_components') {
+                        log_message('debug', 'Is AppComp');
+                        return redirect()->route('applicationsRead', [$this->resp->meta->received_data->attributes->application_id]);
+                    }
                     if ($this->resp->meta->collection === 'baselines_policies') {
                         return redirect()->route('baselinesRead', [$this->resp->meta->received_data->attributes->baseline_id]);
                     }
@@ -336,8 +343,12 @@ class Collections extends BaseController
                     return redirect()->route('dashboardsExecute', [1]);
                 }
                 log_message('error', 'Item in ' . $this->resp->meta->collection . ' not created.');
+                \Config\Services::session()->setFlashdata('error', 'Item in ' . $this->resp->meta->collection . ' not created. See logs for more information.');
                 if ($this->resp->meta->collection === 'components') {
                     $this->resp->meta->collection = 'devices';
+                }
+                if ($this->resp->meta->collection === 'applications_components') {
+                    $this->resp->meta->collection = 'applications';
                 }
                 return redirect()->route($this->resp->meta->collection . 'Collection');
             }
@@ -370,6 +381,24 @@ class Collections extends BaseController
             output($this);
             return true;
         }
+        if ($this->resp->meta->collection === 'applications_components') {
+            $applicationsModel = model('ApplicationsModel');
+            $applications = $applicationsModel->read(intval($_GET['application_id']));
+            if (empty($applications)) {
+                \Config\Services::session()->setFlashdata('error', 'Invalid application id provided.');
+                return redirect('applicationsCollection');
+            }
+            $this->resp->meta->breadcrumbs = array();
+            $breadcrumb = new stdClass();
+            $breadcrumb->url = url_to('applicationsCollection');
+            $breadcrumb->name = 'Applications';
+            $this->resp->meta->breadcrumbs[] = $breadcrumb;
+            $breadcrumb = new stdClass();
+            $breadcrumb->url = url_to('applicationsRead', intval($_GET['application_id']));
+            $breadcrumb->name = $applications[0]->attributes->name;
+            $this->resp->meta->breadcrumbs[] = $breadcrumb;
+        }
+
         return view('shared/header', [
             'config' => $this->config,
             'dashboards' => filter_response($this->dashboards),
@@ -1017,6 +1046,18 @@ class Collections extends BaseController
                 \Config\Services::session()->setFlashdata('warning', 'Invalid ID provided to ' . $this->resp->meta->collection . ' read function (ID: ' . $this->resp->meta->id . ')');
                 return redirect()->route($this->resp->meta->collection . 'Collection');
             }
+            if ($this->resp->meta->collection === 'applications_components') {
+                $this->resp->meta->breadcrumbs = array();
+                $breadcrumb = new stdClass();
+                $breadcrumb->url = url_to('applicationsCollection');
+                $breadcrumb->name = 'Applications';
+                $this->resp->meta->breadcrumbs[] = $breadcrumb;
+                $breadcrumb = new stdClass();
+                $breadcrumb->url = url_to('applicationsRead', $this->resp->data[0]->attributes->application_id);
+                $breadcrumb->name = $this->resp->data[0]->attributes->{'applications.name'};
+                $this->resp->meta->breadcrumbs[] = $breadcrumb;
+            }
+
             if ($this->resp->meta->collection === 'baselines_results') {
                 $this->resp->meta->breadcrumbs = array();
                 $breadcrumb = new stdClass();

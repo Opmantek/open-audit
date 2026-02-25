@@ -461,7 +461,7 @@ if (!function_exists('response_create')) {
             unset($response->meta->query_string);
             $function = $response->meta->collection . '_' . $response->meta->action;
             if (
-                !in_array($function, array("baselines_create", "baselines_execute", "benchmarks_create", "certificates_create", "clusters_create", "collectors_create", "collectors_register", "configuration_update", "dashboards_create", "discovery_scan_options_create", "discovery_scan_options_update", "executables_create", "racks_create", "roles_create", "standards_create", "tasks_create", "widgets_create", "widgets_update")) and
+                !in_array($function, array("applications_create", "applications_components_create", "baselines_create", "baselines_execute", "benchmarks_create", "certificates_create", "clusters_create", "collectors_create", "collectors_register", "configuration_update", "dashboards_create", "discovery_scan_options_create", "discovery_scan_options_update", "executables_create", "racks_create", "roles_create", "standards_create", "tasks_create", "widgets_create", "widgets_update")) and
                 !($function === 'configuration_update' and ($response->meta->id === $config->license_string_id or $response->meta->id === $config->license_string_collector_id))
             ) {
                 $received_data = $response->meta->received_data;
@@ -563,7 +563,7 @@ if (!function_exists('response_create')) {
                 $db->query($sql);
             }
             if (
-                !in_array($function, array("baselines_create", "baselines_execute", "benchmarks_create", "certificates_create", "clusters_create", "collectors_create", "collectors_register", "configuration_update", "dashboards_create", "discovery_scan_options_create", "discovery_scan_options_update", "executables_create", "racks_create", "roles_create", "standards_create", "tasks_create", "widgets_create", "widgets_update")) and
+                !in_array($function, array("applications_create", "applications_components_create", "baselines_create", "baselines_execute", "benchmarks_create", "certificates_create", "clusters_create", "collectors_create", "collectors_register", "configuration_update", "dashboards_create", "discovery_scan_options_create", "discovery_scan_options_update", "executables_create", "racks_create", "roles_create", "standards_create", "tasks_create", "widgets_create", "widgets_update")) and
                 !($function === 'configuration_update' and ($response->meta->id === $config->license_string_id or $response->meta->id === $config->license_string_collector_id))
             ) {
                 $response->meta->received_data = $received_data;
@@ -1550,7 +1550,7 @@ if (!function_exists('response_valid_actions')) {
      */
     function response_valid_actions(): array
     {
-        return ['bulk_update_form', 'collection', 'create', 'create_form', 'debug', 'defaults', 'delete', 'delete_form', 'dictionary', 'download', 'example', 'example_form', 'execute', 'export', 'export_form', 'help', 'import', 'importform', 'importjson', 'importjsonform', 'importnmisform', 'importnmis', 'read', 'reset', 'resetForm', 'test', 'update'];
+        return ['bulk_update_form', 'collection', 'create', 'create_form', 'debug', 'defaults', 'delete', 'delete_form', 'dictionary', 'download', 'example', 'example_form', 'execute', 'export', 'export_form', 'help', 'import', 'importform', 'importjson', 'importjsonform', 'importnmisform', 'importnmis', 'read', 'reset', 'resetForm', 'search', 'test', 'update'];
     }
 }
 
@@ -1651,6 +1651,7 @@ if (!function_exists('response_valid_permissions')) {
         $permission['reset'] = 'd';
         $permission['resetForm'] = 'd';
         $permission['resetform'] = 'd';
+        $permission['search'] = 'r';
         $permission['test'] = 'u';
         $permission['update'] = 'u';
 

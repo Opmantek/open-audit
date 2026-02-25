@@ -247,7 +247,7 @@ function read_field(string $name = '', string $value = '', string $dictionary = 
     }
 
     $return = '
-                        <div class="row" style="padding-top:16px;">
+                        <div class="row" style="padding-top:1rem;">
                             <div class="offset-2 col-8" style="position:relative;">' . read_field_header($collection, $name, $dictionary, $label) . '
                                 <div class="input-group">
                                     <input disabled type="' . $type . '" class="form-control" id="' . $name . '" value="' . $value . '" data-original-value="' . $value . '" ' . $placeholder . '>';
@@ -276,7 +276,7 @@ function read_field(string $name = '', string $value = '', string $dictionary = 
 function read_text_box(string $name = '', string $value = '', string $dictionary = '', string $collection = '')
 {
     $return = '
-                        <div class="row" style="padding-top:16px;">
+                        <div class="row" style="padding-top:1rem;">
                             <div class="offset-2 col-8" style="position:relative;">
                                 ' . read_field_header($collection, $name, $dictionary) . '
                                 <div class="input-group">
@@ -314,7 +314,7 @@ function read_select(string $name = '', string $value = '', string $dictionary =
         $css_select = 'select2';
     }
 
-    $return =  "                           <div class=\"row\" style=\"padding-top:16px;\">
+    $return =  "                           <div class=\"row\" style=\"padding-top:1rem;\">
                                 <div class=\"offset-2 col-8\" style=\"position:relative;\" width=\"100%\">
                                     " . read_field_header($collection, $name, $dictionary, $label) . "
                                     <div class=\"input-group\">
