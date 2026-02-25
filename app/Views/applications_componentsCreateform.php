@@ -121,8 +121,6 @@ if (!empty($_GET['application_id'])) {
                                 </div>
                                 <hr>
 
-
-
                                 <div class="row" style="padding-top:16px;">
                                     <div class="offset-2 col-8">
                                         <h3>Secondary</h3>
@@ -203,12 +201,6 @@ if (!empty($_GET['application_id'])) {
                                         <input class="form-control" type="text" id="data[attributes][secondary_description]" name="data[attributes][secondary_description]">
                                     </div>
                                 </div>
-
-
-
-
-
-
 
                                 <br>
                                 <div class="row">

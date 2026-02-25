@@ -67,19 +67,7 @@ class ApplicationsModel extends BaseModel
      */
     public function create($data = null): ?int
     {
-        if (empty($data)) {
-            return null;
-        }
-        $data = $this->createFieldData('applications', $data);
-        if (empty($data)) {
-            return null;
-        }
-        $this->builder->insert($data);
-        if ($error = $this->sqlError($this->db->error())) {
-            \Config\Services::session()->setFlashdata('error', json_encode($error));
-            return null;
-        }
-        return (intval($this->db->insertID()));
+        return null;
     }
 
     /**
@@ -376,6 +364,20 @@ class ApplicationsModel extends BaseModel
         return false;
     }
 
+    /**
+     * Search all user-accessible applications and their components for a string
+     *
+     * Iterates every application visible to the current user and inspects each
+     * component field for a case-insensitive match against $search. Presentation
+     * fields ('primary', 'primary_icon', 'secondary', 'secondary_icon') are
+     * excluded from the search.
+     *
+     * @param  string $search The string to search for
+     *
+     * @return array          Array of stdClass objects, each with:
+     *                        application_id, application_name, attribute (field name),
+     *                        value (matched value), and description (human-readable label)
+     */
     public function search(string $search): array
     {
         $exclude_fields = array('primary', 'primary_icon', 'secondary', 'secondary_icon');
@@ -426,6 +428,18 @@ class ApplicationsModel extends BaseModel
         return true;
     }
 
+    /**
+     * Build a human-readable display name for an external (cloud) component
+     *
+     * Combines the provider and service names into a single string of the form
+     * "{service} on {provider}". Returns an empty string when both values are
+     * empty.
+     *
+     * @param  string $external_provider The cloud provider name (e.g. 'AWS', 'Azure')
+     * @param  string $external_service  The specific service name within that provider
+     *
+     * @return string                    A display name such as "EC2 on AWS", or '' if both are empty
+     */
     public function getComponentExtName(string $external_provider, string $external_service): string
     {
         $name = '';
@@ -437,6 +451,22 @@ class ApplicationsModel extends BaseModel
         return $name;
     }
 
+    /**
+     * Resolve an HTML icon tag for a component, with cloud-provider fallback
+     *
+     * Resolution order:
+     *  1. If $icon is a known local SVG file under public/icons/, return an <img> tag.
+     *  2. If $icon starts with 'icon-', return a <span> using that CSS class.
+     *  3. If $icon is empty and $external_provider is 'AWS', resolve from public/aws_icons/.
+     *  4. If $icon is empty and $external_provider is 'Azure', resolve from public/azure_icons/.
+     *  5. Otherwise return $icon unchanged.
+     *
+     * @param  string $icon              Existing icon value (filename stem or CSS class) or ''
+     * @param  string $external_provider The cloud provider name (e.g. 'AWS', 'Azure')
+     * @param  string $external_service  The specific service name, used to locate provider icons
+     *
+     * @return string                    An HTML <img> tag, <span> tag, or the original $icon string
+     */
     public function getComponentExtIcon(string $icon, string $external_provider, string $external_service): string
     {
         $width = '40px';
@@ -486,11 +516,35 @@ class ApplicationsModel extends BaseModel
         return $icon;
     }
 
+    /**
+     * Resolve application-type component details (stub)
+     *
+     * Reserved for future implementation. Currently returns the component
+     * object unchanged.
+     *
+     * @param  object $component The application component object to enrich
+     * @param  string $section   Which side of the component to resolve: 'primary' or 'secondary'
+     *
+     * @return object            The component object, unmodified
+     */
     public function getComponentApplication(object $component, string $section): object
     {
         return $component;
     }
 
+    /**
+     * Resolve certificate details for a component and enrich it with a display link and icon
+     *
+     * Queries the `certificates` table using the component's internal ID field
+     * ({$section}_internal_id_b). On success, sets $component->{$section} to an
+     * HTML anchor linking to the certificate read page, and sets
+     * $component->{$section}_icon to an <img> tag for the certificates icon.
+     *
+     * @param  object $component The application component object to enrich
+     * @param  string $section   Which side of the component to resolve: 'primary' or 'secondary'
+     *
+     * @return object            The enriched component object
+     */
     public function getComponentCertificate(object $component, string $section): object
     {
         $width = '40px';
@@ -504,6 +558,19 @@ class ApplicationsModel extends BaseModel
         return $component;
     }
 
+    /**
+     * Resolve cluster details for a component and enrich it with a display link and icon
+     *
+     * Queries the `clusters` table using the component's internal ID field
+     * ({$section}_internal_id_b). On success, sets $component->{$section} to an
+     * HTML anchor linking to the cluster read page, and sets
+     * $component->{$section}_icon to an <img> tag for the clusters icon.
+     *
+     * @param  object $component The application component object to enrich
+     * @param  string $section   Which side of the component to resolve: 'primary' or 'secondary'
+     *
+     * @return object            The enriched component object
+     */
     public function getComponentCluster(object $component, string $section): object
     {
         $width = '40px';
@@ -517,6 +584,17 @@ class ApplicationsModel extends BaseModel
         return $component;
     }
 
+    /**
+     * Resolve device-type component details (stub)
+     *
+     * Reserved for future implementation. Currently returns the component
+     * object unchanged.
+     *
+     * @param  object $component The application component object to enrich
+     * @param  string $section   Which side of the component to resolve: 'primary' or 'secondary'
+     *
+     * @return object            The component object, unmodified
+     */
     public function getComponentDevice(object $component, string $section): object
     {
         return $component;
