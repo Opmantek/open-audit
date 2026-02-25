@@ -95,11 +95,22 @@ $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
 
-if ($db->tableExists('applications_components')) {
-    $sql = "INSERT INTO applications_components VALUES (SELECT null, applications.name, applications.org_id, applications.id, 'Device imported.', 'application', application.device_id, 0, '', '', '', '', 'runs-on-device', '', 0, 0, '', '', '', '', application.edited_by, application.edited_date FROM application LEFT JOIN applications ON application.application_id = applications.id)";
-    $db->query($sql);
+if ($db->tableExists('applications_components') and $db->tableExists('application')) {
+    // $sql = "INSERT INTO applications_components (`id`, `name`, `org_id`, `application_id`, `description`, `primary_type`, `primary_internal_id_a`, `primary_internal_id_b`, `primary_external_provider`, `primary_external_service`, `primary_description`, `primary_owner`, `primary_icon`, `relationship`, `secondary_type`, `secondary_internal_id_a`, `secondary_internal_id_b`, `secondary_external_provider`, `secondary_external_service`, `secondary_description`, `secondary_owner`, `secondary_icon`, `edited_by`, `edited_date`) VALUES (SELECT NULL, applications.name, applications.org_id, applications.id, 'Device imported.', 'device', application.device_id, '', '', '', '', '', '', 'device', '', 0, '', '', '', '', '', '', application.edited_by, application.edited_date FROM application LEFT JOIN applications ON application.application_id = applications.id)";
+    $sql = "SELECT applications.name, applications.org_id, applications.id, application.device_id, application.edited_by, application.edited_date FROM application LEFT JOIN applications ON application.application_id = applications.id";
+    $applications = $db->query($sql)->getResult();
     $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
     log_message('info', (string)$db->getLastQuery());
+    if (!empty($result)) {
+        foreach ($applications as $application) {
+            $sql = "INSERT INTO applications_components (`id`, `name`, `org_id`, `application_id`, `description`,      `primary_type`, `primary_internal_id_a`, `relationship`, `edited_by`, `edited_date`) VALUES 
+                                                        (NULL,      ?,        ?,                ?, 'Device imported.',       'device',                       ?,    'hosted-on',           ?,             ?";
+            $data = array($application->name, $application->org_id, $application->id, $application->device_id, $application->edited_by, $application->edited_date);
+            $db->query($sql, $data);
+            $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+            log_message('info', (string)$db->getLastQuery());
+        }
+    }
 }
 
 if ($db->tableExists('application')) {
