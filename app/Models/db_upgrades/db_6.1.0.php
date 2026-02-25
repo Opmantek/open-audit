@@ -23,8 +23,15 @@ if (!$db->fieldExists('owner', 'applications')) {
     log_message('info', (string)$db->getLastQuery());
 }
 
+if (!$db->fieldExists('class', 'applications')) {
+    $sql = "ALTER TABLE `applications` ADD `class` varchar(200) NOT NULL DEFAULT '' AFTER `owner`";
+    $db->query($sql);
+    $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+    log_message('info', (string)$db->getLastQuery());
+}
+
 if (!$db->fieldExists('vendor', 'applications')) {
-    $sql = "ALTER TABLE `applications` ADD `vendor` varchar(200) NOT NULL DEFAULT '' AFTER `owner`";
+    $sql = "ALTER TABLE `applications` ADD `vendor` varchar(200) NOT NULL DEFAULT '' AFTER `class`";
     $db->query($sql);
     $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
     log_message('info', (string)$db->getLastQuery());
