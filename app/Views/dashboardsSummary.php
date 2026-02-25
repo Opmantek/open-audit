@@ -113,9 +113,11 @@ $instance = & get_instance();
                         }
                         if ($collection->edition === 'Professional' and $config->product === 'professional' or $config->product === 'enterprise') {
                             $link = url_to($name . 'Collection');
+                            $toast = '';
                         }
                         if ($collection->edition === 'Enterprise' and $config->product === 'enterprise') {
                             $link = url_to($name . 'Collection');
+                            $toast = '';
                         }
                         if ($collection->name === 'Discovery Log') {
                             $link = 'discoveries';
