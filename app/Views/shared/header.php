@@ -626,7 +626,7 @@ if (!empty($config->modules)) {
                                     }
                                     echo '<li class="breadcrumb-item"><a href="' . url_to($breadcrumb_collection . 'Collection') . '" class="link-secondary">' .__(@ucwords(str_replace('_', ' ', $breadcrumb_collection))) . "</a></li>\n";
                                     if (($meta->action === 'read' or $meta->action === 'execute') and !empty($name)) {
-                                        echo '<li class="breadcrumb-item"><a href="' . url_to($breadcrumb_collection . 'Read', $meta->id) . '" class="link-secondary">' . $name . "</a></li>\n";
+                                        echo '<li class="breadcrumb-item"><a href="' . url_to($breadcrumb_collection . 'Read', $meta->id) . '" class="link-secondary">' . htmlentities($name) . "</a></li>\n";
                                     }
                                 } else {
                                     foreach ($meta->breadcrumbs as $breadcrumb) { ?>

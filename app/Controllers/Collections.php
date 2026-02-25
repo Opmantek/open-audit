@@ -292,17 +292,13 @@ class Collections extends BaseController
                 output($this);
                 return true;
             } else {
-                log_message('debug', 'HTML');
-                log_message('debug', json_encode($this->resp->meta, JSON_PRETTY_PRINT));
                 if ($this->resp->meta->collection !== 'components') {
-                    log_message('debug', 'Not components');
                     if ($this->resp->meta->collection === 'collectors') {
                         \Config\Services::session()->setFlashdata('success', "This server was registered as a Collector successfully.");
                         return redirect()->route('dashboardCollector');
                     }
                     \Config\Services::session()->setFlashdata('success', "Item in {$this->resp->meta->collection} created successfully.");
                     if ($this->resp->meta->collection === 'applications_components') {
-                        log_message('debug', 'Is AppComp');
                         return redirect()->route('applicationsRead', [$this->resp->meta->received_data->attributes->application_id]);
                     }
                     if ($this->resp->meta->collection === 'baselines_policies') {
