@@ -205,7 +205,7 @@ $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
 
 // set our versions
-$sql = "UPDATE `configuration` SET `value` = '20260512' WHERE `name` = 'internal_version'";
+$sql = "UPDATE `configuration` SET `value` = '20260218' WHERE `name` = 'internal_version'";
 $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
@@ -216,5 +216,5 @@ $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
 
 $output .= "Upgrade database to 6.1.0 completed.\n\n";
-config('Openaudit')->internal_version = 20260512;
+config('Openaudit')->internal_version = 20260218;
 config('Openaudit')->display_version = '6.1.0';
