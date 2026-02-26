@@ -194,6 +194,13 @@ class ApplicationsModel extends BaseModel
                 $component->secondary_icon = $this->getComponentExtIcon($component->secondary_icon, $component->secondary_external_provider, $component->secondary_external_service);
             }
 
+            if ($component->primary_type === 'network') {
+                $component = $this->getComponentNetwork($component, 'primary');
+            }
+            if ($component->secondary_type === 'network') {
+                $component = $this->getComponentNetwork($component, 'secondary');
+            }
+
             if ($component->primary_type === 'other') {
                 $component->primary = $this->getComponentExtName($component->primary_external_provider, $component->primary_external_service);
                 $component->primary_icon = $this->getComponentExtIcon($component->primary_icon, $component->primary_external_provider, $component->primary_external_service);
@@ -221,6 +228,13 @@ class ApplicationsModel extends BaseModel
                 $component = $this->getComponentServerItem($component, 'primary');
             }
             if ($component->secondary_type === 'service') {
+                $component = $this->getComponentServerItem($component, 'secondary');
+            }
+
+            if ($component->primary_type === 'share') {
+                $component = $this->getComponentServerItem($component, 'primary');
+            }
+            if ($component->secondary_type === 'share') {
                 $component = $this->getComponentServerItem($component, 'secondary');
             }
 
@@ -601,6 +615,32 @@ class ApplicationsModel extends BaseModel
     }
 
     /**
+     * Resolve network details for a component and enrich it with a display link and icon
+     *
+     * Queries the `networks` table using the component's internal ID field
+     * ({$section}_internal_id_b). On success, sets $component->{$section} to an
+     * HTML anchor linking to the networks read page, and sets
+     * $component->{$section}_icon to an <img> tag for the networks icon.
+     *
+     * @param  object $component The application component object to enrich
+     * @param  string $section   Which side of the component to resolve: 'primary' or 'secondary'
+     *
+     * @return object            The enriched component object
+     */
+    public function getComponentNetwork(object $component, string $section): object
+    {
+        $width = '40px';
+        $component->{$section} = '';
+        $sql = "SELECT * FROM networks WHERE id = ?";
+        $result = $this->db->query($sql, [$component->{$section . '_internal_id_b'}])->getResult();
+        if (!empty($result[0])) {
+            $component->{$section} = '<a href="' . url_to('networksRead', $result[0]->id) . '">' . $result[0]->name . '</a>';
+            $component->{$section . '_icon'} = '<img src="' . BASE_URL() . 'icons/networks.svg" style="width:' . $width . ';">';
+        }
+        return $component;
+    }
+
+    /**
      * Resolve server item and device details for a component hosted on a
      * local (on-premises) device.
      *
@@ -669,8 +709,13 @@ class ApplicationsModel extends BaseModel
             $fields = array(intval($component->{$section . '_internal_id_a'}), $component->{$section . '_internal_id_b'});
             $thisResult = $this->db->query($sql, $fields)->getResult();
 
-        } else if ($component->{$section . '_type'} === 'storage') {
+        } else if ($component->{$section . '_type'} === 'share') {
             $sql = "SELECT share.id AS `{$section}.share.id`, share.name AS `{$section}.share.name`, devices.id AS `{$section}.devices.id`, devices.environment AS `{$section}.devices.environment`, devices.name AS `{$section}.devices.name`, devices.type AS `{$section}.devices.type`, devices.os_family AS `{$section}.devices.os_family`, devices.icon AS `{$section}.devices.icon` FROM share LEFT JOIN devices ON share.device_id = devices.id WHERE devices.id = ? AND share.name = ? AND share.current = 'y' LIMIT 1";
+            $fields = array(intval($component->{$section . '_internal_id_a'}), $component->{$section . '_internal_id_b'});
+            $thisResult = $this->db->query($sql, $fields)->getResult();
+
+        } else if ($component->{$section . '_type'} === 'storage') {
+            $sql = "SELECT `partition`.id AS `{$section}.partition.id`, `partition`.name AS `{$section}.partition.name`, devices.id AS `{$section}.devices.id`, devices.environment AS `{$section}.devices.environment`, devices.name AS `{$section}.devices.name`, devices.type AS `{$section}.devices.type`, devices.os_family AS `{$section}.devices.os_family`, devices.icon AS `{$section}.devices.icon` FROM `partition` LEFT JOIN devices ON `partition`.device_id = devices.id WHERE devices.id = ? AND `partition`.name = ? AND `partition`.current = 'y' LIMIT 1";
             $fields = array(intval($component->{$section . '_internal_id_a'}), $component->{$section . '_internal_id_b'});
             $thisResult = $this->db->query($sql, $fields)->getResult();
 

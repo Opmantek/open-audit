@@ -17,7 +17,7 @@ if (!empty($_GET['application_id'])) {
                 </div>
                 <div class="card-body">
                     <div class="row">
-                        <div class="col-md-6">
+                        <div class="col-md-4">
                             <form class="form-horizontal" method="post" action="<?= url_to($meta->collection . 'Create') ?>?type=application" accept-charset="utf-8">
                                 <input type="hidden" value="<?= $meta->access_token ?>" id="data[access_token]" name="data[access_token]" />
                                 <input type="hidden" value="<?= $application_id ?>" id="data[attributes][application_id]" name="data[attributes][application_id]" />
@@ -26,7 +26,7 @@ if (!empty($_GET['application_id'])) {
 
                                 <div class="row" style="padding-top:16px;">
                                     <div class="offset-2 col-8">
-                                        <h3>Primary</h3>
+                                        <h3><?= ('Primary Type') ?></h3>
                                         <div class="input-group">
                                             <select class="form-select" name="data[attributes][primary_type]" id="data[attributes][primary_type]" >
                                                 <option value=""><?= __('Choose a Type') ?></option>
@@ -84,7 +84,7 @@ if (!empty($_GET['application_id'])) {
                                     <div class="offset-2 col-8">
                                         <label for="data[attributes][primary_internal_id_b]" class="form-label"></label><br>
                                         <div class="input-group">
-                                            <select class="form-select" name="data[attributes][primary_internal_id_b]" id="data[attributes][primary_internal_id_b]">
+                                            <select class="form-select select2" name="data[attributes][primary_internal_id_b]" id="data[attributes][primary_internal_id_b]">
                                             </select>
                                         </div>
                                     </div>
@@ -108,7 +108,7 @@ if (!empty($_GET['application_id'])) {
                                 <hr>
                                 <div class="row" style="padding-top:16px;">
                                     <div class="offset-2 col-8">
-                                        <h3>Relationship</h3>
+                                        <h3><?= __('Relationship') ?></h3>
                                         <div class="input-group">
                                             <select class="form-select" name="data[attributes][relationship]" id="data[attributes][relationship]" >
                                                 <option value=""><?= __('Choose a Relationship') ?></option>
@@ -123,7 +123,7 @@ if (!empty($_GET['application_id'])) {
 
                                 <div class="row" style="padding-top:16px;">
                                     <div class="offset-2 col-8">
-                                        <h3>Secondary</h3>
+                                        <h3><?= __('Secondary Type') ?></h3>
                                         <div class="input-group">
                                             <select class="form-select" name="data[attributes][secondary_type]" id="data[attributes][secondary_type]" >
                                                 <option value=""><?= __('Choose a Type') ?></option>
@@ -182,7 +182,7 @@ if (!empty($_GET['application_id'])) {
                                     <div class="offset-2 col-8">
                                         <label for="data[attributes][secondary_internal_id_b]" class="form-label"></label><br>
                                         <div class="input-group">
-                                            <select class="form-select" name="data[attributes][secondary_internal_id_b]" id="data[attributes][secondary_internal_id_b]">
+                                            <select class="form-select select2" name="data[attributes][secondary_internal_id_b]" id="data[attributes][secondary_internal_id_b]">
                                             </select>
                                         </div>
                                     </div>
@@ -213,8 +213,8 @@ if (!empty($_GET['application_id'])) {
                             </form>
                         </div>
 
-                        <div class="col-md-3">
-                            <div class="offset-2 col-8">
+                        <div class="col-md-4">
+                            <div class="offset-1 col-10">
                                 <h4 class="text-center">Types</h4><br><p>
                                 <?php foreach ($dictionary->types as $key => $value) {
                                     echo "<strong>" . $key . ":</strong>&nbsp;" . $value . "<br><br>";
@@ -223,8 +223,8 @@ if (!empty($_GET['application_id'])) {
                             </div>
                         </div>
 
-                        <div class="col-md-3">
-                            <div class="offset-2 col-8">
+                        <div class="col-md-4">
+                            <div class="offset-1 col-10">
                                 <h4 class="text-center">Relationships</h4><br><p>
                                 <?php foreach ($dictionary->relationships as $key => $value) {
                                     echo "<strong>" . $key . ":</strong>&nbsp;" . $value . "<br><br>";
@@ -261,9 +261,7 @@ window.onload = function () {
         $('#data\\[attributes\\]\\[primary_type\\]').change(function() {
             if ($('#data\\[attributes\\]\\[primary_type\\]').val() == "aws") {
                 $('#primary_external_service_div').css("display", "none");
-                //$('#primary_external_service_div').html('<div class="offset-2 col-8"><label for="data[attributes][primary_external_service]" class="form-label"><?= __('External Service') ?></label><br><div class="input-group"><select class="form-select select2" name="data[attributes][primary_external_service]" id="data[attributes][primary_external_service]"></select></div></div>');
                 $('#data\\[attributes\\]\\[primary_external_provider\\]').val('AWS');
-                //$('#data\\[attributes\\]\\[primary_external_service\\]').val('');
                 $("#primary_internal_id_b_div").css("display", "none");
                 getCloudService('aws', 'primary_external_service');
                 $('#primary_external_provider_div').css("display", "block");
@@ -273,9 +271,7 @@ window.onload = function () {
 
             } else if ($('#data\\[attributes\\]\\[primary_type\\]').val() == "azure") {
                 $('#primary_external_service_div').css("display", "none");
-                //$('#primary_external_service_div').html('<div class="offset-2 col-8"><label for="data[attributes][primary_external_service]" class="form-label"><?= __('External Service') ?></label><br><div class="input-group"><select class="form-select select2" name="data[attributes][primary_external_service]" id="data[attributes][primary_external_service]"></select></div></div>');
                 $('#data\\[attributes\\]\\[primary_external_provider\\]').val('Azure');
-                //$('#data\\[attributes\\]\\[primary_external_service\\]').val('');
                 $("#primary_internal_id_b_div").css("display", "none");
                 getCloudService('azure', 'primary_external_service');
                 $('#primary_external_provider_div').css("display", "block");
@@ -310,6 +306,20 @@ window.onload = function () {
                 $('#data\\[attributes\\]\\[primary_internal_id_b\\]').find('option').remove().end();
                 $("#data\\[attributes\\]\\[primary_internal_id_b\\]").val('');
                 getClusters('primary');
+
+            } else if ($('#data\\[attributes\\]\\[primary_type\\]').val() == "network") {
+                $('#data\\[attributes\\]\\[primary_external_provider\\]').val('');
+                $('#data\\[attributes\\]\\[primary_external_service\\]').val('');
+                $('#data\\[attributes\\]\\[primary_external_service\\]').find('option').remove().end();
+                $('#primary_external_provider_div').css("display", "none");
+                $('#primary_external_service_div').css("display", "none");
+                $("#primary_device_search").css("display", "none");
+                $("#primary_owner_div").css("display", "block");
+                $("#primary_description_div").css("display", "block");
+                $('#primary_device_select').css("display", "none");
+                $('#data\\[attributes\\]\\[primary_internal_id_b\\]').find('option').remove().end();
+                $("#data\\[attributes\\]\\[primary_internal_id_b\\]").val('');
+                getNetworks('primary');
 
             } else if ($('#data\\[attributes\\]\\[primary_type\\]').val().includes('_external') || $('#data\\[attributes\\]\\[primary_type\\]').val() == "dnsname" || $('#data\\[attributes\\]\\[primary_type\\]').val() == "other") {
                 $('#primary_external_service_div').css("display", "none");
@@ -372,6 +382,19 @@ window.onload = function () {
                 $("#data\\[attributes\\]\\[secondary_internal_id_b\\]").val('');
                 getClusters('secondary');
 
+            } else if ($('#data\\[attributes\\]\\[secondary_type\\]').val() == "network") {
+                $('#data\\[attributes\\]\\[secondary_external_provider\\]').val('');
+                $('#data\\[attributes\\]\\[secondary_external_service\\]').val('');
+                $('#data\\[attributes\\]\\[secondary_external_service\\]').find('option').remove().end();
+                $('#secondary_external_provider_div').css("display", "none");
+                $('#secondary_external_service_div').css("display", "none");
+                $("#secondary_device_search").css("display", "none");
+                $("#secondary_owner_div").css("display", "block");
+                $("#secondary_description_div").css("display", "block");
+                $('#data\\[attributes\\]\\[secondary_internal_id_b\\]').find('option').remove().end();
+                $("#data\\[attributes\\]\\[secondary_internal_id_b\\]").val('');
+                getNetworks('secondary');
+
             } else if ($('#data\\[attributes\\]\\[secondary_type\\]').val() == "certificate") {
                 $('#data\\[attributes\\]\\[secondary_external_provider\\]').val('');
                 $('#data\\[attributes\\]\\[secondary_external_service\\]').val('');
@@ -428,6 +451,28 @@ window.onload = function () {
             });
         }
 
+        function getNetworks($target)
+        {
+            $url = '<?= url_to('networksCollection') ?>';
+            $.ajax({
+              type: 'GET',
+              url: $url,
+            }).done(function(data) {
+                if (data) {
+                    $networks = data.data;
+                    $("#" + $target + "_internal_id_b_div").css("display", "block");
+                    if ($networks) {
+                        $networks.forEach((obj) => {
+                            $("#data\\[attributes\\]\\[" + $target + "_internal_id_b\\]").append($('<option></option>').val(obj.id).html(obj.attributes.name));
+                        });
+                    } else {
+                        console.log("getNetworks fail");
+                        $("#data\\[attributes\\]\\[" + $target + "\\]").append($('<option></option>').val("").html('No networks returned.'));
+                    }
+                }
+            });
+        }
+
         function getCertificates($target)
         {
             $url = '<?= url_to('certificatesCollection') ?>';
@@ -442,26 +487,29 @@ window.onload = function () {
                         $certificates.forEach((obj) => {
                             $("#data\\[attributes\\]\\[" + $target + "_internal_id_b\\]").append($('<option></option>').val(obj.id).html(obj.attributes.name));
                         });
+                    } else {
+                        console.log("getCertificates fail");
+                        $("#data\\[attributes\\]\\[" + $target + "\\]").append($('<option></option>').val("").html('No certificates returned.'));
                     }
                 }
             });
         }
 
-        function getCloudService($id, $section) {
+        function getCloudService($id, $target) {
             var $url = '<?= url_to('home') ?>cloudServices/'+$id;
             console.log("URL: " + $url);
             $.ajax({
               type: 'GET',
               url: $url,
             }).done(function(data) {
-                // $('#data\\[attributes\\]\\[' + $section + '\\]').find('option').remove().end();
+                // $('#data\\[attributes\\]\\[' + $target + '\\]').find('option').remove().end();
                 if (data) {
                     data.forEach(service => {
-                        $("#data\\[attributes\\]\\[" + $section + "\\]").append($('<option></option>').val(service).html(service));
+                        $("#data\\[attributes\\]\\[" + $target + "\\]").append($('<option></option>').val(service).html(service));
                     });
                 } else {
                     console.log("getCloudService fail");
-                    $("#data\\[attributes\\]\\[" + $section + "\\]").append($('<option></option>').val("").html('No services returned.'));
+                    $("#data\\[attributes\\]\\[" + $target + "\\]").append($('<option></option>').val("").html('No services returned.'));
                 }
             })
             .fail( function(jqXHR, textStatus, errorThrown ) {
@@ -558,7 +606,8 @@ window.onload = function () {
             if ($field === 'program') { $include = 'executable'; }
             if ($field === 'queue') { $include = 'service'; }
             if ($field === 'service') { $include = 'service'; }
-            if ($field === 'storage') { $include = 'share'; }
+            if ($field === 'share') { $include = 'share'; }
+            if ($field === 'storage') { $include = 'partition'; }
             if ($field === 'website') { $include = 'server_item'; }
 
             var $url = '<?= url_to('devicesCollection') ?>/'+$id+'?format=json&include=' + $include;
@@ -598,6 +647,9 @@ window.onload = function () {
                                 $("#data\\[attributes\\]\\[" + $target + "_internal_id_b\\]").append($('<option></option>').val(obj.name).html(obj.name));
                             }
                             if ($field === 'service') {
+                                $("#data\\[attributes\\]\\[" + $target + "_internal_id_b\\]").append($('<option></option>').val(obj.name).html(obj.name));
+                            }
+                            if ($field === 'share') {
                                 $("#data\\[attributes\\]\\[" + $target + "_internal_id_b\\]").append($('<option></option>').val(obj.name).html(obj.name));
                             }
                             if ($field === 'storage') {
