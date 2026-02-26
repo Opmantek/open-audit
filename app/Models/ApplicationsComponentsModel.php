@@ -349,8 +349,8 @@ class ApplicationsComponentsModel extends BaseModel
         $dictionary->types->{'database_external'} = 'External Database';
         $dictionary->types->{'device'} = 'Links to <code>devices.id</code>';
         $dictionary->types->{'device_external'} = 'External Device';
-        $dictionary->types->{'dnsname'} = 'Text';
-        $dictionary->types->{'other'} = 'Text';
+        $dictionary->types->{'dnsname'} = 'An external service';
+        $dictionary->types->{'other'} = 'Something else that we do not have a current type for. Add a description for these items.';
         $dictionary->types->{'program'} = 'Links to <code>file.name</code>.';
         $dictionary->types->{'program_external'} = 'External Program';
         $dictionary->types->{'queue'} = 'Links to <code>service.name</code>';

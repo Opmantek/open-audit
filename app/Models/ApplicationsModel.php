@@ -769,11 +769,13 @@ class ApplicationsModel extends BaseModel
         $dictionary->columns->description = $instance->dictionary->description;
         $dictionary->columns->org_id = $instance->dictionary->org_id;
         $dictionary->columns->environment = 'Manually set by user, defaults to Production.';
-        $dictionary->columns->status = 'Manually set by user, defaults to Production.';
+        $dictionary->columns->status = 'Manually set by user, defaults to Production. This attribute is populated using attributes.devices.status. To add another entry, add to the attribute list.';
         $dictionary->columns->owner = 'Manually set by user.';
         $dictionary->columns->class = 'Manually set by user.';
         $dictionary->columns->vendor = 'Who produced this application.';
-        $dictionary->columns->criticality = 'extreme - Without which, the organisation would fail.
+        $dictionary->columns->criticality = 'This attribute is populated using attributes.devices.criticality. To add another entry, add to the attribute list.
+
+extreme - Without which, the organisation would fail.
 
 very high - Functions that are essential for the organisations survival and must be restored immediately.
 
@@ -784,7 +786,9 @@ medium - Functions that are necessary but can tolerate longer downtime.
 low - Non-essential functions that can be delayed without significant impact.
 
 unassigned - The default until set.';
-        $dictionary->columns->sensitivity = 'top secret - Military / Government classification. Disclosure would cause exceptionally grave danger to national security.
+        $dictionary->columns->sensitivity = 'This attribute is populated using attributes.devices.sensitivity. To add another entry, add to the attribute list.
+
+top secret - Military / Government classification. Disclosure would cause exceptionally grave danger to national security.
 
 secret - Military / Government classification. Disclosure would cause serious damage to national security.
 
