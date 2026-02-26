@@ -17,7 +17,7 @@ if (!empty($_GET['application_id'])) {
                 </div>
                 <div class="card-body">
                     <div class="row">
-                        <div class="col-md-4">
+                        <div class="col-md-6">
                             <form class="form-horizontal" method="post" action="<?= url_to($meta->collection . 'Create') ?>?type=application" accept-charset="utf-8">
                                 <input type="hidden" value="<?= $meta->access_token ?>" id="data[access_token]" name="data[access_token]" />
                                 <input type="hidden" value="<?= $application_id ?>" id="data[attributes][application_id]" name="data[attributes][application_id]" />
@@ -26,7 +26,7 @@ if (!empty($_GET['application_id'])) {
 
                                 <div class="row" style="padding-top:16px;">
                                     <div class="offset-2 col-8">
-                                        <h3><?= ('Primary Type') ?></h3>
+                                        <label for="data[attributes][primary_type]" class="form-label"><strong><?= __('Primary Type') ?></strong></label><br>
                                         <div class="input-group">
                                             <select class="form-select" name="data[attributes][primary_type]" id="data[attributes][primary_type]" >
                                                 <option value=""><?= __('Choose a Type') ?></option>
@@ -108,7 +108,7 @@ if (!empty($_GET['application_id'])) {
                                 <hr>
                                 <div class="row" style="padding-top:16px;">
                                     <div class="offset-2 col-8">
-                                        <h3><?= __('Relationship') ?></h3>
+                                        <label for="data[attributes][relationship]" class="form-label"><strong><?= __('Relationship') ?></strong></label><br>
                                         <div class="input-group">
                                             <select class="form-select" name="data[attributes][relationship]" id="data[attributes][relationship]" >
                                                 <option value=""><?= __('Choose a Relationship') ?></option>
@@ -123,7 +123,7 @@ if (!empty($_GET['application_id'])) {
 
                                 <div class="row" style="padding-top:16px;">
                                     <div class="offset-2 col-8">
-                                        <h3><?= __('Secondary Type') ?></h3>
+                                        <label for="data[attributes][secondary_type]" class="form-label"><strong><?= __('Secondary Type') ?></strong></label><br>
                                         <div class="input-group">
                                             <select class="form-select" name="data[attributes][secondary_type]" id="data[attributes][secondary_type]" >
                                                 <option value=""><?= __('Choose a Type') ?></option>
@@ -213,8 +213,8 @@ if (!empty($_GET['application_id'])) {
                             </form>
                         </div>
 
-                        <div class="col-md-4">
-                            <div class="offset-1 col-10">
+                        <div class="col-md-3">
+                            <div class="col-12">
                                 <h4 class="text-center">Types</h4><br><p>
                                 <?php foreach ($dictionary->types as $key => $value) {
                                     echo "<strong>" . $key . ":</strong>&nbsp;" . $value . "<br><br>";
@@ -223,8 +223,8 @@ if (!empty($_GET['application_id'])) {
                             </div>
                         </div>
 
-                        <div class="col-md-4">
-                            <div class="offset-1 col-10">
+                        <div class="col-md-3">
+                            <div class="col-12">
                                 <h4 class="text-center">Relationships</h4><br><p>
                                 <?php foreach ($dictionary->relationships as $key => $value) {
                                     echo "<strong>" . $key . ":</strong>&nbsp;" . $value . "<br><br>";
@@ -432,47 +432,6 @@ window.onload = function () {
             }
         });
 
-        function getClusters($target)
-        {
-            $url = '<?= url_to('clustersCollection') ?>';
-            $.ajax({
-              type: 'GET',
-              url: $url,
-            }).done(function(data) {
-                if (data) {
-                    $clusters = data.data;
-                    $("#" + $target + "_internal_id_b_div").css("display", "block");
-                    if ($clusters) {
-                        $clusters.forEach((obj) => {
-                            $("#data\\[attributes\\]\\[" + $target + "_internal_id_b\\]").append($('<option></option>').val(obj.id).html(obj.attributes.name));
-                        });
-                    }
-                }
-            });
-        }
-
-        function getNetworks($target)
-        {
-            $url = '<?= url_to('networksCollection') ?>';
-            $.ajax({
-              type: 'GET',
-              url: $url,
-            }).done(function(data) {
-                if (data) {
-                    $networks = data.data;
-                    $("#" + $target + "_internal_id_b_div").css("display", "block");
-                    if ($networks) {
-                        $networks.forEach((obj) => {
-                            $("#data\\[attributes\\]\\[" + $target + "_internal_id_b\\]").append($('<option></option>').val(obj.id).html(obj.attributes.name));
-                        });
-                    } else {
-                        console.log("getNetworks fail");
-                        $("#data\\[attributes\\]\\[" + $target + "\\]").append($('<option></option>').val("").html('No networks returned.'));
-                    }
-                }
-            });
-        }
-
         function getCertificates($target)
         {
             $url = '<?= url_to('certificatesCollection') ?>';
@@ -514,6 +473,47 @@ window.onload = function () {
             })
             .fail( function(jqXHR, textStatus, errorThrown ) {
                 console.log("fail");
+            });
+        }
+
+        function getClusters($target)
+        {
+            $url = '<?= url_to('clustersCollection') ?>';
+            $.ajax({
+              type: 'GET',
+              url: $url,
+            }).done(function(data) {
+                if (data) {
+                    $clusters = data.data;
+                    $("#" + $target + "_internal_id_b_div").css("display", "block");
+                    if ($clusters) {
+                        $clusters.forEach((obj) => {
+                            $("#data\\[attributes\\]\\[" + $target + "_internal_id_b\\]").append($('<option></option>').val(obj.id).html(obj.attributes.name));
+                        });
+                    }
+                }
+            });
+        }
+
+        function getNetworks($target)
+        {
+            $url = '<?= url_to('networksCollection') ?>';
+            $.ajax({
+              type: 'GET',
+              url: $url,
+            }).done(function(data) {
+                if (data) {
+                    $networks = data.data;
+                    $("#" + $target + "_internal_id_b_div").css("display", "block");
+                    if ($networks) {
+                        $networks.forEach((obj) => {
+                            $("#data\\[attributes\\]\\[" + $target + "_internal_id_b\\]").append($('<option></option>').val(obj.id).html(obj.attributes.name + ' in location ' + obj.attributes["locations.name"] + ' owned by ' + obj.attributes["orgs.name"]));
+                        });
+                    } else {
+                        console.log("getNetworks fail");
+                        $("#data\\[attributes\\]\\[" + $target + "\\]").append($('<option></option>').val("").html('No networks returned.'));
+                    }
+                }
             });
         }
 

@@ -29,8 +29,11 @@ class NetworksModel extends BaseModel
         $properties = $resp->meta->properties;
         $properties[] = "orgs.name as `orgs.name`";
         $properties[] = "orgs.id as `orgs.id`";
+        $properties[] = "locations.name as `locations.name`";
+        $properties[] = "locations.id as `locations.id`";
         $this->builder->select($properties, false);
         $this->builder->join('orgs', $resp->meta->collection . '.org_id = orgs.id', 'left');
+        $this->builder->join('locations', $resp->meta->collection . '.location_id = locations.id', 'left');
         foreach ($resp->meta->filter as $filter) {
             if (in_array($filter->operator, ['!=', '>=', '<=', '=', '>', '<', 'like', 'not like'])) {
                 $this->builder->{$filter->function}($filter->name . ' ' . $filter->operator, $filter->value);

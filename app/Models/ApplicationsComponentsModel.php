@@ -373,7 +373,7 @@ class ApplicationsComponentsModel extends BaseModel
         $dictionary->relationships->{'calls-api'} = 'A device running a web <code>api</code> service.';
         $dictionary->relationships->{'connected-via'} = 'A <code>network</code>.';
         $dictionary->relationships->{'consumes'} = 'A <code>service</code>.';
-        $dictionary->relationships->{'depends-on'} = 'Another <code>component</code> of this application.';
+        $dictionary->relationships->{'depends-on'} = 'Depends upon the secondary type.';
         $dictionary->relationships->{'hosted-on'} = 'A virtual machine or docker <code>container</code> or a <code>cluster</code>.';
         $dictionary->relationships->{'publishes-to'} = 'An external <code>service</code>.';
         $dictionary->relationships->{'runs-on'} = 'A <code>device</code>.';

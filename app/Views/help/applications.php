@@ -10,7 +10,8 @@ $intro = '<p>' . __('The Applications endpoint allows you to define an applicati
     <br>
     <h2>' . __('How Does it Work?') . '</h2>
     <p>' . __('You can define an application and associate multiple application components. An application component consists of two "types" (devices, services on a device, databases, websites, et al) and a relationship between them.') . '</p>
-    <p>' . __('On the applications list page, there is a search box. Use that to search all application components for a given component value. A server name, a database name, an AWS service name - whatever you need. The result will show you which applications use this component. This can be used for Change Management, Service Outage Notifications, etc.') . '<p>';
+    <p>' . __('On the applications list page, there is a search box. Use that to search all application components for a given component value. A server name, a database name, an AWS service name - whatever you need. The result will show you which applications use this component. This can be used for Change Management, Service Outage Notifications, etc.') . '<p>
+    <p>The defined Relationships have an order of primary component <i>has this relationship</i> with the secondary component.</p>';
 
 
 $body = '<br><p>' .__('Below are examples of the component types and the possible relationships between them.') . '</p>
