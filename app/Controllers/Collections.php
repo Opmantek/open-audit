@@ -502,6 +502,10 @@ class Collections extends BaseController
         $data = $this->databaseModel->read($this->resp->meta->collection);
 
         $dictionary = $this->{$this->resp->meta->collection . 'Model'}->dictionary();
+        if ($this->resp->meta->collection === 'applications') {
+            $applicationsComponentsModel = model('App\Models\ApplicationsComponentsModel');
+            $dictionary->components = $applicationsComponentsModel->dictionary();
+        }
         return view('shared/header', [
             'config' => $this->config,
             'dashboards' => filter_response($this->dashboards),

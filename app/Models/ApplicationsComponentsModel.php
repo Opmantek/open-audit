@@ -363,20 +363,19 @@ class ApplicationsComponentsModel extends BaseModel
         $dictionary->types->{'website_external'} = 'External Website';
 
         $dictionary->relationships = new stdClass();
-        $dictionary->relationships->{'accessed-via'} = 'A network. Links to <code>networks.id</code>.';
-        $dictionary->relationships->{'authenticates-via'} = 'A device running a service. Links to <code>service.name</code>.';
-        $dictionary->relationships->{'calls-api'} = 'A device running a web service. Links to <code>server_item.name</code>.';
-        $dictionary->relationships->{'connected-via'} = 'A network. Links to <code>networks.id</code>';
-        $dictionary->relationships->{'consumes'} = 'An external service.';
-        $dictionary->relationships->{'depends-on'} = 'Another component of this application. Links to <code>application.name</code>.';
-        $dictionary->relationships->{'hosted-on'} = 'A VM host. Links to <code>devices.id</code>.';
+        $dictionary->relationships->{'accessed-via'} = 'A network.';
+        $dictionary->relationships->{'authenticates-via'} = 'A device running an authentication service.';
+        $dictionary->relationships->{'calls-api'} = 'A device running a web api service.';
+        $dictionary->relationships->{'connected-via'} = 'A network.';
+        $dictionary->relationships->{'consumes'} = 'A service.';
+        $dictionary->relationships->{'depends-on'} = 'Another component of this application.';
+        $dictionary->relationships->{'hosted-on'} = 'A virtual machine or docker host.';
         $dictionary->relationships->{'publishes-to'} = 'An external service.';
-        $dictionary->relationships->{'relies-on'} = 'A device or hosted service. Links to <code>devices.id</code> or an external service.';
-        $dictionary->relationships->{'runs-on'} = 'A device. Links to <code>devices.id</code>';
-        $dictionary->relationships->{'used-by'} = 'Another component of this application. Links to <code>application.name</code>.';
-        $dictionary->relationships->{'uses-database'} = 'A database on a device or hosted service. Links to <code>server_item.name</code> or an external service.';
-        $dictionary->relationships->{'uses-storage'} = 'Storage on a device or hosted service. Links to <code>shares.name</code> or an external service.';
-        $dictionary->relationships->{'writes-to'} = 'Storage on a device or hosted service. Links to <code>share.name</code> or an external service.';
+        $dictionary->relationships->{'relies-on'} = 'A device or hosted service.';
+        $dictionary->relationships->{'runs-on'} = 'A device.';
+        $dictionary->relationships->{'uses'} = 'Another component of this application.';
+        $dictionary->relationships->{'uses-database'} = 'A database on a device or hosted service.';
+        $dictionary->relationships->{'uses-storage'} = 'Storage on a device or hosted service.';
 
         return $dictionary;
     }
