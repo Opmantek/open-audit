@@ -491,7 +491,19 @@ $(document).ready(function () {
             return;
         }
 
+        if (!$('#eula').is(":checked")) {
+            $("#eula").addClass('border-danger');
+            $("#eula").focus();
+            return;
+        }
+
         $('*').css('cursor','wait');
+
+        var redirectUrl = baseurl;
+        var currentUrl = document.URL;
+        if (!currentUrl.includes('license_eula')) {
+            redirectUrl = currentUrl;
+        }
 
         var data = {};
         data["data"] = {};
@@ -511,8 +523,7 @@ $(document).ready(function () {
             contentType: "application/json",
             data: {data : data},
             success: function(data, textStatus) {
-                updatePrompt('2101-01-01');
-                location.reload();
+                window.location = redirectUrl;
             },
             error: function (jqXHR, textStatus, errorThrown) {
                 console.log("Status: " + textStatus);

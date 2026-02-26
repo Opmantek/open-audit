@@ -155,7 +155,12 @@ class ConfigurationModel extends BaseModel
         $result = $this->db->query($sql, [$id])->getResult();
         if (!empty($result[0]->name) and $result[0]->name === 'license_string') {
             $instance = & get_instance();
-            // $sql = "UPDATE configuration SET value = '' WHERE name IN ('license', 'license_limit', 'license_eula', 'license_footer')";
+            if ($data->value === '') {
+                // User deleted license, reset the oae_prompt
+                $sql = "UPDATE configuration SET value = '2000-01-01' WHERE name = 'oae_prompt'";
+                $this->db->query($sql);
+            }
+            // These will be populated by the enterprise binary
             $sql = "UPDATE configuration SET value = '' WHERE name IN ('license', 'license_limit', 'license_footer')";
             $this->db->query($sql);
             if (!empty($result[0]->value)) {

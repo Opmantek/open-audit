@@ -3,10 +3,6 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 include 'shared/read_functions.php';
 include 'shared/common_functions.php';
-$message = '';
-if (!empty($config->license_eula)) {
-    $message = 'EULA accepted on ' . $acceptedOn . ', by ' . $acceptedBy . '.';
-}
 ?>
         <main class="container-fluid">
             <div class="card">
@@ -22,9 +18,11 @@ if (!empty($config->license_eula)) {
                             <br><br><br>
                             <pre><?= $eulaText ?></pre>
                         </div>
+                        <?php if (empty($message)) { ?>
                         <div class="col-8 offset-2">
                             <button type="button" class="btn btn-primary accept">Accept</button>
                         </div>
+                        <?php } ?>
                     </div>
                 </div>
             </div>

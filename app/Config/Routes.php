@@ -238,6 +238,9 @@ foreach ($collections as $collection) {
 
     # bulk update
     $routes->patch($collection, 'Collections::bulkUpdate/$1', ['filter' => \App\Filters\Session::class, 'as' => $collection . 'BulkUpdate']);
+
+    # read using name
+    $routes->get($collection . '/(:any)', 'Collections::read/$1', ['filter' => \App\Filters\Session::class, 'as' => $collection . 'Read']);
 }
 
 $routes->get('discovery_log', 'DiscoveryLog::collection', ['filter' => \App\Filters\Session::class, 'as' => 'discovery_logCollection']);

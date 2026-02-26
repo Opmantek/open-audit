@@ -50,11 +50,14 @@ class Configuration extends BaseController
         $acceptedBy = '';
         $acceptedOn = '';
         $rows = $this->configurationModel->listAll();
+        $message = '';
         foreach ($rows as $row) {
-            if ($row->name === 'license_eula') {
-                $acceptedBy = $row->edited_by;
-                $acceptedOn = $row->edited_date;
+            if ($row->name === 'license_eula' and $row->value !== '') {
+                $message = 'EULA accepted on ' . $row->edited_date . ', by ' . $row->edited_by . '.';
             }
+        }
+        if ($message !== '') {
+            \Config\Services::session()->setFlashdata('error', '');
         }
 
         return view('shared/header', [
@@ -65,7 +68,7 @@ class Configuration extends BaseController
             'queries' => filter_response($this->queriesUser),
             'roles' => filter_response($this->roles),
             'user' => filter_response($this->user)]) .
-            view('configurationEULA', ['eulaText' => $eulaText, 'acceptedBy' => $acceptedBy, 'acceptedOn' => $acceptedOn])
+            view('configurationEULA', ['eulaText' => $eulaText, 'message' => $message])
             . view('shared/footer', ['license_string' => $this->resp->meta->license_string]);
         return true;
     }

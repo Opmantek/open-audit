@@ -575,6 +575,14 @@ if (!function_exists('response_create')) {
             if (isset($response->meta->limit) and !empty($response->meta->limit)) {
                 $response->meta->limit = intval($response->meta->limit);
             }
+            if (!empty($response->errors) and $response->errors === "EULA must be accepted to use commercial functions.") {
+                $sql = "SELECT value FROM configuration WHERE name = 'license_eula'";
+                $result = $db->query($sql)->getResult();
+                if (!empty($result[0]->value)) {
+                    $response->errors = '';
+                }
+            }
+
             if (!empty($response->errors)) {
                 $redirect = false;
                 if ($response->errors === "EULA must be accepted to use commercial functions.") {
