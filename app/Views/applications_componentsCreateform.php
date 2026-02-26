@@ -104,8 +104,9 @@ if (!empty($_GET['application_id'])) {
                                     </div>
                                 </div>
 
-
-                                <hr>
+                                <div class="offset-1 col-10" style="position:relative;">
+                                    <hr>
+                                </div>
                                 <div class="row" style="padding-top:16px;">
                                     <div class="offset-2 col-8">
                                         <label for="data[attributes][relationship]" class="form-label"><strong><?= __('Relationship') ?></strong></label><br>
@@ -119,7 +120,9 @@ if (!empty($_GET['application_id'])) {
                                         </div>
                                     </div>
                                 </div>
-                                <hr>
+                                <div class="offset-1 col-10" style="position:relative;">
+                                    <hr>
+                                </div>
 
                                 <div class="row" style="padding-top:16px;">
                                     <div class="offset-2 col-8">
@@ -307,6 +310,20 @@ window.onload = function () {
                 $("#data\\[attributes\\]\\[primary_internal_id_b\\]").val('');
                 getClusters('primary');
 
+            } else if ($('#data\\[attributes\\]\\[primary_type\\]').val() == "location") {
+                $('#data\\[attributes\\]\\[primary_external_provider\\]').val('');
+                $('#data\\[attributes\\]\\[primary_external_service\\]').val('');
+                $('#data\\[attributes\\]\\[primary_external_service\\]').find('option').remove().end();
+                $('#primary_external_provider_div').css("display", "none");
+                $('#primary_external_service_div').css("display", "none");
+                $("#primary_device_search").css("display", "none");
+                $("#primary_owner_div").css("display", "block");
+                $("#primary_description_div").css("display", "block");
+                $('#primary_device_select').css("display", "none");
+                $('#data\\[attributes\\]\\[primary_internal_id_b\\]').find('option').remove().end();
+                $("#data\\[attributes\\]\\[primary_internal_id_b\\]").val('');
+                getLocations('primary');
+
             } else if ($('#data\\[attributes\\]\\[primary_type\\]').val() == "network") {
                 $('#data\\[attributes\\]\\[primary_external_provider\\]').val('');
                 $('#data\\[attributes\\]\\[primary_external_service\\]').val('');
@@ -382,6 +399,19 @@ window.onload = function () {
                 $("#data\\[attributes\\]\\[secondary_internal_id_b\\]").val('');
                 getClusters('secondary');
 
+            } else if ($('#data\\[attributes\\]\\[secondary_type\\]').val() == "location") {
+                $('#data\\[attributes\\]\\[secondary_external_provider\\]').val('');
+                $('#data\\[attributes\\]\\[secondary_external_service\\]').val('');
+                $('#data\\[attributes\\]\\[secondary_external_service\\]').find('option').remove().end();
+                $('#secondary_external_provider_div').css("display", "none");
+                $('#secondary_external_service_div').css("display", "none");
+                $("#secondary_device_search").css("display", "none");
+                $("#secondary_owner_div").css("display", "block");
+                $("#secondary_description_div").css("display", "block");
+                $('#data\\[attributes\\]\\[secondary_internal_id_b\\]').find('option').remove().end();
+                $("#data\\[attributes\\]\\[secondary_internal_id_b\\]").val('');
+                getLocations('secondary');
+
             } else if ($('#data\\[attributes\\]\\[secondary_type\\]').val() == "network") {
                 $('#data\\[attributes\\]\\[secondary_external_provider\\]').val('');
                 $('#data\\[attributes\\]\\[secondary_external_service\\]').val('');
@@ -444,7 +474,7 @@ window.onload = function () {
                     $("#" + $target + "_internal_id_b_div").css("display", "block");
                     if ($certificates) {
                         $certificates.forEach((obj) => {
-                            $("#data\\[attributes\\]\\[" + $target + "_internal_id_b\\]").append($('<option></option>').val(obj.id).html(obj.attributes.name));
+                            $("#data\\[attributes\\]\\[" + $target + "_internal_id_b\\]").append($('<option></option>').val(obj.id).text(obj.attributes.name));
                         });
                     } else {
                         console.log("getCertificates fail");
@@ -464,7 +494,7 @@ window.onload = function () {
                 // $('#data\\[attributes\\]\\[' + $target + '\\]').find('option').remove().end();
                 if (data) {
                     data.forEach(service => {
-                        $("#data\\[attributes\\]\\[" + $target + "\\]").append($('<option></option>').val(service).html(service));
+                        $("#data\\[attributes\\]\\[" + $target + "\\]").append($('<option></option>').val(service).text(service));
                     });
                 } else {
                     console.log("getCloudService fail");
@@ -488,8 +518,30 @@ window.onload = function () {
                     $("#" + $target + "_internal_id_b_div").css("display", "block");
                     if ($clusters) {
                         $clusters.forEach((obj) => {
-                            $("#data\\[attributes\\]\\[" + $target + "_internal_id_b\\]").append($('<option></option>').val(obj.id).html(obj.attributes.name));
+                            $("#data\\[attributes\\]\\[" + $target + "_internal_id_b\\]").append($('<option></option>').val(obj.id).text(obj.attributes.name));
                         });
+                    }
+                }
+            });
+        }
+
+        function getLocations($target)
+        {
+            $url = '<?= url_to('locationsCollection') ?>';
+            $.ajax({
+              type: 'GET',
+              url: $url,
+            }).done(function(data) {
+                if (data) {
+                    $networks = data.data;
+                    $("#" + $target + "_internal_id_b_div").css("display", "block");
+                    if ($networks) {
+                        $networks.forEach((obj) => {
+                            $("#data\\[attributes\\]\\[" + $target + "_internal_id_b\\]").append($('<option></option>').val(obj.id).text(obj.attributes.name + ' owned by ' + obj.attributes["orgs.name"]));
+                        });
+                    } else {
+                        console.log("getLocations fail");
+                        $("#data\\[attributes\\]\\[" + $target + "\\]").append($('<option></option>').val("").html('No locations returned.'));
                     }
                 }
             });
@@ -507,7 +559,7 @@ window.onload = function () {
                     $("#" + $target + "_internal_id_b_div").css("display", "block");
                     if ($networks) {
                         $networks.forEach((obj) => {
-                            $("#data\\[attributes\\]\\[" + $target + "_internal_id_b\\]").append($('<option></option>').val(obj.id).html(obj.attributes.name + ' in location ' + obj.attributes["locations.name"] + ' owned by ' + obj.attributes["orgs.name"]));
+                            $("#data\\[attributes\\]\\[" + $target + "_internal_id_b\\]").append($('<option></option>').val(obj.id).text(obj.attributes.name + ' in location ' + obj.attributes["locations.name"] + ' owned by ' + obj.attributes["orgs.name"]));
                         });
                     } else {
                         console.log("getNetworks fail");
@@ -547,7 +599,7 @@ window.onload = function () {
                         $('#' + $target + '_hostname_select').find('option').remove().end();
                         $('#' + $target + '_hostname_select').append($('<option></option>').val("").html("Choose"));
                         data.data.forEach((obj) => {
-                            $('#' + $target + '_hostname_select').append($('<option></option>').val(obj.id).html(obj.attributes.name + ' :: ' + obj.attributes.ip + ' :: ' + obj.attributes.os_group));
+                            $('#' + $target + '_hostname_select').append($('<option></option>').val(obj.id).text(obj.attributes.name + ' :: ' + obj.attributes.ip + ' :: ' + obj.attributes.os_group));
                         });
                         $("#search_" + $target + "_internal_id_a").html('<?= __('Search For a Device') ?>');
                         $('#' + $target + '_device_select').css("display", "block");
@@ -555,14 +607,14 @@ window.onload = function () {
                     } else if (data.data == false) {
                         // no data returned from device search
                         $('#' + $target + '_hostname_select').find('option').remove().end();
-                        $('#' + $target + '_hostname_select').append($('<option></option>').val("").html("No devices found"));
+                        $('#' + $target + '_hostname_select').append($('<option></option>').val("").text("No devices found"));
                         $('#' + $target + '_device_select').css("display", "block");
                         $("#search_" + $target + "_internal_id_a").html('<?= __('Search For a Device') ?>');
                         $("#" + $target + "_internal_id_b_div").css("display", "none");
                     } else {
                         // no data returned from device search
                         $('#' + $target + '_hostname_select').find('option').remove().end();
-                        $('#' + $target + '_hostname_select').append($('<option></option>').val("").html("No devices found"));
+                        $('#' + $target + '_hostname_select').append($('<option></option>').val("").text("No devices found"));
                         $('#' + $target + '_device_select').css("display", "block");
                         $("#search_" + $target + "_internal_id_a").html('<?= __('Search For a Device') ?>');
                         $("#" + $target + "_internal_id_b_div").css("display", "none");
@@ -581,7 +633,7 @@ window.onload = function () {
                     console.log("search error");
                     // search error
                     $('#' + $target + '_hostname_select').find('option').remove().end();
-                    $('#' + $target + '_hostname_select').append($('<option></option>').val("").html("No devices found"));
+                    $('#' + $target + '_hostname_select').append($('<option></option>').val("").text("No devices found"));
                     $('#' + $target + '_device_select').css("display", "block");
                     $("#search_" + $target + "_internal_id_a").html('<?= __('Search For a Device') ?>');
                     $("#" + $target + "_internal_id_b_div").css("display", "none");
@@ -623,46 +675,46 @@ window.onload = function () {
                     if ($newData) {
                         $newData.forEach((obj) => {
                             if ($field === 'api' && obj.type === 'website') {
-                                $("#data\\[attributes\\]\\[" + $target + "_internal_id_b\\]").append($('<option></option>').val(obj.name).html(obj.parent_name + ' :: ' + obj.name + ' (on port ' + obj.port + ')'));
+                                $("#data\\[attributes\\]\\[" + $target + "_internal_id_b\\]").append($('<option></option>').val(obj.name).text(obj.parent_name + ' :: ' + obj.name + ' (on port ' + obj.port + ')'));
                             }
                             if ($field === 'application') {
-                                $("#data\\[attributes\\]\\[" + $target + "_internal_id_b\\]").append($('<option></option>').val(obj.name).html(obj.name));
+                                $("#data\\[attributes\\]\\[" + $target + "_internal_id_b\\]").append($('<option></option>').val(obj.name).text(obj.name));
                             }
                             if ($field === 'authentication') {
-                                $("#data\\[attributes\\]\\[" + $target + "_internal_id_b\\]").append($('<option></option>').val(obj.name).html(obj.name));
+                                $("#data\\[attributes\\]\\[" + $target + "_internal_id_b\\]").append($('<option></option>').val(obj.name).text(obj.name));
                             }
                             if ($field === 'client') {
-                                $("#data\\[attributes\\]\\[" + $target + "_internal_id_b\\]").append($('<option></option>').val(obj.name).html(obj.name));
+                                $("#data\\[attributes\\]\\[" + $target + "_internal_id_b\\]").append($('<option></option>').val(obj.name).text(obj.name));
                             }
                             if ($field === 'container') {
-                                $("#data\\[attributes\\]\\[" + $target + "_internal_id_b\\]").append($('<option></option>').val(obj.name).html(obj.name));
+                                $("#data\\[attributes\\]\\[" + $target + "_internal_id_b\\]").append($('<option></option>').val(obj.name).text(obj.name));
                             }
                             if ($field === 'database' && obj.type === 'database') {
-                                $("#data\\[attributes\\]\\[" + $target + "_internal_id_b\\]").append($('<option></option>').val(obj.name).html(obj.parent_name + ' :: ' + obj.name + ' (on port ' + obj.port + ')'));
+                                $("#data\\[attributes\\]\\[" + $target + "_internal_id_b\\]").append($('<option></option>').val(obj.name).text(obj.parent_name + ' :: ' + obj.name + ' (on port ' + obj.port + ')'));
                             }
                             if ($field === 'program') {
-                                $("#data\\[attributes\\]\\[" + $target + "_internal_id_b\\]").append($('<option></option>').val(obj.name).html(obj.name));
+                                $("#data\\[attributes\\]\\[" + $target + "_internal_id_b\\]").append($('<option></option>').val(obj.name).text(obj.name));
                             }
                             if ($field === 'queue') {
-                                $("#data\\[attributes\\]\\[" + $target + "_internal_id_b\\]").append($('<option></option>').val(obj.name).html(obj.name));
+                                $("#data\\[attributes\\]\\[" + $target + "_internal_id_b\\]").append($('<option></option>').val(obj.name).text(obj.name));
                             }
                             if ($field === 'service') {
-                                $("#data\\[attributes\\]\\[" + $target + "_internal_id_b\\]").append($('<option></option>').val(obj.name).html(obj.name));
+                                $("#data\\[attributes\\]\\[" + $target + "_internal_id_b\\]").append($('<option></option>').val(obj.name).text(obj.name));
                             }
                             if ($field === 'share') {
-                                $("#data\\[attributes\\]\\[" + $target + "_internal_id_b\\]").append($('<option></option>').val(obj.name).html(obj.name));
+                                $("#data\\[attributes\\]\\[" + $target + "_internal_id_b\\]").append($('<option></option>').val(obj.name).text(obj.name));
                             }
                             if ($field === 'storage') {
-                                $("#data\\[attributes\\]\\[" + $target + "_internal_id_b\\]").append($('<option></option>').val(obj.name).html(obj.name));
+                                $("#data\\[attributes\\]\\[" + $target + "_internal_id_b\\]").append($('<option></option>').val(obj.name).text(obj.name));
                             }
                             if ($field === 'website' && obj.type === 'website') {
-                                $("#data\\[attributes\\]\\[" + $target + "_internal_id_b\\]").append($('<option></option>').val(obj.name).html(obj.parent_name + ' :: ' + obj.name + ' (on port ' + obj.port + ')'));
+                                $("#data\\[attributes\\]\\[" + $target + "_internal_id_b\\]").append($('<option></option>').val(obj.name).text(obj.parent_name + ' :: ' + obj.name + ' (on port ' + obj.port + ')'));
                             }
                         });
-                        $("#search_" + $target + "_internal_id_a").html('<?= __('Search For a Device') ?>');
+                        $("#search_" + $target + "_internal_id_a").text('<?= __('Search For a Device') ?>');
                     } else {
-                        $("#data\\[attributes\\]\\[" + $target + "_internal_id_b\\]").append($('<option></option>').val("").html("<?= __('No') ?> " + $field + " <?= __('found') ?>"));
-                        $("#search_" + $target + "_internal_id_a").html('<?= __('Search For a Device') ?>');
+                        $("#data\\[attributes\\]\\[" + $target + "_internal_id_b\\]").append($('<option></option>').val("").text("<?= __('No') ?> " + $field + " <?= __('found') ?>"));
+                        $("#search_" + $target + "_internal_id_a").text('<?= __('Search For a Device') ?>');
                     }
                 } else {
                     console.log("getDevice fail");
