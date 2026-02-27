@@ -38,10 +38,6 @@ include 'shared/create_functions.php';
                                     echo "<h4 class=\"text-center\">About</h4><br>";
                                     echo html_entity_decode($dictionary->about);
                                 } ?>
-                                <?php if (! empty($dictionary->notes)) {
-                                    echo "<h4 class=\"text-center\">Notes</h4><br>";
-                                    echo html_entity_decode($dictionary->notes);
-                                } ?>
                                 <h4 class="text-center">Fields</h4><br>
                                 <?php foreach ($dictionary->columns as $key => $value) {
                                     echo "<code>$key:</code> " . html_entity_decode($value) . "<br><br>";

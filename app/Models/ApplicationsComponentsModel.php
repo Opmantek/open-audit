@@ -351,8 +351,10 @@ class ApplicationsComponentsModel extends BaseModel
         $dictionary->types->{'device_external'} = 'External Device';
         // TODO $dictionary->types->{'dns'} = 'Links to <code>';
         $dictionary->types->{'dns_external'} = 'An external DNS service';
+        $dictionary->types->{'location'} = 'Links to <code>location.name</code>.';
+        $dictionary->types->{'location_external'} = 'External Location';
         $dictionary->types->{'network'} = 'Links to <code>networks.name</code>.';
-        $dictionary->types->{'network_external'} = 'External Program';
+        $dictionary->types->{'network_external'} = 'External Network';
         $dictionary->types->{'other'} = 'Something else that we do not have a current type for. Add a description for these items.';
         $dictionary->types->{'program'} = 'Links to <code>executable.name</code> (Linux detection only).';
         // $dictionary->types->{'program_external'} = 'External Program';
@@ -375,8 +377,12 @@ class ApplicationsComponentsModel extends BaseModel
         $dictionary->relationships->{'consumes'} = 'A <code>service</code>.';
         $dictionary->relationships->{'depends-on'} = 'Depends upon the secondary type.';
         $dictionary->relationships->{'hosted-on'} = 'A virtual machine or docker <code>container</code> or a <code>cluster</code>.';
+        $dictionary->relationships->{'located-in'} = 'A <code>service</code>.';
+        $dictionary->relationships->{'powered-by'} = 'A <code>device</code> or other item, internal or external.';
         $dictionary->relationships->{'publishes-to'} = 'An external <code>service</code>.';
+        $dictionary->relationships->{'reads-data-from'} = 'A secondary item, internal or external.';
         $dictionary->relationships->{'runs-on'} = 'A <code>device</code>.';
+        $dictionary->relationships->{'sends-data-to'} = 'A secondary item, internal or external.';
         $dictionary->relationships->{'uses-application'} = 'An <code>application</code> installed on a device or hosted service.';
         $dictionary->relationships->{'uses-certificate'} = 'A <code>certificate</code> installed on a device or hosted service.';
         $dictionary->relationships->{'uses-database'} = 'A <code>database</code> on a device or hosted service.';

@@ -73,14 +73,17 @@ class ApplicationsModel extends BaseModel
     /**
      * Delete an individual item from the database, by ID
      *
-     * @param  int  $id    The ID of the item to delete
-     * @param  bool $purge Unused; present for interface compatibility
+     * Removes the application row from the `applications` table.
      *
-     * @return bool        true on success, false on failure
+     * @param  int|null $id    The ID of the application to delete
+     * @param  bool     $purge Unused; present for interface compatibility
+     *
+     * @return bool            true on success, false on failure
      */
     public function delete($id = null, bool $purge = false): bool
     {
         $sql = "DELETE FROM applications_components WHERE application_id = ?";
+        $this->db->query($sql);
 
         $this->builder->delete(['id' => intval($id)]);
         if ($this->sqlError($this->db->error())) {
@@ -93,10 +96,20 @@ class ApplicationsModel extends BaseModel
     }
 
     /**
-     * Return an array containing arrays of related items to be stored in resp->included
+     * Return supplementary data for a single application's read view
      *
-     * @param  int $id The ID of the requested item
-     * @return array  An array of anything needed for screen output
+     * Loads every row from `applications_components` for the given application
+     * and enriches each component with resolved display names and HTML icon
+     * tags for both its primary and secondary sides. When the response format
+     * is HTML, device attribute lists (environment, status, criticality,
+     * sensitivity) are also included so the view can populate drop-downs.
+     *
+     * @param  int   $id The ID of the application whose components to load
+     *
+     * @return array     Associative array with at least:
+     *                   - 'components' => array of enriched component objects
+     *                   When format is HTML, also includes:
+     *                   - 'environment', 'status', 'criticality', 'sensitivity'
      */
     public function includedRead(int $id = 0): array
     {
@@ -292,10 +305,14 @@ class ApplicationsModel extends BaseModel
     }
 
     /**
-     * Return an array containing arrays of related items to be stored in resp->included
+     * Return supplementary data for an application's create form (stub)
      *
-     * @param  int $id The ID of the requested item
-     * @return array  An array of anything needed for screen output
+     * Reserved for future implementation. Currently returns an empty array;
+     * no data is fetched from the database.
+     *
+     * @param  int   $id Unused; present for interface compatibility
+     *
+     * @return array     An empty array
      */
     public function includedCreateForm(int $id = 0): array
     {
@@ -336,9 +353,13 @@ class ApplicationsModel extends BaseModel
     }
 
     /**
-     * Read the entire collection from the database
+     * Read every application from the database with no filtering
      *
-     * @return array  An array of all entries
+     * Returns all rows from the `applications` table regardless of the
+     * current user's organisation membership. Use {@see listUser()} when
+     * results should be restricted to the current user's accessible orgs.
+     *
+     * @return array  Array of stdClass objects representing every application row
      */
     public function listAll(): array
     {
@@ -366,9 +387,14 @@ class ApplicationsModel extends BaseModel
     }
 
     /**
-     * Reset a table
+     * Truncate the applications table, removing all rows
      *
-     * @return bool Did it work or not?
+     * The $table parameter is accepted for interface compatibility but is
+     * ignored; the method always resets the 'applications' table.
+     *
+     * @param  string $table Unused; present for interface compatibility
+     *
+     * @return bool          true on success, false on failure
      */
     public function reset(string $table = ''): bool
     {
@@ -644,18 +670,24 @@ class ApplicationsModel extends BaseModel
      * Resolve server item and device details for a component hosted on a
      * local (on-premises) device.
      *
-     * Queries the `server_item` and `devices` tables using the internal IDs
-     * stored on the component, then merges the resulting fields onto the
-     * component object. Also builds an HTML icon tag and a human-readable
-     * display string (e.g. "Service named foo\nRunning on <a>bar</a>") and
-     * assigns it to `$component->{$section}`.
+     * Selects the appropriate source table for the component type (e.g.
+     * `service` for 'service'/'queue'/'authentication', `software` for
+     * 'application'/'client', `vm` for 'container', `executable` for
+     * 'program', `share` for 'share', `partition` for 'storage',
+     * `server_item` for 'api'/'database'/'website'), then merges the
+     * returned columns onto the component object. Builds an HTML icon tag
+     * (from a local SVG or a CSS class) and sets `$component->{$section}`
+     * to a human-readable string such as
+     * "Service named foo<br> Running on <a href="...">bar</a>".
+     *
+     * Returns the component unchanged (without a database query) when the
+     * type does not match any known value.
      *
      * @param  object $component The application component object to enrich
      * @param  string $section   Which side of the component to resolve:
      *                           'primary' or 'secondary'
      *
-     * @return object|null       The enriched component object, or null if the
-     *                           supplied component was empty
+     * @return object            The enriched component object
      */
     public function getComponentServerItem(object $component, string $section): object
     {
@@ -781,9 +813,21 @@ class ApplicationsModel extends BaseModel
     }
 
     /**
-     * The dictionary item
+     * Build and return the data dictionary for the applications collection
      *
-     * @return object  The stdClass object containing the dictionary
+     * Constructs a stdClass describing the `applications` table for use by
+     * the framework's help, validation, and API-documentation systems.
+     * The returned object includes:
+     *  - table       : the collection name ('applications')
+     *  - columns     : per-column human-readable descriptions and allowed values
+     *  - attributes  : lists of fields used for collection display, create, and update
+     *  - sentence    : a one-line summary of the resource
+     *  - about       : an HTML paragraph describing the resource
+     *  - notes       : additional free-text notes (may be empty)
+     *  - link        : URL to external documentation
+     *  - product     : minimum product tier required ('professional')
+     *
+     * @return object  Populated stdClass dictionary object
      */
     public function dictionary(): object
     {

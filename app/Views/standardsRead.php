@@ -50,10 +50,6 @@ if ($style === 'icontext') {
                                             <h4 class="text-center"><?= __('About') ?></h4><br>
                                             <?= $dictionary->about ?>
                                         <?php } ?>
-                                        <?php if (!empty($dictionary->notes)) { ?>
-                                            <h4 class="text-center"><?= __('Notes') ?></h4><br>
-                                            <?= $dictionary->notes ?>
-                                        <?php } ?>
                                         <?php if (!empty($dictionary->columns)) { ?>
                                             <?php $fields = array('name', 'org_id', 'description', 'type', 'edited_by', 'edited_date') ?>
                                         <h4 class="text-center"><?= __('Fields') ?></h4><br>
