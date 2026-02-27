@@ -12,7 +12,7 @@ include 'shared/collection_functions.php';
                 <div class="card-body">
                     <div class="row">
                         <div class="col-8 offset-2">
-                            <h2><?= $title ?></h2>
+                            <h2><?= @$title ?></h2>
                             <br>
                             <div class="row">
                                 <?= @$intro ?>
