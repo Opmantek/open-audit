@@ -11,6 +11,10 @@ use stdClass;
 
 class SearchModel extends BaseModel
 {
+    /**
+     * Constructor. Initialises the database connection and sets the query
+     * builder to target the 'devices' table.
+     */
     public function __construct()
     {
         $this->db = db_connect();
@@ -21,9 +25,9 @@ class SearchModel extends BaseModel
     /**
      * Create an individual item in the database
      *
-     * @param  object $data The data attributes
+     * @param  object|array|null $data The data attributes
      *
-     * @return int|false    The Integer ID of the newly created item, or false
+     * @return int|null              The integer ID of the newly created item, or null on failure
      */
     public function create()
     {

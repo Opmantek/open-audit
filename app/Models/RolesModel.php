@@ -11,6 +11,10 @@ use stdClass;
 
 class RolesModel extends BaseModel
 {
+    /**
+     * Constructor. Initialises the database connection and sets the query
+     * builder to target the 'roles' table.
+     */
     public function __construct()
     {
         $this->db = db_connect();
@@ -20,7 +24,7 @@ class RolesModel extends BaseModel
     /**
      * Read the collection from the database
      *
-     * @param  $resp object An object containing the properties, filter, sort and limit as passed by the user
+     * @param  object $resp An object containing the properties, filter, sort and limit as passed by the user
      *
      * @return array        An array of formatted entries
      */
@@ -46,9 +50,9 @@ class RolesModel extends BaseModel
     /**
      * Create an individual item in the database
      *
-     * @param  object $data The data attributes
+     * @param  object|array|null $data The data attributes
      *
-     * @return int|false    The Integer ID of the newly created item, or false
+     * @return int|null              The integer ID of the newly created item, or null on failure
      */
     public function create($data = null): ?int
     {
@@ -58,9 +62,10 @@ class RolesModel extends BaseModel
     /**
      * Delete an individual item from the database, by ID
      *
-     * @param  int $id The ID of the requested item
+     * @param  int|null $id    The ID of the role to delete
+     * @param  bool     $purge Unused; present for interface compatibility
      *
-     * @return bool    true || false depending on success
+     * @return bool            true on success, false on failure
      */
     public function delete($id = null, bool $purge = false): bool
     {
@@ -79,10 +84,14 @@ class RolesModel extends BaseModel
     }
 
     /**
-     * Return an array containing arrays of related items to be stored in resp->included
+     * Return supplementary data for a single role's read view (stub)
      *
-     * @param  int $id The ID of the requested item
-     * @return array  An array of anything needed for screen output
+     * Reserved for future implementation. Currently returns an empty array;
+     * no data is fetched from the database.
+     *
+     * @param  int   $id Unused; present for interface compatibility
+     *
+     * @return array     An empty array
      */
     public function includedRead(int $id = 0): array
     {
@@ -90,10 +99,14 @@ class RolesModel extends BaseModel
     }
 
     /**
-     * Return an array containing arrays of related items to be stored in resp->included
+     * Return supplementary data for the role create/edit form (stub)
      *
-     * @param  int $id The ID of the requested item
-     * @return array  An array of anything needed for screen output
+     * Reserved for future implementation. Currently returns an empty array;
+     * no data is fetched from the database.
+     *
+     * @param  int   $id Unused; present for interface compatibility
+     *
+     * @return array     An empty array
      */
     public function includedCreateForm(int $id = 0): array
     {
@@ -165,9 +178,14 @@ class RolesModel extends BaseModel
     }
 
     /**
-     * Reset a table
+     * Truncate the roles table, removing all rows
      *
-     * @return bool Did it work or not?
+     * The $table parameter is accepted for interface compatibility but is
+     * ignored; the method always resets the 'roles' table.
+     *
+     * @param  string $table Unused; present for interface compatibility
+     *
+     * @return bool          true on success, false on failure
      */
     public function reset(string $table = ''): bool
     {
@@ -180,9 +198,10 @@ class RolesModel extends BaseModel
     /**
      * Update an individual item in the database
      *
-     * @param  object  $data The data attributes
+     * @param  int|null          $id   The ID of the role to update
+     * @param  object|array|null $data The data attributes to apply
      *
-     * @return bool    true || false depending on success
+     * @return bool                    true on success, false on failure
      */
     public function update($id = null, $data = null): bool
     {
@@ -202,9 +221,21 @@ class RolesModel extends BaseModel
     }
 
     /**
-     * The dictionary item
+     * Build and return the data dictionary for the roles collection
      *
-     * @return object  The stdClass object containing the dictionary
+     * Constructs a stdClass describing the `roles` table for use by the
+     * framework's help, validation, and API-documentation systems.
+     * The returned object includes:
+     *  - table       : the collection name ('roles')
+     *  - columns     : per-column human-readable descriptions and allowed values
+     *  - attributes  : lists of fields used for collection display, create, and update
+     *  - sentence    : a one-line summary of the resource
+     *  - about       : an HTML paragraph describing the resource
+     *  - notes       : additional free-text notes (may be empty)
+     *  - link        : URL to external documentation
+     *  - product     : minimum product tier required ('enterprise')
+     *
+     * @return object  Populated stdClass dictionary object
      */
     public function dictionary(): object
     {

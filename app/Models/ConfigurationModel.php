@@ -11,6 +11,10 @@ use stdClass;
 
 class ConfigurationModel extends BaseModel
 {
+    /**
+     * Constructor. Initialises the database connection and sets the query
+     * builder to target the 'configuration' table.
+     */
     public function __construct()
     {
         $this->db = db_connect();
@@ -20,7 +24,7 @@ class ConfigurationModel extends BaseModel
     /**
      * Read the collection from the database
      *
-     * @param  $resp object An object containing the properties, filter, sort and limit as passed by the user
+     * @param  object $resp An object containing the properties, filter, sort and limit as passed by the user
      * @return array        An array of formatted Orgs
      */
     public function collection(object $resp): array
@@ -42,10 +46,14 @@ class ConfigurationModel extends BaseModel
     }
 
     /**
-     * Return an array containing arrays of related items to be stored in resp->included
+     * Return supplementary data for a single configuration's read view (stub)
      *
-     * @param  int $id The ID of the requested item
-     * @return array  An array of anything needed for screen output
+     * Reserved for future implementation. Currently returns an empty array;
+     * no data is fetched from the database.
+     *
+     * @param  int   $id Unused; present for interface compatibility
+     *
+     * @return array     An empty array
      */
     public function includedRead(int $id = 0): array
     {
@@ -53,10 +61,14 @@ class ConfigurationModel extends BaseModel
     }
 
     /**
-     * Return an array containing arrays of related items to be stored in resp->included
+     * Return supplementary data for the configuration create/edit form (stub)
      *
-     * @param  int $id The ID of the requested item
-     * @return array  An array of anything needed for screen output
+     * Reserved for future implementation. Currently returns an empty array;
+     * no data is fetched from the database.
+     *
+     * @param  int   $id Unused; present for interface compatibility
+     *
+     * @return array     An empty array
      */
     public function includedCreateForm(int $id = 0): array
     {
@@ -122,9 +134,14 @@ class ConfigurationModel extends BaseModel
     }
 
     /**
-     * Reset a table
+     * Truncate the configuration table, removing all rows
      *
-     * @return bool Did it work or not?
+     * The $table parameter is accepted for interface compatibility but is
+     * ignored; the method always resets the 'configuration' table.
+     *
+     * @param  string $table Unused; present for interface compatibility
+     *
+     * @return bool          true on success, false on failure
      */
     public function reset(string $table = ''): bool
     {
@@ -137,9 +154,10 @@ class ConfigurationModel extends BaseModel
     /**
      * Update an individual item in the database
      *
-     * @param  object  $data The data attributes
+     * @param  int|null          $id   The ID of the configuration to update
+     * @param  object|array|null $data The data attributes to apply
      *
-     * @return bool    true || false depending on success
+     * @return bool                    true on success, false on failure
      */
     public function update($id = null, $data = null): bool
     {
@@ -206,9 +224,21 @@ class ConfigurationModel extends BaseModel
     }
 
     /**
-     * The dictionary item
+     * Build and return the data dictionary for the configuration collection
      *
-     * @return object  The stdClass object containing the dictionary
+     * Constructs a stdClass describing the `configuration` table for use by the
+     * framework's help, validation, and API-documentation systems.
+     * The returned object includes:
+     *  - table       : the collection name ('configuration')
+     *  - columns     : per-column human-readable descriptions and allowed values
+     *  - attributes  : lists of fields used for collection display, create, and update
+     *  - sentence    : a one-line summary of the resource
+     *  - about       : an HTML paragraph describing the resource
+     *  - notes       : additional free-text notes (may be empty)
+     *  - link        : URL to external documentation
+     *  - product     : minimum product tier required ('community')
+     *
+     * @return object  Populated stdClass dictionary object
      */
     public function dictionary(): object
     {

@@ -11,6 +11,10 @@ use stdClass;
 
 class FilesModel extends BaseModel
 {
+    /**
+     * Constructor. Initialises the database connection and sets the query
+     * builder to target the 'files' table.
+     */
     public function __construct()
     {
         $this->db = db_connect();
@@ -22,7 +26,7 @@ class FilesModel extends BaseModel
     /**
      * Read the collection from the database
      *
-     * @param  $resp object An object containing the properties, filter, sort and limit as passed by the user
+     * @param  object $resp An object containing the properties, filter, sort and limit as passed by the user
      *
      * @return array        An array of formatted entries
      */
@@ -52,9 +56,9 @@ class FilesModel extends BaseModel
     /**
      * Create an individual item in the database
      *
-     * @param  object $data The data attributes
+     * @param  object|array|null $data The data attributes
      *
-     * @return int|false    The Integer ID of the newly created item, or false
+     * @return int|null              The integer ID of the newly created item, or null on failure
      */
     public function create($data = null): ?int
     {
@@ -80,9 +84,10 @@ class FilesModel extends BaseModel
     /**
      * Delete an individual item from the database, by ID
      *
-     * @param  int $id The ID of the requested item
+     * @param  int|null $id    The ID of the file to delete
+     * @param  bool     $purge Unused; present for interface compatibility
      *
-     * @return bool    true || false depending on success
+     * @return bool            true on success, false on failure
      */
     public function delete($id = null, bool $purge = false): bool
     {
@@ -97,10 +102,14 @@ class FilesModel extends BaseModel
     }
 
     /**
-     * Return an array containing arrays of related items to be stored in resp->included
+     * Return supplementary data for a single file's read view (stub)
      *
-     * @param  int $id The ID of the requested item
-     * @return array  An array of anything needed for screen output
+     * Reserved for future implementation. Currently returns an empty array;
+     * no data is fetched from the database.
+     *
+     * @param  int   $id Unused; present for interface compatibility
+     *
+     * @return array     An empty array
      */
     public function includedRead(int $id = 0): array
     {
@@ -108,10 +117,14 @@ class FilesModel extends BaseModel
     }
 
     /**
-     * Return an array containing arrays of related items to be stored in resp->included
+     * Return supplementary data for the file create/edit form (stub)
      *
-     * @param  int $id The ID of the requested item
-     * @return array  An array of anything needed for screen output
+     * Reserved for future implementation. Currently returns an empty array;
+     * no data is fetched from the database.
+     *
+     * @param  int   $id Unused; present for interface compatibility
+     *
+     * @return array     An empty array
      */
     public function includedCreateForm(int $id = 0): array
     {
@@ -122,7 +135,14 @@ class FilesModel extends BaseModel
     /**
      * Read the entire collection from the database that the user is allowed to read
      *
-     * @return array  An array of formatted entries
+     * Resolves the full set of org IDs visible to the current user (including
+     * both ancestors and descendants) and filters the result accordingly.
+     *
+     * @param  array $where Additional WHERE conditions to apply to the query
+     * @param  array $orgs  List of org IDs to restrict results to; if empty,
+     *                      the current user's accessible orgs are used
+     *
+     * @return array        An array of formatted files entries
      */
     public function listUser($where = array(), $orgs = array()): array
     {
@@ -149,9 +169,12 @@ class FilesModel extends BaseModel
     }
 
     /**
-     * Read the entire collection from the database
+     * Read every file from the database with no org-based filtering
      *
-     * @return array  An array of all entries
+     * Returns all rows from the `files` table with no additional filtering.
+     * Use {@see listUser()} when results should be restricted to the current user's accessible orgs.
+     *
+     * @return array  Array of stdClass objects representing every file row
      */
     public function listAll(): array
     {
@@ -179,9 +202,14 @@ class FilesModel extends BaseModel
     }
 
     /**
-     * Reset a table
+     * Truncate the files table, removing all rows
      *
-     * @return bool Did it work or not?
+     * The $table parameter is accepted for interface compatibility but is
+     * ignored; the method always resets the 'files' table.
+     *
+     * @param  string $table Unused; present for interface compatibility
+     *
+     * @return bool          true on success, false on failure
      */
     public function reset(string $table = ''): bool
     {
@@ -194,9 +222,10 @@ class FilesModel extends BaseModel
     /**
      * Update an individual item in the database
      *
-     * @param  object  $data The data attributes
+     * @param  int|null          $id   The ID of the file to update
+     * @param  object|array|null $data The data attributes to apply
      *
-     * @return bool    true || false depending on success
+     * @return bool                    true on success, false on failure
      */
     public function update($id = null, $data = null): bool
     {
@@ -210,9 +239,21 @@ class FilesModel extends BaseModel
     }
 
     /**
-     * The dictionary item
+     * Build and return the data dictionary for the files collection
      *
-     * @return object  The stdClass object containing the dictionary
+     * Constructs a stdClass describing the `files` table for use by the
+     * framework's help, validation, and API-documentation systems.
+     * The returned object includes:
+     *  - table       : the collection name ('files')
+     *  - columns     : per-column human-readable descriptions and allowed values
+     *  - attributes  : lists of fields used for collection display, create, and update
+     *  - sentence    : a one-line summary of the resource
+     *  - about       : an HTML paragraph describing the resource
+     *  - notes       : additional free-text notes (may be empty)
+     *  - link        : URL to external documentation
+     *  - product     : minimum product tier required ('enterprise')
+     *
+     * @return object  Populated stdClass dictionary object
      */
     public function dictionary(): object
     {

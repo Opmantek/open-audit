@@ -11,6 +11,10 @@ use stdClass;
 
 class LocationsModel extends BaseModel
 {
+    /**
+     * Constructor. Initialises the database connection and sets the query
+     * builder to target the 'locations' table.
+     */
     public function __construct()
     {
         $this->db = db_connect();
@@ -22,7 +26,7 @@ class LocationsModel extends BaseModel
     /**
      * Read the collection from the database
      *
-     * @param  $resp object An object containing the properties, filter, sort and limit as passed by the user
+     * @param  object $resp An object containing the properties, filter, sort and limit as passed by the user
      *
      * @return array        An array of formatted entries
      */
@@ -76,9 +80,9 @@ class LocationsModel extends BaseModel
     /**
      * Create an individual item in the database
      *
-     * @param  object $data The data attributes
+     * @param  object|array|null $data The data attributes
      *
-     * @return int|false    The Integer ID of the newly created item, or false
+     * @return int|null              The integer ID of the newly created item, or null on failure
      */
     public function create($data = null): ?int
     {
@@ -100,9 +104,10 @@ class LocationsModel extends BaseModel
     /**
      * Delete an individual item from the database, by ID
      *
-     * @param  int $id The ID of the requested item
+     * @param  int|null $id    The ID of the location to delete
+     * @param  bool     $purge Unused; present for interface compatibility
      *
-     * @return bool    true || false depending on success
+     * @return bool            true on success, false on failure
      */
     public function delete($id = null, bool $purge = false): bool
     {
@@ -125,10 +130,11 @@ class LocationsModel extends BaseModel
     }
 
     /**
-     * Return an array containing arrays of related items to be stored in resp->included
+     * Return supplementary data for a single location's read view
      *
-     * @param  int $id The ID of the requested item
-     * @return array  An array of anything needed for screen output
+     * @param  int   $id The ID of the location whose supplementary data to load
+     *
+     * @return array     An array of supplementary data for the read view
      */
     public function includedRead(int $id = 0): array
     {
@@ -142,10 +148,11 @@ class LocationsModel extends BaseModel
     }
 
     /**
-     * Return an array containing arrays of related items to be stored in resp->included
+     * Return supplementary data for the location create/edit form
      *
-     * @param  int $id The ID of the requested item
-     * @return array  An array of anything needed for screen output
+     * @param  int   $id The ID of the location whose supplementary data to load
+     *
+     * @return array     An array of supplementary data for the create/edit form
      */
     public function includedCreateForm(int $id = 0): array
     {
@@ -164,7 +171,14 @@ class LocationsModel extends BaseModel
     /**
      * Read the entire collection from the database that the user is allowed to read
      *
-     * @return array  An array of formatted entries
+     * Resolves the full set of org IDs visible to the current user (including
+     * both ancestors and descendants) and filters the result accordingly.
+     *
+     * @param  array $where Additional WHERE conditions to apply to the query
+     * @param  array $orgs  List of org IDs to restrict results to; if empty,
+     *                      the current user's accessible orgs are used
+     *
+     * @return array        An array of formatted locations entries
      */
     public function listUser($where = array(), $orgs = array()): array
     {
@@ -194,9 +208,12 @@ class LocationsModel extends BaseModel
     }
 
     /**
-     * Read the entire collection from the database
+     * Read every location from the database with no org-based filtering
      *
-     * @return array  An array of all entries
+     * Returns all rows from the `locations` table with no additional filtering.
+     * Use {@see listUser()} when results should be restricted to the current user's accessible orgs.
+     *
+     * @return array  Array of stdClass objects representing every location row
      */
     public function listAll(): array
     {
@@ -233,9 +250,14 @@ class LocationsModel extends BaseModel
     }
 
     /**
-     * Reset a table
+     * Truncate the locations table, removing all rows
      *
-     * @return bool Did it work or not?
+     * The $table parameter is accepted for interface compatibility but is
+     * ignored; the method always resets the 'locations' table.
+     *
+     * @param  string $table Unused; present for interface compatibility
+     *
+     * @return bool          true on success, false on failure
      */
     public function reset(string $table = ''): bool
     {
@@ -248,9 +270,10 @@ class LocationsModel extends BaseModel
     /**
      * Update an individual item in the database
      *
-     * @param  object  $data The data attributes
+     * @param  int|null          $id   The ID of the location to update
+     * @param  object|array|null $data The data attributes to apply
      *
-     * @return bool    true || false depending on success
+     * @return bool                    true on success, false on failure
      */
     public function update($id = null, $data = null): bool
     {
@@ -264,9 +287,21 @@ class LocationsModel extends BaseModel
     }
 
     /**
-     * The dictionary item
+     * Build and return the data dictionary for the locations collection
      *
-     * @return object  The stdClass object containing the dictionary
+     * Constructs a stdClass describing the `locations` table for use by the
+     * framework's help, validation, and API-documentation systems.
+     * The returned object includes:
+     *  - table       : the collection name ('locations')
+     *  - columns     : per-column human-readable descriptions and allowed values
+     *  - attributes  : lists of fields used for collection display, create, and update
+     *  - sentence    : a one-line summary of the resource
+     *  - about       : an HTML paragraph describing the resource
+     *  - notes       : additional free-text notes (may be empty)
+     *  - link        : URL to external documentation
+     *  - product     : minimum product tier required ('community')
+     *
+     * @return object  Populated stdClass dictionary object
      */
     public function dictionary(): object
     {
