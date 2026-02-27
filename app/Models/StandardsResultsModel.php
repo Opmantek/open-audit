@@ -282,10 +282,11 @@ class StandardsResultsModel extends BaseModel
         $dictionary->about = '<p>Standards are stored in Open-AudIT.<br /><br />' . $instance->dictionary->link . '<br /><br /></p>';
 
         $dictionary->notes = '';
+        $dictionary->link = $instance->dictionary->link;
 
         $dictionary->product = 'enterprise';
-        $dictionary->columns->id = $instance->dictionary->id;
 
+        $dictionary->columns->id = $instance->dictionary->id;
         $dictionary->columns->standard_id = 'Links to <code>standards.id</code>';
         $dictionary->columns->policy_id = 'Links to <standards_policies.id</code>';
         $dictionary->columns->applied = 'Has this policy been applied in this organization.';

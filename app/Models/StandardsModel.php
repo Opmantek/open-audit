@@ -269,6 +269,7 @@ class StandardsModel extends BaseModel
         $dictionary->about = '<p>Standards are stored in Open-AudIT.<br /><br />' . $instance->dictionary->link . '<br /><br /></p>';
 
         $dictionary->notes = '';
+        $dictionary->link = $instance->dictionary->link;
 
         $dictionary->product = 'enterprise';
         $dictionary->columns->id = $instance->dictionary->id;
