@@ -55,59 +55,73 @@ class Dictionary extends BaseController
         $db = db_connect() or die("Cannot establish a database connection.");
         $supported = array('ar', 'az', 'bg', 'cs', 'da', 'dq', 'de', 'el', 'eo', 'es', 'et', 'fi', 'fr', 'ga', 'hi', 'hu', 'id', 'it', 'ja', 'ko', 'lt', 'lv', 'nl', 'pb', 'pl', 'ru', 'sq', 'tr', 'uk', 'zh');
 
-        // $u = 'admin';
-        // $p = 'password';
-        // $options = [
-        //     'baseURI' => 'http://localhost:8080/',
-        //     'timeout' => 3,
-        // ];
-        // $client = service('curlrequest', $options);
-        // $response = $client->request('POST', 'logon', [
-        //     'form_params' => [
-        //         'username' => $u,
-        //         'password' => $p,
-        //     ],
-        //     'cookie' => WRITEPATH . 'CookieSaver.txt'
-        // ]);
+        $u = 'admin';
+        $p = 'password';
+        $options = [
+            'baseURI' => 'http://localhost:8080/',
+            'timeout' => 3,
+        ];
+        $client = service('curlrequest', $options);
+        $response = $client->request('POST', 'logon', [
+            'form_params' => [
+                'username' => $u,
+                'password' => $p,
+            ],
+            'cookie' => WRITEPATH . 'CookieSaver.txt'
+        ]);
 
-        // $r = service('routes');
-        // $r->setHTTPVerb('GET'); // verb are lowercase
-        // $routes = json_encode($r->getRoutes());
-        // $routes = json_decode($routes);
-        // foreach($routes as $key => $value) {
-        //     if (strpos((string)$key, '(') !== false) {
-        //         unset($routes->{$key});
-        //     }
-        // }
-        // unset($routes->{"/"});
-        // unset($routes->{"__hot-reload"});
-        // unset($routes->{"configuration/defaults"});
-        // unset($routes->{"configuration/email/execute_form"});
-        // unset($routes->{"configuration/license_eula"});
-        // unset($routes->{"configuration/license_string"});
-        // unset($routes->{"configuration/servers"});
-        // unset($routes->{"dictionary"});
-        // unset($routes->{"news/execute/vulnerabilities"});
-        // unset($routes->{"news/execute/vendors"});
-        // unset($routes->{"vendors/0/execute"});
-        // unset($routes->{"vulnerabilities/0/execute"});
-        // unset($routes->{"logoff"});
-        // unset($routes->{"logout"});
-        // unset($routes->{"logon"});
-        // unset($routes->{"login"});
+        $r = service('routes');
+        $r->setHTTPVerb('GET'); // verb are lowercase
+        $routes = json_encode($r->getRoutes());
+        $routes = json_decode($routes);
+        foreach($routes as $key => $value) {
+            if (strpos((string)$key, '(') !== false) {
+                unset($routes->{$key});
+            }
+        }
 
-        // $count = 0;
-        // foreach ($routes as $key => $value) {
-        //     $count++;
-        //     log_message('info', 'Requesting route: ' . $key);
-        //     try {
-        //         $response = $client->request('GET', '/' . $key, ['cookie' => WRITEPATH . 'CookieSaver.txt', 'http_errors' => false]);
-        //     } catch (HTTPException $error) {
-        //         log_message('error', $key . ' :: ' . $response->getStatusCode());
-        //     }
-        // }
+        unset($routes->{"/"});
+        unset($routes->{"__hot-reload"});
+        unset($routes->{"configuration/defaults"});
+        unset($routes->{"configuration/email/execute_form"});
+        unset($routes->{"configuration/license_eula"});
+        unset($routes->{"configuration/license_string"});
+        unset($routes->{"configuration/servers"});
+        unset($routes->{"dictionary"});
+        unset($routes->{"news/execute/vulnerabilities"});
+        unset($routes->{"news/execute/vendors"});
+        unset($routes->{"vendors/0/execute"});
+        unset($routes->{"vulnerabilities/0/execute"});
+        unset($routes->{"logoff"});
+        unset($routes->{"logout"});
+        unset($routes->{"logon"});
+        unset($routes->{"login"});
 
-        // log_message('info', "Count: $count routes performed.");
+        // FAQ pages
+        $files = array_diff(scandir(APPPATH . 'Views/faq'), array('.', '..'));
+        foreach ($files as $file) {
+            if ($file !== 'FAQ.php') {
+                $routes->{"faq?name=" . str_replace('.php', '', $file)} = 'faq';
+            }
+        }
+
+        // Discovery Issues
+        for ($i=1; $i < 10; $i++) {
+            $routes->{"discovery_issues/" . $i} = 'discovery_issues';
+        }
+
+        $count = 0;
+        foreach ($routes as $key => $value) {
+            $count++;
+            log_message('info', 'Requesting route: ' . $key);
+            try {
+                $response = $client->request('GET', '/' . $key, ['cookie' => WRITEPATH . 'CookieSaver.txt', 'http_errors' => false]);
+            } catch (HTTPException $error) {
+                log_message('error', $key . ' :: ' . $response->getStatusCode());
+            }
+        }
+
+        log_message('info', "Count: $count routes performed.");
 
         $file = APPPATH . 'Views/lang/en.json';
         $file_json = file_get_contents($file);
@@ -117,6 +131,8 @@ class Dictionary extends BaseController
                 $GLOBALS['lang'][$key] = $value;
             }
         }
+
+        exit;
 
         // From Dictionary::dictionary
         word ("<br> <strong>NOTE</strong> - You are accessing this URL from the local Open-AudIT server. The downloaded script will not be able to submit when run on any other machine. If you need to audit other machines, please download the script from any remote machine, not using a browser on the Open-AudIT server itself.");
