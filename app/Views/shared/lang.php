@@ -4,7 +4,7 @@
 $GLOBALS['lang'] = array();
 $GLOBALS['lang']['en'] = array();
 
-if (empty($user->lang) {
+if (empty($user->lang)) {
     log_message('warning', 'No json language file found. English is the only available option without this file.');
 }
 
@@ -54,6 +54,10 @@ if (!function_exists('__')) {
         if ($learning === false and !empty($instance->user->lang) and $instance->user->lang === 'en') {
             return $word;
         }
+        if (empty($instance->user)) {
+            return $word;
+        }
+
         // Load, update and write en.json if in learning mode.
         if ($learning) {
             $file = APPPATH . 'Views/lang/en.json';
