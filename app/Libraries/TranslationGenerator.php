@@ -12,11 +12,77 @@ use GuzzleHttp\Psr7\Request;
 
 final class TranslationGenerator
 {
+    private string $outputPath = WRITEPATH . 'translations';
+    private string $baseUri = 'http://localhost:5000';
+    private int $concurrency = 4;
+    private array $languages = [];
+    private array $translations = [];
+
+    public function getOutputPath(): string
+    {
+        return $this->outputPath;
+    }
+
+    public function setOutputPath(string $outputPath): self
+    {
+        $this->outputPath = $outputPath;
+
+        return $this;
+    }
+
+    public function getBaseUri(): string
+    {
+        return $this->baseUri;
+    }
+
+    public function setBaseUri(string $baseUri): self
+    {
+        $this->baseUri = $baseUri;
+
+        return $this;
+    }
+
+    public function getConcurrency(): int
+    {
+        return $this->concurrency;
+    }
+
+    public function setConcurrency(int $concurrency): self
+    {
+        $this->concurrency = $concurrency;
+
+        return $this;
+    }
+
+    public function getLanguages(): array
+    {
+        return $this->languages;
+    }
+
+    public function setLanguages(array $languages): self
+    {
+        $this->languages = $languages;
+
+        return $this;
+    }
+
+    public function getTranslations(): array
+    {
+        return $this->translations;
+    }
+
+    public function setTranslations(array $translations): self
+    {
+        $this->translations = $translations;
+
+        return $this;
+    }
+
     public function generate(): bool
     {
         $client = new Client([
-            'base_uri' => 'http://localhost:5000',
-            'timeout'  => 10,
+            'base_uri' => $this->getBaseUri(),
+            'timeout'  => 15,
         ]);
 
         try {
@@ -30,9 +96,11 @@ final class TranslationGenerator
             return false;
         }
 
-        $concurrency = 50;
-
         foreach ($this->getSupportedLanguages() as $code => $language) {
+            if (! empty($this->languages) && ! in_array($code, $this->languages, true)) {
+                continue;
+            }
+
             $hashes = [];
             $requests = [];
             $translations = [];
@@ -59,7 +127,7 @@ final class TranslationGenerator
             $startTime = microtime(true);
 
             $pool = new Pool($client, $requests, [
-                'concurrency' => $concurrency,
+                'concurrency' => $this->getConcurrency(),
                 'fulfilled' => function ($response, $index) use (&$translations, $hashes) {
                     $body = $response->getBody()->getContents();
                     $data = json_decode($body, true);
@@ -69,7 +137,7 @@ final class TranslationGenerator
                     }
                 },
                 'rejected' => function ($reason, $index) {
-                    log_message('info', "Translation {$index} failed: " . $reason->getMessage() . "\n");
+                    log_message('info', "Translation {$index} failed: " . $reason->getMessage());
                 },
             ]);
 
@@ -77,28 +145,17 @@ final class TranslationGenerator
             $promise->wait();
 
             $duration = microtime(true) - $startTime;
-            $successfulCount = count($translations);
-            log_message('info', "Language: {$code} - Translations: {$successfulCount} - Duration: {$duration} seconds\n");
+            $count    = count($translations);
+            log_message('info', "Language: {$code} - Translations: {$count} - Duration: {$duration} seconds");
 
-            $this->outputTranslationFiles($translations, $code);
+            $success = $this->outputTranslationFiles($translations, $code);
 
-            // Exit after first whilst testing
-            break;
+            if (! $success) {
+                log_message('info', "Failed to generate translation files: {$code}");
+            }
         }
 
         return true;
-    }
-
-    public function getTranslations(): array
-    {
-        return [
-            'e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855' => '',
-            '0a9dae3aa671abc04d9833b7cf4ed8367d37eaef6defa3431350c7bcb43e5df8' => ' Default, currently ',
-            '38610d7ce62ce4e1bc7ae88df3a7717f4e2c5053263641eaddb6e7e407a33a38' => ' If something does not work as expected, your first thing to do is check the logs.',
-            'f3dd0fbdf763baae393b04c640c676c061f48b963e783d0b19099e2b78009211' => ' is now supported with a language file. To change your user to use this language, click ',
-            '3489b52478843c24a40382ba9ac4cf2531de5975d22dcd583b0b569e26924d5e' => ' seconds',
-            'c10987bd7cf853f6ea92ddac1b6c95fa830e3aee160cc5d4ba2fea3743be1aa2' => '!=',
-        ];
     }
 
     public function getSupportedLanguages(): array
@@ -139,8 +196,14 @@ final class TranslationGenerator
 
     private function outputTranslationFiles(array $translations, string $code): bool
     {
-        $outputPhpFile = WRITEPATH . $code . '.php';
-        $outputJsonFile = WRITEPATH . $code . '.json';
+        $outputPath = rtrim($this->getOutputPath(), '/');
+
+        if (! is_dir($outputPath) && ! mkdir($outputPath, 0755, true)) {
+            return false;
+        }
+
+        $outputPhpFile = $outputPath . '/' . $code . '.php';
+        $outputJsonFile = $outputPath . '/' . $code . '.json';
 
         $json = json_encode($translations, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
         $array = json_decode($json, true);

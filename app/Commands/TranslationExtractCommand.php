@@ -30,16 +30,14 @@ class TranslationExtractCommand extends BaseCommand
             return;
         }
 
-        $outputFile = $params['output'] ?? WRITEPATH . 'translations.php';
-
         $extractor = new TranslationExtractor();
         $extractor->setDirectories($dirs);
-        $success = $extractor->extract($outputFile);
+        $success = $extractor->extract();
 
         if ($success) {
-            CLI::write('Translations extracted successfully to ' . $outputFile, 'green');
+            CLI::write('Translations extracted successfully to ' . $extractor->getOutputPath(), 'green');
         } else {
-            CLI::error('Failed to write the translations file.');
+            CLI::error('Failed to write the extracted translations to path ' . $extractor->getOutputPath());
         }
     }
 }

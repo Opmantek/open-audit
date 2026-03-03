@@ -13,6 +13,7 @@ use stdClass;
 
 final class TranslationExtractor
 {
+    private string $outputPath = WRITEPATH . 'translations';
     private array $directories = [];
     private array $exclusions = [];
     private array $translations = [];
@@ -20,6 +21,18 @@ final class TranslationExtractor
     public function __construct()
     {
         helper('utility');
+    }
+
+    public function getOutputPath(): string
+    {
+        return $this->outputPath;
+    }
+
+    public function setOutputPath(string $outputPath): self
+    {
+        $this->outputPath = $outputPath;
+
+        return $this;
     }
 
     public function getDirectories(): array
@@ -73,7 +86,7 @@ final class TranslationExtractor
         return $this;
     }
 
-    public function extract(?string $outputFile = null): bool
+    public function extract(): bool
     {
         $this->translations = [];
 
@@ -84,11 +97,7 @@ final class TranslationExtractor
 
         asort($this->translations);
 
-        if ($outputFile !== null) {
-            return $this->writeToFile($outputFile);
-        }
-
-        return true;
+        return $this->outputTranslationFiles();
     }
 
     private function extractStrings(): void
@@ -287,13 +296,23 @@ final class TranslationExtractor
         $this->translations[$hash] = $text;
     }
 
-    private function writeToFile(string $outputFile): bool
+    private function outputTranslationFiles(): bool
     {
-        $json = json_encode($this->translations);
+        $outputPath = rtrim($this->getOutputPath(), '/');
+
+        if (! is_dir($outputPath) && ! mkdir($outputPath, 0755, true)) {
+            return false;
+        }
+
+        $outputPhpFile = $outputPath . '/default.php';
+        $outputJsonFile = $outputPath . '/default.json';
+
+        $json = json_encode($this->translations, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
         $array = json_decode($json, true);
         $content = "<?php\n\nreturn " . var_export($array, true) . ";\n";
 
-        return file_put_contents($outputFile, $content) !== false;
+        return file_put_contents($outputJsonFile, $json) !== false &&
+            file_put_contents($outputPhpFile, $content) !== false;
     }
 
     private function tableFieldName(string $name): string {
