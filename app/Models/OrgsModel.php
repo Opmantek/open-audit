@@ -11,6 +11,10 @@ use stdClass;
 
 class OrgsModel extends BaseModel
 {
+    /**
+     * Constructor. Initialises the database connection and sets the query
+     * builder to target the 'orgs' table.
+     */
     public function __construct()
     {
         $this->db = db_connect();
@@ -20,7 +24,7 @@ class OrgsModel extends BaseModel
     /**
      * Read the collection from the database
      *
-     * @param  $resp object An object containing the properties, filter, sort and limit as passed by the user
+     * @param  object $resp An object containing the properties, filter, sort and limit as passed by the user
      * 
      * @return array        An array of formatted Orgs
      */
@@ -57,9 +61,9 @@ class OrgsModel extends BaseModel
     /**
      * Create an individual item in the database
      *
-     * @param  object $data The data attributes
+     * @param  object|array|null $data The data attributes
      *
-     * @return int|false    The Integer ID of the newly created item, or false
+     * @return int|null              The integer ID of the newly created item, or null on failure
      */
     public function create($data = null): ?int
     {
@@ -84,9 +88,10 @@ class OrgsModel extends BaseModel
     /**
      * Delete an individual item from the database, by ID
      *
-     * @param  int $id The ID of the requested item
+     * @param  int|null $id    The ID of the org to delete
+     * @param  bool     $purge Unused; present for interface compatibility
      *
-     * @return bool    true || false depending on success
+     * @return bool            true on success, false on failure
      */
     public function delete($id = null, bool $purge = false): bool
     {
@@ -114,9 +119,14 @@ class OrgsModel extends BaseModel
     }
 
     /**
-     * [get_ascendant description]
-     * @param  integer $id [description]
-     * @return [type]      [description]
+     * Return an array of ancestor org IDs for the given org, walking up the hierarchy
+     *
+     * Recursively traverses the org tree upward from the given org ID, collecting
+     * the IDs of all parent orgs. Stops when an org's parent_id equals its own id.
+     *
+     * @param  int   $id The org ID to start from
+     *
+     * @return array     An array of ancestor org IDs (may contain duplicates)
      */
     public function getAscendant(int $id = 0)
     {
@@ -137,9 +147,14 @@ class OrgsModel extends BaseModel
     }
 
     /**
-     * [get_ascendants description]
-     * @param  integer $id [description]
-     * @return [type]      [description]
+     * Return a sorted, deduplicated array of ancestor org IDs for the given org
+     *
+     * Calls {@see getAscendant()} to collect all ancestor org IDs, removes any
+     * occurrence of the starting org's own ID, then returns a sorted unique list.
+     *
+     * @param  int   $id The org ID whose ancestors to retrieve
+     *
+     * @return array     A sorted array of unique ancestor org IDs
      */
     public function getAscendants(int $id = 0)
     {
@@ -154,9 +169,14 @@ class OrgsModel extends BaseModel
     }
 
     /**
-     * [get_descendants description]
-     * @param  integer $id [description]
-     * @return [type]      [description]
+     * Return an array of descendant org IDs for the given org, walking down the hierarchy
+     *
+     * Recursively traverses the org tree downward from the given org ID, collecting
+     * the IDs of all child and grandchild orgs.
+     *
+     * @param  int   $id The org ID whose descendants to retrieve
+     *
+     * @return array     An array of descendant org IDs
      */
     public function getDescendants($id = 0)
     {
@@ -234,10 +254,11 @@ class OrgsModel extends BaseModel
     }
 
     /**
-     * Return an array containing arrays of related items to be stored in resp->included
+     * Return supplementary data for a single org's read view
      *
-     * @param  int $id The ID of the requested item
-     * @return array  An array of anything needed for screen output
+     * @param  int   $id The ID of the org whose supplementary data to load
+     *
+     * @return array     An array of supplementary data for the read view
      */
     public function includedRead(int $id = 0): array
     {
@@ -249,10 +270,11 @@ class OrgsModel extends BaseModel
     }
 
     /**
-     * Return an array containing arrays of related items to be stored in resp->included
+     * Return supplementary data for the org create/edit form
      *
-     * @param  int $id The ID of the requested item
-     * @return array  An array of anything needed for screen output
+     * @param  int   $id The ID of the org whose supplementary data to load
+     *
+     * @return array     An array of supplementary data for the create/edit form
      */
     public function includedCreateForm(int $id = 0): array
     {
@@ -385,9 +407,14 @@ class OrgsModel extends BaseModel
     }
 
     /**
-     * Reset a table
+     * Truncate the orgs table, removing all rows
      *
-     * @return bool Did it work or not?
+     * The $table parameter is accepted for interface compatibility but is
+     * ignored; the method always resets the 'orgs' table.
+     *
+     * @param  string $table Unused; present for interface compatibility
+     *
+     * @return bool          true on success, false on failure
      */
     public function reset(string $table = ''): bool
     {
@@ -405,9 +432,10 @@ class OrgsModel extends BaseModel
     /**
      * Update an individual item in the database
      *
-     * @param  object  $data The data attributes
+     * @param  int|null          $id   The ID of the org to update
+     * @param  object|array|null $data The data attributes to apply
      *
-     * @return bool    true || false depending on success
+     * @return bool                    true on success, false on failure
      */
     public function update($id = null, $data = null): bool
     {
@@ -423,9 +451,21 @@ class OrgsModel extends BaseModel
     }
 
     /**
-     * The dictionary item
+     * Build and return the data dictionary for the orgs collection
      *
-     * @return object  The stdClass object containing the dictionary
+     * Constructs a stdClass describing the `orgs` table for use by the
+     * framework's help, validation, and API-documentation systems.
+     * The returned object includes:
+     *  - table       : the collection name ('orgs')
+     *  - columns     : per-column human-readable descriptions and allowed values
+     *  - attributes  : lists of fields used for collection display, create, and update
+     *  - sentence    : a one-line summary of the resource
+     *  - about       : an HTML paragraph describing the resource
+     *  - notes       : additional free-text notes (may be empty)
+     *  - link        : URL to external documentation
+     *  - product     : minimum product tier required ('community')
+     *
+     * @return object  Populated stdClass dictionary object
      */
     public function dictionary(): object
     {

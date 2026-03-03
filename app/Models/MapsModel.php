@@ -11,6 +11,9 @@ use stdClass;
 
 class MapsModel extends BaseModel
 {
+    /**
+     * Constructor. No database connection required for this model.
+     */
     public function __construct()
     {
     }
@@ -18,7 +21,7 @@ class MapsModel extends BaseModel
     /**
      * Read the collection from the database
      *
-     * @param  $resp object An object containing the properties, filter, sort and limit as passed by the user
+     * @param  object $resp An object containing the properties, filter, sort and limit as passed by the user
      *
      * @return array        An array of formatted entries
      */
@@ -32,9 +35,9 @@ class MapsModel extends BaseModel
     /**
      * Create an individual item in the database
      *
-     * @param  object $data The data attributes
+     * @param  object|array|null $data The data attributes
      *
-     * @return int|false    The Integer ID of the newly created item, or false
+     * @return int|null              The integer ID of the newly created item, or null on failure
      */
     public function create($data = null): ?int
     {
@@ -42,11 +45,14 @@ class MapsModel extends BaseModel
     }
 
     /**
-     * Delete an individual item from the database, by ID
+     * Delete an individual item from the database, by ID (stub)
      *
-     * @param  int $id The ID of the requested item
+     * Reserved for future implementation. Always returns true.
      *
-     * @return bool    true || false depending on success
+     * @param  int|null $id    Unused; present for interface compatibility
+     * @param  bool     $purge Unused; present for interface compatibility
+     *
+     * @return bool            Always true
      */
     public function delete($id = null, bool $purge = false): bool
     {
@@ -54,10 +60,14 @@ class MapsModel extends BaseModel
     }
 
     /**
-     * Return an array containing arrays of related items to be stored in resp->included
+     * Return supplementary data for a single map's read view (stub)
      *
-     * @param  int $id The ID of the requested item
-     * @return array  An array of anything needed for screen output
+     * Reserved for future implementation. Currently returns an empty array;
+     * no data is fetched from the database.
+     *
+     * @param  int   $id Unused; present for interface compatibility
+     *
+     * @return array     An empty array
      */
     public function includedRead(int $id = 0): array
     {
@@ -65,10 +75,14 @@ class MapsModel extends BaseModel
     }
 
     /**
-     * Return an array containing arrays of related items to be stored in resp->included
+     * Return supplementary data for the map create/edit form (stub)
      *
-     * @param  int $id The ID of the requested item
-     * @return array  An array of anything needed for screen output
+     * Reserved for future implementation. Currently returns an empty array;
+     * no data is fetched from the database.
+     *
+     * @param  int   $id Unused; present for interface compatibility
+     *
+     * @return array     An empty array
      */
     public function includedCreateForm(int $id = 0): array
     {
@@ -77,9 +91,14 @@ class MapsModel extends BaseModel
 
 
     /**
-     * Read the entire collection from the database that the user is allowed to read
+     * Read the entire collection from the database that the user is allowed to read (stub)
      *
-     * @return array  An array of formatted entries
+     * Reserved for future implementation. Currently returns an empty array.
+     *
+     * @param  array $where Unused; present for interface compatibility
+     * @param  array $orgs  Unused; present for interface compatibility
+     *
+     * @return array        An empty array
      */
     public function listUser($where = array(), $orgs = array()): array
     {
@@ -87,9 +106,11 @@ class MapsModel extends BaseModel
     }
 
     /**
-     * Read the entire collection from the database
+     * Read every map from the database with no org-based filtering (stub)
      *
-     * @return array  An array of all entries
+     * Reserved for future implementation. Currently returns an empty array.
+     *
+     * @return array  An empty array
      */
     public function listAll(): array
     {
@@ -109,9 +130,13 @@ class MapsModel extends BaseModel
     }
 
     /**
-     * Reset a table
+     * Truncate the map data, removing all rows (stub)
      *
-     * @return bool Did it work or not?
+     * Reserved for future implementation. Always returns false.
+     *
+     * @param  string $table Unused; present for interface compatibility
+     *
+     * @return bool          Always false
      */
     public function reset(string $table = ''): bool
     {
@@ -119,11 +144,14 @@ class MapsModel extends BaseModel
     }
 
     /**
-     * Update an individual item in the database
+     * Update an individual item in the database (stub)
      *
-     * @param  object  $data The data attributes
+     * Reserved for future implementation. Always returns false.
      *
-     * @return bool    true || false depending on success
+     * @param  int|null          $id   Unused; present for interface compatibility
+     * @param  object|array|null $data Unused; present for interface compatibility
+     *
+     * @return bool                    Always false
      */
     public function update($id = null, $data = null): bool
     {
@@ -131,9 +159,21 @@ class MapsModel extends BaseModel
     }
 
     /**
-     * The dictionary item
+     * Build and return the data dictionary for the maps collection
      *
-     * @return object  The stdClass object containing the dictionary
+     * Constructs a stdClass describing the `maps` collection for use by the
+     * framework's help, validation, and API-documentation systems.
+     * The returned object includes:
+     *  - table       : the collection name ('maps')
+     *  - columns     : per-column human-readable descriptions and allowed values
+     *  - attributes  : lists of fields used for collection display, create, and update
+     *  - sentence    : a one-line summary of the resource
+     *  - about       : an HTML paragraph describing the resource
+     *  - notes       : additional free-text notes (may be empty)
+     *  - link        : URL to external documentation
+     *  - product     : minimum product tier required ('professional')
+     *
+     * @return object  Populated stdClass dictionary object
      */
     public function dictionary(): object
     {
