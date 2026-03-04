@@ -43,7 +43,7 @@ if (!empty($_GET['application_id'])) {
 
                                 <div class="row" id="primary_external_provider_div" style="padding-top:16px; display:none;">
                                     <div class="offset-2 col-8" style="position:relative;">
-                                        <label class="form-label" for="data[attributes][primary_external_provider]"><?= __('External Povider') ?></label>
+                                        <label class="form-label" for="data[attributes][primary_external_provider]"><?= __('External Provider') ?></label>
                                         <input class="form-control" type="text" id="data[attributes][primary_external_provider]" name="data[attributes][primary_external_provider]">
                                     </div>
                                 </div>
@@ -143,7 +143,7 @@ if (!empty($_GET['application_id'])) {
 
                                 <div class="row" id="secondary_external_provider_div" style="padding-top:16px; display:none;">
                                     <div class="offset-2 col-8" style="position:relative;">
-                                        <label class="form-label" for="data[attributes][secondary_external_provider]"><?= __('External Povider') ?></label>
+                                        <label class="form-label" for="data[attributes][secondary_external_provider]"><?= __('External Provider') ?></label>
                                         <input class="form-control" type="text" id="data[attributes][secondary_external_provider]" name="data[attributes][secondary_external_provider]">
                                     </div>
                                 </div>
@@ -444,7 +444,7 @@ window.onload = function () {
                 $('#data\\[attributes\\]\\[secondary_external_provider\\]').val('');
                 $('#data\\[attributes\\]\\[secondary_external_service\\]').val('');
                 $('#data\\[attributes\\]\\[secondary_external_service\\]').find('option').remove().end();
-                $('#secondary_external_service_div').html('<div class="offset-2 col-8" style="position:relative;"><label class="form-label" for="data[attributes][secondary_external_service]">External Povider</label><input class="form-control" type="text" id="data[attributes][secondary_external_service]" name="data[attributes][secondary_external_service]"></div>');
+                $('#secondary_external_service_div').html('<div class="offset-2 col-8" style="position:relative;"><label class="form-label" for="data[attributes][secondary_external_service]">External Provider</label><input class="form-control" type="text" id="data[attributes][secondary_external_service]" name="data[attributes][secondary_external_service]"></div>');
                 $('#secondary_external_provider_div').css("display", "block");
                 $('#secondary_external_service_div').css("display", "block");
                 $("#secondary_device_search").css("display", "none");

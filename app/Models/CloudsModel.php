@@ -543,7 +543,7 @@ class CloudsModel extends BaseModel
         $dictionary->columns->secret_key = 'The secret key used in conjunction with your AWS EC2 API key.';
         // Azue
         $dictionary->columns->subscription_id = 'Your Microsoft Azure Subscription ID.';
-        $dictionary->columns->tenant_id = 'Your Microsoft Azure Tennant ID.';
+        $dictionary->columns->tenant_id = 'Your Microsoft Azure Tenant ID.';
         $dictionary->columns->client_id = 'Your Microsoft Azure Client ID.';
         $dictionary->columns->client_secret = 'Your Microsoft Azure Client Secret.';
         // Google Compute

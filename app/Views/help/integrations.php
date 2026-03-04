@@ -52,7 +52,7 @@ $body = '<br>
 
 <code>priority</code>: ' . __('When combining devices, which system is the authoritative source for information.') . '<br><br>
 
-<code>default_value</code>: ' . __('If no value is present, supply this value. EG: for system.nmis_group / configuraion.group we use') . ' Open-AudIT.<br><br>
+<code>default_value</code>: ' . __('If no value is present, supply this value. EG: for system.nmis_group / configuration.group we use') . ' Open-AudIT.<br><br>
 
 <code>matching_attribute</code>: ' . __('Should we use this value to match external and internal devices. Our default Integration uses IP and UUID here. If either of these match between external and internal device, we consider them to be the same device.') . '<br><br>
 

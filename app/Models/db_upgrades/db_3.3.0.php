@@ -225,7 +225,7 @@ $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
 
-$sql = "INSERT INTO `configuration` VALUES (NULL,'discovery_sudo_path','','text','y','system','2000-01-01 00:00:00','Optional hardcoded path to sudo executable. Comma seperated for multiple paths.')";
+$sql = "INSERT INTO `configuration` VALUES (NULL,'discovery_sudo_path','','text','y','system','2000-01-01 00:00:00','Optional hardcoded path to sudo executable. Comma separated for multiple paths.')";
 $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());

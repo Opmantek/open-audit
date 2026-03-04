@@ -262,7 +262,7 @@ window.onload = function () {
                                                                         <select class=\"form-select\" id=\"data[attributes][outputs][" + output_count + "][value_type]\" name=\"data[attributes][outputs][" + output_count + "][value_type]\">\
                                                                             <option value=\"string\"><?= __('String') ?></option>\
                                                                             <option value=\"integer\"><?= __('Integer') ?></option>\
-                                                                            <option value=\"timestamp\"><?= __('Timesatamp') ?></option>\
+                                                                            <option value=\"timestamp\"><?= __('Timestamp') ?></option>\
                                                                         </select>\
                                                                     </div>\
                                                                     <div class=\"col-1 pull-right\">\

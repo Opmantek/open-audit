@@ -75,11 +75,11 @@ value_type = string
             </tr>
             <tr>
                 <td>in</td>
-                <td>' . __('In the (comma seperated) list') . '</td>
+                <td>' . __('In the (comma separated) list') . '</td>
             </tr>
             <tr>
                 <td>ni</td>
-                <td>' . __('Not in the (comma seperated) list') . '</td>
+                <td>' . __('Not in the (comma separated) list') . '</td>
             </tr>
         </tbody>
     </table>

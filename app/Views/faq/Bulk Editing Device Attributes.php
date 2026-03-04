@@ -20,7 +20,7 @@ $body = '<p><br><br>' . __('This will show you the Bulk Edit form. Any attribute
 <p>
 <br>' . __('Click the icon to the right of the field you wish to edit. Change the field and click the green icon to submit.') . '<br>
 <br>' . __('You can also see at the bottom of the page a table showing the devices the changes will be applied to.') . '<br>
-<br>' . __('Thats it! You have just edited the attributes of as many devices as you need to.') . '<br>
+<br>' . __('That\'s it! You have just edited the attributes of as many devices as you need to.') . '<br>
 <br>' . __('There is absolutely no need to manually edit each individual device.') . '<br>
 <br><strong>' . __('NOTE') . '</strong>: ' . 
 __('Bulk edit selections wont stay selected after clicking next page.') . '<br>
