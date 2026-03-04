@@ -12,6 +12,7 @@ use CodeIgniter\CLI\CLI;
 /**
  * @example php spark translation:generate \
  *   --api http://localhost:5000 \
+ *   --timeout 30 \
  *   --concurrency 4 \
  *   --languages ar \
  *   --input /usr/local/open-audit/writable/translations/default.php
@@ -23,6 +24,7 @@ class TranslationGenerateCommand extends BaseCommand
     protected $description = 'Generates individual translation files from a file containing extracted translation strings';
     protected $options = [
         '--api' => 'The base URI in which the translation service is accessible',
+        '--timeout' => 'The maximum duration of an API request',
         '--concurrency' => 'The amount of translations processed at once',
         '--languages' => 'A comma delimited list of language codes to filter by',
         '--input' => 'The input file containing extracted translation strings',
@@ -31,6 +33,7 @@ class TranslationGenerateCommand extends BaseCommand
     public function run(array $params): void
     {
         $api = CLI::getOption('api');
+        $timeout = CLI::getOption('timeout');
         $concurrency = CLI::getOption('concurrency');
         $languages = CLI::getOption('languages') ?? '';
         $languages = array_filter(array_map('trim', explode(',', $languages)));
@@ -53,6 +56,10 @@ class TranslationGenerateCommand extends BaseCommand
 
         if (is_string($api)) {
             $generator->setBaseUri($api);
+        }
+
+        if (is_numeric($timeout)) {
+            $generator->setTimeout((float) $timeout);
         }
 
         if (is_numeric($concurrency)) {

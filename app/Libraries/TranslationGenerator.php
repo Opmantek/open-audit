@@ -14,6 +14,7 @@ final class TranslationGenerator
 {
     private string $outputPath = WRITEPATH . 'translations';
     private string $baseUri = 'http://localhost:5000';
+    private float $timeout = 30.0;
     private int $concurrency = 4;
     private array $languages = [];
     private array $translations = [];
@@ -38,6 +39,18 @@ final class TranslationGenerator
     public function setBaseUri(string $baseUri): self
     {
         $this->baseUri = $baseUri;
+
+        return $this;
+    }
+
+    public function getTimeout(): float
+    {
+        return $this->timeout;
+    }
+
+    public function setTimeout(float $timeout): self
+    {
+        $this->timeout = $timeout;
 
         return $this;
     }
@@ -82,7 +95,7 @@ final class TranslationGenerator
     {
         $client = new Client([
             'base_uri' => $this->getBaseUri(),
-            'timeout'  => 15,
+            'timeout'  => $this->getTimeout(),
         ]);
 
         try {
