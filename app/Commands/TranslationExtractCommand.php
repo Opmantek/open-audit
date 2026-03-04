@@ -10,7 +10,7 @@ use CodeIgniter\CLI\CLI;
 
 /**
  * @example php spark translation:extract \
- *   --dirs "/usr/local/open-audit/app"
+ *   --dirs /usr/local/open-audit/app \
  *   --output /usr/local/open-audit/writable/translations
  */
 class TranslationExtractCommand extends BaseCommand
