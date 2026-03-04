@@ -116,10 +116,14 @@ final class TranslationGenerator
 
             $hashes = [];
             $requests = [];
-            $translations = [];
+            $translations = $this->getTranslations();
 
             foreach ($this->getTranslations() as $hash => $text) {
                 if ($text === '') {
+                    continue;
+                }
+
+                if (! preg_match('/[0-1A-Za-z]/', $text)) {
                     continue;
                 }
 
