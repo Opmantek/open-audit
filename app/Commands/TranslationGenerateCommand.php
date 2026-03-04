@@ -16,6 +16,7 @@ use CodeIgniter\CLI\CLI;
  *   --concurrency 4 \
  *   --languages ar \
  *   --input /usr/local/open-audit/writable/translations/default.php
+ *   --output /usr/local/open-audit/writable/translations
  */
 class TranslationGenerateCommand extends BaseCommand
 {
@@ -28,6 +29,7 @@ class TranslationGenerateCommand extends BaseCommand
         '--concurrency' => 'The amount of translations processed at once',
         '--languages' => 'A comma delimited list of language codes to filter by',
         '--input' => 'The input file containing extracted translation strings',
+        '--output' => 'The path to output files',
     ];
 
     public function run(array $params): void
@@ -38,6 +40,7 @@ class TranslationGenerateCommand extends BaseCommand
         $languages = CLI::getOption('languages') ?? '';
         $languages = array_filter(array_map('trim', explode(',', $languages)));
         $input = CLI::getOption('input');
+        $output = CLI::getOption('output');
 
         if (! is_file($input)) {
             CLI::error('Input file does not exist. Use --input "/path/translations.php"');
@@ -68,6 +71,14 @@ class TranslationGenerateCommand extends BaseCommand
 
         if (! empty($languages)) {
             $generator->setLanguages($languages);
+        }
+
+        if (is_string($output)) {
+            if (! is_dir($output) && ! mkdir($output, 0755, true)) {
+                CLI::error('Output path is invalid or cannot be created.');
+                return;
+            }
+            $generator->setOutputPath($output);
         }
 
         $success = $generator->generate();
