@@ -15,14 +15,14 @@ class TranslationAddCommand extends BaseCommand
 {
     protected $group       = 'Translation';
     protected $name        = 'translation:add';
-    protected $description = 'Adds an individual translatable string to the default translation file';
+    protected $description = 'Adds a translatable string to the default translation file';
     protected $arguments = [
         'text' => 'The text to be translated',
     ];
 
     public function run(array $params): void
     {
-        $text = $params['text'] ?? '';
+        $text = $params[0] ?? '';
 
         if (trim($text) === '') {
             CLI::error('Input text cannot be empty');
