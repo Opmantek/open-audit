@@ -44,7 +44,7 @@ final class TranslationGenerator extends AbstractTranslator
                     continue;
                 }
 
-                if (! preg_match('/[0-1A-Za-z]/', $text)) {
+                if (! preg_match('/[0-9A-Za-z]/', $text)) {
                     continue;
                 }
 
