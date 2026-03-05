@@ -4,7 +4,7 @@
 
 $title = __('Searching Using DataTables');
 
-$intro = '<p>' . __('Some of our templates support the new move to dataTables, using server side processing. This massivley improves load times.') . '<br><br></p>';
+$intro = '<p>' . __('Some of our templates support the new move to dataTables, using server side processing. This massively improves load times.') . '<br><br></p>';
 
 $body = '<h2>' . __('Like versus Equals') . '</h2>
 

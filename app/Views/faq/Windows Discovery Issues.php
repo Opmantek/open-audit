@@ -32,7 +32,7 @@ __('To run the test script on the target Windows PC') . ':</p><br>
 <p>' . __('On the target Windows PC, run the DCOM utility and verify (or set) the below attributes. Start -> Run, Enter DCOMCNFG and press OK. This will open the DCOMCNFG window.') .
 '<br>
 <br>' .
-__('Browse down the tree to Console Root -> Component Services -> Computers -> My Computer<br><br>Right click on <i>My Computer</i> and select properties<br><br>Select the <i>Default Properties</i> tab') .
+__('Browse down the tree to Console Root -> Component Services -> Computers -> My Computer<br><br>Right-click on <i>My Computer</i> and select properties<br><br>Select the <i>Default Properties</i> tab') .
 '<br>
 <ul>
     <li>' . __('Enable Distributed COM on this computer - Option is checked') . '</li>
@@ -93,7 +93,7 @@ __('Click on OK and close the DCOMCNFG window. The above changes will require a 
 <br>
 <p>' . __('When Open-AudIT on Linux discovers a Windows machine, in order to execute a remote command we use') . ' <a href="https://sourceforge.net/p/winexe/wiki/Home/">Winexe</a>. ' . __('This code relys on the great work done by the') . ' <a hre="https://www.samba.org/">Samba</a> ' . __('team') . '. ' . __('Winexe page on Samba') . ' <a href="https://www.samba.org/samba/docs/current/man-html/winexe.1.html" target="_blank">' . __('here') . '</a>.<br></p>
 
-<p>' . __('When Open-AudIT on Windows discovers a Windows machine, in order to execute a remote command we use') . ' <a href="https://www.poweradmin.com/paexec/">PAExec</a>. ' . __('PAExec is a freely-redistributable re-implementation of SysInternal/Microsofts popular PsExec program.  PAExec aims to be a drop in replacement for PsExec, so the command-line usage is identical, with additional options also supported.  This work was originally inspired by Talha Tariqs RemCom.') . '<br></p>
+<p>' . __('When Open-AudIT on Windows discovers a Windows machine, in order to execute a remote command we use') . ' <a href="https://www.poweradmin.com/paexec/">PAExec</a>. ' . __('PAExec is a freely-redistributable re-implementation of SysInternal/Microsoft\'s popular PsExec program.  PAExec aims to be a drop in replacement for PsExec, so the command-line usage is identical, with additional options also supported.  This work was originally inspired by Talha Tariqs RemCom.') . '<br></p>
 
 <p>' . __('Winexe uses the admin$ and RPC (net service start) to install and start a remote service (winexesvc). This service initializes a named pipe that is used to transport commands from the Open-AudIT server to the target and the output in the reverse way. When finished, the named pipe closes and the winexesvc waits for more connections or uninstalls (depending of the options given).') . '<br>
 <br>

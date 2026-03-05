@@ -14,7 +14,7 @@ $intro = '<p>' . __('Open-AudIT can download, parse and use NIST CVE Vulnerabili
 <br>
 <h2>' . __('Notes') . '</h2>
 
-<p>' . __('A vulnerability can be editied and more specific package names provided where the enrichment data is insufficient or the generated SQL is not quite correct.') . '</p>
+<p>' . __('A vulnerability can be edited and more specific package names provided where the enrichment data is insufficient or the generated SQL is not quite correct.') . '</p>
 
 <p>' . __('Any attributes followed by a * indicate that CVSS data less than v4 was used to complete this field. By default, we attempt to use v4 fields, however if they are not populated we will fallback to the previous version(s) for attributes.') . '</p>
 

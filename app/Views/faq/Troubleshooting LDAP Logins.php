@@ -91,7 +91,7 @@ $intro = '<p><h2>' . __('Using LDAPS') . '</h2>
 		</tr>
 		<tr>
 			<td>LDAP connect failed for LDAP server at $ip. Check your host, port and secure settings. Attempted to use $ldap_connect_string</td>
-			<td>' . __('The LDAP server could not be connected to. At all. Check it is pingable from the Open-AudIT server. Check the correct port is open to the Open-AudIT server. An nmap from the Open-AudIT server will show this. Substitute your LDAP servers IP for $ip. Try:<code>nmap -vv $ip</code>') . '</td>
+			<td>' . __('The LDAP server could not be connected to. At all. Check it is pingable from the Open-AudIT server. Check the correct port is open to the Open-AudIT server. Nmap from the Open-AudIT server will show this. Substitute your LDAP servers IP for $ip. Try:<code>nmap -vv $ip</code>') . '</td>
 			<td>notice</td>
 			</tr>
 		<tr>

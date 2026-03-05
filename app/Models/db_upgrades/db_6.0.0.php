@@ -1184,7 +1184,7 @@ $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
 
-$sql = "INSERT INTO standards_policies VALUES (null, 'ISO 27001', 'Technological controls', '8.31', 'Seperation of development, test and production environment', 'Development, testing and production environments shall be seperated and secured.', 'system', NOW());";
+$sql = "INSERT INTO standards_policies VALUES (null, 'ISO 27001', 'Technological controls', '8.31', 'Seperation of development, test and production environment', 'Development, testing and production environments shall be separated and secured.', 'system', NOW());";
 $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());

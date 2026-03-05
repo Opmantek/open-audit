@@ -11,6 +11,10 @@ use stdClass;
 
 class TasksModel extends BaseModel
 {
+    /**
+     * Constructor. Initialises the database connection and sets the query
+     * builder to target the 'tasks' table.
+     */
     public function __construct()
     {
         $this->db = db_connect();
@@ -22,7 +26,7 @@ class TasksModel extends BaseModel
     /**
      * Read the collection from the database
      *
-     * @param  $resp object An object containing the properties, filter, sort and limit as passed by the user
+     * @param  object $resp An object containing the properties, filter, sort and limit as passed by the user
      *
      * @return array        An array of formatted entries
      */
@@ -81,9 +85,9 @@ class TasksModel extends BaseModel
     /**
      * Create an individual item in the database
      *
-     * @param  object $data The data attributes
+     * @param  object|array|null $data The data attributes
      *
-     * @return int|false    The Integer ID of the newly created item, or false
+     * @return int|null              The integer ID of the newly created item, or null on failure
      */
     public function create($data = null): ?int
     {
@@ -116,9 +120,10 @@ class TasksModel extends BaseModel
     /**
      * Delete an individual item from the database, by ID
      *
-     * @param  int $id The ID of the requested item
+     * @param  int|null $id    The ID of the task to delete
+     * @param  bool     $purge Unused; present for interface compatibility
      *
-     * @return bool    true || false depending on success
+     * @return bool            true on success, false on failure
      */
     public function delete($id = null, bool $purge = false): bool
     {
@@ -133,10 +138,11 @@ class TasksModel extends BaseModel
     }
 
     /**
-     * Return an array containing arrays of related items to be stored in resp->included
+     * Return supplementary data for a single task's read view
      *
-     * @param  int $id The ID of the requested item
-     * @return array  An array of anything needed for screen output
+     * @param  int   $id The ID of the task whose supplementary data to load
+     *
+     * @return array     An array of supplementary data for the read view
      */
     public function includedRead(int $id = 0): array
     {
@@ -161,10 +167,11 @@ class TasksModel extends BaseModel
     }
 
     /**
-     * Return an array containing arrays of related items to be stored in resp->included
+     * Return supplementary data for the task create/edit form
      *
-     * @param  int $id The ID of the requested item
-     * @return array  An array of anything needed for screen output
+     * @param  int   $id The ID of the task whose supplementary data to load
+     *
+     * @return array     An array of supplementary data for the create/edit form
      */
     public function includedCreateForm(int $id = 0): array
     {
@@ -205,7 +212,14 @@ class TasksModel extends BaseModel
     /**
      * Read the entire collection from the database that the user is allowed to read
      *
-     * @return array  An array of formatted entries
+     * Resolves the full set of org IDs visible to the current user (including
+     * both ancestors and descendants) and filters the result accordingly.
+     *
+     * @param  array $where Additional WHERE conditions to apply to the query
+     * @param  array $orgs  List of org IDs to restrict results to; if empty,
+     *                      the current user's accessible orgs are used
+     *
+     * @return array        An array of formatted tasks entries
      */
     public function listUser($where = array(), $orgs = array()): array
     {
@@ -231,9 +245,12 @@ class TasksModel extends BaseModel
     }
 
     /**
-     * Read the entire collection from the database
+     * Read every task from the database with no org-based filtering
      *
-     * @return array  An array of all entries
+     * Returns all rows from the `tasks` table with no additional filtering.
+     * Use {@see listUser()} when results should be restricted to the current user's accessible orgs.
+     *
+     * @return array  Array of stdClass objects representing every task row
      */
     public function listAll(): array
     {
@@ -278,9 +295,14 @@ class TasksModel extends BaseModel
     }
 
     /**
-     * Reset a table
+     * Truncate the tasks table, removing all rows
      *
-     * @return bool Did it work or not?
+     * The $table parameter is accepted for interface compatibility but is
+     * ignored; the method always resets the 'tasks' table.
+     *
+     * @param  string $table Unused; present for interface compatibility
+     *
+     * @return bool          true on success, false on failure
      */
     public function reset(string $table = ''): bool
     {
@@ -293,9 +315,10 @@ class TasksModel extends BaseModel
     /**
      * Update an individual item in the database
      *
-     * @param  object  $data The data attributes
+     * @param  int|null          $id   The ID of the task to update
+     * @param  object|array|null $data The data attributes to apply
      *
-     * @return bool    true || false depending on success
+     * @return bool                    true on success, false on failure
      */
     public function update($id = null, $data = null): bool
     {
@@ -362,9 +385,21 @@ class TasksModel extends BaseModel
     }
 
     /**
-     * The dictionary item
+     * Build and return the data dictionary for the tasks collection
      *
-     * @return object  The stdClass object containing the dictionary
+     * Constructs a stdClass describing the `tasks` table for use by the
+     * framework's help, validation, and API-documentation systems.
+     * The returned object includes:
+     *  - table       : the collection name ('tasks')
+     *  - columns     : per-column human-readable descriptions and allowed values
+     *  - attributes  : lists of fields used for collection display, create, and update
+     *  - sentence    : a one-line summary of the resource
+     *  - about       : an HTML paragraph describing the resource
+     *  - notes       : additional free-text notes (may be empty)
+     *  - link        : URL to external documentation
+     *  - product     : minimum product tier required ('professional')
+     *
+     * @return object  Populated stdClass dictionary object
      */
     public function dictionary(): object
     {
@@ -386,7 +421,7 @@ class TasksModel extends BaseModel
 
         $dictionary->about = '<p>With Open-AudIT Professional and Enterprise you can automate and schedule discoveries, report generation, or baseline checks to run when you want, and as often as you need. Schedule your discoveries to run nightly and reports to be generated and emailed to key personnel each morning. Complex or simple schedules, device discovery and report generation is just a click away.<br> <br>Create individual discovery schedules for each subnet or AD controller, add in reports to be created for targeted audiences. Develop simple or complex schedules to support company needs, avoid backups or impact to operations, or simply to spread the load and speed-up audit completion.<br> <br></p>';
 
-        $dictionary->notes = '<p>Tasks have a schedule that mirrors the unix cron schedule. The attributes for minute, hour, day_of_month, month, day_of_week all act as per the cron definitions. You can select multiples of these using comma seperated values (no spaces). You can select every value using *.<br> <br>The <code>type</code> of the task can be one of: baselines, collectors, discoveries, queries, reports or summaries.<br> <br>If you wish to schedule a Baseline or Discovery, you will need to create these before creating the tasks. You must use the ID of the type of item in <code>sub_resource_id</code>. For example if you wish to schedule a Discovery, use that particular Discoveries ID in <code>sub_resource_id</code>.<br> <br>The value for <code>uuid</code> is specific to each Open-AudIT server. Your unique value can be found in the configuration.<br> <br>The <code>options</code> attribute is a JSON document containing any extra attributes required to run the task. The extra attributes for reports, queries and summaries are: <code>email_address</code> and <code>format</code>. The extra attribute for Bselines is <code>group_id</code>.<br> <br></p>';
+        $dictionary->notes = '<p>Tasks have a schedule that mirrors the unix cron schedule. The attributes for minute, hour, day_of_month, month, day_of_week all act as per the cron definitions. You can select multiples of these using comma separated values (no spaces). You can select every value using *.<br> <br>The <code>type</code> of the task can be one of: baselines, collectors, discoveries, queries, reports or summaries.<br> <br>If you wish to schedule a Baseline or Discovery, you will need to create these before creating the tasks. You must use the ID of the type of item in <code>sub_resource_id</code>. For example if you wish to schedule a Discovery, use that particular Discoveries ID in <code>sub_resource_id</code>.<br> <br>The value for <code>uuid</code> is specific to each Open-AudIT server. Your unique value can be found in the configuration.<br> <br>The <code>options</code> attribute is a JSON document containing any extra attributes required to run the task. The extra attributes for reports, queries and summaries are: <code>email_address</code> and <code>format</code>. The extra attribute for Baselines is <code>group_id</code>.<br> <br></p>';
 
         $dictionary->link = $instance->dictionary->link;
         $dictionary->product = 'professional';

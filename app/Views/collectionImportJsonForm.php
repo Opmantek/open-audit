@@ -32,7 +32,7 @@ include 'shared/common_functions.php';
 
                         <div class="col-md-6">
                             <div class="offset-2 col-8">
-                                <?= aboutNotesDiv ($meta->collection, $dictionary) ?>
+                                <?= aboutNotesDiv($meta->collection, $dictionary) ?>
                             </div>
                         </div>
                     </div>

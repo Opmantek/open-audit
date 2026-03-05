@@ -18,6 +18,6 @@ $body = '<br>
 
 <p>' . __('If you select a List type, an additional field will appear called Values. You should put a comma separated list of selectable values here. These will display in a dropdown box whenever the field is edited.') . '</p>
 
-<p>' . __('Like most other attributes, Additional Fields can be bulk edited. Use the Bulk Edit function as you normally would and you will see the Additional Fields are available for input.') . '</p>
+<p>' . __('Like most other attributes, Additional Fields can be bulk edited. Use the Bulk Edit function as you normally would, and you will see the Additional Fields are available for input.') . '</p>
 
 <p>' . __('You can edit the value of the Additional Field for each individual device on the device details page. View the device details screen, open the section containing the field and (if you have') . ' devices::update ' . __('rights) you can click on the field value to edit it.') . '</p><br>';

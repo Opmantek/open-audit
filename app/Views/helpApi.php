@@ -344,7 +344,7 @@ format=xml</code></p>
             <tr>
                 <td>GET</td>
                 <td class="text-nowrap">/components?components.type={componentName}&amp;components.device_id={id}</td>
-                <td><?= __('To return all items for a compnent type for a specific device.') ?></td>
+                <td><?= __('To return all items for a component type for a specific device.') ?></td>
             </tr>
             <tr>
                 <td>GET</td>

@@ -81,11 +81,11 @@ $body = '
         </tr>
         <tr>
             <td>tcp_ports</td>
-            <td>' . __('Custom TCP Ports. Any specific ports we would liuke scanned in addition to the Top TCP Ports. Comma seperated, no spaces.') . '</td>
+            <td>' . __('Custom TCP Ports. Any specific ports we would like scanned in addition to the Top TCP Ports. Comma separated, no spaces.') . '</td>
         </tr>
         <tr>
             <td>udp_ports</td>
-            <td>' . __('Custom UDP Ports. Any specific ports we would liuke scanned in addition to the Top UDP Ports. Comma seperated, no spaces.') . '</td>
+            <td>' . __('Custom UDP Ports. Any specific ports we would like scanned in addition to the Top UDP Ports. Comma separated, no spaces.') . '</td>
         </tr>
         <tr>
             <td>timeout</td>
@@ -93,19 +93,19 @@ $body = '
         </tr>
         <tr>
             <td>exclude_tcp_ports</td>
-            <td>' . __('Exclude any ports listed from being scanned. Comma seperated, no spaces.') . '</td>
+            <td>' . __('Exclude any ports listed from being scanned. Comma separated, no spaces.') . '</td>
         </tr>
         <tr>
             <td>exclude_udp_ports</td>
-            <td>' . __('Exclude any ports listed from being scanned. Comma seperated, no spaces.') . '</td>
+            <td>' . __('Exclude any ports listed from being scanned. Comma separated, no spaces.') . '</td>
         </tr>
         <tr>
             <td>exclude_ip</td>
-            <td>' . __('Exclude IP Addresses (individual IP - 192.168.1.20, ranges - 192.168.1.30-40 or subnets - 192.168.1.100/30) listed from being scanned. Comma seperated, no spaces.') . '</td>
+            <td>' . __('Exclude IP Addresses (individual IP - 192.168.1.20, ranges - 192.168.1.30-40 or subnets - 192.168.1.100/30) listed from being scanned. Comma separated, no spaces.') . '</td>
         </tr>
         <tr>
             <td>ssh_ports</td>
-            <td>' . __('Scan for this port(s) and if detected open, use this port for SSH communication. This is added to the list of Custom TCP Ports above (if not already included), so there is no need to include it in that list as well. Comma seperated, no spaces.') . '</td>
+            <td>' . __('Scan for this port(s) and if detected open, use this port for SSH communication. This is added to the list of Custom TCP Ports above (if not already included), so there is no need to include it in that list as well. Comma separated, no spaces.') . '</td>
         </tr>
     </tbody>
 </table>

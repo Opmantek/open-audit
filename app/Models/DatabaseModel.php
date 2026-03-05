@@ -133,10 +133,14 @@ class DatabaseModel extends BaseModel
     }
 
     /**
-     * Return an array containing arrays of related items to be stored in resp->included
+     * Return supplementary data for a single database's read view (stub)
      *
-     * @param  int $id The ID of the requested item
-     * @return array  An array of anything needed for screen output
+     * Reserved for future implementation. Currently returns an empty array;
+     * no data is fetched from the database.
+     *
+     * @param  int   $id Unused; present for interface compatibility
+     *
+     * @return array     An empty array
      */
     public function includedRead(string $id = ''): array
     {
@@ -598,9 +602,20 @@ class DatabaseModel extends BaseModel
     }
 
     /**
-     * The dictionary item
+     * Build and return the data dictionary for the database collection
      *
-     * @return object  The stdClass object containing the dictionary
+     * Constructs a stdClass describing the database schema utilities for use by the
+     * framework's help, validation, and API-documentation systems.
+     * The returned object includes:
+     *  - table       : the collection name ('database')
+     *  - columns     : per-column human-readable descriptions and allowed values
+     *  - attributes  : lists of fields used for collection display, create, and update
+     *  - sentence    : a one-line summary of the resource
+     *  - about       : an HTML paragraph describing the resource
+     *  - notes       : additional free-text notes (may be empty)
+     *  - link        : URL to external documentation
+     *
+     * @return object  Populated stdClass dictionary object
      */
     public function dictionary(): object
     {

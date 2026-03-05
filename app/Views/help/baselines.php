@@ -4,12 +4,12 @@
 
 $intro = '<p>' . __('Being able to determine which machines are configured in the same way is a major part of systems administration and auditing – and now reporting on that will be made simple and automated. Once you define your baseline it will automatically run against a set of devices on a predetermined schedule. The output of these executed baselines will be available for web viewing, importing into a third party system or even as a printed report.<br><br>For auditing and management purposes it can be advantageous to baseline individual devices against a fixed, known good device. Baselines enable you to combine audit data with a set of attributes you have previously defined (your baseline) to determine compliance of devices.') . '<br>
 <br>
-<i>y</i>' . __('For example - you might create a baseline from a device running Redhat 9 which acts as one of your Apache servers in a cluster. You know this particular server is configured just the way you want it but you are unsure if other servers in the cluster are configured exactly the same. Baselines enable you to determine this.') . '</p>
+<i>y</i>' . __('For example - you might create a baseline from a device running Redhat 9 which acts as one of your Apache servers in a cluster. You know this particular server is configured just the way you want it, but you are unsure if other servers in the cluster are configured exactly the same. Baselines enable you to determine this.') . '</p>
     <br>
     <h2>' . __('How Does it Work?') . '</h2>
     <p>' . __('Baselines enable you to combine audit data with a set of attributes you have previously defined (your baseline) to determine compliance of devices.') . '
     <br><br>
-    ' . __('For example - you might create a baseline from a device running Redhat 9 which acts as one of your Apache servers in a cluster. You know this particular server is configured just the way you want it but you are unsure if other servers in the cluster are configured exactly the same. Baselines enables you to determine this.') . '
+    ' . __('For example - you might create a baseline from a device running Redhat 9 which acts as one of your Apache servers in a cluster. You know this particular server is configured just the way you want it, but you are unsure if other servers in the cluster are configured exactly the same. Baselines enables you to determine this.') . '
     <br><br>
     ' . __('You can create a baseline, run it against a group of devices and view the results, add scheduled execution, add more tables for comparison (currently only software, netstat ports and users are enabled), in place baseline editing, archiving of results and more.') . '
     <br><br>

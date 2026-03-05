@@ -1,9459 +1,4128 @@
 <?php
-$GLOBALS["lang"][' Default, currently '] = ' 默认, 目前 ';
 
-$GLOBALS["lang"][' If something does not work as expected, your first thing to do is check the logs.'] = ' 如果事情不能如预期的那样奏效,你的第一件事就是检查日志.';
-
-$GLOBALS["lang"][' is now supported with a language file. To change your user to use this language, click '] = ' 现在支持语言文件。 要更改用户使用此语言,请单击 ';
-
-$GLOBALS["lang"][' seconds'] = ' 秒数';
-
-$GLOBALS["lang"][', but will not need to remember a separate set of logon credentials.'] = ',但无需记住单独的一套登录证书。';
-
-$GLOBALS["lang"][', of which we supply over thirty as a default set. Professional users cannot alter these, but an Enterprise user has complete customisation abilities - including creating your own.'] = ',其中我们提供30多个作为默认集。 专业用户无法改变这些功能,但企业用户拥有完整的自定义能力——包括创建自己的功能.';
-
-$GLOBALS["lang"][', you <i>must</i> be using https on your Open-AudIT server to use Entra for Auth. Please configure Apache to use <strong>https</strong> before configuring Entra for auth.'] = ',你吗? <i>必须</i> 正在使用您的 Open-AudIT 服务器上的 https 来为 Auth 使用 Entra 。 请配置要使用的 Apache <strong>网页</strong> 在为认证配置 Entra 之前。';
-
-$GLOBALS["lang"]['. To enable this, edit the configuration item for '] = '。 。 。 要启用此功能, 请编辑配置项 ';
-
-$GLOBALS["lang"]['10 Minutes'] = '10分钟';
-
-$GLOBALS["lang"]['15 Minutes'] = '15分钟';
-
-$GLOBALS["lang"]['30 Minutes'] = '30分钟';
-
-$GLOBALS["lang"]['5 Minutes'] = '5分钟';
-
-$GLOBALS["lang"]['93 controls grouped into organizational, people, physical, and technological categories'] = '93项控制分为组织、人员、物质和技术类别';
-
-$GLOBALS["lang"]['<br> <strong>NOTE</strong> - You are accessing this URL from the local Open-AudIT server. The downloaded script will not be able to submit when run on any other machine. If you need to audit other machines, please download the script from any remote machine, not using a browser on the Open-AudIT server itself.'] = '<br/><strong>说明</strong> 您正在从本地的 Open-AudIT 服务器访问此 URL 。 在其它机器上运行时, 下载的脚本将无法提交 。 如果需要审计其他机器,请从任何远程机器下载脚本,不要在Open-AudIT服务器本身上使用浏览器.';
-
-$GLOBALS["lang"]['<p></p>'] = '<p></p>';
-
-$GLOBALS["lang"]['<p><strong class="text-danger">NOTE</strong> - You must have working SSH or SSH Key credentials to execute benchmarks upon a target device.</p>'] = '<p><strong class="text-danger">说明</strong> - 您必须有工作 SSH 或 SSH 密钥证书来执行目标设备的基准 。</p>';
-
-$GLOBALS["lang"]['<p><strong>Baseline</strong> - The overarching document that contains the baseline definition and the individual policy tests.<br> <br> <strong>Policies</strong> - The individual tests contained within a Baseline. Each test is for a specific item. An example would be testing for SSH version 1.2.3.<br> <br> <strong>Details</strong> - Baselines can compare netstat ports, users and software.<br> <br> <strong>Software</strong> - To compare software we check the name and version. Because version numbers are not all standardised in format, when we receive an audit result we create a new attribute called software_padded which we store in the database along with the rest of the software details for each package. For this reason, baselines using software policies will not work when run against a device that has not been audited by 1.10 (at least). Software policies can test against the version being "equal to", "greater than" or "equal to or greater than".<br> <br> <strong>Netstat Ports</strong> - Netstat Ports use a combination of port number, protocol and program. If all are present the policy passes.<br> <br> <strong>Users</strong> - Users work similar to Netstat Ports. If a user exists with a matching name, status and password details (changeable, expires, required) then the policy passes.<br> <br> </p>'] = '<p><strong>基线</strong> - 包含基线定义和个别政策测试的总体文件。<br/> <br/> <strong>政策</strong> - 基线范围内的个别试验。 每个测试都是针对特定项目. 例如,测试SSH 1.2.3版本。<br/> <br/> <strong>细节</strong> - 基线可以比较净统计端口、用户和软件。<br/> <br/> <strong>软件</strong> - 为了比较软件,我们检查名称和版本。 由于版本编号并非全部在格式上标准化,当我们收到审计结果时,我们创建了一个新的属性,称为软件_插件,与每个软件包的其他软件细节一起存储在数据库中. 因此,使用软件政策的基线在运行于一个未经1.10(至少)审计的设备时不会起作用。 软件政策可以针对版本的"对等","大于"或"等于或大于"进行测试.<br/> <br/> <strong>净点端口</strong> - Netstat Ports使用端口号,协议和程序的组合. 如果所有人都在场,则政策通过。<br/> <br/> <strong>用户</strong> -用户的工作类似于Netstat Ports. 如果用户有匹配的名称,状态和密码细节(可更改,到期,需要),则政策通过.<br/> <br/> </p>';
-
-$GLOBALS["lang"]['<p>A location is a physical address that can have devices associated with it.<br> <br>You can assign it coordinates (lat/long) and if there are devices assigned, the location will appear on the Open-AudIT Enterprise map.<br> <br></p>'] = '<p>一个位置是一个物理地址,可以拥有与之相关的设备.<br/> <br/>您可以指定它坐标( lat/ 长) , 如果指定了设备, 位置将会出现在 Open- AudIT Enterprise 地图上 。<br/> <br/></p>';
-
-$GLOBALS["lang"]['<p>A network is derived from discovery entries and device attributes.<br> <br></p>'] = '<p>网络来源于发现条目和设备属性.<br/> <br/></p>';
-
-$GLOBALS["lang"]['<p>A summary will display a list of items, grouped by the distinct values of the attribute specified by the <code>table</code> and <code>column</code> attributes.<br> <br>When a summary is executed, the result will be a list of distinct values for that <code>table</code> and <code>column</code>. There will be links on the values that allow the user to see the matching devices.<br> <br>If the attribute of <code>extra_columns</code> is populated, the resulting page will contain these columns in addition to the standard device columns.<br> <br></p>'] = '<p>汇总将显示一个项目列表,按定义中指定的属性的不同值分组。 <code>table</code> 和 <code>column</code> 属性。<br/> <br/>当执行一个摘要时,结果将是列出一个与此相关的不同数值清单。 <code>table</code> 和 <code>column</code>。 。 。 在允许用户查看匹配设备的值上会有链接.<br/> <br/>如果属性 <code>extra_columns</code> 中,生成的页面除标准设备列外,还将包含这些列。<br/> <br/></p>';
-
-$GLOBALS["lang"]['<p>Agents let you audit PCs without a discovery. Install the agent and it will check-in with the server each day and audit itself. It does not matter if your computers are firewalled, audit data will still appear in Open-AudIT.</p><p>When testing <strong>if</strong> an agent should perform actions, all three tests must pass (if the test is set). <strong>Then</strong> the actions are taken.</p>'] = '<p>特工让你在没有发现的情况下审核个人电脑 安装代理, 它会每天与服务器进行登录, 并自己审计 。 如果你的计算机有防火墙 审计数据仍然会在Open-AudIT中出现</p><p>测试时 <strong>若为</strong> 代理人应当进行操作,所有三项测试都必须通过(如果测试确定的话)。 <strong>礛</strong> 采取了这些行动。</p>';
-
-$GLOBALS["lang"]['<p>Applications are defined by you, the user and stored for Open-AudIT to use and associate with devices.<br> <br></p>'] = '<p>应用程序由您,用户定义,并为Open-AudIT存储,以便使用和连接设备.<br/> <br/></p>';
-
-$GLOBALS["lang"]['<p>Attributes are stored for Open-AudIT to use for particular fields.</p>'] = '<p>属性被存储用于 Open-AudIT 用于特定字段.</p>';
-
-$GLOBALS["lang"]['<p>Being able to determine which machines are configured the same is a major part of systems administration and auditing &ndash; and now reporting on that will be made simple and automated. Once you define your baseline it will automatically run against a set of devices on a predetermined schedule. The output of these executed baselines will be available for web viewing, importing into a third party system or even as a printed report.<br> <br> Baselines enable you to combine audit data with a set of attributes you have previously defined (your baseline) to determine compliance of devices.<br> <br> For example - you might create a baseline from a device running Centos 6 which acts as one of your apache servers in a cluster. You know this particular server is configured just the way you want it but you are unsure if other servers in the cluster are configured exactly the same. Baselines enables you to determine this.<br> <br> </p>'] = '<p>能够确定哪些机器配置相同,是系统管理和审计的主要部分 — — 而现在报告情况将变得简单和自动化。 一旦您定义了基线, 它将自动运行在预定时间表上的一组设备上 。 这些已执行基线的产出将可供网页浏览、输入第三方系统或甚至作为印刷报告。<br/> <br/> 基线使您能够将审计数据与之前定义的一组属性(你的基线)结合起来,以确定设备的合规性.<br/> <br/> 例如,您可能从运行 Centos 6 的设备创建基线,该设备在集群中充当您的 apache 服务器之一 。 您知道这个特定的服务器是按您想要的方式配置的, 但是您不确定集群中的其他服务器是否配置完全相同 。 基线可以让你确定这一点。<br/> <br/> </p>';
-
-$GLOBALS["lang"]['<p>Clusters are stored in Open-AudIT to associate devices to better record, manage and estimate licensing costs.<br> <br></p>'] = '<p>集群存储在Open-AudIT中,用于关联设备,以便更好地记录,管理和估计许可成本.<br/> <br/></p>';
-
-$GLOBALS["lang"]['<p>Components is a generic term used for the tables that store the attributes for a device. Those tables are: access_point, arp, bios, certificate, cli_config, disk, dns, file, ip, license, log, memory, module, monitor, motherboard, netstat, network, nmap, optical, pagefile, partition, policy, print_queue, processor, radio, route, san, scsi, server, server_item, service, share, software, software_key, sound, task, usb, user, user_group, variable, video, vm, windows.</p><p> In addition we class the following tables also as device related: application, attachment, cluster, credential, image.</p>'] = '<p>组件是一个通用术语,用于存储设备属性的表格。 这些表格是: access_point, arp, bios, 证书, cli_config, 磁盘, dns, 文件, ip, 许可证, 日志, 内存, 模块, 显示器, 母板, netstat, 网络, nmap, 光学, 页面文件, 分区, 政策, print_queue, 处理器, 收音机, 路由, san, scsi, 服务器, 服务器_项目, 服务, 共享, 软件, 软件_ key, 声音, 任务, usb, 用户, 用户_组, 变量, 视频, vm, 窗口.</p><p> 此外,我们还将以下表格归类为设备相关:应用程序、附件、集群、证书、图像。</p>';
-
-$GLOBALS["lang"]['<p>Credentials are encrypted when stored in the database.<br> <br>When a Discovery is run, a device has its credentials retrieved and tested for connection first (from the <code>credential</code> table). If these fail, then credentials associated with the given Org <code>credentials.org_id</code> is also tested against the device. Working credentials are stored at an individual device level in the credential table (note - no "s" in the table name).<br> <br>SSH keys are tested before SSH username / password. When testing SSH, credentials will also be marked as working with sudo or being root.<br> <br>For ease of use, Windows passwords should not contain a single or double quote. This is a remote WMI limitation, not an Open-AudIT limitation.<br> <br></p>'] = '<p>证书保存在数据库时会加密.<br/> <br/>当发现器运行时,设备会先检索并测试其证书,以便连接(从 <code>credential</code> 页:1 如果失败, 那么与给定 Org 相关的证书 <code>credentials.org_id</code> 也对该装置进行测试。 工作证书保存在证书表的单个设备级别(注-表名中没有"s").<br/> <br/>SSH 密钥在 SSH 用户名/ 密码前进行测试. 在测试 SSH 时, 证书也会被标记为与 sudo 合作或成为 root 。<br/> <br/>为方便使用,Windows密码不应包含单引号或双引号. 这是远程WMI限制,而不是Open-AudIT限制.<br/> <br/></p>';
-
-$GLOBALS["lang"]['<p>Credentials are used to access devices.<br> <br>Configuring credentials should be one of the first things you do after installing Open-AudIT.<br> <br></p>'] = '<p>证书用于访问设备。<br/> <br/>配置证书应该是您安装 Open-AudIT 后首先做的事情之一.<br/> <br/></p>';
-
-$GLOBALS["lang"]['<p>Define your racks and assign devices into their positions. You already have your devices in Open-AudIT and you know your locations. Open-AudIT extends this to allow you to create a rack and assign devices to it. Open-AudIT will even provide a visualisation of the rack and the devices contained within. If you provide a device picture, that picture will be used in the visualisation. You can look at the rack on the screen and see the same items you would see if you were standing in front of it.<br> <br></p>'] = '<p>确定你的架子 并分配设备到他们的位置 你已经在Open-AudIT中拥有了你的设备,你知道自己的位置. Open-AudIT 扩展此选项, 允许您创建一个机架并给它分配设备 。 Open-AudIT甚至会提供机架和内装设备的可视化. 如果您提供了设备图片,该图片将被用于可视化. 你可以看屏幕上的架子, 并看到同样的东西 你会看到,如果你站在它前面。<br/> <br/></p>';
-
-$GLOBALS["lang"]['<p>Devices on your network need to be managed. But how do you keep your records up to date? A spreadsheet - defintley not. That will be out of date in hours, if not days. Why manually try to keep up. Use Open-AudIT to automatically scan your networks and record your devices - manufacturer, model, serial and more than 100 other attributes. Full lists of software, services, disks, open ports, users, etc. Automatically see if an attribute has been added, removed or changed.<br> <br>Once Open-AudIT is setup, you can sit back and relax. Have change reports emailed to you on a schedule, for example - what new devices did we discover this week? What new software was installed this week? Were there any hardware changes last month?<br> <br>Expand on the stored fields easily with your own custom attributes.<br> <br>Even add devices that are not connected to your network or those devices your Open-AudIT server cannot reach.<br> <br>Computers, switches, routers, printers or any other device on your network - Open-AudIT can audit them all.<br> <br></p>'] = '<p>需要管理您网络上的设备 。 但你的唱片怎么更新? 电子表格 - defintley no. 数小时后,如果不是几天,就会过时。 为什么手动尝试跟上。 使用Open-AudIT自动扫描您的网络并记录您的设备——制造商,模型,串行和超过100个其他属性. 软件,服务,磁盘,开放端口,用户等的完整清单. 自动查看属性是否已添加、删除或更改 。<br/> <br/>一旦Open-AudIT被设定,你可以坐下来放松. 例如,我们本周发现了哪些新设备? 这周安装了什么样的新软件? 上个月有什么硬件变化吗?<br/> <br/>以自定义属性在存储的字段上轻松扩展 。<br/> <br/>甚至添加没有连接到您的网络的设备, 或是您 Open-AudIT 服务器无法访问的设备 。<br/> <br/>计算机、开关、路由器、打印机或网络上的任何其他设备 - Open-AudIT可以对所有设备进行审计。<br/> <br/></p>';
-
-$GLOBALS["lang"]['<p>Discoveries are at the very heart of what Open-AudIT does.<br> <br>How else would you know "What is on my network?"<br> <br>Discoveries are prepared data items that enable you to run a discovery upon a network in a single click, without entering the details of that network each and every time.<br> <br></p>'] = '<p>发现是Open-AudIT工作的核心。<br/> <br/>不然你怎么知道"我的网络里有什么?"<br/> <br/>发现被准备了数据项,使您能够一次点击一次在网络上运行发现,而不每次输入网络的细节.<br/> <br/></p>';
-
-$GLOBALS["lang"]['<p>Discovery Options are a global setting changed in the <a href="../configuration?configuration.name=discovery_default_scan_option">configuration</a>. If you have an Open-AudIT Enterprise license these are settable per discovery and in addition futher customizable as required. Discovery Options are as follows (including an indicitave time to scan an individual IP):<br/><br><strong>UltraFast</strong>: <i>1 second</i>. Scan only the ports that Open-AudIT needs to use to talk to the device and detect an IOS device (WMI, SSH, SNMP, Apple Sync). An <code>open|filtered</code> port is considered open. A <code>filtered</code> port is not considered open. Device must respond to an Nmap ping. Use aggressive timing.<br><br/><strong>SuperFast</strong>: <i>5 seconds</i>. Scan the top 10 TCP and UDP ports, as well as port 62078 (Apple IOS detection). An <code>open|filtered</code> port is considered open. A <code>filtered</code> port is not considered open. Device must respond to an Nmap ping. Use aggressive timing.<br/><br/><strong>Fast</strong>: <i>40 seconds</i>. Scan the top 100 TCP and UDP ports, as well as port 62078 (Apple IOS detection). An <code>open|filtered</code> port is considered open. A <code>filtered</code> port is not considered open. Device must respond to an Nmap ping. Use aggressive timing.<br/><br/><strong>Medium (Classic)</strong>: <i>90 seconds</i>. As close to a traditional Open-AudIT scan as we can make it. Scan the top 1000 TCP ports, as well as 62078 (Apple IOS detection) and UDP 161 (SNMP). An <code>open|filtered</code> port is considered open. A <code>filtered</code> port is considered open (and will trigger device detection). Devices are scanned regardless of a response to an Nmap ping. Use aggressive timing.<br/><br/><strong>Medium</strong>: <i>100 seconds</i>. Scan the top 1000 TCP and top 100 UDP ports, as well as port 62078 (Apple IOS detection). An <code>open|filtered</code> port is considered open. A <code>filtered</code> port is not considered open. Device must respond to an Nmap ping. Use aggressive timing.<br/><br/><strong>Slow</strong>: <i>4 minutes</i>. Scan the top 1000 TCP and top 100 UDP ports, as well as port 62078 (Apple IOS detection). Version detection enabled. An <code>open|filtered</code> port is considered open. A <code>filtered</code> port is considered open (and will trigger device detection). Device must respond to an Nmap ping. Use normal timing.<br/><br/><strong>UltraSlow</strong>: <i>20 minutes</i>. Not recommended. Scan the top 1000 TCP and UDP ports, as well as port 62078 (Apple IOS detection). Devices are scanned regardless of a response to an Nmap ping. Version detection enabled. An <code>open|filtered</code> port is considered open. A <code>filtered</code> port is considered open (and will trigger device detection). Use polite timing.<br/><br/><strong>Custom</strong>: <i>Unknown time</i>. When options other than as set by a standard discovery preset are altered.<br><br></p>'] = '<p>发现 选项是一个全局设置,在 <a href="../configuration?configuration.name=discovery_default_scan_option">配置</a>。 。 。 如果您持有Open-AudIT Entertainment许可证,这些许可证可按规定在每次发现时确定,此外,还可按要求自行定制。 发现 选项如下(包括扫描单个IP的提示时间):<br/><br/><strong>超快视</strong>数字 : <i>1秒钟</i>。 。 。 只扫描Open-AudIT需要用来与设备交谈的端口,并检测一个IOS设备(WMI,SSH,SNMP,Apple Sync). 一个 <code>open|filtered</code> 端口被认为是开放的。 A级 <code>filtered</code> 端口不视为开放。 设备必须响应 Nmap ping 。 使用攻击性的时间。<br/><br><strong>超级快感</strong>数字 : <i>5秒钟</i>。 。 。 扫描前10个TCP和UDP端口,以及端口62078(Apple IOS检测). 一个 <code>open|filtered</code> 端口被认为是开放的。 A级 <code>filtered</code> 端口不视为开放。 设备必须响应 Nmap ping 。 使用攻击性的时间。<br><br/><strong>快点</strong>数字 : <i>40秒钟</i>。 。 。 扫描前100个TCP和UDP端口,以及端口62078(Apple IOS检测). 一个 <code>open|filtered</code> 端口被认为是开放的。 A级 <code>filtered</code> 端口不视为开放。 设备必须响应 Nmap ping 。 使用攻击性的时间。<br/><br/><strong>介质( Classic)</strong>数字 : <i>90 秒钟</i>。 。 。 和传统的Open-AudIT扫描差不多 我们能做的一样 扫描前1000TCP端口,以及62078(Apple IOS检测)和UDP 161(SNMP). 一个 <code>open|filtered</code> 端口被认为是开放的。 A级 <code>filtered</code> 端口被视为开放(并将触发设备检测). 无论Nmap ping的响应如何,设备都会被扫描. 使用攻击性的时间。<br/><br/><strong>中型</strong>数字 : <i>100 秒钟</i>。 。 。 扫描前1000TCP和前100 UDP端口,以及端口62078(Apple IOS检测). 一个 <code>open|filtered</code> 端口被认为是开放的。 A级 <code>filtered</code> 端口不视为开放。 设备必须响应 Nmap ping 。 使用攻击性的时间。<br/><br/><strong>慢点</strong>数字 : <i>4分钟</i>。 。 。 扫描前1000TCP和前100 UDP端口,以及端口62078(Apple IOS检测). 版本检测启用 。 一个 <code>open|filtered</code> 端口被认为是开放的。 A级 <code>filtered</code> 端口被视为开放(并将触发设备检测). 设备必须响应 Nmap ping 。 使用正常的时间。<br/><br/><strong>超低线</strong>数字 : <i>20分钟</i>。 。 。 未建议。 扫描1000顶TCP和UDP端口,以及62078端口(Apple IOS检测). 无论Nmap ping的响应如何,设备都会被扫描. 版本检测启用 。 一个 <code>open|filtered</code> 端口被认为是开放的。 A级 <code>filtered</code> 端口被视为开放(并将触发设备检测). 用礼貌的时机<br/><br/><strong>自定义</strong>数字 : <i>未知时间</i>。 。 。 当标准发现预设设置以外的选项被更改时.<br/><br/></br></br></p>';
-
-$GLOBALS["lang"]['<p>Groups are used as simple lists of devices that match the required conditions. If requested using JSON they return a list of <code>devices.id</code> only. If requested using the web interface, they return the standard column attribute list.<br> <br></p>'] = '<p>组作为符合所需条件的简单设备列表. 如果要求使用JSON,他们将返回一份清单。 <code>devices.id</code> 仅此而已。 如果请求使用网络界面,它们会返回标准列属性列表.<br/> <br/></p>';
-
-$GLOBALS["lang"]['<p>If the user logging on to Open-AudIT does not have the access to search LDAP (and you are using OpenLDAP), you can use another account which does have this access. Use the <code>ldap_dn_account</code> and <code>ldap_dn_password</code> to configure this.<br> <br><strong>Helpful Documentation</strong><br> <br>
-        <a href="/index.php/auth/help">General Auth Help</a><br> <br>
-        <a href="/index.php/faq?name=Using Entra for Auth">Using Entra for Auth</a><br> <br>
-        <a href="/index.php/faq?name=Using OKTA for Auth">Using OKTA for Auth</a><br> <br>
-        <a href="/index.php/faq?name=Troubleshooting LDAP Logins">Troubleshooting LDAP Logins</a><br> <br>
-        <a href="/index.php/faq?name=Users, Roles and Orgs">Users, Roles and Orgs</a><br> <br></p>'] = '<p>如果登录到 Open-AudIT 的用户无法访问搜索 LDAP(您正在使用 OpenLDAP),您可以使用另一个有此访问权限的账户. 使用 <code>ldap_dn_account</code> 和 <code>ldap_dn_password</code> 来配置此选项。<br/> <br/><strong>帮助文档</strong><br/> <br/><a href="/index.php/auth/help">Auth 帮助</a><br/> <br/><a href="/index.php/faq?name=Using Entra for Auth">为 Auth 使用 Entra</a><br/> <br/><a href="/index.php/faq?name=Using OKTA for Auth">对 Auth 使用 OKTA</a><br/> <br/><a href="/index.php/faq?name=Troubleshooting LDAP Logins">清除 LDAP 登录中的问题</a><br/> <br/><a href="/index.php/faq?name=Users, Roles and Orgs">用户、角色和类</a><br/> <br/></p>';
-
-$GLOBALS["lang"]['<p>If you add a device type, to display the associated icon you will have to manually copy the .svg formatted file to the directory:<br><em>Linux</em>:/usr/local/open-audit/public/device_images<br><em>Windows</em>: c:\xampp\htdocs\open-audit\device_images<br> <br>If you add a location type, to display the associated icon you will have to manually copy the 32x32px icon to the directory:<br><em>Linux</em>:/usr/local/open-audit/public/images/map_icons<br><em>Windows</em>: c:\xampp\htdocs\open-audit\images\map_icons</p><p>When the <i>resource</i> is a <code>device</code>, valid <i>types</i> are: <code>class</code>, <code>environment</code>, <code>status</code> and <code>type</code>. If the <i>resource</i> is <code>locations</code> or <code>org</code> the only valid <i>type</i> is <code>type</code>. If the <i>resource</i> is a <code>query</code> the only valid <i>type</i> is <code>menu_category</code>.</p>'] = '<p>如果您添加了设备类型, 要显示相关的图标, 您必须手动将 . svg 格式化的文件复制到目录 :<br/><em>链接</em>:/usr/当地/公开审计/公共/设备图像<br/><em>窗口</em>: c:\ xampp\htdocs\ open- audit\ device_images<br/> <br/>如果您添加了位置类型, 要显示相关的图标, 您必须手动将 32x32px 图标复制到目录 :<br/><em>链接</em>:/usr/当地/公开审计/公共/图像/地图_图片<br/><em>窗口</em>: c:\ xampp\htdocs\ open- audit\ images\ map_icons</p><p>当 <i>资源</i> 是一个 <code>device</code>无效 <i>类型</i> 它们是: <code>class</code>, (中文). <code>environment</code>, (中文). <code>status</code> 和 <code>type</code>。 。 。 如果 <i>资源</i> 这是 <code>locations</code> 或者说 <code>org</code> 唯一有效的数据 <i>类型</i> 这是 <code>type</code>。 。 。 如果 <i>资源</i> 是一个 <code>query</code> 唯一有效的数据 <i>类型</i> 这是 <code>menu_category</code>。 。 。</p>';
-
-$GLOBALS["lang"]['<p>If you intend to completely audit your cloud machines, do not forget you will also need those credentials saved in Open-AudIT.</p><p>Make sure you allow the correct ports if you are using Microsoft Azure (22 for SSH, etc). Check your Virtual Machine -> Networking rules.<br> <br></p>'] = '<p>如果你打算完全审计你的云机, 不要忘记你也会需要那些在Open-AudIT中保存的证书.</p><p>如果您正在使用微软 Azure( 22 for SSH, etc. 检查您的虚拟机 - > 网易规则.<br/> <br/></p>';
-
-$GLOBALS["lang"]['<p>If you select a List type, the "values" field will be enabled. You should put a comma separated list of selectable values here. These will display in a dropdown box whenever the field is edited.<br> <br>Like most other attributes, Fields can be bulk edited. Use the Bulk Edit function as you normally would and you will see the Fields are available for input.<br> <br>View the device details screen, open the section containing the field and (if you have sufficient access) you can click on the field value to edit it.<br> <br></p>'] = '<p>如果选择列表类型,将启用“值”字段。 您应该在此设置一个可选值的逗号分隔列表 。 当字段被编辑时, 这些字段会显示在一个下拉框中 。<br/> <br/>与大多数其它属性一样,Fields可以被批量编辑. 按您通常的意愿使用批量编辑功能, 您将会看到字段可供输入 。<br/> <br/>查看设备细节屏幕,打开包含字段的部分,并且(如果您有足够的访问权限)可以点击字段值进行编辑.<br/> <br/></p>';
-
-$GLOBALS["lang"]['<p>In the ever-changing world of computer security where new vulnerabilities are being discovered and patched every day, enforcing security compliance must be a continuous process. It also needs to include a way to make adjustments to policies, as well as periodic assessment and risk monitoring. The OpenSCAP ecosystem provides tools and customizable policies for a quick, cost-effective and flexible implementation of these processes.</p>'] = '<p>在日益变化的计算机安全世界中,每天都发现和补上新的弱点,因此,执行安全规定必须是一个持续的过程。 它还需要包括调整政策以及定期评估和风险监测的方法。 OpenSCAP生态系统为快速、成本效益高和灵活地实施这些进程提供了工具和定制政策。</p>';
-
-$GLOBALS["lang"]['<p>Integrations allow you to setup device selection and schedules for Open-AudIT to talk to external systems.<br> <br></p>'] = '<p>集成允许您设置设备选择和调度,用于Open-AudIT与外部系统交谈.<br/> <br/></p>';
-
-$GLOBALS["lang"]['<p>Microsoft Windows desktop systems have network limitations that may impact the performance of Open-AudIT. The TCP/IP stack limits the number of simultaneous incomplete outbound TCP connection attempts. After the limit is reached, subsequent connection attempts are put in a queue and will be resolved at a fixed rate (10 per second). If too many enter the queue, they may be dropped. And finally, Apache will be restarted by the OS. For this reason, installing Open-AudIT on a Windows desktop operating system is not supported.<br><br>There is nothing wrong with the Open-AudIT code, nor can we do anything to address this issue on Windows client machines.'] = '<p>微软 Windows桌面系统有网络限制,可能影响Open-AudIT的性能. TCP/IP堆栈限制同时不完全的出厂TCP连接尝试的次数. 在达到极限后,后续的连接尝试被排入队列,并将以固定的速率(10每秒)解决. 如果太多人进入队列,它们可能被丢弃. 最后,Apache会被OS重启. 因此,不支持在Windows桌面操作系统中安装Open-AudIT.<br/><br/>Open-AudIT代码没有问题,我们也不能在Windows客户端机器上做任何事情来解决这个问题.</p>';
-
-$GLOBALS["lang"]['<p>Nmap timing details are found on the bottom of this linked page <a href="https://nmap.org/book/man-performance.html" target="_blank">https://nmap.org/book/man-performance.html</a>. From that page:<br> <br><em>If you are on a decent broadband or ethernet connection, I would recommend always using -T4 (Aggressive). Some people love -T5 (Insane) though it is too aggressive for my taste. People sometimes specify -T2 (Polite) because they think it is less likely to crash hosts or because they consider themselves to be polite in general. They often do not realize just how slow -T2 really is. Their scan may take ten times longer than a default scan. Machine crashes and bandwidth problems are rare with the default timing options -T3 (Normal) and so I normally recommend that for cautious scanners. Omitting version detection is far more effective than playing with timing values at reducing these problems.</em><footer>Gordon <i>Fyodor</i> Lyon</footer><br> <br></p>'] = '<p>在链接页面的底部找到 Nmap 计时细节 <a href="https://nmap.org/book/man-performance.html" target="_blank">https://nmap.org/book/man-performance.html 页面存档备份,存于互联网档案馆.</a>。 。 。 从该页:<br/> <br/><em>若您使用良好的宽带或网路连接, 有些人喜欢T5, 人们有时会指定-T2(Polite),因为他们认为崩溃主机的可能性较小,或者因为他们认为自己在一般情况下是礼貌的. 他们常常不知道T2到底有多慢 他们的扫描可能比默认扫描要长十倍. 机器崩溃和带宽问题在默认的计时选项-T3(Normal)中是罕见的,所以我通常建议谨慎的扫描仪使用. 刻录版本检测比玩计时值减少这些问题更有效.</em><footer>高顿 <i>费奥多</i> 里昂</footer><br/> <br/></p>';
-
-$GLOBALS["lang"]['<p>Open-AudIT can be configured to use different methods to authenticate a user and in addition, to create a user account using assigned roles and orgs based on group membership.<br> <br></p>'] = '<p>可以配置Open-AudIT,使用不同的方法认证一个用户,此外,还可以根据组成员身份,使用指定的角色和类词创建用户账户.<br/> <br/></p>';
-
-$GLOBALS["lang"]['<p>Open-AudIT can retrieve details about a file or directory of files and monitor these files for changes as per other attributes in the Open-AudIT database.<br> <br>This feature works out of the box for Linux Open-AudIT servers, but needs a change to the service account name under a Windows Open-AudIT server.<br> <br>Supported clients are Windows and Linux.<br> <br></p>'] = '<p>打开Aud IT可以检索文件或文件目录的细节,并根据Open-AudIT数据库中的其他属性来监测这些文件的变化.<br/> <br/>这个功能在Linux Open-AudIT服务器的框外工作,但需要在Windows Open-AudIT服务器下更改服务账户名称.<br/> <br/>支持的客户端是Windows和Linux.<br/> <br/></p>';
-
-$GLOBALS["lang"]['<p>Open-AudIT can retrieve details about a file, ask the native package manager if they are known to it and monitor these files for changes as per other attributes in the Open-AudIT database.<br> <br>Supported clients are Linux only.<br> <br></p>'] = '<p>打开Aud IT可以检索一个文件的详情,询问本地软件包管理器是否知道,并根据Open-AudIT数据库中的其他属性来监测这些文件的更改.<br/> <br/>支持的客户端只有Linux.<br/> <br/></p>';
-
-$GLOBALS["lang"]['<p>Open-AudIT can store information in custom fields that are associated with each device.<br> <br>Once an Additional Field has been created it can be used in queries and groups just like any other attribute in the database.<br> <br></p>'] = '<p>打开Aud IT可以在与每个设备相关的自定义字段存储信息.<br/> <br/>附加字段创建后,它可以像数据库中任何其他属性一样用于查询和分组.<br/> <br/></p>';
-
-$GLOBALS["lang"]['<p>Open-AudIT comes with many queries inbuilt. If you require a specific query and none of the pre-packaged queries fit your needs, it is quite easy to create a new one and load it into Open-AudIT for running.<br> <br></p>'] = '<p>Open-AudIT带来许多内置的查询. 如果您需要特定查询, 且预装的查询都不符合您的需要, 很容易创建新查询并加载到 Open- AudIT 中进行运行 。<br/> <br/></p>';
-
-$GLOBALS["lang"]['<p>Open-AudIT comes with many summaries inbuilt. If you require a specific summary and none of the pre-packaged summaries fit your needs, it is quite easy to create a new one and load it into Open-AudIT for running.<br> <br></p>'] = '<p>Open-AudIT 有许多内置摘要。 如果您需要特定的摘要, 且预装摘要中没有符合您的需要, 很容易创建新的摘要并加载到 Open-AudIT 中运行。<br/> <br/></p>';
-
-$GLOBALS["lang"]['<p>Open-AudIT is supported by FirstWave with an amazing level of support. If you prefer an active community of support givers, theres that as well. Where else can you talk directly to the developers and get a response within 24 hours? Just try that with other products! Amazing support. Full stop. You need support, we provide support. No ifs or buts. Great support. Period.<br> <br></p>'] = '<p>Open-AudIT由FirstWave以惊人的支持水平支持. 如果你更喜欢一个积极的支持者群体, 也一样。 你还能在哪里直接和开发者交谈,并在24小时内得到回复? 用其他产品试试看! 惊人的支持。 完全停下来。 你需要支持,我们提供支持。 没有如果或但是。 广大供养. 期间。<br/> <br/></p>';
-
-$GLOBALS["lang"]['<p>Open-AudIT provides multi-tenancy out of the box!<br> <br>Orgs (organisations) in Open-AudIT are a key item. A user has a primary Org as well as a list of Orgs they can access. A user combines this with a list of assigned "Roles" that define what actions they can take on items assigned to the Orgs they have access to. The combination of a users "orgs" and "roles" define what they can and cannot do within Open-AudIT.<br> <br>Most items in Open-AudIT are assigned to an Org. Devices, Locations, Networks, etc.<br> <br>Orgs can have child Orgs. Think of an organisational chart (tree) structure. If a user has access to a specific Org, they also have access to that Orgs descendants. For more information, see this <a href="/index.php/faq?name=Users, Roles and Orgs">FAQ</a>.</p>'] = '<p>Open-AudIT提供盒外的多租位!<br/> <br/>Open-AudIT中的 Orgs(组织)是一个关键项目. 一个用户有一个主 Org 以及可以访问的 Org 列表. 一个用户将它与一个被指派的"Roles"列表结合起来,该列表定义了他们可以对分配给他们可以访问的Orgs的项目采取什么行动. 一个用户"orgs"和"roles"的组合定义了他们在Open-AudIT内所能做和不能做的.<br/> <br/>Open-AudIT中的大部分项目被分配到一个 Org. 设备,位置,网络等.<br/> <br/>兽人可以生孩子. 想想组织图(树)结构. 如果用户可以访问特定的Org,他们也可以访问Orgs后裔. 详情请见此 <a href="/index.php/faq?name=Users, Roles and Orgs">财务问题</a>。 。 。</p>';
-
-$GLOBALS["lang"]['<p>Open-AudIT provides multi-tenancy out of the box!<br> <br>Orgs (organisations) in Open-AudIT are a key item. A user has a primary Org as well as a list of Orgs they can access. A user combines this with a list of assigned "Roles" that define what actions they can take on items assigned to the Orgs they have access to. The combination of a users "orgs" and "roles" define what they can and cannot do within Open-AudIT.<br> <br>Most items in Open-AudIT are assigned to an Org. Devices, Locations, Networks, etc.<br> <br>Orgs can have child Orgs. Think of an organisational chart (tree) structure. If a user has access to a specific Org, they also have access to that Orgs descendants.</p>'] = '<p>Open-AudIT提供盒外的多租位!<br/> <br/>Open-AudIT中的 Orgs(组织)是一个关键项目. 一个用户有一个主 Org 以及可以访问的 Org 列表. 一个用户将它与一个被指派的"Roles"列表结合起来,该列表定义了他们可以对分配给他们可以访问的Orgs的项目采取什么行动. 一个用户"orgs"和"roles"的组合定义了他们在Open-AudIT内所能做和不能做的.<br/> <br/>Open-AudIT中的大部分项目被分配到一个 Org. 设备,位置,网络等.<br/> <br/>兽人可以生孩子. 想想组织图(树)结构. 如果用户可以访问特定的Org,他们也可以访问Orgs后裔.</p>';
-
-$GLOBALS["lang"]['<p>Quickly view the status of devices on your network.<br> <br></p>'] = '<p>快速查看您网络上设备的状态 。<br/> <br/></p>';
-
-$GLOBALS["lang"]['<p>Roles in Open-AudIT are a key item. A user has a primary Org as well as a list of Orgs they can access. A user combines this with a list of assigned Roles that define what actions they can take on items assigned to the Orgs they have access to. The combination of a users "orgs" and "roles" define what they can and cannot do within Open-AudIT.<br> <br>
-        Get the complete Open-AudIT Enterprise experience. Creating roles allows fine grained control over what your users can do within Open-AudIT.<br> <br>
-        The primary method for authorisation (what a user can do) is based on the users Roles. Default roles are defined as admin, org_admin, reporter and user. Each role has a set of permissions (Create, Read, Update, Delete) for each endpoint. The ability to define additional roles and edit existing roles is enabled in Open-AudIT Enterprise.<br> <br>Roles can also be used with LDAP (Active Directory and OpenLDAP) authorisation. Enterprise licensed installations have the ability to customise the LDAP group for each defined role.<br> <br></p>'] = '<p>在开放奥德的作用 它是一个关键项目。 一个用户有一个主 Org 以及可以访问的 Org 列表. 一个用户将此与指定角色列表结合起来,该列表定义了他们可以对其可以访问的Orgs项目采取的行动. 一个用户"orgs"和"roles"的组合定义了他们在Open-AudIT内所能做和不能做的.<br/> <br/>获得完整的Open-AudIT Enterprise体验. 创建角色可以对用户在 Open-AudIT 内所能做的事情进行精细的粒化控制.<br/> <br/>授权的主要方法(用户可以做什么)基于用户角色. 默认角色被定义为管理员,org_admin,记者和用户. 每个角色对每个端点都有一组权限(创建,读,更新,删除). 在Open-AudIT Entertainment中启用了定义额外角色和编辑现有角色的能力.<br/> <br/>角色也可以在LDAP(主动目录和OpenLDAP)的授权下使用. 企业许可的设施有能力为每个确定的角色定制LDAP组.<br/> <br/></p>';
-
-$GLOBALS["lang"]['<p>Rules examine attributes and make cahnges based on the appropriate rule.</p>'] = '<p>规则审查属性,并根据适当的规则制作琴谱.</p>';
-
-$GLOBALS["lang"]['<p>Scanning options allow you to easily apply a set of options to a discovery.<br> <br></p>'] = '<p>扫描选项可以方便地对发现应用一组选项.<br/> <br/></p>';
-
-$GLOBALS["lang"]['<p>Simple, intuitive, accurate geographic mapping provided by Google Maps. Open-AudIT leverages Google Maps to provide live, interactive geographic mapping of device locations. Automated conversion of street addresses to geocodes and longitude / latitude.<br> <br>
-        </p>'] = '<p>由Google地图提供的简单,直观,准确的地理测绘. 开放-AudIT杠杆 谷歌地图提供设备位置的现场,交互式地理绘图. 街道地址自动转换为地理编码和经度/纬度.<br/> <br/></p>';
-
-$GLOBALS["lang"]['<p>Software Packages are used to determine if antivirus, backup, firewall, approved or banned software is installed.<br> <br></p>'] = '<p>软件包用于确定是否安装了抗病毒,备份,防火墙,批准或禁止的软件.<br/> <br/></p>';
-
-$GLOBALS["lang"]['<p>Some examples of valid Subnet attributes are: 192.168.1.1 (a single IP address), 192.168.1.0/24 (a subnet), 192.168.1-3.1-20 (a range of IP addresses).<br> <br><em>NOTE</em> - Only a subnet (as per the examples - 192.168.1.0/24) will be able to automatically create a valid network for Open-AudIT. <br> <br>If you use an Active Directory type, make sure you have appropriate credentials to talk to your Domain Controller already in <a href="../credentials">credentials</a>.<br> <br></p>'] = '<p>一些有效的Subnet属性的例子有:192.168.1.1(一个IP地址),192.168.1.0/24(一个子网),192.168.1-3.1-20(一个IP地址的范围).<br/> <br/><em>说明</em> - 只有子网(根据实例——192.168.1.0/24)才能自动为Open-AudIT建立一个有效的网络。 <br/> <br/>如果您使用活动目录类型, 请确保您有合适的证书可以和您的域控制器交谈 。 <a href="../credentials">全权证书</a>。 。 。<br/> <br/></p>';
-
-$GLOBALS["lang"]['<p>Standards are stored in Open-AudIT.<br /><br /><br /><br /></p>'] = '<p>标准存储在Open-AudIT中.<br/><br/><br/><br/></p>';
-
-$GLOBALS["lang"]['<p>Supported clients are Linux only.<br> <br></p>'] = '<p>支持的客户端只有Linux.<br/> <br/></p>';
-
-$GLOBALS["lang"]['<p>Tasks have a schedule that mirrors the unix cron schedule. The attributes for minute, hour, day_of_month, month, day_of_week all act as per the cron definitions. You can select multiples of these using comma seperated values (no spaces). You can select every value using *.<br> <br>The <code>type</code> of the task can be one of: baselines, collectors, discoveries, queries, reports or summaries.<br> <br>If you wish to schedule a Baseline or Discovery, you will need to create these before creating the tasks. You must use the ID of the type of item in <code>sub_resource_id</code>. For example if you wish to schedule a Discovery, use that particular Discoveries ID in <code>sub_resource_id</code>.<br> <br>The value for <code>uuid</code> is specific to each Open-AudIT server. Your unique value can be found in the configuration.<br> <br>The <code>options</code> attribute is a JSON document containing any extra attributes required to run the task. The extra attributes for reports, queries and summaries are: <code>email_address</code> and <code>format</code>. The extra attribute for Bselines is <code>group_id</code>.<br> <br></p>'] = '<p>任务有对应 unix cron 时间表的时间表 。 分钟、 小时、 日_ 月、 月、 日_ 周的属性都按照 cron 定义行事 。 您可以使用逗号分隔值( 无空格) 选择其中的多个 。 您可以使用 * 选择每个值。<br/> <br/>那个 <code>type</code> 任务可以是:基线、收集器、发现、查询、报告或摘要。<br/> <br/>如果您想要安排基线或发现, 您需要在创建任务前创建这些任务 。 您必须在 <code>sub_resource_id</code>。 。 。 例如,如果您想要安排发现,请在 <code>sub_resource_id</code>。 。 。<br/> <br/>值为 <code>uuid</code> 指定每个 Open-AudIT 服务器。 您的独特价值可以在配置中找到 。<br/> <br/>那个 <code>options</code> 属性是 JSON 文档,其中包含执行任务所需的任何额外属性。 报告、查询和摘要的额外属性是: <code>email_address</code> 和 <code>format</code>。 。 。 Bselines 的额外属性是: <code>group_id</code>。 。 。<br/> <br/></p>';
-
-$GLOBALS["lang"]['<p>The <code>type</code> of the location will assign its icon.<br> <br></p>'] = '<p>那个 <code>type</code> 图标。<br/> <br/></p>';
-
-$GLOBALS["lang"]['<p>The Attributes endpoint allows you to add customized values to different attributes in Open-AudIT, at the moment this feature works on the Class, Environment, Status and Type attributes on Devices, the Type attribute for both Locations and Orgs as well as the Menu Category for Queries. If you view an item of one of the prvious types (say view a Lkocation) you will notice the Type attribute must be selected from a drop-down box. This is where those values are stored. Hence, if you would like to add a new Type to be chosen for a Location, add it using the Attributes feature.</p>'] = '<p>属性端点允许您在 Open-AudIT 中将定制值添加到不同的属性中,此时此特性在设备上的类,环境,状态和类型属性,位置和兽类的类型属性以及查询的菜单类. 如果您查看了其中一种类型的项目( 显示 Lkocation) , 您会注意到必须从下拉框中选择类型属性 。 这就是这些值被存储的地方。 因此,如果您想要为位置添加新类型,请使用属性特性添加该类型。</p>';
-
-$GLOBALS["lang"]['<p>The Collectors feature enables you to easily manage many "collector" computers that perform network discovery. All Collectors are centrally controlled from the Server. The only required network ports between the Collector and the Server are 80 and/or 443.<br> <br>It makes managing disparate networks quick, easy and simple. Open-AudIT Enterprise licensees get a single collector license included and have the option to buy more as required..<br> <br></p>'] = '<p>Collectors 特性使您能够轻松地管理许多执行网络发现的"collector"计算机. 所有收集器都由服务器集中控制. 收集器和服务器之间唯一需要的网络端口是80和/或443.<br/> <br/>它使管理不同的网络变得迅速、简单和简单。 Open-AudIT Enterprise许可证持有者获得单一的收集许可证,并有权按要求购买更多。<br/> <br/></p>';
-
-$GLOBALS["lang"]['<p>The SELECT section of your SQL <em>must</em> contain fully qualified columns. IE - <code>SELECT devices.id AS `devices.id`, devices.name AS `devices.name` ...</code>.<br> <br>The WHERE section of your SQL <em>must</em> contain <code>WHERE @filter</code> so Open-AudIT knows to restrict your query to the appropriate Orgs. SQL not containing this condition will result in the query failing to be created, unless you have the Admin role.<br> <br>An example query SQL showing attributes on devices that have an <code>os_group</code> attribute of "Linux" - <br><code>SELECT devices.id AS `devices.id`, devices.icon AS `devices.icon`, devices.type AS `devices.type`, devices.name AS `devices.name`, devices.os_name AS `devices.os_name` FROM devices WHERE @filter AND devices.os_group = "Linux"</code><br> <br></p>'] = '<p>您的 SQL 中的 SELECT 部分 <em>必须</em> 包含完全合格的栏目。 爱 - <code>SELECT devices.id AS `devices.id`, devices.name AS `devices.name` ...</code>。 。 。<br/> <br/>您的SQL 的哪个部分 <em>必须</em> 包含 <code>WHERE @filter</code> 所以Open-AudIT知道将您的查询限制在相应的Orgs. 不包含此条件的 SQL 将导致查询无法创建, 除非您拥有管理员角色 。<br/> <br/>一个实例查询 SQL 显示在设备上的属性 <code>os_group</code> “ Linux” 属性 - <br/><code>SELECT devices.id AS `devices.id`, devices.icon AS `devices.icon`, devices.type AS `devices.type`, devices.name AS `devices.name`, devices.os_name AS `devices.os_name` FROM devices WHERE @filter AND devices.os_group = "Linux"</code><br/> <br/></p>';
-
-$GLOBALS["lang"]['<p>The SELECT section of your SQL <em>must</em> only contain <code>DISTINCT(devices.id)</code>.<br> <br>The WHERE section of your SQL <em>must</em> contain <code>WHERE @filter</code> so Open-AudIT knows to restrict your query to the appropriate Orgs. SQL not containing this condition will result in the group failing to be created.<br> <br>An example for SQL to select all devices running the Debian OS - <code>SELECT DISTINCT(devices.id) FROM devices WHERE @filter AND devices.os_family = "Debian"</code><br> <br></p>'] = '<p>您的 SQL 中的 SELECT 部分 <em>必须</em> 只包含 <code>DISTINCT(devices.id)</code>。 。 。<br/> <br/>您的SQL 的哪个部分 <em>必须</em> 包含 <code>WHERE @filter</code> 所以Open-AudIT知道将您的查询限制在相应的Orgs. 不包含此条件的 SQL 将导致组无法创建 。<br/> <br/>SQL 选择所有运行 Debian OS 的设备的例子 - <code>SELECT DISTINCT(devices.id) FROM devices WHERE @filter AND devices.os_family = "Debian"</code><br/> <br/></p>';
-
-$GLOBALS["lang"]['<p>The license endpoint allows you to track the number of licenses found on your devices.<br> <br>To create an entry to track your licenses you <em>must</em> to provide a name, an organization, the number of licenses acquired and the name of the software. On the field <code>match_string</code> you must provide the name of the software that you want to track, you can use the percent sign (%) as a wildcard in the match_string.<br> <br></p>'] = '<p>许可端点允许您追踪设备上发现的许可数量 。<br/> <br/>要创建一个条目来跟踪您的驾照 <em>必须</em> 提供名称、组织、获得的许可证数量和软件名称。 现场 <code>match_string</code> 您必须提供您想要跟踪的软件的名称,您可以在匹配_字符串中将% 的符号作为通配符。<br/> <br/></p>';
-
-$GLOBALS["lang"]['<p>The network should be in the format 192.168.1.0/24.<br> <br></p>'] = '<p>该网络的格式应为192.168.1.0/24。<br/> <br/></p>';
-
-$GLOBALS["lang"]['<p>The primary and optional secondary items should be fully qualified - ie, devices.type or software.name.<br> <br></p>'] = '<p>初级和可选次级项目应具有完全的资质 -- -- 即设备。 类型或软件。 名称。<br/> <br/></p>';
-
-$GLOBALS["lang"]['<p>There is no need to do anything if you are running Open-AudIT on a Linux server.<br>
-<br>
-Windows clients are just fine and require no special actions, however.... to enable this feature the audit script must be run locally on the target Windows system. It cannot be run remotely as we do with WMI calls when running the audit script on one Windows machine, while targeting a second Windows machine. To do this we need to copy the audit script to the target Windows machine and then run it. Unfortunately the service account that Apache runs under is the Local System account. This account has no access to remote (network based) resources. To work around this issue the service must be run under another account. It is easiest to just use the local Administrator account, but you can try any account you like as long as it has the required privileges. The Local System account has as much local access as the local Administrator account.<br>
-<br>
-See our page on enabling <a href="/index.php/faq?name=Running Open-AudIT Apache Service Under Windows">Running Open-AudIT Apache Service Under Windows</a></p>'] = '<p>如果您正在 Linux 服务器上运行 Open-AudIT , 则无需做任何事情 。<br/><br/>然而,Windows客户端很好,不需要特殊动作. . 要启用这个功能,审计脚本必须在目标Windows系统上本地运行. 它不能远程运行,因为我们在运行一个Windows机上的审计脚本时会和WMI通话一样,同时瞄准第二个Windows机. 要做到这一点,我们需要将审计脚本复制到目标Windows机器,然后运行. 不幸的是,Apache运行在下面的服务账户是本地系统账户。 该账户无法访问远程(基于网络)资源。 要解决这个问题,服务必须在另一个账户下进行。 仅使用本地管理员账户是很容易的, 但是只要您有所需的权限, 您就可以尝试您喜欢的任何账户 。 当地系统账户与当地署长账户一样有当地访问权。<br/><br/>见我们关于启用的页面 <a href="/index.php/faq?name=Running Open-AudIT Apache Service Under Windows">在窗口下运行 Open-AudIT Apache 服务</a></p>';
-
-$GLOBALS["lang"]['<p>These are the devices that live within a rack.<br> <br></p>'] = '<p>这些是生活在架子内的装置.<br/> <br/></p>';
-
-$GLOBALS["lang"]['<p>This endpoint enables you to add your cloud infrastructure details. Open-AudIT will then reach out to your clouds using their native API and return your servers, just like any other device in Open-AudIT.<br> <br><em>NOTE</em> - To use this feature, we <em>must</em> enable the configuration items match_mac (for AWS) and match_hostname (for Azure). This will be done automatically the first time a cloud discovery is executed.<br> <br>Credentials for your cloud (<a href="/index.php/faq?name=Credentials for Microsoft Azure used in Cloud Discovery">Azure</a> or <a href="/index.php/faq?name=Credentials for Amazon AWS used in Cloud Discovery">AWS</a>) are required.<br> <br></p>'] = '<p>此端点允许您添加您的云基础设施细节 。 Open-AudIT随后会使用他们的本地 API 伸手到您的云端并返回您的服务器,就像Open-AudIT中的任何其他设备一样.<br/> <br/><em>说明</em> - 为了使用这个功能,我们 <em>必须</em> 启用配置项目匹配_mac(对于AWS)和匹配_hostname(对于Azure). 首次执行云的发现时会自动完成此任务.<br/> <br/>云层的全权证书( E)<a href="/index.php/faq?name=Credentials for Microsoft Azure used in Cloud Discovery">阿苏雷</a> 或者说 <a href="/index.php/faq?name=Credentials for Amazon AWS used in Cloud Discovery">自动取款机</a>要求这样做。<br/> <br/></p>';
-
-$GLOBALS["lang"]['<p>Vulnerabilities reporting based on the NIST CVE feed.<br> <br></p>'] = '<p>基于NIST CVE种子的脆弱度报告.<br/> <br/></p>';
-
-$GLOBALS["lang"]['<p>We initially setup the default list of scripts with the default options. These default scripts cannot be deleted. You can create additional scripts for use by you as required. Your script will be based on one of the existing scripts and have custom options applied. The scripts can then be downloaded from the list page at menu -> Discover -> Audit Scripts -> List Audit Scripts<br> <br></p>'] = '<p>我们最初设置带有默认选项的默认脚本列表. 这些默认脚本无法删除 。 您可以根据需要创建额外的脚本供您使用. 您的脚本将基于现有的脚本之一, 并应用自定义选项 。 脚本可以按菜单从列表页面下载 - > 发现 - > 审计脚本 - > 列表审计脚本<br/> <br/></p>';
-
-$GLOBALS["lang"]['<p>When using Regex for matching, a helpful page can be found on the <a href="https://www.php.net/manual/en/regexp.reference.meta.php" target="_blank"> PHP website</a>. Some differences to Perl Regex can be found <a href="https://www.php.net/manual/en/reference.pcre.pattern.differences.php" target="_blank">here</a>.</p>'] = '<p>在使用Regex进行匹配时,可以在 <a href="https://www.php.net/manual/en/regexp.reference.meta.php" target="_blank"> ưμ㼯A</a>。 。 。 可以找到 Perl Regex 的一些差异 <a href="https://www.php.net/manual/en/reference.pcre.pattern.differences.php" target="_blank">这里</a>。 。 。</p>';
-
-$GLOBALS["lang"]['<p>Widgets can easily be created to show whatever is specific to your environment on your dashboards.<br> <br></p>'] = '<p>部件可以很容易地被创造出来,在仪表板上显示你环境特有的东西.<br/> <br/></p>';
-
-$GLOBALS["lang"]['<p>With Open-AudIT Professional and Enterprise you can automate and schedule discoveries, report generation, or baseline checks to run when you want, and as often as you need. Schedule your discoveries to run nightly and reports to be generated and emailed to key personnel each morning. Complex or simple schedules, device discovery and report generation is just a click away.<br> <br>Create individual discovery schedules for each subnet or AD controller, add in reports to be created for targeted audiences. Develop simple or complex schedules to support company needs, avoid backups or impact to operations, or simply to spread the load and speed-up audit completion.<br> <br></p>'] = '<p>使用 Open-AudIT 专业和企业,你可以自动化 和安排发现, 报告生成, 或基线检查运行 当你想运行, 并随需要。 安排你的发现 晚上运行,报告 生成和电子邮件给关键人员 每天早上。 复杂或简单的调度,设备发现和报告生成只是一击即逝.<br/> <br/>为每个子网或AD控制器创建单个发现时间表,在为目标受众创建的报告中添加。 开发简单或复杂的时间表,以支持公司需求,避免备份或对业务的影响,或只是分散负载和速度审计完成.<br/> <br/></p>';
-
-$GLOBALS["lang"]['<p>You can create a script with all the options for any of the existing audit scripts - not just Windows. AIX, ESX, Linux, OSX and Windows are all covered.<br> <br></p>'] = '<p>您可以为任何现有的审计脚本创建包含所有选项的脚本 - 不仅仅是Windows. AIX,ESX,Linux,OSX和Windows全部覆盖.<br/> <br/></p>';
-
-$GLOBALS["lang"]['<p>You can use the percent % sign as a wildcard in the match_string.<br> <br></p>'] = '<p>您可以在匹配_ 字符串中将% 的标志作为通配符 。<br/> <br/></p>';
-
-$GLOBALS["lang"]['<p>Your racks help refine exactly where your devices are located.<br> <br></p>'] = '<p>你的架子有助于精确地完善你的设备所在位置.<br/> <br/></p>';
-
-$GLOBALS["lang"]['<strong>NOTE</strong> - You are accessing this URL from the local Open-AudIT server. The downloaded script will not be able to submit when run on any other machine. If you need to audit other machines, please download the script from any remote machine, not using a browser on the Open-AudIT server itself.'] = '<strong>说明</strong> 您正在从本地的 Open-AudIT 服务器访问此 URL 。 在其它机器上运行时, 下载的脚本将无法提交 。 如果需要审计其他机器,请从任何远程机器下载脚本,不要在Open-AudIT服务器本身上使用浏览器.';
-
-$GLOBALS["lang"]['A CVE item that does not contain a filter to determine the affected item(s).'] = 'CVE 项不含确定受影响的项的过滤器。';
-
-$GLOBALS["lang"]['A Google Maps API Key is required for this function.'] = '谷歌地图 API 密码 此功能需要密钥 。';
-
-$GLOBALS["lang"]['A JSON array of device IDs that will have this benchmark executed.'] = '将执行此基准的 JSON 设备标识组 。';
-
-$GLOBALS["lang"]['A JSON array of objects matching the software name taken from the CVE, enriched with the software name retrieved by Open-AudIT.'] = '与从 CVE 中提取的软件名称相匹配的 JSON 阵列,由 Open-AudIT 检索的软件名称丰富.';
-
-$GLOBALS["lang"]['A JSON array of values to test for this vulnerability.'] = '测试这种脆弱性的JSON系列值。';
-
-$GLOBALS["lang"]['A JSON document containing the Orgs assigned to this user. IDs taken from <code>orgs.id</code>. If a user has access to an Org, they have access to that Orgs descendants.'] = '包含指定给此用户的 Orgs 的 JSON 文件 。 身份证从 <code>orgs.id</code>。 。 。 如果用户可以接触一个Org,他们可以接触Orgs后裔.';
-
-$GLOBALS["lang"]['A JSON document containing the required attributes depending on <code>scripts.type</code>.'] = '包含所需属性的 JSON 文件,取决于 <code>scripts.type</code>。 。 。';
-
-$GLOBALS["lang"]['A JSON document containing the required attributes overriding the chosen discovery_scan_options.'] = 'JSON 文档, 包含高于所选发现的必需属性_ 扫描_ 选项 。';
-
-$GLOBALS["lang"]['A JSON document containing the required attributes overriding the default device match options.'] = 'JSON 文档, 包含默认设备匹配选项上必须的属性 。';
-
-$GLOBALS["lang"]['A JSON document containing the roles assigned to this user. Role names taken from <code>roles.name</code>.'] = '包含指定给该用户的角色的 JSON 文件 。 角色名称取自 <code>roles.name</code>。 。 。';
-
-$GLOBALS["lang"]['A JSON object containing an array of attributes to change if the match occurs.'] = '包含一系列属性的 JSON 对象,如果匹配发生,则要更改 。';
-
-$GLOBALS["lang"]['A JSON object containing an array of attributes to match.'] = 'JSON 对象包含一系列匹配的属性 。';
-
-$GLOBALS["lang"]['A JSON object containing collection specific options.'] = '一个包含收藏特定选项的 JSON 对象 。';
-
-$GLOBALS["lang"]['A JSON object populated via a Cloud discovery.'] = 'JSON通过云号发现而发现的物体';
-
-$GLOBALS["lang"]['A JSON representation containing the details of the queue item to be executed.'] = '包含要执行的队列项目细节的 JSON 描述 。';
-
-$GLOBALS["lang"]['A JSON representation of the fields for this integration.'] = 'JSON代表这一一体化的领域。';
-
-$GLOBALS["lang"]['A JSON representation of the individual tests and their results on all devices this baseline has been run against.'] = 'JSON对所有装置的个别试验及其结果作了说明,但这一基准被对照。';
-
-$GLOBALS["lang"]['A JSON representation of the tests that make up this policy.'] = 'JSON代表构成这项政策的测试。';
-
-$GLOBALS["lang"]['A LAN can be connected to a WAN using a router.'] = '一个局域网可以使用路由器连接到一个WAN.';
-
-$GLOBALS["lang"]['A Metropolitan area network (MAN) is a large computer network that usually spans a city or a large campus.'] = '大都会地区网(MAN)是通常跨越一个城市或一个大校园的大型计算机网络.';
-
-$GLOBALS["lang"]['A Seed discovery uses an initial IP to retrieve the IPs of any other devices it knows about, adds those IPs to the list and scans those - again asking for any IPs those additional devices knows about. Rinse and repeat. It is intelligent enough to know if it has already scanned a given IP in its execution and discards any already scanned (or even on the list to be scanned).'] = 'A级 种子发现使用一个初始IP来检索它知道的任何其他设备的IP,将这些IP添加到列表中,并扫描这些——再次要求这些额外设备知道的任何IP. 润和复诵. 了解它在执行过程中是否已经扫描过一个给定的IP,并丢弃任何已经扫描过(或甚至在要扫描的列表中)的IP,是足够明智的.';
-
-$GLOBALS["lang"]['A Subnet discovery will scan the IPs provided.'] = '一个子网的发现将扫描所提供的IP.';
-
-$GLOBALS["lang"]['A URL provided to the agent which will then download the file and store it on the local disk.'] = '提供给代理服务器的 URL 将下载文件并存储在本地磁盘上 。';
-
-$GLOBALS["lang"]['A URL to a file to download.'] = '要下载的文件的 URL 。';
-
-$GLOBALS["lang"]['A backbone network is part of a computer network infrastructure that provides a path for the exchange of information between different LANs or sub-networks. A backbone can tie together diverse networks within the same building, across different buildings, or over a wide area.<br><br>For example, a large company might implement a backbone network to connect departments that are located around the world. The equipment that ties together the departmental networks constitutes the network backbone. When designing a network backbone, network performance and network congestion are critical factors to take into account. Normally, the backbone network capacity is greater than that of the individual networks connected to it.<br><br>Another example of a backbone network is the Internet backbone, which is the set of wide area networks (WANs) and core routers that tie together all networks connected to the Internet.'] = '骨干网络是计算机网络基础设施的一部分,为不同局域网或子网络之间的信息交流提供路径. 骨干可以将同一建筑内部,跨不同建筑,或者在宽阔的区域内的各种网络连接起来.<br/><br/>例如,一家大公司可能实施一个骨干网络,将世界各地的部门连接起来。 将部门网络联系起来的设备构成网络的骨干。 在设计网络骨干时,网络性能和网络拥堵是需要考虑的关键因素. 一般情况下,骨干网络容量大于与之相连的单个网络容量.<br/><br/>骨干网络的另一个例子是互联网骨干,即将所有连接到互联网的网络连接在一起的广域网(WAN)和核心路由器的一组.';
-
-$GLOBALS["lang"]['A calculated field that displays the number of times this piece of software was found on the computers in the selected Org (and its descendants if configured).'] = '一个计算出来的字段,显示此软件件在所选 Org 中的计算机上被发现的次数(如果配置的话它的后代).';
-
-$GLOBALS["lang"]['A campus area network (CAN) is made up of an interconnection of LANs within a limited geographical area. The networking equipment (switches, routers) and transmission media (optical fiber, copper plant, Cat5 cabling, etc.) are almost entirely owned by the campus tenant / owner (an enterprise, university, government, etc.).<br><br>For example, a university campus network is likely to link a variety of campus buildings to connect academic colleges or departments, the library, and student residence halls.'] = '校园区域网(CAN)由有限地理区域内的局域网互联组成. 网络设备(开关、路由器)和传输介质(光纤、铜厂、Cat5电缆等)几乎全部归校园租户/业主(一个企业、大学、政府等)所有。<br/><br/>例如,一个大学校园网络可能连接各种校园建筑,连接学术院校或部门,图书馆,以及学生宿舍.';
-
-$GLOBALS["lang"]['A closed port is accessible (it receives and responds to Nmap probe packets), but there is no application listening on it. They can be helpful in showing that a host is up on an IP address (host discovery, or ping scanning), and as part of OS detection. Because closed ports are reachable, it may be worth scanning later in case some open up. Administrators may want to consider blocking such ports with a firewall. Then they would appear in the filtered state, discussed next.'] = '一个封闭的端口是可访问的(它接收和响应Nmap探测包),但没有应用程序监听它. 它们可以帮助显示一个主机在IP地址(主机发现,或ping扫描)上,并作为OS检测的一部分. 由于封闭的端口是可到达的,也许值得稍后扫描,以防有人打开. 管理员不妨考虑用防火墙屏蔽此类端口. 然后它们就会出现在过滤状态中,接下来讨论。';
-
-$GLOBALS["lang"]['A collector is either in Collector or Stand-Alone mode.'] = '收藏家要么是收集器,要么是备用状态。';
-
-$GLOBALS["lang"]['A comma separated list of applicable CVEs.'] = '一个逗号分离的可适用的CVE列表.';
-
-$GLOBALS["lang"]['A comma separated list of values, one of which can be selected.'] = '一个逗号分隔的数值列表,其中之一可以选择.';
-
-$GLOBALS["lang"]['A command to run. When the agent is Windows based, this command is run from within the powershell agent.'] = '命令要运行。 当代理基于Windows时,此命令会从动力壳代理内部运行.';
-
-$GLOBALS["lang"]['A dashboard is made up of three columns and two rows of what we call <i>widgets</i>. A widget is very similar to a summary, only we take the summary concept a bit further. Widgets are created in a simple fashion using a couple of drop down boxes - or you can elect to use your own SQL for complete customisability.'] = '仪表板由三列和两列组成 我们称之为 <i>部件</i>。 。 。 一个部件与一个摘要非常相似,只有我们把摘要概念更进一步。 部件是用几个下拉框简单创建的 - 或者可以选择使用自己的SQL来完成自定义.';
-
-$GLOBALS["lang"]['A filtered port is considered open (and will trigger device detection).'] = '一个过滤的端口被认为是开放的(并将触发设备检测).';
-
-$GLOBALS["lang"]['A global area network (GAN) is a network used for supporting mobile across an arbitrary number of wireless LANs, satellite coverage areas, etc. The key challenge in mobile communications is handing off user communications from one local coverage area to the next. In IEEE Project 802, this involves a succession of terrestrial wireless LANs.'] = '全球局域网(GAN)是一个网络,用于支持移动跨越任意数量的无线局域网,卫星覆盖区等. 移动通信的主要挑战是将用户通信从一个地方覆盖区转到另一个地方。 在IEEE项目802中,这涉及到一系列地面无线局域网.';
-
-$GLOBALS["lang"]['A home area network (HAN) is a residential LAN used for communication between digital devices typically deployed in the home, usually a small number of personal computers and accessories, such as printers and mobile computing devices. An important function is the sharing of Internet access, often a broadband service through a cable TV or digital subscriber line (DSL) provider.'] = '家用局域网(HAN)是一种住宅局域网,用于通常部署在家中的数字设备之间的通信,通常是少量的个人计算机和配件,如打印机和移动计算设备. 一个重要的功能是共享互联网接入,通常是通过有线电视或数字用户线(DSL)供应商提供宽带服务.';
-
-$GLOBALS["lang"]['A list of custom TCP ports to scan (22 is SSH, 135 is WMI, 62078 is iPhone sync).'] = '一张自定义TCP端口扫描列表(22是SSH,135是WMI,62078是iPhone同步).';
-
-$GLOBALS["lang"]['A list of custom UDP ports to scan (161 is SNMP).'] = '用于扫描的自定义 UDP 端口列表(161 是 SNMP).';
-
-$GLOBALS["lang"]['A local area network (LAN) is a network that connects computers and devices in a limited geographical area such as a home, school, office building, or closely positioned group of buildings. Each computer or device on the network is a node. Wired LANs are most likely based on Ethernet technology. Newer standards such as ITU-T G.hn also provide a way to create a wired LAN using existing wiring, such as coaxial cables, telephone lines, and power lines.<br><br>The defining characteristics of a LAN, in contrast to a wide area network (WAN), include higher data transfer rates, limited geographic range, and lack of reliance on leased lines to provide connectivity. Current Ethernet or other IEEE 802.3LAN technologies operate at data transfer rates up to 100 Gbit/s, standardized by IEEE in 2010. Currently, 400 Gbit/s Ethernet is being developed.'] = '局域网(LAN)是连接住宅,学校,办公楼等有限地理区域的计算机和装置,或定位严密的建筑群的网络. 网络上的每个计算机或设备都是节点. 线性局域网最有可能是基于以太网技术. ITU-T G.hn等较新的标准也提供了利用既有线缆,如同轴电缆,电话线,以及电力线等来创建有线局域网的方法.<br/><br/>与广域网相比,局域网的界定特征包括数据传输率较高、地理范围有限、缺乏对租赁线路的依赖以提供连通性。 目前以太网或其他IEEEE 802.3LAN技术以数据传输速率运行,最高可达100Gbit/s,2010年由IEEE标准化. 目前,400格比特/秒 以太网正在开发中.';
-
-$GLOBALS["lang"]['A location is a physical address that can have devices associated with it. You can assign it coordinates and if there are devices assigned, the location will appear on the Map when you have an Open-AudIT Enterprise license.'] = '一个位置是一个物理地址,可以拥有与之相关的设备. 您可以指定它坐标, 如果指定了设备, 当您有 Open-AudIT Enterprise 许可证时, 位置会出现在地图上 。';
-
-$GLOBALS["lang"]['A location name will help you to find these devices in the future.'] = '一个位置名称可以帮助您在未来找到这些设备 。';
-
-$GLOBALS["lang"]['A lower number means it will be applied before other rules.'] = '更低的数值意味着它将被应用在其他规则之前.';
-
-$GLOBALS["lang"]['A lower number means it will be applied before other rules. The default weight is 100.'] = '更低的数值意味着它将被应用在其他规则之前. 默认重量为100.';
-
-$GLOBALS["lang"]['A new user logged in to Open-AudIT and was authenticated and authorized by the LDAP sever. That user was then created in Open-AudIT and logged in. Success.'] = '一个新用户登录到Open-AudIT,并经过LDAP断开认证和授权. 该用户随后在Open-AudIT中创建并登录. 圆满成功.';
-
-$GLOBALS["lang"]['A package is a piece of installed softare. A package has a type - antivirus, approved, backup, banned, cloud, firewall, ignored, license or other.'] = '包是安装的软体件. 一个软件包有一个类型——抗病毒,批准,备份,禁用,云,防火墙,忽略,许可或其他.';
-
-$GLOBALS["lang"]['A password (stored as a hash) that enables logon when using application authentication.'] = '在使用应用程序认证时允许登录的密码( 存储为散列) 。';
-
-$GLOBALS["lang"]['A person has an account in the Open-AudIT application. Their user account has a list of associated Roles and Organizations. The roles the user has determines WHAT they can do. The Organizations a user has determines WHICH items they can act upon.<br><br>When a user requests to perform an operation (create, read, update, delete) on a collection item, the roles are consulted to see if they are allowed to perform that action, then the orgs are consulted to determine if the collection item belongs to an org the user has permission to act on.'] = '一个人在Open-AudIT应用程序中有一个账户. 他们的用户账户有一份相关角色和组织的清单. 用户所扮演的角色决定了他们能做什么. 用户已经确定可以对哪些项目采取行动的组织。<br/><br/>当一个用户请求在收藏项上执行一个操作(创建,读取,更新,删除)时,会咨询角色,看看是否允许他们执行该动作,然后会咨询兽人,以确定该收藏项是否属于某某某某某某某某某某某某某某某某某某某某某某某某某某某某某某某某某某某某某某某某某某某某某某某某某某某某某某某某某某某某某某某某某某某某某某某某某某某某某某某某某某某某某某某某某某某某某某某某某某某某某某某某某某某某某某某某某某某某某某某某某某某某某某某某某某某某某某某某某某某某某某某某某某某某某某某某某某某某某某某某某某某某某某某某某某某某某某某某某某某某某某某某某某某某某某某某某某某某某某某某某某某某某某某某某';
-
-$GLOBALS["lang"]['A personal area network (PAN) is a computer network used for communication among computer and different information technological devices close to one person. Some examples of devices that are used in a PAN are personal computers, printers, fax machines, telephones, PDAs, scanners, and even video game consoles. A PAN may include wired and wireless devices. The reach of a PAN typically extends to 10 meters. A wired PAN is usually constructed with USB and FireWire connections while technologies such as Bluetooth and infrared communication typically form a wireless PAN.'] = '个人区域网络(PAN)是一种计算机网络,用于接近一个人的计算机和不同信息技术设备之间的通信. PAN中使用的一些设备的例子包括个人电脑,打印机,传真机,电话,PDA,扫描仪,甚至电子游戏控制台. PAN可能包括有线和无线设备. PAN的覆盖范围一般可延伸到10米. 一个有线PAN通常是用USB和FireWire连接而构建的,而蓝牙和红外通信等技术一般形成无线PAN.';
-
-$GLOBALS["lang"]['A query is essentially a SQL statement. This statement is run against the database with the automatic addition of the limit, filtered to apply to only those requested items and only those items the user has permission to view. A Query can be created using menu -> Manage -> Queries -> Create Queries. Queries contain an org_id and are hence restricted to the appropriate users. A user must have the org_admin or reporter role(s) to create, update or delete a query. All users can execute a query. A query has a name attribute used for the menu item as well as a menu category attribute. This tells the Open-Audit GUI which submenu to place the query in. There is also menu display which should be set to <i>y</i> to enable the query in the GUI (<i>n</i> to prevent the query from appearing at all). The query would still run if called using its <code>id</code>, regardless of menu displays value.'] = '查询本质上是SQL语句. 此语句与数据库对齐运行,自动添加限制,过滤后仅适用于所请求的项目,并且仅适用于用户有权查看的项目. 使用菜单创建查询 - > 管理 - > 查询 - > 创建查询 。 查询包含一个 Org_id,因此仅限于适当的用户。 用户必须拥有org_admin或reporter角色来创建,更新或删除查询. 所有用户都可以执行查询. 一个查询有一个用于菜单项的名称属性和一个菜单类属性. 这告诉 Open- Audit GUI 将查询放入哪个子菜单 。 还有菜单显示,应该设置为 <i>尔</i> 以启用图形界面中的查询( E)<i>无</i> 以防止查询出现)。 如果调用它, 查询仍将运行 <code>id</code>,无论菜单显示的值。';
-
-$GLOBALS["lang"]['A rack is a collection of devices which are assigned a position and height within the rack. A device can optionally have a picture associated with it. A rack is placed in a row. We have created a very granular system for positioning of racks, which is as follows. At the top level (as always) is the Organisation (Org). An Org can have multiple locations (as has always been the case). With the addition of the Racks feature, a location can now contain one or more Buildings. A building can contain one or more Floors. A floor can contain one or more Rooms. A room can contain one or more Rows. This sounds like a lot of work, but defaults are created for you. Create a new Location and the sub-components will be automatically created for you. If you need more items (buildings, rooms, etc) you can add them as you like. A rack can also be part of a <i>pod</i> of racks. The pod attribute works as a tag, rather than a strict hierarchical inheritance model as per buildings, floors, etc.<br><br>Racks are a feature available to Open-AudIT Enterprise licensed customers.'] = '架子是指在架子内分配位置和高度的装置的集合. 一个设备可以可选择拥有与之相关的图片. 一个架子放在一排。 我们创造了一个非常颗粒状的架子定位系统,如下所示. 在最高一级(一如既往)是组织(Org)。 An Org可以有多个地点(一直如此). 随着Racks功能的加入,一个位置现在可以包含一个或多个建筑. 建筑物可以包含一个或多个楼层. 一层可以包含一个或多个房间. 一个房间可以包含一个或多个行. 这听起来像很多工作, 但默认为你创造了。 创建新位置, 将自动为您创建子组件 。 需要更多物品(建筑物,房间等)的,可以随意添加. 架子也可以是其中的一部分 <i>移动</i> 绳子 吊舱属性的作用是标记,而不是像每栋建筑,地板等那样严格的等级继承模式.<br/><br/>Racks是Open-AudIT Entertainment特许客户可以使用的功能.';
-
-$GLOBALS["lang"]['A routing domain or address space where the IP addresses and MAC addresses are unique.'] = '一个路由域或地址空间,其中IP地址和MAC地址是独一无二的.';
-
-$GLOBALS["lang"]['A sample cron file for Linux is below. This should be placed in'] = 'Linux 的样本 cron 文件如下 。 这应该放在';
-
-$GLOBALS["lang"]['A security zone is a administrative domain or policy domain within the Network Domain.'] = '安全区是网络域内的行政域或政策域.';
-
-$GLOBALS["lang"]['A seed discovery is another type of discovery, where you provide the IP of a single <i>seed</i> device. This device is audited, and any IPs it knows are then added to the list of IPs to be audited. Then, those devices are audited and any IPs they know are also added to the list of IPs for auditing. This process then continues within the parameters configured by the user.'] = '种子发现是另一类发现, 在那里您提供了单个的IP <i>种子</i> 设备。 这个设备经过审计,它知道的任何IP随后都会被添加到将要审计的IP列表中. 然后,这些设备被审计,他们知道的任何IP也被添加到用于审计的IP列表中. 然后在用户配置的参数范围内继续这一进程。';
-
-$GLOBALS["lang"]['A short description of the log entry.'] = '日志条目简介.';
-
-$GLOBALS["lang"]['A storage area network (SAN) is a dedicated network that provides access to consolidated, block level data storage. SANs are primarily used to make storage devices, such as disk arrays, tape libraries, and optical jukeboxes, accessible to servers so that the devices appear like locally attached devices to the operating system. A SAN typically has its own network of storage devices that are generally not accessible through the local area network by other devices. The cost and complexity of SANs dropped in the early 2000s to levels allowing wider adoption across both enterprise and small to medium-sized business environments.'] = '储域网(SAN)是提供集成,块级数据存储的专用网络. SAN主要用于使存储设备,如磁盘阵列,磁带库,以及光学点唱箱等,可供服务器访问,这样这些设备就如同操作系统中的本地附属设备一样出现. 一个SAN一般有自己的存储设备网络,一般不能通过局域网通过其他设备访问. 在2000年代初期,小型和小型企业网络的成本和复杂性下降至允许企业和中小型企业环境更广泛地采用的水平。';
-
-$GLOBALS["lang"]['A string that matches the <code>software.name</code> attribute. You can use the standard SQL wildcard of percent (%) to match one or more characters.'] = '匹配 <code>software.name</code> 属性。 您可以使用% 的标准 SQL 通配符来匹配一个或多个字符 。';
-
-$GLOBALS["lang"]['A structured system for managing sensitive information'] = '管理敏感信息的结构化系统';
-
-$GLOBALS["lang"]['A timestamp.'] = '时章.';
-
-$GLOBALS["lang"]['A user has a primary Org as well as a list of Orgs they can access. A user combines this with a list of assigned roles that define what actions they can take on items assigned to the Orgs they have access to. The combination of a users <i>orgs</i> and <i>roles</i> define what they can and cannot do within Open-AudIT.'] = '一个用户有一个主 Org 以及可以访问的 Org 列表. 一个用户将此与指定角色列表相结合,该列表定义了他们可以对其可以访问的Orgs项目采取的行动. 用户组合 <i>鸟类</i> 和 <i>角色</i> 定义它们在 Open-AudIT 中能够和不能做什么。';
-
-$GLOBALS["lang"]['A user will have a list of associated organizations (orgs). Each org the user has will allow them to act upon items within that org as per their role(s).<br><br>All orgs except the default org have a parent. Think of an Org Chart. If a user has permission on an Org, they also have permission on any descendants of that Org.<br><br>Users are also allowed permission on a child org to see the items from parent orgs for certain collections. Those are: dashboards, discovery_scan_options, fields, files, groups, queries, reports, roles, rules, scripts, summaries, widgets.<br><br>Do not forget you have granular control over what users can see and do using Roles in Enterprise.'] = '一个用户会有一个相关组织的名单(orgs). 每个用户将允许他们按照各自的作用对该用户范围内的项目采取行动。<br/><br/>除了默认的Org之外,所有Orgs都有一个父母. 想想奥格图 如果用户对一个Org有许可,他们对该Org的任何后代也有许可.<br/><br/>允许用户在儿童角上看到来自家长角上的某些收藏品。 它们是:仪表板、发现_扫描_选项、字段、文件、组、查询、报告、角色、规则、脚本、摘要、部件。<br/><br/>别忘了你对用户在企业号中看到和使用的“角色”有颗粒控制。';
-
-$GLOBALS["lang"]['A user will have a list of associated organizations (orgs). Each org the user has will allow them to act upon items within that org as per their role(s).<br><br>All orgs except the default org have a parent. Think of an Org Chart. If a user has permission on an Org, they also have permission on any descendants of that Org.<br><br>We have also allow a user with permission on a child org to see the items from parent orgs for certain collections. Those are: dashboards, discovery_scan_options, fields, files, groups, queries, roles, rules, scripts, summaries, widgets.<br><br>Do not forget you have granular control over what users can see and do using'] = '一个用户会有一个相关组织的名单(orgs). 每个用户将允许他们按照各自的作用对该用户范围内的项目采取行动。<br/><br/>除了默认的Org之外,所有Orgs都有一个父母. 想想奥格图 如果用户对一个Org有许可,他们对该Org的任何后代也有许可.<br/><br/>我们还允许一个在儿童角上获得许可的用户从家长角上看到某些收藏品。 它们是:仪表板、发现_扫描_选项、字段、文件、组、查询、角色、规则、脚本、摘要、部件。<br/><br/>别忘了你对用户可以看到和使用的颗粒控制';
-
-$GLOBALS["lang"]['A virtual private network (VPN) is an overlay network in which some of the links between nodes are carried by open connections or virtual circuits in some larger network (e.g., the Internet) instead of by physical wires. The data link layer protocols of the virtual network are said to be tunneled through the larger network when this is the case. One common application is secure communications through the public Internet, but a VPN need not have explicit security features, such as authentication or content encryption. VPNs, for example, can be used to separate the traffic of different user communities over an underlying network with strong security features.<br><br>VPN may have best-effort performance, or may have a defined service level agreement (SLA) between the VPN customer and the VPN service provider. Generally, a VPN has a topology more complex than point-to-point.'] = '虚拟私人网络(VPN)是一个覆盖网络,其中节点之间的一些连接由一些更大的网络(如互联网)中的开放连接或虚拟电路承载,而不是物理电线承载. 虚拟网络的数据链路层协议据说在出现这种情况时会穿过更大的网络。 一个常见的应用是通过公共互联网进行安全通信,但VPN不需要具有明确的安全特性,如认证或内容加密. 例如,VPN可以用来将不同用户群的流量隔开一个具有强大安全特性的基础网络.<br/><br/>VPN可能具有最佳的性能,或者VPN客户和VPN服务提供商之间可能有一个定义明确的服务级别协议(SLA). 一般来说,VPN的地形比点对点更为复杂.';
-
-$GLOBALS["lang"]['A vulnerability affecting availability may allow attackers to disrupt services, crash systems, or cause denial-of-service (DoS) (None, Low, High).'] = '影响可用性的脆弱性可能使攻击者破坏服务、崩溃系统或造成拒绝服务(DoS)(无、低、高)。';
-
-$GLOBALS["lang"]['A vulnerability affecting confidentiality may allow attackers to read sensitive data, such as personal information, credentials, or proprietary business data (None, Low, High).'] = '影响保密性的脆弱性可能使攻击者能够读取敏感数据,如个人信息、证书或专有商业数据(None、Low、High)。';
-
-$GLOBALS["lang"]['A vulnerability affecting integrity may allow attackers to modify data, inject malicious code, or alter system configurations (None, Low, High).'] = '影响完整性的脆弱性可能允许攻击者修改数据,注入恶意代码,或改变系统配置(None,Low,High).';
-
-$GLOBALS["lang"]['A vulnerability can be editied and more specific package names provided where the enrichment data is insufficient or the generated SQL is not quite correct.'] = '在浓缩数据不足或生成的SQL不完全正确的情况下,可以编辑脆弱性并提供更具体的包名。';
-
-$GLOBALS["lang"]['A vulnerability item in Open-AudIT can be thought of as essentially a query against your database to determine your potential exposure to a given CVE report. A vulnerability is made up of the CVE report, along with enrichment data from FirstWave. These two items are combined to produce a suitable query that is automatically downloaded from FirstWave.'] = '在 Open-AudIT 中,一个脆弱性项目可以被认为基本上是对您数据库的查询,以确定您可能接触特定 CVE 报告。 CVE报告以及FirstWave的浓缩数据构成脆弱性。 这两个项目合并生成一个从FirstWave自动下载的合适的查询.';
-
-$GLOBALS["lang"]['A wide area network (WAN) is a computer network that covers a large geographic area such as a city, country, or spans even intercontinental distances. A WAN uses a communications channel that combines many types of media such as telephone lines, cables, and air waves. A WAN often makes use of transmission facilities provided by common carriers, such as telephone companies. WAN technologies generally function at the lower three layers of the OSI reference model: the physical layer, the data link layer, and the network layer.'] = '广域网(WAN)是一种计算机网络,覆盖城市,国家等大地理区域,甚至跨洲距离. 一个WAN使用一个通信信道,将电话线,电缆,和气波等多种类型的媒介结合起来. 广域网经常利用电话公司等普通承运人提供的传输设施。 WAN技术一般在OSI参考模型的下三层运作:物理层,数据链接层,网络层.';
-
-$GLOBALS["lang"]['AD Group'] = 'AD 组';
-
-$GLOBALS["lang"]['ADSL, HFC, ISDN, etc.'] = 'ADSL、氢氟碳化合物、ISDN等';
-
-$GLOBALS["lang"]['AIX'] = '大赦国际';
-
-$GLOBALS["lang"]['ALL IPs'] = '所有实施伙伴';
-
-$GLOBALS["lang"]['API / Web Access'] = 'API / 网络访问';
-
-$GLOBALS["lang"]['API Documentation'] = 'API 文档';
-
-$GLOBALS["lang"]['API Key required.'] = '需要 API 密钥 。';
-
-$GLOBALS["lang"]['API Result'] = 'API 结果';
-
-$GLOBALS["lang"]['About'] = '关于';
-
-$GLOBALS["lang"]['Above are the only required items.'] = '以上是所需物品。';
-
-$GLOBALS["lang"]['Accept'] = '接受';
-
-$GLOBALS["lang"]['Access Model'] = '访问模式';
-
-$GLOBALS["lang"]['access_point'] = '访问点';
-
-$GLOBALS["lang"]['Access Point'] = '访问点';
-
-$GLOBALS["lang"]['access_token'] = '访问托肯';
-
-$GLOBALS["lang"]['Access Token'] = '访问托肯';
-
-$GLOBALS["lang"]['Access to the admin$ share and RPC uses the SMB2 protocol.'] = '访问管理费份额,RPC使用SMB2协议.';
-
-$GLOBALS["lang"]['ack_by'] = '点击';
-
-$GLOBALS["lang"]['Ack By'] = '点击';
-
-$GLOBALS["lang"]['ack_date'] = '点击日期';
-
-$GLOBALS["lang"]['Ack Date'] = '点击日期';
-
-$GLOBALS["lang"]['ack_time'] = '点击时间';
-
-$GLOBALS["lang"]['Ack Time'] = '点击时间';
-
-$GLOBALS["lang"]['action'] = '行动';
-
-$GLOBALS["lang"]['Action'] = '行动';
-
-$GLOBALS["lang"]['action_audit'] = '行动审计';
-
-$GLOBALS["lang"]['Action Audit'] = '行动审计';
-
-$GLOBALS["lang"]['action_command'] = '行动指挥';
-
-$GLOBALS["lang"]['Action Command'] = '行动指挥';
-
-$GLOBALS["lang"]['action_date'] = '行动日期';
-
-$GLOBALS["lang"]['Action Date'] = '行动日期';
-
-$GLOBALS["lang"]['action_devices_assigned_to_location'] = '指定到位置的动作设备';
-
-$GLOBALS["lang"]['Action Devices Assigned To Location'] = '指定到位置的动作设备';
-
-$GLOBALS["lang"]['action_devices_assigned_to_org'] = '指定给 Org 的动作设备';
-
-$GLOBALS["lang"]['Action Devices Assigned To Org'] = '指定给 Org 的动作设备';
-
-$GLOBALS["lang"]['action_download'] = '动作下载';
-
-$GLOBALS["lang"]['Action Download'] = '动作下载';
-
-$GLOBALS["lang"]['action_uninstall'] = '动作卸载';
-
-$GLOBALS["lang"]['Action Uninstall'] = '动作卸载';
-
-$GLOBALS["lang"]['actioned'] = '已采取行动';
-
-$GLOBALS["lang"]['Actioned'] = '已采取行动';
-
-$GLOBALS["lang"]['actioned_by'] = '由';
-
-$GLOBALS["lang"]['Actioned By'] = '由';
-
-$GLOBALS["lang"]['actioned_date'] = '行动日期';
-
-$GLOBALS["lang"]['Actioned Date'] = '行动日期';
-
-$GLOBALS["lang"]['actions'] = '行动';
-
-$GLOBALS["lang"]['Actions'] = '行动';
-
-$GLOBALS["lang"]['Activate'] = '启动';
-
-$GLOBALS["lang"]['Activate Free License'] = '激活自由许可证';
-
-$GLOBALS["lang"]['Activate Key'] = '激活密钥';
-
-$GLOBALS["lang"]['Activate a free Enterprise license'] = '启用自由企业许可证';
-
-$GLOBALS["lang"]['Active'] = '活动';
-
-$GLOBALS["lang"]['Active / Active'] = '活动/ 活动';
-
-$GLOBALS["lang"]['Active / Passive'] = '活动/ 被动';
-
-$GLOBALS["lang"]['Active Directory'] = '活动目录';
-
-$GLOBALS["lang"]['Active Directory Domain'] = '活动目录域';
-
-$GLOBALS["lang"]['active_directory_ou'] = '活动目录 Ou';
-
-$GLOBALS["lang"]['Active Directory Ou'] = '活动目录 Ou';
-
-$GLOBALS["lang"]['Active Directory Server'] = '活动目录服务器';
-
-$GLOBALS["lang"]['Active Directory and OpenLDAP'] = '活动目录和 OpenLDAP';
-
-$GLOBALS["lang"]['ad_domain'] = '域名';
-
-$GLOBALS["lang"]['Ad Domain'] = '域名';
-
-$GLOBALS["lang"]['ad_group'] = '特设小组';
-
-$GLOBALS["lang"]['Ad Group'] = '特设小组';
-
-$GLOBALS["lang"]['ad_server'] = 'Ad 服务器';
-
-$GLOBALS["lang"]['Ad Server'] = 'Ad 服务器';
-
-$GLOBALS["lang"]['Add'] = '添加';
-
-$GLOBALS["lang"]['Add Credentials'] = '添加证书';
-
-$GLOBALS["lang"]['Add Device'] = '添加设备';
-
-$GLOBALS["lang"]['Add Device to Application'] = '向应用程序添加设备';
-
-$GLOBALS["lang"]['Add Device to Cluster'] = '向集群添加设备';
-
-$GLOBALS["lang"]['Add Exception'] = '添加例外';
-
-$GLOBALS["lang"]['Add Field'] = '添加字段';
-
-$GLOBALS["lang"]['Add If'] = '如果';
-
-$GLOBALS["lang"]['Add Policies from Device'] = '从设备添加策略';
-
-$GLOBALS["lang"]['Add Policy'] = '添加策略';
-
-$GLOBALS["lang"]['Add Then'] = '添加然后';
-
-$GLOBALS["lang"]['Add Your Credentials'] = '添加您的证书';
-
-$GLOBALS["lang"]['Add image'] = '添加图像';
-
-$GLOBALS["lang"]['additional_items'] = '增列项目';
-
-$GLOBALS["lang"]['Additional Items'] = '增列项目';
-
-$GLOBALS["lang"]['address'] = '地址';
-
-$GLOBALS["lang"]['Address'] = '地址';
-
-$GLOBALS["lang"]['Address any nonconformities'] = '处理任何不符合同之处';
-
-$GLOBALS["lang"]['Address audit findings and corrective actions'] = '处理审计结果和纠正行动';
-
-$GLOBALS["lang"]['Admin'] = '管理员';
-
-$GLOBALS["lang"]['admin_status'] = '管理状态';
-
-$GLOBALS["lang"]['Admin Status'] = '管理状态';
-
-$GLOBALS["lang"]['advanced'] = '高级';
-
-$GLOBALS["lang"]['Advanced'] = '高级';
-
-$GLOBALS["lang"]['Afghanistan'] = '阿富汗';
-
-$GLOBALS["lang"]['After an Integration has been created, when you view the details of an Integration you will notice a field named Debug. This is set to no by default. Changing it to yes provides extra logging when an Integration is executed. Debug should not be left as yes. This is because the debug output will contain everything retrieved from external systems - including items such as WMI and SNMP credentials. The debug option should be used only when an issue has occurred and you wish to dig deeper in to see if you can determine why.'] = '在创建集成后, 当您查看集成的细节时, 您会注意到一个名为调试的字段 。 此设定为默认无效 。 将其更改为是, 执行集成时会提供额外记录 。 调试不应留为是. 这是因为调试输出将包含从外部系统检索到的所有内容——包括WMI和SNMP证书等项目. 调试选项只应在问题发生时使用, 您希望更深入地挖掘, 看看您是否能确定原因 。';
-
-$GLOBALS["lang"]['After completing the above, uninstall the agent.'] = '完成上述工作后,解除代理.';
-
-$GLOBALS["lang"]['Agent? Discovery? Credentials?'] = '探员? 发现? 证书?';
-
-$GLOBALS["lang"]['agents'] = '代理程序';
-
-$GLOBALS["lang"]['Agents'] = '代理程序';
-
-$GLOBALS["lang"]['Agents entries can be created that specify a duration, a network and an operating system. If all tests match, the server then asks the agent to perform actions. If any test is not set, it is excluded from the <i>all must match</i> requirement.<br><br>You can create multiple agents and have the server check one or all agent entries. You might (for example) specify one agent that says <i>If the agent IP is in this subnet, set the location_id of the device</i>.<br><br>Another example might be not running an audit at all, rather download a script and run it. If the agent is installed with admin rights, you can now manage your machines without opening <strong>any</strong> ports from it to the world.</p><p>Enabling advanced agents means an agent can be instructed to download any file and execute any command. <strong>WARNING</strong>: This comes with security risks. This configuration will <strong>only</strong> function when running Open-AudIT using HTTPS and a valid (Certificate Authority provided) certificate for '] = '可以创建指定持续时间,网络和操作系统的代理条目. 如果所有测试都匹配,那么服务器会要求代理执行动作. 如果未设置任何测试,则排除于 <i>全部必须匹配</i> 要求。<br/><br/>您可以创建多个代理并让服务器检查一个或所有代理条目. 您可以( 例如) 指定一个代理人, 说 <i>如果代理IP在此子网中, 请设置设备的位置_ id</i>。 。 。<br/><br/>另一个例子可能根本不是运行审计,而是下载脚本并运行. 如果代理安装了管理员权限, 您现在可以不打开而管理您的机器 <strong>任何</strong> 从这里到世界的港口<p>允许高级代理意味着可以指示代理下载任何文件并执行任何命令. <strong>警告</strong>数字 : 这带来安全风险。 此配置将 <strong>仅限</strong> 函数使用 HTTPS 运行 Open-AudIT 和有效证书( 提供了证书授权) 时 </p>';
-
-$GLOBALS["lang"]['Aggressive'] = '侵略性';
-
-$GLOBALS["lang"]['Aland Islands'] = '奥兰群岛';
-
-$GLOBALS["lang"]['Albania'] = '阿尔巴尼亚';
-
-$GLOBALS["lang"]['Albanian'] = '阿尔巴尼亚语Name';
-
-$GLOBALS["lang"]['alert_style'] = '提醒样式';
-
-$GLOBALS["lang"]['Alert Style'] = '提醒样式';
-
-$GLOBALS["lang"]['Algeria'] = '阿尔及利亚';
-
-$GLOBALS["lang"]['algorithm'] = '算法';
-
-$GLOBALS["lang"]['Algorithm'] = '算法';
-
-$GLOBALS["lang"]['alias'] = '别名';
-
-$GLOBALS["lang"]['Alias'] = '别名';
-
-$GLOBALS["lang"]['All'] = '全体';
-
-$GLOBALS["lang"]['All IPs'] = '所有实施伙伴';
-
-$GLOBALS["lang"]['All Policies'] = '所有政策';
-
-$GLOBALS["lang"]['All Queued Items'] = '所有排队项目';
-
-$GLOBALS["lang"]['All collections URLs use the format'] = '所有收藏 URL 使用该格式';
-
-$GLOBALS["lang"]['All device sub-tables contain a couple of important columns.'] = '所有设备子表都包含几根重要的柱子.';
-
-$GLOBALS["lang"]['All devices with a type like computer.'] = '所有有类似计算机类型的设备.';
-
-$GLOBALS["lang"]['All devices with a type of computer or router.'] = '所有带有计算机或路由器类型的设备.';
-
-$GLOBALS["lang"]['All devices without a type of switch and printer.'] = '所有没有类型开关和打印机的设备.';
-
-$GLOBALS["lang"]['All devices without a type of switch and printer. Essentially the same as the above query.'] = '所有没有类型开关和打印机的设备. 与上述查询基本相同.';
-
-$GLOBALS["lang"]['All regular discovery options are also available for use in Device Seed Discoveries.'] = '所有常规的发现选项也可用于设备种子发现.';
-
-$GLOBALS["lang"]['All tasks can be created the same in Windows and Linux. Tasks use the CRON method for scheduling execution.'] = '所有任务都可以在Windows和Linux中同样创建. 任务使用 CRON 方法调度执行.';
-
-$GLOBALS["lang"]['Along with this request for information, we send back to FirstWave datapoints that will give us some much needed information on feature use and your installation.'] = '在要求提供信息的同时,我们把数据点发回FirstWave,这些数据点将给我们一些关于特性使用和安装的急需的信息。';
-
-$GLOBALS["lang"]['Also can be created from the'] = '也可以从';
-
-$GLOBALS["lang"]['Alternatives'] = '替代品';
-
-$GLOBALS["lang"]['Amazon AWS Fields'] = '亚马逊AWS 字段';
-
-$GLOBALS["lang"]['American Samoa'] = '美属萨摩亚';
-
-$GLOBALS["lang"]['An Active Directory discovery will query Active Directory for a list of networks and scan the associated IPs just like a regular Subnet discovery.'] = 'Active Directory的发现将查询Active Directory的网络列表,并像常规Subnet的发现一样扫描相关的IP.';
-
-$GLOBALS["lang"]['An Org (organization) is the owner of most items in collections within Open-AudIT. With the exception of global items like <i>configuration</i>, most items are assigned to (owned by) an Org. A user has access to those items in a collection, that below to an Org the user has permission on.'] = 'An Org(组织)是Open-AudIT中大多数收藏品的拥有者. 除全球项目外, <i>配置</i>,大多数物品被分配给(拥有)一个Org。 用户可以访问收藏中的这些物品,在Org以下,用户可以使用这些物品。';
-
-$GLOBALS["lang"]['An application is actively accepting TCP connections, UDP datagrams or SCTP associations on this port. Finding these is often the primary goal of port scanning. Security-minded people know that each open port is an avenue for attack. Attackers and pen-testers want to exploit the open ports, while administrators try to close or protect them with firewalls without thwarting legitimate users. Open ports are also interesting for non-security scans because they show services available for use on the network.'] = '一个应用程序正在积极接受TCP连接,UDP数据图或这个端口的SCTP协会. 发现这些往往是港口扫描的主要目标。 安全意识的人知道,每个开放的港口都是攻击的渠道. 攻击者和笔试者想要利用开放的端口,而管理员则试图用防火墙关闭或保护这些端口而不阻碍合法的用户. 开放端口对于非安全扫描也很有趣,因为它们显示在网络上可用的服务.';
-
-$GLOBALS["lang"]['An array of <code>benchmarks.id</code>.'] = '数组 <code>benchmarks.id</code>。 。 。';
-
-$GLOBALS["lang"]['An array of <code>devices.id</code>.'] = '数组 <code>devices.id</code>。 。 。';
-
-$GLOBALS["lang"]['An array of object representing external links to more information.'] = '表示更多信息的外部链接的对象组。';
-
-$GLOBALS["lang"]['An educated guess to the identity and type of device'] = '对设备的特性和类型进行有教养的猜测';
-
-$GLOBALS["lang"]['An encrypted JSON document containing the required attributes depending on the <code>credentials.type</code>.'] = '加密的 JSON 文档,其中根据 <code>credentials.type</code>。 。 。';
-
-$GLOBALS["lang"]['An enterprise private network is a network that a single organization builds to interconnect its office locations (e.g., production sites, head offices, remote offices, shops) so they can share computer resources.'] = '企业私人网络是一个单一组织为连接其办公地点(如生产地点,总部,远程办公室,商店)而建立的网络,这样它们就可以共享计算机资源.';
-
-$GLOBALS["lang"]['An entry can be created using the web interface if the current user logged in has a role that contains the'] = '如果当前登录的用户的角色包含';
-
-$GLOBALS["lang"]['An example JSON POST body is below. This should be attached to the &quot;data&quot; form item.'] = '下面是JSON POST机构的例子。 这应当附在"数据"表单项上.';
-
-$GLOBALS["lang"]['An example widget SQL showing devices counted per location.'] = '示例部件 SQL 显示每个位置计数的设备 。';
-
-$GLOBALS["lang"]['An existing Open-AudIT user was authenticated and authorized by the LDAP server. Success.'] = '一个现有的Open-AudIT用户得到了LDAP服务器的认证和授权. 圆满成功.';
-
-$GLOBALS["lang"]['An indication of the level of service required by this site.'] = '说明本站所需服务水平.';
-
-$GLOBALS["lang"]['An internal field that indicates if the discovery has completed.'] = '显示发现是否完成的内部领域。';
-
-$GLOBALS["lang"]['An open|filtered port is considered open (and will trigger device detection).<br>Previously, Open-AudIT considered an Nmap response of'] = '一个开放的QQ过滤端口被认为是开放的(并且会触发设备检测).<br/>之前,开放奥德 它认为,';
-
-$GLOBALS["lang"]['An optional GeoCode'] = '可选的地理代码';
-
-$GLOBALS["lang"]['An optional password to use sudo.'] = '使用 sudo 的可选密码 。';
-
-$GLOBALS["lang"]['Analyzed'] = '分析';
-
-$GLOBALS["lang"]['And finally, click Submit to execute this discovery.'] = '最后,单击“提交”以执行这一发现。';
-
-$GLOBALS["lang"]['And if Something Goes Wrong?'] = '如果出了什么问题呢?';
-
-$GLOBALS["lang"]['And lastly click <i>Submit</i> to create your Open-AudIT Auth method for Entra.'] = '最后点击 <i>提交</i> 为 Entra 创建您的 Open-AudIT Auth 方法。';
-
-$GLOBALS["lang"]['And lastly, not so much a security issue - more peace of mind. The data structures are open and documented. You can view them'] = '最后,这不是一个安全问题,而是更平静的心态。 数据结构是开放的并有文件记录的。 你可以看他们';
-
-$GLOBALS["lang"]['And provide a name - we humbly recommend Open-AudIT &#128512;, but you can name it anything you like. Make sure the option for <i>Integrate any other application you do not find in the gallery (Non-gallery)</i> is selected. And then click <i>Create<i>.'] = '并提供一个名字 - 我们谦卑地推荐 Open-AudIT 😀, 但你可以命名它任何你想要的。 确定选项 <i>整合您在画廊中找不到的任何其他应用程序( 非收藏)</i> 已选定。 然后点击 <i>创建<i>。 。 。</i></i>';
-
-$GLOBALS["lang"]['And so much more.'] = '还有更多';
-
-$GLOBALS["lang"]['Andorra'] = '安道尔';
-
-$GLOBALS["lang"]['Angola'] = '安哥拉';
-
-$GLOBALS["lang"]['Anguilla'] = '安圭拉';
-
-$GLOBALS["lang"]['Annex A Controls'] = '附件A 控制措施';
-
-$GLOBALS["lang"]['Antarctica'] = '南极洲';
-
-$GLOBALS["lang"]['AntiVirus'] = '抗病毒药';
-
-$GLOBALS["lang"]['AntiVirus Packages'] = '抗病毒药包';
-
-$GLOBALS["lang"]['Antigua and Barbuda'] = '安提瓜和巴布达';
-
-$GLOBALS["lang"]['Antivirus'] = '抗病毒药';
-
-$GLOBALS["lang"]['Any TCP ports (comma seperated, no spaces) you wish to exclude from this discovery. Only available when using Nmap 7+.'] = '您想要从此发现中排除任何 TCP 端口( 压缩、 无空格 ) 。 仅在使用Nmap 7+时可用.';
-
-$GLOBALS["lang"]['Any UDP ports (comma seperated, no spaces) you wish to exclude from this discovery. Only available when using Nmap 7+.'] = '您想要从此发现中排除任何 UDP 端口( 压缩、 无空格 ) 。 仅在使用Nmap 7+时可用.';
-
-$GLOBALS["lang"]['Any additional documentation you need.'] = '任何需要的额外文件。';
-
-$GLOBALS["lang"]['Any additional notes you care to make.'] = '任何你想要补充的笔记。';
-
-$GLOBALS["lang"]['Any attributes followed by a * indicate that CVSS data less than v4 was used to complete this field. By default, we attempt to use v4 fields, however if they are not populated we will fallback to the previous version(s) for attributes.'] = '* 之后的任何属性都表明CVSS数据少于v4用于完成此字段. 默认情况下, 我们尝试使用 v4 字段, 但是如果它们没有被覆盖的话, 我们将会回落到之前的版本 。';
-
-$GLOBALS["lang"]['Any devices will be assigned to this Org when they run their audit script (if set).'] = '任何设备在运行审计脚本( 如果设置) 时都会被指定给此 Org 。';
-
-$GLOBALS["lang"]['Any devices will be assigned to this Org when they run their audit script (if set). Links to <code>orgs.id</code>.'] = '任何设备在运行审计脚本( 如果设置) 时都会被指定给此 Org 。 链接到 <code>orgs.id</code>。 。 。';
-
-$GLOBALS["lang"]['Any discovered devices will be assigned to this Location if set. Links to <code>locations.id</code>.'] = '如果设定, 任何已发现的设备都会被指定到此位置 。 链接到 <code>locations.id</code>。 。 。';
-
-$GLOBALS["lang"]['Any discovered devices will be assigned to this Location when they run their audit script (if set).'] = '在运行审计脚本(如果设置)时,任何发现的设备都会被分配到此位置.';
-
-$GLOBALS["lang"]['Any discovered devices will be assigned to this Location when they run their audit script (if set). Links to <code>locations.id</code>.'] = '在运行审计脚本(如果设置)时,任何发现的设备都会被分配到此位置. 链接到 <code>locations.id</code>。 。 。';
-
-$GLOBALS["lang"]['Any discovered devices will be assigned to this Org if set. If not set, they are assigned to the <code>org_id</code> of this discovery. Links to <code>orgs.id</code>.'] = '如果设置, 任何发现的设备都将被指定给此 Org 。 如果没有设定,则指定给 <code>org_id</code> 这个发现。 链接到 <code>orgs.id</code>。 。 。';
-
-$GLOBALS["lang"]['Any files found in this manner are stored in the <i>executable</i> table as per any other device component.'] = '以这种方式找到的任何文件都存储在 <i>可执行文件</i> 表格为其它设备组件。';
-
-$GLOBALS["lang"]['Any required filter. NOTE: When type = traffic, this represents the font-awesome icon.'] = '任何需要的过滤器。 注:当类型 = 流量时,这代表字体良好的图标。';
-
-$GLOBALS["lang"]['Any specific TCP ports you wish tested (comma seperated, no spaces).'] = '您想要测试的任何特定的 TCP 端口( 已连接, 无空格) 。';
-
-$GLOBALS["lang"]['Any specific UDP ports you wish tested (comma seperated, no spaces).'] = '任何您想要测试的 UDP 特定端口( 已连接, 无空格 ) 。';
-
-$GLOBALS["lang"]['Any user uploaded images are placed here.'] = '任何用户上传的图像都放在此处 。';
-
-$GLOBALS["lang"]['Application'] = '应用程序';
-
-$GLOBALS["lang"]['Application Definitions'] = '应用定义';
-
-$GLOBALS["lang"]['application_id'] = '应用程序标识';
-
-$GLOBALS["lang"]['Application ID'] = '应用程序标识';
-
-$GLOBALS["lang"]['Application Licenses'] = '申请许可证';
-
-$GLOBALS["lang"]['Application, Operating System or Hardware.'] = '应用,操作系统或硬件.';
-
-$GLOBALS["lang"]['applications'] = '应用程序';
-
-$GLOBALS["lang"]['Applications'] = '应用程序';
-
-$GLOBALS["lang"]['Applications are an Enterprise only feature.'] = '应用程序是企业号唯一的功能.';
-
-$GLOBALS["lang"]['Applications are being introduced in Open-AudIT 2.2 with a view to expand on the concept as further development is made.'] = '在Open-AudIT 2.2中正在引入应用,以期随着进一步发展而扩大这一概念。';
-
-$GLOBALS["lang"]['applied'] = '应用';
-
-$GLOBALS["lang"]['Applied'] = '应用';
-
-$GLOBALS["lang"]['Approved'] = '核定数';
-
-$GLOBALS["lang"]['Approved Packages'] = '核定套件';
-
-$GLOBALS["lang"]['April'] = '4月(半天会议)';
-
-$GLOBALS["lang"]['Arabic'] = '阿拉伯语';
-
-$GLOBALS["lang"]['architecture'] = '建筑';
-
-$GLOBALS["lang"]['Architecture'] = '建筑';
-
-$GLOBALS["lang"]['Are you sure you want to delete this input item?'] = '您确定要删除此输入项吗 ?';
-
-$GLOBALS["lang"]['Are you sure you want to delete this output item?'] = '您确定要删除此输出项吗 ?';
-
-$GLOBALS["lang"]['Are you sure?'] = '你确定吗?';
-
-$GLOBALS["lang"]['Are you sure? This will remove all queue entries and prevent the remaining IPs from being discovered.'] = '你确定吗? 这将删除所有队列条目,防止发现剩余的IP.';
-
-$GLOBALS["lang"]['Are you sure? This will reset the queue processing count and could cause load on the server.'] = '你确定吗? 这将重置队列处理计数, 并可能导致服务器负载 。';
-
-$GLOBALS["lang"]['area'] = '区域';
-
-$GLOBALS["lang"]['Area'] = '区域';
-
-$GLOBALS["lang"]['Argentina'] = '联合国';
-
-$GLOBALS["lang"]['Armenia'] = '亚美尼亚';
-
-$GLOBALS["lang"]['arp'] = '阿尔普';
-
-$GLOBALS["lang"]['Arp'] = '阿尔普';
-
-$GLOBALS["lang"]['Aruba'] = '阿鲁巴';
-
-$GLOBALS["lang"]['As a reminder of how authorisations works in Open-AudIT, see'] = '提醒大家在Open-AudIT中授权如何运作,请参见:';
-
-$GLOBALS["lang"]['As a result, we <strong>must</strong> have the admin$ share available to the discovery credentials user. Please check the target Windows machine provides <i>write</i> access for the discovery credentials user.<br>'] = '因此,我们 <strong>必须</strong> 拥有提供给发现证书用户的管理费份额。 请检查 Windows 机提供的目标 <i>写入</i> 用于发现证书用户的访问。<br/>';
-
-$GLOBALS["lang"]['As mentioned above, the developers do not speak all the translation languages offered. This means we cannot review with acuracy, the translated text. We do try for a cursory review. If you see something that is not translated correctly, you can change it yourself. Edit the appropriate language file (as below) and find the text to be changed. Maybe it does not exist and you need to add it. Just change the text, save the file and refresh your we page. No need to restart any services/daemons for it to take effect. You might need to force refresh your browser.'] = '如上所述,开发人员不讲所提供的所有翻译语言。 这意味着我们不能以准确性来审查翻译文本。 我们确实尝试了粗略的回顾。 如果你看到一些不正确的翻译,你可以自己修改. 编辑合适的语言文件(如下),并找到要修改的文本. 也许它不存在, 你需要添加它。 只需更改文本, 保存文件并刷新您的网页 。 无需重新启动任何服务/演示程序使其生效 。 您可能需要强制更新您的浏览器 。';
-
-$GLOBALS["lang"]['As per the OpenSCAP benchmarks - <i>Do not attempt to implement any of the settings in this benchmark without first testing them in a non-operational environment. The creators of this benchmark assume no responsibility whatsoever for its use by other parties, and makes no guarantees, expressed or implied, about its quality, reliability, or any other characteristic.</i><br><br>Seriously, do not blindly start <i>fixing</i> issues revealed after running a benchmark without first thoroughly testing in a non-production, identical environment.'] = '根据OpenSCAP基准, <i>不先在非操作环境中测试,不要试图执行本基准中的任何设置。 这一基准的制定者不承担其他当事方使用该基准的任何责任,也不对其质量、可靠性或任何其他特征作出明示或暗示的保证。</i><br/><br/>说真的,不要盲目开始 <i>修复</i> 在一个非生产、相同的环境中,在未进行彻底测试的情况下,在运行基准后发现问题。';
-
-$GLOBALS["lang"]['As per the attributes for device environments. Production, Training, et al.'] = '根据设备环境的属性. 生产、培训等';
-
-$GLOBALS["lang"]['As the audit script uses bash, you can use the wildcard of * when you are defining directories and exclusions.'] = '由于审计脚本使用bash,在定义目录和排除时可以使用*的通配符.';
-
-$GLOBALS["lang"]['As usual, go to menu → Manage → Integrations → Create Integration. As above, if you are running on Linux and you have NMIS on the same server, you do not need to do anything other than click <i>Submit</i>. I cannot make it easier than that.'] = '与往常一样,去菜单 – 管理 – 集成 – 创建集成 . 和上面一样,如果您运行在 Linux 上,并且您在同一服务器上有 NMIS, 您不需要做其他任何非点击 <i>提交</i>。 。 。 我不能让它变得更容易。';
-
-$GLOBALS["lang"]['As we run Discoveries and collect device results we populate the list of networks. The Blessed Subnets feature uses this list of networks to only accept data from devices on those networks.'] = '当我们运行发现和收集设备结果时,我们大量涌现网络清单。 Blessed Subnets的特性使用这个网络列表只接受这些网络上设备的数据.';
-
-$GLOBALS["lang"]['As you have Collectors registered, please choose where to execute this discovery.'] = '已注册的收集器请选择执行此发现的地点 。';
-
-$GLOBALS["lang"]['Ask me later'] = '以后再问我';
-
-$GLOBALS["lang"]['Ask the Community for help or contribute answers for others.'] = '向社区寻求帮助或为他人提供答案。';
-
-$GLOBALS["lang"]['aspect_ratio'] = '光谱比';
-
-$GLOBALS["lang"]['Aspect Ratio'] = '光谱比';
-
-$GLOBALS["lang"]['Asset ID'] = '资产标识';
-
-$GLOBALS["lang"]['asset_ident'] = '资产标识';
-
-$GLOBALS["lang"]['Asset Ident'] = '资产标识';
-
-$GLOBALS["lang"]['asset_number'] = '资产数量';
-
-$GLOBALS["lang"]['Asset Number'] = '资产数量';
-
-$GLOBALS["lang"]['asset_tag'] = '资产标记';
-
-$GLOBALS["lang"]['Asset Tag'] = '资产标记';
-
-$GLOBALS["lang"]['Assign Device to Application'] = '向应用程序指定设备';
-
-$GLOBALS["lang"]['Assign Device to Cluster'] = '将设备指定为集群';
-
-$GLOBALS["lang"]['Assign Device to Location'] = '指定设备到位置';
-
-$GLOBALS["lang"]['Assign Device to Organisation'] = '指派设备到组织';
-
-$GLOBALS["lang"]['Assign Devices to Location'] = '指定设备到位置';
-
-$GLOBALS["lang"]['Assign Devices to Organisation'] = '指派设备到组织';
-
-$GLOBALS["lang"]['Assign an ISMS manager or team'] = '指派一个ISMS主管或团队';
-
-$GLOBALS["lang"]['Assign an Operator'] = '指定运算符';
-
-$GLOBALS["lang"]['Assign any audited devices to this Org. Leave blank to leave device in currently assigned Org (or to set default).'] = '将任何已审计的设备指定给此 Org 。 留空以保留当前指定的 Org 中的设备( 或设置默认) 。';
-
-$GLOBALS["lang"]['Assign the Device to a Location'] = '将设备指定为位置';
-
-$GLOBALS["lang"]['Assign the device to an Org'] = '将设备指定为 Org';
-
-$GLOBALS["lang"]['Assigned To'] = '被指派';
-
-$GLOBALS["lang"]['Assigning Discovered Devices'] = '指定已发现的设备';
-
-$GLOBALS["lang"]['At present we can use netstat_ports, software and users.'] = '目前,我们可以使用netstat_ports,软件和用户.';
-
-$GLOBALS["lang"]['attached_device_id'] = '附加设备标识';
-
-$GLOBALS["lang"]['Attached Device ID'] = '附加设备标识';
-
-$GLOBALS["lang"]['attached_to'] = '附着于';
-
-$GLOBALS["lang"]['Attached To'] = '附着于';
-
-$GLOBALS["lang"]['attachment'] = '附录';
-
-$GLOBALS["lang"]['Attachment'] = '附录';
-
-$GLOBALS["lang"]['attachments'] = '附录';
-
-$GLOBALS["lang"]['Attachments'] = '附录';
-
-$GLOBALS["lang"]['attack_complexity'] = '攻击复杂度';
-
-$GLOBALS["lang"]['Attack Complexity'] = '攻击复杂度';
-
-$GLOBALS["lang"]['attack_requirements'] = '攻击要求';
-
-$GLOBALS["lang"]['Attack Requirements'] = '攻击要求';
-
-$GLOBALS["lang"]['attack_vector'] = '攻击矢量';
-
-$GLOBALS["lang"]['Attack Vector'] = '攻击矢量';
-
-$GLOBALS["lang"]['Attempt to ping the device if we are not auditing localhost.'] = '如果我们不审计本地主机,就试图拨打设备。';
-
-$GLOBALS["lang"]['Attribute'] = '属性';
-
-$GLOBALS["lang"]['attributes'] = '属性';
-
-$GLOBALS["lang"]['Attributes'] = '属性';
-
-$GLOBALS["lang"]['Attributes are stored for Open-AudIT to use for particular fields, at present all fields are based on the devices, locations, orgs and queries tables. The attributes you can edit are associated with the following columns: Class, Environment, Status & Type.'] = '属性被存储到 Open-AudIT 用于特定字段,目前所有字段都基于设备,位置,群和查询表. 您可以编辑的属性与以下列相关 : 类,环境,状态和类型.';
-
-$GLOBALS["lang"]['Audit'] = '审计';
-
-$GLOBALS["lang"]['Audit AIX'] = '审计';
-
-$GLOBALS["lang"]['Audit DNS'] = '审计 DNS';
-
-$GLOBALS["lang"]['Audit ESXi'] = '审计 ESXI';
-
-$GLOBALS["lang"]['Audit Linux'] = '审计 Linux';
-
-$GLOBALS["lang"]['audit_log'] = '审计日志';
-
-$GLOBALS["lang"]['Audit Log'] = '审计日志';
-
-$GLOBALS["lang"]['Audit Mount Point'] = '审计山点';
-
-$GLOBALS["lang"]['Audit My PC'] = '审计我的电脑';
-
-$GLOBALS["lang"]['Audit Netstat'] = '审计';
-
-$GLOBALS["lang"]['Audit OSX'] = '审计业务厅';
-
-$GLOBALS["lang"]['Audit Result Input'] = '审计结果投入';
-
-$GLOBALS["lang"]['Audit Software'] = '审计软件';
-
-$GLOBALS["lang"]['Audit Status'] = '审计状况';
-
-$GLOBALS["lang"]['Audit Win32 Product'] = '审计 Win32 产品';
-
-$GLOBALS["lang"]['Audit Windows'] = '审计窗口';
-
-$GLOBALS["lang"]['Audit the Device'] = '审计设备';
-
-$GLOBALS["lang"]['Audits'] = '审计';
-
-$GLOBALS["lang"]['August'] = '8月(半天会议)';
-
-$GLOBALS["lang"]['Australia'] = '澳大利亚';
-
-$GLOBALS["lang"]['Austria'] = '奥地利';
-
-$GLOBALS["lang"]['Auth'] = '自动';
-
-$GLOBALS["lang"]['auth'] = '自动';
-
-$GLOBALS["lang"]['Auth Methods'] = '认证方法';
-
-$GLOBALS["lang"]['Authenticate only'] = '只认证';
-
-$GLOBALS["lang"]['Authentication Passphrase'] = '认证密码句';
-
-$GLOBALS["lang"]['Authentication Protocol'] = '认证协议';
-
-$GLOBALS["lang"]['authority_key_ident'] = '权威密钥标识符';
-
-$GLOBALS["lang"]['Authority Key Ident'] = '权威密钥标识符';
-
-$GLOBALS["lang"]['Auto'] = '自动';
-
-$GLOBALS["lang"]['auto_renew'] = '自动更新';
-
-$GLOBALS["lang"]['Auto Renew'] = '自动更新';
-
-$GLOBALS["lang"]['Auto populated by the Open-AudIT Server.'] = '由 Open-AudIT 服务器自动居住.';
-
-$GLOBALS["lang"]['AutoRenew'] = '自动续签';
-
-$GLOBALS["lang"]['automatable'] = '可自动调制';
-
-$GLOBALS["lang"]['Automatable'] = '可自动调制';
-
-$GLOBALS["lang"]['Automatically populated based on the Collectors OS.'] = '基于收集器OS自动配置.';
-
-$GLOBALS["lang"]['availability'] = '可用性';
-
-$GLOBALS["lang"]['Availability'] = '可用性';
-
-$GLOBALS["lang"]['Available Benchmarks'] = '可用基准';
-
-$GLOBALS["lang"]['Awaiting Analysis'] = '等待分析';
-
-$GLOBALS["lang"]['Azerbaijan'] = '阿塞拜疆';
-
-$GLOBALS["lang"]['Azerbaijani'] = '阿塞拜疆语Name';
-
-$GLOBALS["lang"]['Azure Active Directory'] = 'Azure 活动目录';
-
-$GLOBALS["lang"]['BTU Max'] = 'BTU 马克斯';
-
-$GLOBALS["lang"]['BTU Total'] = 'BTU 共计';
-
-$GLOBALS["lang"]['Backbone network'] = '后骨网络';
-
-$GLOBALS["lang"]['Backup'] = '备份';
-
-$GLOBALS["lang"]['Bahamas the'] = '巴哈马';
-
-$GLOBALS["lang"]['Bahrain'] = '巴林语';
-
-$GLOBALS["lang"]['Bangladesh'] = '孟加拉国';
-
-$GLOBALS["lang"]['bank'] = '银行';
-
-$GLOBALS["lang"]['Bank'] = '银行';
-
-$GLOBALS["lang"]['Banned'] = '被禁绝';
-
-$GLOBALS["lang"]['Banned Packages'] = '被禁软件包';
-
-$GLOBALS["lang"]['bar_code'] = '条形码';
-
-$GLOBALS["lang"]['Bar Code'] = '条形码';
-
-$GLOBALS["lang"]['Barbados'] = '巴巴多斯';
-
-$GLOBALS["lang"]['Base DN'] = '基础DNA';
-
-$GLOBALS["lang"]['base_score'] = '基数';
-
-$GLOBALS["lang"]['Base Score'] = '基数';
-
-$GLOBALS["lang"]['base_severity'] = '基部严重性';
-
-$GLOBALS["lang"]['Base Severity'] = '基部严重性';
-
-$GLOBALS["lang"]['based_on'] = '基于';
-
-$GLOBALS["lang"]['Based On'] = '基于';
-
-$GLOBALS["lang"]['baseline'] = '基线';
-
-$GLOBALS["lang"]['Baseline'] = '基线';
-
-$GLOBALS["lang"]['baseline_id'] = '基线标识';
-
-$GLOBALS["lang"]['Baseline ID'] = '基线标识';
-
-$GLOBALS["lang"]['baselines'] = '基线';
-
-$GLOBALS["lang"]['Baselines'] = '基线';
-
-$GLOBALS["lang"]['baselines_policies'] = '政策';
-
-$GLOBALS["lang"]['Baselines Policies'] = '政策';
-
-$GLOBALS["lang"]['Baselines Policy'] = '基线政策';
-
-$GLOBALS["lang"]['Baselines Policy Details'] = '政策细节';
-
-$GLOBALS["lang"]['baselines_results'] = '基线';
-
-$GLOBALS["lang"]['Baselines Results'] = '基线';
-
-$GLOBALS["lang"]['Baselines can compare netstat ports, users and software.'] = '基线可以比较净统计端口、用户和软件。';
-
-$GLOBALS["lang"]['Baselines enable you to combine audit data with a set of attributes you have previously defined (your baseline) to determine compliance of devices.'] = '基线使您能够将审计数据与之前定义的一组属性(你的基线)结合起来,以确定设备的合规性.';
-
-$GLOBALS["lang"]['Baselines for Device Comparison'] = '设备基线比较';
-
-$GLOBALS["lang"]['Basic'] = '基础';
-
-$GLOBALS["lang"]['Basque'] = '巴斯克语Name';
-
-$GLOBALS["lang"]['Because we try to be as transparent as possible, here is your actual data that we send.'] = '因为我们尽量做到透明 这是你们发送的数据';
-
-$GLOBALS["lang"]['Being able to determine which machines are configured in the same way is a major part of systems administration and auditing – and now reporting on that will be made simple and automated. Once you define your baseline it will automatically run against a set of devices on a predetermined schedule. The output of these executed baselines will be available for web viewing, importing into a third party system or even as a printed report.<br><br>For auditing and management purposes it can be advantageous to baseline individual devices against a fixed, known good device. Baselines enable you to combine audit data with a set of attributes you have previously defined (your baseline) to determine compliance of devices.'] = '能够确定哪些机器以同样的方式配置,是系统管理和审计的主要部分 — — 而现在,报告这项工作将变得简单和自动化。 一旦您定义了基线, 它将自动运行在预定时间表上的一组设备上 。 这些已执行基线的产出将可供网页浏览、输入第三方系统或甚至作为印刷报告。<br/><br/>为了审计和管理的目的,可以对固定的、已知的良好装置进行基准单个装置。 基线使您能够将审计数据与之前定义的一组属性(你的基线)结合起来,以确定设备的合规性.';
-
-$GLOBALS["lang"]['Belarus'] = '白俄罗斯';
-
-$GLOBALS["lang"]['Belgium'] = '比利时';
-
-$GLOBALS["lang"]['Belize'] = '伯利兹';
-
-$GLOBALS["lang"]['Below is an example of the required csv format.'] = '以下为所需csv格式的示例.';
-
-$GLOBALS["lang"]['Below these lines are where the variables are injected into the script. Following on from our earlier example, the Linux audit script is populated with our directory like so'] = '在这些行下面是将变量注入脚本的地方. 从我们之前的例子来看, Linux 审计脚本中包含着我们这样的目录';
-
-$GLOBALS["lang"]['Below you can see an example Org Chart. If a user has permission on the <i>Finance A</i> Org, they also have permission on the descendant Orgs of Dept A, B & C. This is regardless of the collection requested.<br><br>If the collection requested allows ascendants, then the user will also have access to Company #1 and Default Org items. This is for (as above) queries, groups, et al.<br><br>Note - A user may have access to a query from Default Org, but that is the query itself not the result. The result will only show devices that the user has access to - IE devices from Finance A and Dept A, B & C.'] = '下面可以看到一个实例Org图. 如果用户有权限 <i>财务A</i> Org,他们也有A,B和C部的后裔Orgs的许可. 不论请求的收藏内容如何 。<br/><br/>如果请求的收藏允许长者,那么用户也会访问Company #1和默认Org项目. 这是针对(如上所述)查询、团体等的。<br/><br/>注意 - 用户可能可以访问默认 Org 的查询, 但这不是查询本身的结果 。 结果只显示用户可以从Finance A和Dept A,B & C处获取 - IE设备的设备.';
-
-$GLOBALS["lang"]['Benchmark'] = '基准';
-
-$GLOBALS["lang"]['benchmark_id'] = '基准标识';
-
-$GLOBALS["lang"]['Benchmark ID'] = '基准标识';
-
-$GLOBALS["lang"]['Benchmark Tasks are created automatically when a benchmark is created.'] = '在创建基准时自动创建基准任务.';
-
-$GLOBALS["lang"]['Benchmark execution and processing can take a lengthy amount of time, hence the preference to schedule them and not run them ad-hoc.'] = '基准的执行和处理需要很长的时间,因此倾向于安排时间而不是临时运行。';
-
-$GLOBALS["lang"]['benchmarks'] = '基准';
-
-$GLOBALS["lang"]['Benchmarks'] = '基准';
-
-$GLOBALS["lang"]['benchmarks_exceptions'] = '基准例外';
-
-$GLOBALS["lang"]['Benchmarks Exceptions'] = '基准例外';
-
-$GLOBALS["lang"]['benchmarks_log'] = '基准日志';
-
-$GLOBALS["lang"]['Benchmarks Log'] = '基准日志';
-
-$GLOBALS["lang"]['benchmarks_policies'] = '政策';
-
-$GLOBALS["lang"]['Benchmarks Policies'] = '政策';
-
-$GLOBALS["lang"]['benchmarks_result'] = '结果';
-
-$GLOBALS["lang"]['Benchmarks Result'] = '结果';
-
-$GLOBALS["lang"]['Benchmarks are created by providing an operating system and Version, combined with a specific guide and a list of machines to execute it upon. After creation, benchmarks are executed against the list of machines on a schedule.'] = '基准是通过提供操作系统和版本,结合一个具体的指南和一个执行该指南的机器清单来创建的. 创建后,基准在时间表上按照机器列表执行.';
-
-$GLOBALS["lang"]['Benchmarks for Best Practise Configuration'] = '最佳实践配置基准';
-
-$GLOBALS["lang"]['Benchmarks provide security recommendations for your computers, utilising the OpenSCAP tools and policies.</p><p><i>From the OpenSCAP homepage:</i>  In the ever-changing world of computer security where new vulnerabilities are being discovered and patched every day, enforcing security compliance must be a continuous process. It also needs to include a way to make adjustments to policies, as well as periodic assessment and risk monitoring. The OpenSCAP ecosystem provides tools and customizable policies for a quick, cost-effective and flexible implementation of these processes.'] = '使用 OpenSCAP 工具和政策为您的计算机提供安全建议。<p><i>OpenSCAP主页:</i> 在日益变化的计算机安全世界中,每天都发现和补上新的弱点,因此,执行安全规定必须是一个持续的过程。 它还需要包括调整政策以及定期评估和风险监测的方法。 OpenSCAP生态系统为快速、成本效益高和灵活地实施这些进程提供了工具和定制政策。</p>';
-
-$GLOBALS["lang"]['Benefits'] = '福利';
-
-$GLOBALS["lang"]['Bengali'] = '孟加拉语Name';
-
-$GLOBALS["lang"]['Benin'] = '贝宁';
-
-$GLOBALS["lang"]['Bermuda'] = '百慕大';
-
-$GLOBALS["lang"]['best_practises'] = '最佳实践';
-
-$GLOBALS["lang"]['Best Practises'] = '最佳实践';
-
-$GLOBALS["lang"]['Bhutan'] = '不丹';
-
-$GLOBALS["lang"]['bios'] = '生物';
-
-$GLOBALS["lang"]['Bios'] = '生物';
-
-$GLOBALS["lang"]['body'] = '体质';
-
-$GLOBALS["lang"]['Body'] = '体质';
-
-$GLOBALS["lang"]['Bolivia'] = '玻利维亚';
-
-$GLOBALS["lang"]['Boolean'] = '布尔';
-
-$GLOBALS["lang"]['Boolean 1/0'] = '布尔 1/ 0';
-
-$GLOBALS["lang"]['Boolean y/n'] = '布尔y/n';
-
-$GLOBALS["lang"]['boot_device'] = '启动设备';
-
-$GLOBALS["lang"]['Boot Device'] = '启动设备';
-
-$GLOBALS["lang"]['bootable'] = '备忘';
-
-$GLOBALS["lang"]['Bootable'] = '备忘';
-
-$GLOBALS["lang"]['Bosnia and Herzegovina'] = '波斯尼亚和黑塞哥维那';
-
-$GLOBALS["lang"]['Both forms of'] = '两种形式';
-
-$GLOBALS["lang"]['Botswana'] = '博茨瓦纳';
-
-$GLOBALS["lang"]['Bouvet Island (Bouvetoya)'] = '布韦特岛(布韦托亚)';
-
-$GLOBALS["lang"]['Brazil'] = '联合国';
-
-$GLOBALS["lang"]['Brazilian Portuguese'] = '巴西葡萄牙语';
-
-$GLOBALS["lang"]['Breaking it Down'] = '击倒它';
-
-$GLOBALS["lang"]['British Indian Ocean Territory (Chagos Archipelago)'] = '英属印度洋领土(查戈斯群岛)';
-
-$GLOBALS["lang"]['British Virgin Islands'] = '英属维尔京群岛';
-
-$GLOBALS["lang"]['Browse down the tree to Console Root -> Component Services -> Computers -> My Computer<br><br>Right click on <i>My Computer</i> and select properties<br><br>Select the <i>Default Properties</i> tab'] = '向下浏览树到控制台根 - > 组件服务 - > 计算机 - > 我的电脑<br/><br/>右键点击 <i>我的电脑</i> 选择属性<br/><br/>选择 <i>默认属性</i> 选项卡';
-
-$GLOBALS["lang"]['Brunei Darussalam'] = '文莱达鲁萨兰国';
-
-$GLOBALS["lang"]['btu_max'] = '布图最大';
-
-$GLOBALS["lang"]['Btu Max'] = '布图最大';
-
-$GLOBALS["lang"]['btu_total'] = 'Btu 共计';
-
-$GLOBALS["lang"]['Btu Total'] = 'Btu 共计';
-
-$GLOBALS["lang"]['build_number'] = '构建编号';
-
-$GLOBALS["lang"]['Build Number'] = '构建编号';
-
-$GLOBALS["lang"]['build_number_full'] = '构建数字完整';
-
-$GLOBALS["lang"]['Build Number Full'] = '构建数字完整';
-
-$GLOBALS["lang"]['Building'] = '大楼';
-
-$GLOBALS["lang"]['Builds trust with clients and partners'] = '与客户和伙伴建立信任';
-
-$GLOBALS["lang"]['Bulgaria'] = '保加利亚';
-
-$GLOBALS["lang"]['Bulgarian'] = '保加利亚语Name';
-
-$GLOBALS["lang"]['Bulk Edit'] = '批量编辑';
-
-$GLOBALS["lang"]['Bulk Edit Form'] = '批量编辑表单';
-
-$GLOBALS["lang"]['Bulk Editing Device Attributes'] = '批量编辑设备属性';
-
-$GLOBALS["lang"]['Bulk edit selections wont stay selected after clicking next page.'] = '点击下一页后, 批量编辑选择不会被保留 。';
-
-$GLOBALS["lang"]['Burkina Faso'] = '布基纳法索';
-
-$GLOBALS["lang"]['Burundi'] = '布隆迪';
-
-$GLOBALS["lang"]['business_requirements'] = '业务要求';
-
-$GLOBALS["lang"]['Business Requirements'] = '业务要求';
-
-$GLOBALS["lang"]['But I Only Have Windows Client Machines Available!'] = '但我只有Windows客户端机器可用!';
-
-$GLOBALS["lang"]['But I do not want to have to change the language file every time I update!'] = '但我不想每次更新语言文件!';
-
-$GLOBALS["lang"]['Buy'] = '买';
-
-$GLOBALS["lang"]['Buy More'] = '买更多';
-
-$GLOBALS["lang"]['Buy More Licenses'] = '购买更多许可证';
-
-$GLOBALS["lang"]['By'] = '以';
-
-$GLOBALS["lang"]['By default we integrate all devices with their nmis_manage attribute set to <i>y</i>. With 4.2.0 we also ship a Rule that says <i>If we discover a device and it has a valid SNMP OID, mark that device as managed by NMIS</i>. Obviously you can disable this if it is not what you want.'] = '默认情况下,我们将所有设备与他们的 nmis_ 管理属性集成到 <i>尔</i>。 。 。 以4.2.0,我们还运送了一个规则说 <i>如果我们发现一个设备并且它有一个有效的 SNMP OID, 标记该设备由 NMIS 管理</i>。 。 。 显然,如果这不是你想要的,你可以禁用它。';
-
-$GLOBALS["lang"]['By default, we skip certificate validation because customers tend to use self-signed certificates. To enable certificate validation, edit the file below'] = '默认情况下,我们跳过证书验证,因为客户倾向于使用自签证书. 要启用证书验证, 请编辑下面的文件';
-
-$GLOBALS["lang"]['CIDR'] = 'CIDR 数据交换中心';
-
-$GLOBALS["lang"]['CIDR Mask'] = 'CIDR 数据交换中心 遮罩';
-
-$GLOBALS["lang"]['cli_config'] = '国 际 配置';
-
-$GLOBALS["lang"]['CLI Config'] = '国 际 配置';
-
-$GLOBALS["lang"]['CPU'] = 'CPU 软件';
-
-$GLOBALS["lang"]['CPUs'] = 'CPU 组合';
-
-$GLOBALS["lang"]['CSV'] = '简历';
-
-$GLOBALS["lang"]['CVE'] = '简历';
-
-$GLOBALS["lang"]['CVEs with a status of received, awaiting analysis, undergoing analysis, rejected. These CVEs (mostly) do not contain sufficient information to enable us to generate a correct SQL query.'] = '有接收情况、等待分析、正在分析的CVEs被拒绝。 这些 CVES(大多)没有包含足够的信息以使我们能够生成正确的SQL查询.';
-
-$GLOBALS["lang"]['Calculated from discovery.'] = '从发现中计算出来';
-
-$GLOBALS["lang"]['Calculated total number of valid IP addresses for this network.'] = '计算了此网络的有效IP地址总数 。';
-
-$GLOBALS["lang"]['Calculated upon completion, the time taken to execute this item.'] = '完成时计算出执行此项目所需的时间 。';
-
-$GLOBALS["lang"]['Calculated when integration is run and contains a JSON representation of the devices in this integration. Each links to <code>devices.id</code>.'] = '当集成运行时计算,并包含该集成中设备的JSON表示. 每个链接 <code>devices.id</code>。 。 。';
-
-$GLOBALS["lang"]['Calculated when integration is run and contains a JSON representation of the locations in this integration. Each links to <code>locations.id</code>.'] = '合并运行时计算,并包含该合并地点的JSON代表。 每个链接 <code>locations.id</code>。 。 。';
-
-$GLOBALS["lang"]['Calculated when integration is run and contains the number of devices selected from Open-AudIT.'] = '当集成运行时计算,并包含从Open-AudIT中选择的设备数量.';
-
-$GLOBALS["lang"]['Calculated when integration is run and contains the number of devices selected the external system.'] = '当集成运行时进行计算,并包含选择外部系统的设备数量.';
-
-$GLOBALS["lang"]['Calculated when integration is run and contains the number of devices to be updated in the external system.'] = '当集成运行时计算,并包含外部系统中要更新的设备数量.';
-
-$GLOBALS["lang"]['Calculated when integration is run and contains the number of devices updated in Open-AudIT.'] = '当集成运行时计算,并包含在Open-AudIT中更新的设备数量.';
-
-$GLOBALS["lang"]['Call up a command prompt by clicking Start and searching for <code>command</code>'] = '通过点击启动和搜索调用命令提示 <code>command</code>';
-
-$GLOBALS["lang"]['Cambodia'] = '柬埔寨';
-
-$GLOBALS["lang"]['Cameroon'] = '喀麦隆';
-
-$GLOBALS["lang"]['Campus Area Network'] = '校园区域网';
-
-$GLOBALS["lang"]['Campus area network'] = '校园面积网';
-
-$GLOBALS["lang"]['Can be  <code>active</code>, <code>passive</code> or blank.'] = '可能会 <code>active</code>, (中文). <code>passive</code> 或空白。';
-
-$GLOBALS["lang"]['Can be <code>application</code>, <code>compute</code>, <code>database</code>, <code>storage</code>, <code>virtualisation</code>, <code>web</code>, <code>other</code> or blank.'] = '可能会 <code>application</code>, (中文). <code>compute</code>, (中文). <code>database</code>, (中文). <code>storage</code>, (中文). <code>virtualisation</code>, (中文). <code>web</code>, (中文). <code>other</code> 或空白。';
-
-$GLOBALS["lang"]['Can be <code>auto</code>, <code>fixed</code>, <code>other</code> or blank.'] = '可能会 <code>auto</code>, (中文). <code>fixed</code>, (中文). <code>other</code> 或空白。';
-
-$GLOBALS["lang"]['Can be <code>high availability</code>, <code>load balancing</code>, <code>performance</code>, <code>storage</code>, <code>other</code> or blank.'] = '可能会 <code>high availability</code>, (中文). <code>load balancing</code>, (中文). <code>performance</code>, (中文). <code>storage</code>, (中文). <code>other</code> 或空白。';
-
-$GLOBALS["lang"]['Can be <code>line</code>, <code>pie</code> or <code>traffic</code>.'] = '可能会 <code>line</code>, (中文). <code>pie</code> 或者说 <code>traffic</code>。 。 。';
-
-$GLOBALS["lang"]['Can be <code>user</code> or <code>collector</code>.'] = '可能会 <code>user</code> 或者说 <code>collector</code>。 。 。';
-
-$GLOBALS["lang"]['Can be set by discovery or user.'] = '可以通过发现或用户设定.';
-
-$GLOBALS["lang"]['Can be set by discovery or user. Uses the ID from the locations table.'] = '可以通过发现或用户设定. 使用位置表的ID。';
-
-$GLOBALS["lang"]['Can the user edit this item.'] = '用户能否编辑此项目 。';
-
-$GLOBALS["lang"]['Canada'] = '加拿大';
-
-$GLOBALS["lang"]['Cancel'] = '取消';
-
-$GLOBALS["lang"]['capabilities'] = '能力';
-
-$GLOBALS["lang"]['Capabilities'] = '能力';
-
-$GLOBALS["lang"]['Capacity'] = '能力';
-
-$GLOBALS["lang"]['Cape Verde'] = '佛得角';
-
-$GLOBALS["lang"]['Capitalise'] = '大写';
-
-$GLOBALS["lang"]['caption'] = '说明';
-
-$GLOBALS["lang"]['Caption'] = '说明';
-
-$GLOBALS["lang"]['Catalan'] = '加泰罗尼亚语Name';
-
-$GLOBALS["lang"]['Cayman Islands'] = '开曼群岛';
-
-$GLOBALS["lang"]['Cellular Details'] = '手机细节';
-
-$GLOBALS["lang"]['Central African Republic'] = '中非共和国';
-
-$GLOBALS["lang"]['certificate'] = '证书';
-
-$GLOBALS["lang"]['Certificate'] = '证书';
-
-$GLOBALS["lang"]['certificate_file'] = '证书文件';
-
-$GLOBALS["lang"]['Certificate File'] = '证书文件';
-
-$GLOBALS["lang"]['certificate_name'] = '证书名称';
-
-$GLOBALS["lang"]['Certificate Name'] = '证书名称';
-
-$GLOBALS["lang"]['certificates'] = '证书';
-
-$GLOBALS["lang"]['Certificates'] = '证书';
-
-$GLOBALS["lang"]['Certification'] = '认证';
-
-$GLOBALS["lang"]['Certification Audit'] = '核证审计';
-
-$GLOBALS["lang"]['Certification Process'] = '认证程序';
-
-$GLOBALS["lang"]['Chad'] = '乍得';
-
-$GLOBALS["lang"]['Change'] = '变动';
-
-$GLOBALS["lang"]['change_id'] = '更改标识';
-
-$GLOBALS["lang"]['Change ID'] = '更改标识';
-
-$GLOBALS["lang"]['change_log'] = '更改日志';
-
-$GLOBALS["lang"]['Change Log'] = '更改日志';
-
-$GLOBALS["lang"]['Change Logs'] = '更改日志';
-
-$GLOBALS["lang"]['change_type'] = '更改类型';
-
-$GLOBALS["lang"]['Change Type'] = '更改类型';
-
-$GLOBALS["lang"]['check_minutes'] = '检查分钟';
-
-$GLOBALS["lang"]['Check Minutes'] = '检查分钟';
-
-$GLOBALS["lang"]['Check for SSH on these ports'] = '检查这些端口的 SSH';
-
-$GLOBALS["lang"]['Check this port for any SSH service.'] = '检查此端口是否为 SSH 服务 。';
-
-$GLOBALS["lang"]['Chile'] = '地址';
-
-$GLOBALS["lang"]['China'] = '中国';
-
-$GLOBALS["lang"]['Chinese'] = '中国语';
-
-$GLOBALS["lang"]['Chinese (traditional)'] = '汉语( 传统)';
-
-$GLOBALS["lang"]['Choose'] = '选择';
-
-$GLOBALS["lang"]['Choose (select OS first)'] = '选择( 先选择 OS)';
-
-$GLOBALS["lang"]['Choose a Device'] = '选择设备';
-
-$GLOBALS["lang"]['Choose a Table'] = '选择表格';
-
-$GLOBALS["lang"]['Choose the type of the task from the first drop down. This will configure the additional fields required depending on the type of task.'] = '从第一次下移时选择任务类型 。 这将根据任务类型配置需要的额外字段 。';
-
-$GLOBALS["lang"]['Christmas Island'] = '圣诞岛';
-
-$GLOBALS["lang"]['cidr'] = '锡德';
-
-$GLOBALS["lang"]['Cidr'] = '锡德';
-
-$GLOBALS["lang"]['circuit_count'] = '电路计数';
-
-$GLOBALS["lang"]['Circuit Count'] = '电路计数';
-
-$GLOBALS["lang"]['circuit_status'] = '电路状态';
-
-$GLOBALS["lang"]['Circuit Status'] = '电路状态';
-
-$GLOBALS["lang"]['city'] = '城市';
-
-$GLOBALS["lang"]['City'] = '城市';
-
-$GLOBALS["lang"]['class'] = '类';
-
-$GLOBALS["lang"]['Class'] = '类';
-
-$GLOBALS["lang"]['class_text'] = '类文本';
-
-$GLOBALS["lang"]['Class Text'] = '类文本';
-
-$GLOBALS["lang"]['Click <i>New client secret</i>.'] = '单击 <i>新客户端机密</i>。 。 。';
-
-$GLOBALS["lang"]['Click Submit to Execute'] = '单击提交执行';
-
-$GLOBALS["lang"]['Click on <i>Properties</i> under the <i>Manage</i> header in the central menu column. Copy the <i>User Access URL</i>. Once copied, paste it into yout text editor. You will need to copy one section of this field.<br><br>Our example field looks like this<br><code>https://launcher.myapps.microsoft.com/api/signin/5d97003c-g24b-346e-9932-77db6470b939?tenantId=cf406343-1a96-4f7c-0cc6-46e86dddabf3</code>.<br><br>The section we need is <code>cf406343-1a96-4f7c-0cc6-46e86dddabf3</code> (the tenant ID). This is used in Open-AudIT as the <i>Tenant</i> field, so paste it in there.'] = '点击 <i>属性</i> 标题下 <i>管理</i> 中央菜单栏中的页眉。 复制 <i>用户访问 URL</i>。 。 。 复制后,粘贴到Yout文本编辑器中. 您需要复制这个字段 。<br/><br/>我们的示范场是这样的<br/><code>https://launcher.myapps.microsoft.com/api/signin/5d97003c-g24b-346e-9932-77db6470b939?tenantId=cf406343-1a96-4f7c-0cc6-46e86dddabf3</code>。 。 。<br/><br/>我们需要的是 <code>cf406343-1a96-4f7c-0cc6-46e86dddabf3</code> (房客身份证). 这在 Open-AudIT 中用作 <i>租户</i> 球场,所以粘在上面。';
-
-$GLOBALS["lang"]['Click on App Registrations to create a new Application, then click New Application Registration. Give it a name (I used Open-AudIT), select Web app / API as the type and provide any URL (the URL is not important) and now click Create.'] = '点击 App 注册创建新应用程序,然后点击新应用程序注册. 给它一个名字(我使用Open-AudIT),选择Web app / API作为类型,并提供任意的URL(URL不重要),现在点击Creat.';
-
-$GLOBALS["lang"]['Click on OK and close the DCOMCNFG window.<br><br>The above changes will require a reboot to take effect.'] = '点击“确定”并关闭 DCOMCNFG 窗口。<br/><br/>上述变化需要重启才能生效。';
-
-$GLOBALS["lang"]['Click on the application you just created. The Application ID displayed is the Client ID.<br><br>To create the client secret, click Settings, then Keys. Provide a key name and select an appropriate expiry date, then click Save.<br><br>The value will be populated for you - this is the Client Secret.'] = '点击您刚刚创建的应用程序 。 显示的应用程序ID是客户端ID.<br/><br/>要创建客户端秘密,请点击设置,然后点击密钥 。 提供密钥名称并选择适当的过期日期,然后单击 Save。<br/><br/>您的值将被包含 - 这是客户端的秘密 。';
-
-$GLOBALS["lang"]['Click the Delete button to remove the example devices from Open-AudIT.<br>This will remove the below devices from the database. '] = '单击“删除”按钮从 Open-AudIT 中删除示例设备。<br/>这将从数据库中删除以下设备 。 ';
-
-$GLOBALS["lang"]['Click the Edit button for <i>Basic SAML Configuration</i>.'] = '单击编辑按钮 <i>基本 SAML 软件 配置</i>。 。 。';
-
-$GLOBALS["lang"]['Click the Import button below to populate Open-AudIT with example device data.'] = '单击下面的导入按钮,将 Open-AudIT 添加到示例设备数据中。';
-
-$GLOBALS["lang"]['Click the icon to the right of the field you wish to edit. Change the field and click the green icon to submit.'] = '单击要编辑的字段右侧的图标。 更改字段并单击绿色图标提交。';
-
-$GLOBALS["lang"]['Client ID'] = '客户身份';
-
-$GLOBALS["lang"]['Client ID and Secret'] = '客户身份和秘密';
-
-$GLOBALS["lang"]['client_ident'] = '客户端标识';
-
-$GLOBALS["lang"]['Client Ident'] = '客户端标识';
-
-$GLOBALS["lang"]['client_secret'] = '客户端机密';
-
-$GLOBALS["lang"]['Client Secret'] = '客户端机密';
-
-$GLOBALS["lang"]['client_site_name'] = '客户端网站名称';
-
-$GLOBALS["lang"]['Client Site Name'] = '客户端网站名称';
-
-$GLOBALS["lang"]['Close'] = '关闭';
-
-$GLOBALS["lang"]['Closed'] = '关闭';
-
-$GLOBALS["lang"]['Cloud'] = '云头';
-
-$GLOBALS["lang"]['Cloud Details'] = '云层细节';
-
-$GLOBALS["lang"]['Cloud Discovery'] = '云发现';
-
-$GLOBALS["lang"]['Cloud Discovery and Auditing'] = '云发现与审计';
-
-$GLOBALS["lang"]['cloud_id'] = '云号';
-
-$GLOBALS["lang"]['Cloud ID'] = '云号';
-
-$GLOBALS["lang"]['cloud_log'] = '云日志';
-
-$GLOBALS["lang"]['Cloud Log'] = '云日志';
-
-$GLOBALS["lang"]['cloud_name'] = '云名称';
-
-$GLOBALS["lang"]['Cloud Name'] = '云名称';
-
-$GLOBALS["lang"]['Cloud Network'] = '云层网络';
-
-$GLOBALS["lang"]['clouds'] = '云层';
-
-$GLOBALS["lang"]['Clouds'] = '云层';
-
-$GLOBALS["lang"]['Clouds are a feature available to Open-AudIT Enterprise licensed customers.'] = 'Clouds是Open-AudIT Entertainment许可客户可以使用的功能.';
-
-$GLOBALS["lang"]['cluster'] = '分组';
-
-$GLOBALS["lang"]['Cluster'] = '分组';
-
-$GLOBALS["lang"]['cluster_id'] = '集群标识';
-
-$GLOBALS["lang"]['Cluster ID'] = '集群标识';
-
-$GLOBALS["lang"]['cluster_name'] = '集群名称';
-
-$GLOBALS["lang"]['Cluster Name'] = '集群名称';
-
-$GLOBALS["lang"]['cluster_type'] = '集群类型';
-
-$GLOBALS["lang"]['Cluster Type'] = '集群类型';
-
-$GLOBALS["lang"]['clusters'] = '集群';
-
-$GLOBALS["lang"]['Clusters'] = '集群';
-
-$GLOBALS["lang"]['Clusters and Reporting'] = '分组和报告';
-
-$GLOBALS["lang"]['Cocos (Keeling) Islands'] = '科科斯(基林)群岛';
-
-$GLOBALS["lang"]['Collection'] = '收藏';
-
-$GLOBALS["lang"]['Collections'] = '收款';
-
-$GLOBALS["lang"]['Collector'] = '收集器';
-
-$GLOBALS["lang"]['Collector (UUID)'] = '收集器( UUID)';
-
-$GLOBALS["lang"]['Collector / Server is an Enterprise only feature. Enterprise customers receive one Collector license for free. Additional Collector licenses can be purchased as required.'] = 'Collector / Server是企业号唯一的特性. 企业客户可免费获得一份收藏许可证。 可根据需要购买额外收藏许可证。';
-
-$GLOBALS["lang"]['Collector / Server is designed so that you can have a remote or <i>collector</i>  instance of Open-AudIT running on a remote machine. That collector instance might be in another security zone, subnet, cloud hosting instance or at a customer site.  The remote collector is then doing all the discovering and auditing of devices locally avoiding networking and firewalling complexity.  The Collector once it has registered is completely controlled by the <i>server</i>.  This means you only need an HTTP or HTTPS connection from that Collector to the Server.'] = 'Collector / Server 为您设计了一个远程或 <i>收藏家</i> 例如Open-AudIT在远程机器上运行。 收集器的例子可能位于另一个安全区,子网,云宿或客户点. 然后远程采集器在当地对设备进行所有发现和审计,以避免联网和防火墙的复杂性。 收集器一旦注册,就完全由 <i>服务器</i>。 。 。 这意味着您只需要从收集器到服务器的 HTTP 或 HTTPS 连接 。';
-
-$GLOBALS["lang"]['Collector Dashboard'] = '收藏机盘';
-
-$GLOBALS["lang"]['Collector Name'] = '收藏者名称';
-
-$GLOBALS["lang"]['collector_uuid'] = '收集器Uuid';
-
-$GLOBALS["lang"]['Collector Uuid'] = '收集器Uuid';
-
-$GLOBALS["lang"]['Collector tasks are automatically setup when the collector feature is enabled. Collector tasks should not be created directly by users. Collector tasks can have their frequency edited after creation. If the Open-AudIT Server has Collectors reporting to it, an additional drop down is provided. You can select this to specify which Collector the task should run on. Only Discovery tasks are supported for Collectors.'] = '收藏器任务在启用收藏器特性时自动设置. 收集器任务不应由用户直接创建. 收集器任务可以在创建后进行频率编辑. 如果Open-AudIT服务器有向它报告的收集器,则会提供额外的下调. 您可以选择此选项来指定任务要运行的收集器 。 仅支持收集器的发现任务 。';
-
-$GLOBALS["lang"]['Collectors'] = '收集器';
-
-$GLOBALS["lang"]['Collectors can operate in one of two modes: Collector and StandAlone. When in Collector mode, the instance of Open-AudIT is managed by the main server. When in Stand Alone mode, the instance is managed locally and forwards any found devices to the main server.'] = '收集器可以使用两种模式之一:收集器和StandAlone. 在Collector模式下,Open-AudIT实例由主服务器管理. 在Stand Oleone模式下,实例被本地管理,并将任何发现的设备转发到主服务器.';
-
-$GLOBALS["lang"]['Collectors for Remote Discovery'] = '远程发现采集器';
-
-$GLOBALS["lang"]['Colombia'] = '哥伦比亚';
-
-$GLOBALS["lang"]['color'] = '颜色';
-
-$GLOBALS["lang"]['Color'] = '颜色';
-
-$GLOBALS["lang"]['Column'] = '栏';
-
-$GLOBALS["lang"]['Columns'] = '列数';
-
-$GLOBALS["lang"]['command'] = '命令';
-
-$GLOBALS["lang"]['Command'] = '命令';
-
-$GLOBALS["lang"]['command_options'] = '命令选项';
-
-$GLOBALS["lang"]['Command Options'] = '命令选项';
-
-$GLOBALS["lang"]['command_output'] = '命令输出';
-
-$GLOBALS["lang"]['Command Output'] = '命令输出';
-
-$GLOBALS["lang"]['command_status'] = '命令状态';
-
-$GLOBALS["lang"]['Command Status'] = '命令状态';
-
-$GLOBALS["lang"]['command_time_to_execute'] = '执行的命令时间';
-
-$GLOBALS["lang"]['Command Time To Execute'] = '执行的命令时间';
-
-$GLOBALS["lang"]['comment'] = '注释';
-
-$GLOBALS["lang"]['Comment'] = '注释';
-
-$GLOBALS["lang"]['Comment out the below line (about line 49 or so). Just place a hash # at the start of the line.'] = '注释下行(约行49左右). 把大麻放在线的开头';
-
-$GLOBALS["lang"]['comments'] = '评论';
-
-$GLOBALS["lang"]['Comments'] = '评论';
-
-$GLOBALS["lang"]['commercial'] = '商业';
-
-$GLOBALS["lang"]['Commercial'] = '商业';
-
-$GLOBALS["lang"]['Commercial Support'] = '商业支助';
-
-$GLOBALS["lang"]['common_name'] = '通用名称';
-
-$GLOBALS["lang"]['Common Name'] = '通用名称';
-
-$GLOBALS["lang"]['Commonly referred to as the clientId.'] = '一般称为客户端Id.';
-
-$GLOBALS["lang"]['Commonly referred to as the clientSecret.'] = '一般称为客户端Secret.';
-
-$GLOBALS["lang"]['Community'] = '社区';
-
-$GLOBALS["lang"]['Community Questions'] = '社区问题';
-
-$GLOBALS["lang"]['Community String'] = '社区字符串';
-
-$GLOBALS["lang"]['Comoros the'] = '科摩罗';
-
-$GLOBALS["lang"]['Compact'] = '压缩';
-
-$GLOBALS["lang"]['Company'] = '企业';
-
-$GLOBALS["lang"]['Complete these steps.'] = '完成这些步骤。';
-
-$GLOBALS["lang"]['Complexity of the attack (Low or High).'] = '攻击的复杂性(低或高).';
-
-$GLOBALS["lang"]['Component Table'] = '构成部分表';
-
-$GLOBALS["lang"]['Components (All Devices)'] = '组件( 所有设备)';
-
-$GLOBALS["lang"]['Compute'] = '计算';
-
-$GLOBALS["lang"]['Condition'] = '条件';
-
-$GLOBALS["lang"]['Conduct a risk assessment'] = '进行风险评估';
-
-$GLOBALS["lang"]['Conduct awareness and training programs'] = '开展提高认识和培训方案';
-
-$GLOBALS["lang"]['Conduct management review meetings'] = '举行管理审查会议';
-
-$GLOBALS["lang"]['Conduct regular surveillance audits (usually annually)'] = '进行定期监督审计(通常每年一次)';
-
-$GLOBALS["lang"]['Conducted by an accredited body in two stages'] = '由一个经认可的机构分两个阶段进行';
-
-$GLOBALS["lang"]['Config'] = '配置';
-
-$GLOBALS["lang"]['Config Default, currently '] = '配置默认值, 目前 ';
-
-$GLOBALS["lang"]['config_file'] = '配置文件';
-
-$GLOBALS["lang"]['Config File'] = '配置文件';
-
-$GLOBALS["lang"]['config_manager_error_code'] = '配置管理器错误代码';
-
-$GLOBALS["lang"]['Config Manager Error Code'] = '配置管理器错误代码';
-
-$GLOBALS["lang"]['Configurable Role Based Access Control (RBAC)'] = '基于角色的配置访问控制';
-
-$GLOBALS["lang"]['configuration'] = '配置';
-
-$GLOBALS["lang"]['Configuration'] = '配置';
-
-$GLOBALS["lang"]['Configuration Change Detection and Reporting'] = '配置变化检测和报告';
-
-$GLOBALS["lang"]['Configure'] = '配置';
-
-$GLOBALS["lang"]['Configure the agent server-side to perform audits on a schedule'] = '配置代理服务器侧以按时间表进行审计';
-
-$GLOBALS["lang"]['Congo'] = '刚果';
-
-$GLOBALS["lang"]['Congo the'] = '刚果';
-
-$GLOBALS["lang"]['Connected To'] = '已连接到';
-
-$GLOBALS["lang"]['connection'] = '连接';
-
-$GLOBALS["lang"]['Connection'] = '连接';
-
-$GLOBALS["lang"]['Connection Options'] = '连接选项';
-
-$GLOBALS["lang"]['connection_status'] = '连接状态';
-
-$GLOBALS["lang"]['Connection Status'] = '连接状态';
-
-$GLOBALS["lang"]['connections'] = '连接';
-
-$GLOBALS["lang"]['Connections'] = '连接';
-
-$GLOBALS["lang"]['Consider filtered Ports Open'] = '考虑过滤 打开端口';
-
-$GLOBALS["lang"]['Consider open|filtered Ports Open'] = '认为已过滤 打开端口';
-
-$GLOBALS["lang"]['Consulting, implementation and other services are available through'] = '咨询、执行和其他服务可通过下列途径提供:';
-
-$GLOBALS["lang"]['contact'] = '联系人';
-
-$GLOBALS["lang"]['Contact'] = '联系人';
-
-$GLOBALS["lang"]['contact_name'] = '联系人名称';
-
-$GLOBALS["lang"]['Contact Name'] = '联系人名称';
-
-$GLOBALS["lang"]['contained_in'] = '包含在';
-
-$GLOBALS["lang"]['Contained In'] = '包含在';
-
-$GLOBALS["lang"]['Contains a JSON object details the associated widgets and their positions.'] = '包含一个 JSON 对象,详细列出相关的部件及其位置 。';
-
-$GLOBALS["lang"]['Contains the fields that determine if we should use ssh, snmp and wmi discovery options. A JSON object.'] = '包含决定我们是否应使用 ssh, snmp 和 wmi 发现选项的字段 。 一个JSON对象。';
-
-$GLOBALS["lang"]['Context & Leadership'] = '背景和领导';
-
-$GLOBALS["lang"]['Context Engine ID'] = '背景引擎标识';
-
-$GLOBALS["lang"]['Context Name'] = '上下文名称';
-
-$GLOBALS["lang"]['Continuously improve the ISMS'] = '不断改进信息管理系统';
-
-$GLOBALS["lang"]['contractual_obligations'] = '合同义务';
-
-$GLOBALS["lang"]['Contractual Obligations'] = '合同义务';
-
-$GLOBALS["lang"]['Cook Islands'] = '库克群岛';
-
-$GLOBALS["lang"]['Copy and paste an audit result'] = '复制并粘贴审计结果';
-
-$GLOBALS["lang"]['Copy and paste the below to the forums, another instance of Open-AudIT or anywhere else you need to provide this item.'] = '复制并粘贴到论坛、 Open-AudIT 或您需要提供该项目的任何地方。';
-
-$GLOBALS["lang"]['Copy the <i>Application ID</i> field and paste it into the Open-AudIT <i>Client ID</i> field for the new Auth Method.'] = '复制 <i>应用程序标识</i> 字段并粘贴到 Open-AudIT 中 <i>客户身份</i> 字段。';
-
-$GLOBALS["lang"]['Copy the <i>Client ID</i> and paste it into the Open-AudIT <i>Client ID</i> field.<br>If there is no secret, click <i>Generate new secret</i>, then copy the value and paste it into the Open-AudIT <i>Client Secret</i> field.'] = '复制 <i>客户身份</i> 把它粘在公开的AudIT上 <i>客户身份</i> 字段。<br/>如果没有秘密,请点击 <i>生成新秘密</i>并粘贴到 Open-AudIT 中 <i>客户端机密</i> 字段。';
-
-$GLOBALS["lang"]['Copy the value and paste it into the Open-AudIT form for the <i>Client Secret</i> field.'] = '复制值并将其粘贴到 Open-AudIT 表格中 <i>客户端机密</i> 字段。';
-
-$GLOBALS["lang"]['core_count'] = '核心数';
-
-$GLOBALS["lang"]['Core Count'] = '核心数';
-
-$GLOBALS["lang"]['Cores'] = '核心';
-
-$GLOBALS["lang"]['cost_center'] = '费用中心';
-
-$GLOBALS["lang"]['Cost Center'] = '费用中心';
-
-$GLOBALS["lang"]['cost_code'] = '成本代码';
-
-$GLOBALS["lang"]['Cost Code'] = '成本代码';
-
-$GLOBALS["lang"]['Costa Rica'] = '哥斯达黎加';
-
-$GLOBALS["lang"]['Cote d Ivoire'] = '科特迪瓦';
-
-$GLOBALS["lang"]['count'] = '计数';
-
-$GLOBALS["lang"]['Count'] = '计数';
-
-$GLOBALS["lang"]['country'] = '国家';
-
-$GLOBALS["lang"]['Country'] = '国家';
-
-$GLOBALS["lang"]['country_code'] = '国家代码';
-
-$GLOBALS["lang"]['Country Code'] = '国家代码';
-
-$GLOBALS["lang"]['cpu_count'] = 'Cpu 数';
-
-$GLOBALS["lang"]['Cpu Count'] = 'Cpu 数';
-
-$GLOBALS["lang"]['Create'] = '创建';
-
-$GLOBALS["lang"]['Create Example Devices'] = '创建示例设备';
-
-$GLOBALS["lang"]['create_external_count'] = '创建外部计数';
-
-$GLOBALS["lang"]['Create External Count'] = '创建外部计数';
-
-$GLOBALS["lang"]['create_external_from_internal'] = '从内部创建外部';
-
-$GLOBALS["lang"]['Create External From Internal'] = '从内部创建外部';
-
-$GLOBALS["lang"]['Create File'] = '创建文件';
-
-$GLOBALS["lang"]['Create Geocode'] = '创建地理代码';
-
-$GLOBALS["lang"]['create_internal_count'] = '创建内部计数';
-
-$GLOBALS["lang"]['Create Internal Count'] = '创建内部计数';
-
-$GLOBALS["lang"]['create_internal_from_external'] = '从外部创建内部';
-
-$GLOBALS["lang"]['Create Internal From External'] = '从外部创建内部';
-
-$GLOBALS["lang"]['Create NMIS Devices from Open-AudIT'] = '从 Open-AudIT 创建 NSIS 设备';
-
-$GLOBALS["lang"]['Create Open-AudIT Devices from '] = '创建 Open-AudIT 设备从 ';
-
-$GLOBALS["lang"]['Create Open-AudIT Devices from NMIS'] = '创建 Open-AudIT NMIS 设备';
-
-$GLOBALS["lang"]['Create a Baseline for the example device'] = '为示例设备创建基线';
-
-$GLOBALS["lang"]['Create a Discovery'] = '创建发现';
-
-$GLOBALS["lang"]['Create a Statement of Applicability (SoA)'] = '创建适用声明';
-
-$GLOBALS["lang"]['created_by'] = '创建者';
-
-$GLOBALS["lang"]['Created By'] = '创建者';
-
-$GLOBALS["lang"]['created_date'] = '创建日期';
-
-$GLOBALS["lang"]['Created Date'] = '创建日期';
-
-$GLOBALS["lang"]['Creating'] = '创建';
-
-$GLOBALS["lang"]['Creating Credentials'] = '创建证书';
-
-$GLOBALS["lang"]['Creating Device'] = '创建设备';
-
-$GLOBALS["lang"]['Creating Widgets'] = '创建部件';
-
-$GLOBALS["lang"]['Creating a Discovery Scan Options entry'] = '创建发现 扫描选项条目';
-
-$GLOBALS["lang"]['Creating a Query'] = '创建查询';
-
-$GLOBALS["lang"]['Creating a SQL Statement for Groups'] = '为组创建 SQL 语句';
-
-$GLOBALS["lang"]['Creating a SQL Statement for Queries'] = '为查询创建 SQL 语句';
-
-$GLOBALS["lang"]['Creating an Integration'] = '创造一体化';
-
-$GLOBALS["lang"]['creator'] = '创建者';
-
-$GLOBALS["lang"]['Creator'] = '创建者';
-
-$GLOBALS["lang"]['credential'] = '证书';
-
-$GLOBALS["lang"]['Credential'] = '证书';
-
-$GLOBALS["lang"]['Credentials'] = '全权证书';
-
-$GLOBALS["lang"]['Credentials Client ID'] = '身份验证客户端标识';
-
-$GLOBALS["lang"]['Credentials Subscription ID'] = '全权证书订阅 身份证';
-
-$GLOBALS["lang"]['Credentials Tenant ID'] = '身份证';
-
-$GLOBALS["lang"]['Credentials are stored in the <i>credentials</i> database table. The actual credential information is encrypted in storage. When a Discovery is run, a device has its specific credentials retrieved from the database, decrypted and tested. If these fail the list of credentials is also retrieved, decrypted and then tested against the device starting with credentials known to have worked previously. Device specific credentials are stored at an individual device level in the <i>credential</i> table (note - no <i>s</i> in the table name). SSH keys are tested before SSH username / password. When testing SSH, credentials will also be marked as working with sudo or being root.'] = '全权证书存于 <i>全权证书</i> 数据库表格。 实际的证书信息在存储中加密. 当一个发现器运行时,一个设备会从数据库中获取其特定的证书,解密并测试. 如果失败,则还检索到证书清单,进行解密,然后从已知以前工作过的证书开始对设备进行测试。 设备特定证书存储在 <i>证书</i> 表格(注-无) <i>编号</i> 页:1 SSH 密钥在 SSH 用户名/ 密码前进行测试. 在测试 SSH 时, 证书也会被标记为与 sudo 合作或成为 root 。';
-
-$GLOBALS["lang"]['Credentials can have one of a few different types - snmp v.1 / v.2, snmp v.3, ssh, ssh key, windows are all implemented. CAVEAT - ssh keys are not implemented for Windows Open-AudIT servers as yet.'] = '证书可以有几种不同类型之一 - snmp v.1 / v.2, snmp v.3, ssh, ssh 密钥,窗口全部执行. CAVET - Ssh密钥尚未为Windows Open-AudIT服务器执行.';
-
-$GLOBALS["lang"]['Credentials for Amazon AWS used in Cloud Discovery'] = 'Cloud Discovery 中使用的 Amazon AWS 证书';
-
-$GLOBALS["lang"]['Credentials for Microsoft Azure used in Cloud Discovery'] = '微软的全权证书 Azure 用于云发现';
-
-$GLOBALS["lang"]['Critical'] = '关键';
-
-$GLOBALS["lang"]['criticality'] = '关键度';
-
-$GLOBALS["lang"]['Criticality'] = '关键度';
-
-$GLOBALS["lang"]['Croatia'] = '克罗地亚';
-
-$GLOBALS["lang"]['Cuba'] = '古巴';
-
-$GLOBALS["lang"]['current'] = '当前';
-
-$GLOBALS["lang"]['Current'] = '当前';
-
-$GLOBALS["lang"]['Current Discovery Processes'] = '当前发现进程';
-
-$GLOBALS["lang"]['Current date & time is '] = '当前日期和时间是( T) ';
-
-$GLOBALS["lang"]['Currently Installed'] = '目前已安装';
-
-$GLOBALS["lang"]['Currently supported types are <code>snmp</code>, <code>snmp_v3</code>, <code>ssh</code>, <code>ssh_key</code> or <code>windows</code>.'] = '目前支持的类型是 <code>snmp</code>, (中文). <code>snmp_v3</code>, (中文). <code>ssh</code>, (中文). <code>ssh_key</code> 或者说 <code>windows</code>。 。 。';
-
-$GLOBALS["lang"]['Custom Fields'] = '自定义字段';
-
-$GLOBALS["lang"]['Custom TCP Ports'] = '自定义 TCP 端口';
-
-$GLOBALS["lang"]['Custom TCP Ports. Any specific ports we would liuke scanned in addition to the Top TCP Ports. Comma seperated, no spaces.'] = '自定义 TCP 端口. 除了顶级TCP港外 我们还会扫描任何特定港口 逗号隔离,没有空格.';
-
-$GLOBALS["lang"]['Custom UDP Ports'] = '自定义 UDP 港口';
-
-$GLOBALS["lang"]['Custom UDP Ports. Any specific ports we would liuke scanned in addition to the Top UDP Ports. Comma seperated, no spaces.'] = '自定义 UDP 端口 。 除了UDP顶端口岸之外 我们还会扫描任何特定港口 逗号隔离,没有空格.';
-
-$GLOBALS["lang"]['Customisable Scanning Options per Discovery'] = '每个发现可自定义扫描选项';
-
-$GLOBALS["lang"]['Cve'] = '简历';
-
-$GLOBALS["lang"]['Cyprus'] = '塞浦路斯';
-
-$GLOBALS["lang"]['Czech'] = '捷克语';
-
-$GLOBALS["lang"]['Czech Republic'] = '捷克共和国';
-
-$GLOBALS["lang"]['DHCP'] = 'DHCP 人权方案';
-
-$GLOBALS["lang"]['DN Account (optional)'] = 'DN 账户( 可选)';
-
-$GLOBALS["lang"]['DN Password (optional)'] = 'DN 密码( 可选)';
-
-$GLOBALS["lang"]['DNS FQDN'] = 'DNS 东帝汶国防军';
-
-$GLOBALS["lang"]['DNS Hostname'] = 'DNS 主机名';
-
-$GLOBALS["lang"]['Danish'] = '丹麦语Name';
-
-$GLOBALS["lang"]['dashboard_id'] = '盘式识别码';
-
-$GLOBALS["lang"]['Dashboard ID'] = '盘式识别码';
-
-$GLOBALS["lang"]['Dashboard Widgets'] = '磁盘板部件';
-
-$GLOBALS["lang"]['dashboards'] = '仪表板';
-
-$GLOBALS["lang"]['Dashboards'] = '仪表板';
-
-$GLOBALS["lang"]['Dashboards and Widgets allow Enterprise licensed customers to create, read, update and delete both of these collections to ensure their homepage is exactly what they need to see. Not only that, but a user is able to set a given dashboard as their own homepage. Everyone does not need to use the same homepage (dashboard), nor the same widgets on that dashboard. Professional licensed customers can choose between two predefined dashboards to set as their own homepage.'] = 'Dashboards和Widgets让企业号获得许可的客户可以创建,阅读,更新和删除这两份收藏,以确保其主页正是他们需要看到的. 不仅如此,用户还可以将给定的仪表板设置为自己的主页. 每个人不需要使用同一个主页(dashboard),也不需要同一个部件在仪表板上. 专业的持证客户可以在两个预先定义的仪表板中选择设置为自己的主页.';
-
-$GLOBALS["lang"]['Dashboards provide <i>at a glance</i> important visibility for changes occurring on your network as well as providing quick links to device types, manufacturers, and operating systems and so much more.'] = '提供电线板 <i>一览</i> 对您网络上发生的变化有重要可见度, 同时提供设备类型、制造商、操作系统等的快速链接。';
-
-$GLOBALS["lang"]['Dashboards use'] = '使用电线板';
-
-$GLOBALS["lang"]['Data'] = '数据';
-
-$GLOBALS["lang"]['Data Export - CSV, XML, JSON'] = '数据导出 - CSV, XML, JSON';
-
-$GLOBALS["lang"]['Data Retention'] = '数据保留';
-
-$GLOBALS["lang"]['Database'] = '数据库';
-
-$GLOBALS["lang"]['db_action'] = '数据库动作';
-
-$GLOBALS["lang"]['Database Action'] = '数据库动作';
-
-$GLOBALS["lang"]['db_column'] = '数据库列';
-
-$GLOBALS["lang"]['Database Column'] = '数据库列';
-
-$GLOBALS["lang"]['Database Definition'] = '数据库定义';
-
-$GLOBALS["lang"]['db_row'] = '数据库行';
-
-$GLOBALS["lang"]['Database Row'] = '数据库行';
-
-$GLOBALS["lang"]['Database Schema'] = '数据库Schema';
-
-$GLOBALS["lang"]['Database Server Discovery'] = '数据库服务器发现';
-
-$GLOBALS["lang"]['db_table'] = '数据库表';
-
-$GLOBALS["lang"]['Database Table'] = '数据库表';
-
-$GLOBALS["lang"]['Database Tables'] = '数据库表格';
-
-$GLOBALS["lang"]['dataset_title'] = '数据集标题';
-
-$GLOBALS["lang"]['Dataset Title'] = '数据集标题';
-
-$GLOBALS["lang"]['date'] = '日期';
-
-$GLOBALS["lang"]['Date'] = '日期';
-
-$GLOBALS["lang"]['Date D-M-Y'] = '日期 D-M-Y';
-
-$GLOBALS["lang"]['Date M-D-Y'] = '日期 M -D -Y';
-
-$GLOBALS["lang"]['Date Now'] = '现在约会';
-
-$GLOBALS["lang"]['date_of_manufacture'] = '制造日期';
-
-$GLOBALS["lang"]['Date Of Manufacture'] = '制造日期';
-
-$GLOBALS["lang"]['date_paid'] = '支付日期';
-
-$GLOBALS["lang"]['Date Paid'] = '支付日期';
-
-$GLOBALS["lang"]['date_received'] = '收到日期';
-
-$GLOBALS["lang"]['Date Received'] = '收到日期';
-
-$GLOBALS["lang"]['Date Y-M-D'] = '约会Y-M-D';
-
-$GLOBALS["lang"]['Date and time when the CVE was last updated.'] = 'CVE最后一次更新的日期和时间.';
-
-$GLOBALS["lang"]['Date and time when the CVE was published.'] = 'CVE出版日期和时间.';
-
-$GLOBALS["lang"]['Date when the CVE was published.'] = 'CVE出版日期.';
-
-$GLOBALS["lang"]['DateTime Now'] = '现在约会时间';
-
-$GLOBALS["lang"]['DateTime Y-M-D H:M:S'] = '日期时间 Y -M -D (英语). H:M:S (韩语)';
-
-$GLOBALS["lang"]['day_of_month'] = '月数日';
-
-$GLOBALS["lang"]['Day Of Month'] = '月数日';
-
-$GLOBALS["lang"]['day_of_week'] = '周日( 周日 )';
-
-$GLOBALS["lang"]['Day Of Week'] = '周日( 周日 )';
-
-$GLOBALS["lang"]['Day of Month'] = '月份天数';
-
-$GLOBALS["lang"]['dbus_identifier'] = 'Dbus 标识符';
-
-$GLOBALS["lang"]['Dbus Identifier'] = 'Dbus 标识符';
-
-$GLOBALS["lang"]['Debug'] = '调试';
-
-$GLOBALS["lang"]['Debugging'] = '调试';
-
-$GLOBALS["lang"]['Debugging a Script'] = '调试脚本';
-
-$GLOBALS["lang"]['December'] = '12月(半天)';
-
-$GLOBALS["lang"]['Decommission'] = '退役';
-
-$GLOBALS["lang"]['Default'] = '默认';
-
-$GLOBALS["lang"]['Default Authentication Level - Set to Connect'] = '默认验证 级别 - 设定为连接';
-
-$GLOBALS["lang"]['Default Impersonation Level - Set to Identify'] = '默认假名 级别 - 设定为识别';
-
-$GLOBALS["lang"]['Default Items'] = '默认项目';
-
-$GLOBALS["lang"]['Default Orgs Groups'] = '默认组合';
-
-$GLOBALS["lang"]['Default Roles Groups'] = '默认角色组';
-
-$GLOBALS["lang"]['Default Value'] = '默认值';
-
-$GLOBALS["lang"]['Default of 389. Normally 636 used for Active Directory LDAPS.'] = '默认389。 通常636用于活动目录LDAPS.';
-
-$GLOBALS["lang"]['Default of <code>3</code> for LDAP and Active Directory.'] = '默认 <code>3</code> 用于 LDAP 和活动目录。';
-
-$GLOBALS["lang"]['Defaults'] = '默认';
-
-$GLOBALS["lang"]['Deferred'] = '推迟';
-
-$GLOBALS["lang"]['Define project scope and objectives'] = '界定项目范围和目标';
-
-$GLOBALS["lang"]['Define the ISMS scope'] = '界定信息系统管理系统的范围';
-
-$GLOBALS["lang"]['Define the context of the organization (internal/external issues)'] = '界定组织的背景(内部/外部问题)';
-
-$GLOBALS["lang"]['delay_minutes'] = '延迟分钟';
-
-$GLOBALS["lang"]['Delay Minutes'] = '延迟分钟';
-
-$GLOBALS["lang"]['Delete'] = '删除';
-
-$GLOBALS["lang"]['Delete Example Devices'] = '删除示例设备';
-
-$GLOBALS["lang"]['delete_external_from_internal'] = '从内部删除外部';
-
-$GLOBALS["lang"]['Delete External From Internal'] = '从内部删除外部';
-
-$GLOBALS["lang"]['Delete NMIS Devices if not in Open-AudIT'] = '删除 NMIS 如果没有在 Open-AudIT 中安装设备';
-
-$GLOBALS["lang"]['Delete a {collection} entry.'] = '删除 {收集} 条目 。';
-
-$GLOBALS["lang"]['Delete from Application'] = '删除应用程序';
-
-$GLOBALS["lang"]['Delete from Cluster'] = '从集群删除';
-
-$GLOBALS["lang"]['Denmark'] = '丹麦';
-
-$GLOBALS["lang"]['Derived by audit or manually set by user.'] = '由审计衍生或用户手动设定.';
-
-$GLOBALS["lang"]['Derived by audit.'] = '由审计衍生.';
-
-$GLOBALS["lang"]['Derived from <code>rack_devices.device_id</code>.'] = '来源 <code>rack_devices.device_id</code>。 。 。';
-
-$GLOBALS["lang"]['Derived from <code>rack_devices.rack_id</code>.'] = '来源 <code>rack_devices.rack_id</code>。 。 。';
-
-$GLOBALS["lang"]['Derived from Collector discovery.'] = '来源于收集器的发现.';
-
-$GLOBALS["lang"]['Derived from OS Name.'] = '衍生自OS名称.';
-
-$GLOBALS["lang"]['Derived from cloud discovery.'] = '衍生自云发现.';
-
-$GLOBALS["lang"]['Derived from device audits.'] = '来自设备审计。';
-
-$GLOBALS["lang"]['Derived from device type and OS.'] = '衍生自设备类型和OS.';
-
-$GLOBALS["lang"]['Derived from discovery.'] = '来源于发现。';
-
-$GLOBALS["lang"]['Derived from hostname, sysName, dns Hostname and IP in that order.'] = '从主机名, sysName, dns hostname 和 IP 按此顺序衍生.';
-
-$GLOBALS["lang"]['Derived from the integer severity.'] = '由整数严重性衍生出来.';
-
-$GLOBALS["lang"]['description'] = '说明';
-
-$GLOBALS["lang"]['Description'] = '说明';
-
-$GLOBALS["lang"]['destination'] = '目标';
-
-$GLOBALS["lang"]['Destination'] = '目标';
-
-$GLOBALS["lang"]['detail'] = '细节';
-
-$GLOBALS["lang"]['Detail'] = '细节';
-
-$GLOBALS["lang"]['Details'] = '细节';
-
-$GLOBALS["lang"]['Details of who is usually contactable at this site.'] = '关于谁通常在这个网站可以接触的细节.';
-
-$GLOBALS["lang"]['Determine how often you want to run the Baseline check against the database and create a Scheduled Report'] = '确定要对数据库进行基线检查并创建列表报告的次数';
-
-$GLOBALS["lang"]['Determine risk treatment options'] = '确定风险处理备选方案';
-
-$GLOBALS["lang"]['Develop a Risk Treatment Plan'] = '制定风险处理计划';
-
-$GLOBALS["lang"]['Develop policies, procedures, and controls'] = '制定政策、程序和控制措施';
-
-$GLOBALS["lang"]['Develop required ISMS documentation (policies, procedures, etc.)'] = '编制必要的ISMS文件(政策、程序等)';
-
-$GLOBALS["lang"]['device'] = '设备';
-
-$GLOBALS["lang"]['Device'] = '设备';
-
-$GLOBALS["lang"]['Device Audits'] = '设备审计';
-
-$GLOBALS["lang"]['Device Component Names'] = '设备组件名称';
-
-$GLOBALS["lang"]['Device ID'] = '设备标识';
-
-$GLOBALS["lang"]['device_id'] = '设备标识';
-
-$GLOBALS["lang"]['device_id_a'] = '设备 ID A';
-
-$GLOBALS["lang"]['Device ID A'] = '设备 ID A';
-
-$GLOBALS["lang"]['device_id_b'] = '设备 ID B';
-
-$GLOBALS["lang"]['Device ID B'] = '设备 ID B';
-
-$GLOBALS["lang"]['Device Matching Rules'] = '设备匹配规则';
-
-$GLOBALS["lang"]['Device Name'] = '设备名称';
-
-$GLOBALS["lang"]['Device Result'] = '设备结果';
-
-$GLOBALS["lang"]['Device Results'] = '设备结果';
-
-$GLOBALS["lang"]['Device Seed'] = '设备种子';
-
-$GLOBALS["lang"]['Device Seed Discoveries are a good option if you know that your network consists of a range of subnets, but you are unsure what they are. Seed the discovery with a local router and watch your network unfold before your eyes.'] = '设备种子 发现是一个很好的选择,如果你知道你的网络由一系列的子网组成,但是你不确定它们是什么. 用本地路由器播种发现,并观看你的网络在你的眼前展开.';
-
-$GLOBALS["lang"]['Device Seed IP'] = '设备种子 IP';
-
-$GLOBALS["lang"]['Device Status'] = '设备状态';
-
-$GLOBALS["lang"]['Device Types'] = '设备类型';
-
-$GLOBALS["lang"]['Device and Software and Hardware Auditing'] = '设备、软件和硬件审计';
-
-$GLOBALS["lang"]['Device is in the Subnet'] = '设备在子网';
-
-$GLOBALS["lang"]['Devices'] = '设备';
-
-$GLOBALS["lang"]['devices_assigned_to_location'] = '设备指定到位置';
-
-$GLOBALS["lang"]['Devices Assigned To Location'] = '设备指定到位置';
-
-$GLOBALS["lang"]['devices_assigned_to_org'] = '指定给 Org 的设备';
-
-$GLOBALS["lang"]['Devices Assigned To Org'] = '指定给 Org 的设备';
-
-$GLOBALS["lang"]['Devices Audited'] = '已审计设备';
-
-$GLOBALS["lang"]['Devices Collection'] = '设备收藏';
-
-$GLOBALS["lang"]['Devices Created in '] = '创建于 ';
-
-$GLOBALS["lang"]['Devices Created in Open-AudIT'] = '在 Open-AudIT 中创建的设备';
-
-$GLOBALS["lang"]['devices_default_display_columns'] = '设备默认显示列';
-
-$GLOBALS["lang"]['Devices Default Display Columns'] = '设备默认显示列';
-
-$GLOBALS["lang"]['Devices Found Last 7 Days'] = '设备找到最后7天';
-
-$GLOBALS["lang"]['Devices Found Today'] = '今天找到的设备';
-
-$GLOBALS["lang"]['Devices Found Yesterday'] = '昨天找到的设备';
-
-$GLOBALS["lang"]['Devices Missing Information'] = '设备缺少信息';
-
-$GLOBALS["lang"]['Devices Not Audited'] = '未审计的设备';
-
-$GLOBALS["lang"]['Devices Not Seen 30 Days'] = '未见设备 30 天';
-
-$GLOBALS["lang"]['Devices Not Seen 7 Days'] = '未见设备 7 天';
-
-$GLOBALS["lang"]['Devices Not Seen 90 Days'] = '未见设备 90 天';
-
-$GLOBALS["lang"]['Devices Older Than X'] = '设备旧于 X';
-
-$GLOBALS["lang"]['Devices Retrieved via API'] = '通过 API 获取的设备';
-
-$GLOBALS["lang"]['Devices Selected from '] = '从选中的设备 ';
-
-$GLOBALS["lang"]['Devices Selected from Open-AudIT'] = '从 Open-AudIT 中选择的设备';
-
-$GLOBALS["lang"]['Devices Updated in '] = '设备更新于 ';
-
-$GLOBALS["lang"]['Devices Updated in Open-AudIT'] = '在 Open-AudIT 中更新的设备';
-
-$GLOBALS["lang"]['Devices are being benchmarked.'] = '设备正在基准化。';
-
-$GLOBALS["lang"]['Devices are not being benchmarked.'] = '设备没有设定基准 。';
-
-$GLOBALS["lang"]['Devices could be benchmarked.'] = '设备可以设定基准 。';
-
-$GLOBALS["lang"]['Devices from Open-AudIT'] = 'Open-AudIT 设备';
-
-$GLOBALS["lang"]['Devices in Running State'] = '运行状态中的设备';
-
-$GLOBALS["lang"]['Devices in Stopped State'] = '停止状态中的设备';
-
-$GLOBALS["lang"]['Devices in this'] = '此设备';
-
-$GLOBALS["lang"]['Devices will not be matched if their status is set to <i>deleted</i>. Any other status will allow a match to occur.'] = '如果设备状态设定为 <i>删除</i>。 。 。 任何其他状态都允许出现匹配.';
-
-$GLOBALS["lang"]['Devices with Expired Warranties'] = '有过期保证的设备';
-
-$GLOBALS["lang"]['Devired from type or OS.'] = '从类型或OS。';
-
-$GLOBALS["lang"]['dhcp_enabled'] = 'Dhcp 启用';
-
-$GLOBALS["lang"]['Dhcp Enabled'] = 'Dhcp 启用';
-
-$GLOBALS["lang"]['dhcp_lease_expires'] = 'Dhcp 租赁期满';
-
-$GLOBALS["lang"]['Dhcp Lease Expires'] = 'Dhcp 租赁期满';
-
-$GLOBALS["lang"]['dhcp_lease_obtained'] = '租赁';
-
-$GLOBALS["lang"]['Dhcp Lease Obtained'] = '租赁';
-
-$GLOBALS["lang"]['dhcp_server'] = 'Dhcp 服务器';
-
-$GLOBALS["lang"]['Dhcp Server'] = 'Dhcp 服务器';
-
-$GLOBALS["lang"]['Did the command complete successfully and return expected data.'] = '命令是否成功完成并返回预期数据 。';
-
-$GLOBALS["lang"]['direction'] = '方向';
-
-$GLOBALS["lang"]['Direction'] = '方向';
-
-$GLOBALS["lang"]['directory'] = '目录';
-
-$GLOBALS["lang"]['Directory'] = '目录';
-
-$GLOBALS["lang"]['disabled'] = '已禁用';
-
-$GLOBALS["lang"]['Disabled'] = '已禁用';
-
-$GLOBALS["lang"]['discard'] = '丢弃';
-
-$GLOBALS["lang"]['Discard'] = '丢弃';
-
-$GLOBALS["lang"]['Discover'] = '发现';
-
-$GLOBALS["lang"]['Discoveries'] = '发现';
-
-$GLOBALS["lang"]['Discoveries are at the very heart of what Open-AudIT does. How else would you know <i>Whats On Your Network?</i>'] = '发现是Open-AudIT工作的核心。 不然你怎么会知道? <i>你的网络上有什么?</i>';
-
-$GLOBALS["lang"]['Discoveries are entries that enable you to run a discovery upon a network in a single click, without entering the details of that network each and every time.'] = '发现(Discoveries)是允许您在一次点击中运行网络上的发现的条目,而不每次输入网络的细节.';
-
-$GLOBALS["lang"]['Discovery'] = '发现';
-
-$GLOBALS["lang"]['Discovery Change Logs'] = '发现更改日志';
-
-$GLOBALS["lang"]['Discovery Data Retention'] = '发现数据保留';
-
-$GLOBALS["lang"]['discovery_id'] = '发现身份';
-
-$GLOBALS["lang"]['Discovery ID'] = '发现身份';
-
-$GLOBALS["lang"]['Discovery Issues'] = '发现问题';
-
-$GLOBALS["lang"]['discovery_log'] = '发现日志';
-
-$GLOBALS["lang"]['Discovery Log'] = '发现日志';
-
-$GLOBALS["lang"]['Discovery Match Options'] = '发现匹配选项';
-
-$GLOBALS["lang"]['Discovery Name'] = '发现名称';
-
-$GLOBALS["lang"]['Discovery Options'] = '发现选项';
-
-$GLOBALS["lang"]['Discovery Queue Count'] = '发现队列计数';
-
-$GLOBALS["lang"]['Discovery Queue Limit'] = '发现队列限制';
-
-$GLOBALS["lang"]['discovery_run'] = '发现运行';
-
-$GLOBALS["lang"]['Discovery Run'] = '发现运行';
-
-$GLOBALS["lang"]['discovery_scan_options'] = '发现扫描选项';
-
-$GLOBALS["lang"]['Discovery Scan Options'] = '发现扫描选项';
-
-$GLOBALS["lang"]['Discovery Scan Options are just another item collection. Enterprise users can create, read, update and delete entries as required. Professional users can read all entries, but not create new entries, update existing entries or delete entries. Community users have no GUI that allows access to this collection.'] = '发现扫描 选项只是另一个项目收藏 。 企业用户可以根据需要创建,阅读,更新和删除条目. 专业用户可以阅读所有条目,但不创建新条目,更新现有条目或删除条目. 社区用户没有允许访问此收藏的GUI.';
-
-$GLOBALS["lang"]['Discovery Scan Types'] = '发现扫描类型';
-
-$GLOBALS["lang"]['Discovery Support'] = '发现支持';
-
-$GLOBALS["lang"]['Discovery has stopped working'] = '发现已经停止工作了';
-
-$GLOBALS["lang"]['disk'] = '磁盘';
-
-$GLOBALS["lang"]['Disk'] = '磁盘';
-
-$GLOBALS["lang"]['display_version'] = '显示版本';
-
-$GLOBALS["lang"]['Display Version'] = '显示版本';
-
-$GLOBALS["lang"]['Display in Menu'] = '在菜单中显示';
-
-$GLOBALS["lang"]['Displays a standard web form for submission to POST /{collection}.'] = '显示提交 POST /{Collection} 的标准网页表 。';
-
-$GLOBALS["lang"]['Displays a standard web form for submission to POST /{collection}/import.'] = '显示提交 POST /{collection}/ 导入的标准网络表 。';
-
-$GLOBALS["lang"]['district'] = '地区';
-
-$GLOBALS["lang"]['District'] = '地区';
-
-$GLOBALS["lang"]['Djibouti'] = '吉布提';
-
-$GLOBALS["lang"]['dns'] = '单位';
-
-$GLOBALS["lang"]['Dns'] = '单位';
-
-$GLOBALS["lang"]['dns_domain'] = 'Dns 域';
-
-$GLOBALS["lang"]['Dns Domain'] = 'Dns 域';
-
-$GLOBALS["lang"]['dns_domain_reg_enabled'] = 'Dns 域注册已启用';
-
-$GLOBALS["lang"]['Dns Domain Reg Enabled'] = 'Dns 域注册已启用';
-
-$GLOBALS["lang"]['dns_fqdn'] = '日记';
-
-$GLOBALS["lang"]['Dns Fqdn'] = '日记';
-
-$GLOBALS["lang"]['dns_host_name'] = 'Dns 主机名称';
-
-$GLOBALS["lang"]['Dns Host Name'] = 'Dns 主机名称';
-
-$GLOBALS["lang"]['dns_hostname'] = 'Dns 主机名';
-
-$GLOBALS["lang"]['Dns Hostname'] = 'Dns 主机名';
-
-$GLOBALS["lang"]['dns_server'] = 'Dns 服务器';
-
-$GLOBALS["lang"]['Dns Server'] = 'Dns 服务器';
-
-$GLOBALS["lang"]['Do not forget about the Open-AudIT wiki for all your documentation.'] = '不要忘记所有文档的 Open-AudIT wiki 。';
-
-$GLOBALS["lang"]['Do not forget there is a mountain of documentation on the wiki'] = '别忘了维基上有一大堆文献';
-
-$GLOBALS["lang"]['Do not scan these TCP ports.'] = '不要扫描这些 TCP 端口 。';
-
-$GLOBALS["lang"]['Do not scan these UDP ports.'] = '不要扫描这些 UDP 端口 。';
-
-$GLOBALS["lang"]['Do not show me again'] = '别再给我看';
-
-$GLOBALS["lang"]['Do you have a perfect example of this configuration? Perhaps a device located in a lab environment or a workstation you use to clone workstation VMs from.'] = '你有这个配置的完美例子吗? 也许一个位于实验室环境中的设备 或者一个工作站 你用来克隆工作站 VMs 从。';
-
-$GLOBALS["lang"]['Do you want to use secure transport (LDAPS) or regular unencrypted LDAP.'] = '您想要使用安全运输( LDAPS) 或普通的未加密的 LDAP 。';
-
-$GLOBALS["lang"]['Do you wish to see the standard sidebar on the left.'] = '您是否想要看到左侧的标准边栏 。';
-
-$GLOBALS["lang"]['documentation'] = '文档';
-
-$GLOBALS["lang"]['Documentation'] = '文档';
-
-$GLOBALS["lang"]['Documentation about a particular collection.'] = '某集文献.';
-
-$GLOBALS["lang"]['Does Not Equal'] = '不等于一个';
-
-$GLOBALS["lang"]['Does the license apply to child Orgs.'] = '许可证是否适用于儿童兽人。';
-
-$GLOBALS["lang"]['domain'] = '域名';
-
-$GLOBALS["lang"]['Domain'] = '域名';
-
-$GLOBALS["lang"]['domain_controller_address'] = '域控制器地址';
-
-$GLOBALS["lang"]['Domain Controller Address'] = '域控制器地址';
-
-$GLOBALS["lang"]['domain_controller_name'] = '域控制器 名称';
-
-$GLOBALS["lang"]['Domain Controller Name'] = '域控制器 名称';
-
-$GLOBALS["lang"]['domain_role'] = '域名角色';
-
-$GLOBALS["lang"]['Domain Role'] = '域名角色';
-
-$GLOBALS["lang"]['domain_short'] = '域短';
-
-$GLOBALS["lang"]['Domain Short'] = '域短';
-
-$GLOBALS["lang"]['Dominica'] = '多米尼克';
-
-$GLOBALS["lang"]['Dominican Republic'] = '多米尼加共和国';
-
-$GLOBALS["lang"]['Dont hold my hand, I know what I am doing. No filter and the ability to join custom tables.'] = '别牵我的手,我知道我在干嘛 没有过滤器和加入自定义表格的能力 。';
-
-$GLOBALS["lang"]['Download'] = '下载';
-
-$GLOBALS["lang"]['Download a File'] = '下载文件';
-
-$GLOBALS["lang"]['Download a file from URL'] = '从 URL 下载文件';
-
-$GLOBALS["lang"]['Download the test_windows_client.vbs script directly'] = '直接下载测试窗口_ 客户端. vbs 脚本';
-
-$GLOBALS["lang"]['Download your updated version from'] = '下载您的更新版本';
-
-$GLOBALS["lang"]['driver'] = '驱动程序';
-
-$GLOBALS["lang"]['Driver'] = '驱动程序';
-
-$GLOBALS["lang"]['duplex'] = '双面';
-
-$GLOBALS["lang"]['Duplex'] = '双面';
-
-$GLOBALS["lang"]['Duplicate Devices / Missing Devices'] = '复制设备/ 丢失设备';
-
-$GLOBALS["lang"]['duration'] = '会期';
-
-$GLOBALS["lang"]['Duration'] = '会期';
-
-$GLOBALS["lang"]['Dutch'] = '荷兰语Name';
-
-$GLOBALS["lang"]['ESXi'] = '欧西';
-
-$GLOBALS["lang"]['EULA'] = '欧盟LA';
-
-$GLOBALS["lang"]['Each IP is scanned with the discovery configured options (see Discovery Scan Options and Discovery - Community vs Professional vs Enterprise on the wiki). In general, Nmap will test for ports 22 (ssh), 135 (wmi), 62078 (iPhone) and UDP 161 (snmp). If 22, 135 or 161 respond the credential list is retrieved and each credential tested in turn. The first working credentials are used for further queries directly from the device. Note - if a device has previously been discovered and has working credentials, those credentials are tested first. Only if those fail are the other credentials then attempted.'] = '每个IP都会被扫描到已配置的发现选项(参见发现扫描选项和发现 - Community vs Professional vs Enterprise on the wiki). 一般来说,Nmap会测试端口22(sh),135(wmi),62078(iPhone)和UDP 161(snmp). 如果22、135或161回复,则取回证书清单,并依次测试每个证书。 第一批工作全权证书用于从设备直接进行进一步查询。 注 -- -- 如果先前发现并持有工作证书的设备,则首先测试这些证书。 只有在失败的情况下,其他证书才会尝试。';
-
-$GLOBALS["lang"]['Each time a device is discovered or an audit result is processed, all rules are retrieved from the database and run against the attributes of the specific device. Rules run against one device at a time - there is no facility to say <i>Run the rules against all devices<i> or <i>Run the rules against these devices<i>. An individual rule will test one or more attributes of the device and if they match the rule, the result will be applied. Several attributes can be tested. Several attributes can be set. Think of this as an If This, Then That system for Open-AudIT.'] = '每次发现一个设备或处理一个审计结果,都会从数据库中检索所有规则,并与特定设备的属性相对应运行. 规则一次对一个设备运行 - 没有设施说 <i>对所有设备执行规则<i> 或者说 <i>针对这些设备运行规则<i>。 。 。 单个规则会测试设备的一个或多个属性,如果这些属性符合规则,结果会被应用. 有几个属性可以测试. 可以设置几个属性. 把这当做是Open-AudIT的系统</i></i></i></i>';
-
-$GLOBALS["lang"]['Easily run a discovery upon a network in a single click, without entering the details of that network each and every time.'] = '很容易在网络上运行一个发现,一次点击一次,而不每次输入网络的细节.';
-
-$GLOBALS["lang"]['Ecuador'] = '厄瓜多尔';
-
-$GLOBALS["lang"]['Edit'] = '编辑';
-
-$GLOBALS["lang"]['edit_log'] = '编辑日志';
-
-$GLOBALS["lang"]['Edit Log'] = '编辑日志';
-
-$GLOBALS["lang"]['editable'] = '可编辑';
-
-$GLOBALS["lang"]['Editable'] = '可编辑';
-
-$GLOBALS["lang"]['edited_by'] = '编辑由';
-
-$GLOBALS["lang"]['Edited By'] = '编辑由';
-
-$GLOBALS["lang"]['edited_date'] = '编辑日期';
-
-$GLOBALS["lang"]['Edited Date'] = '编辑日期';
-
-$GLOBALS["lang"]['edition'] = '编辑';
-
-$GLOBALS["lang"]['Edition'] = '编辑';
-
-$GLOBALS["lang"]['Egypt'] = '埃及';
-
-$GLOBALS["lang"]['Either Amazon, Google or Microsoft.'] = '无论是亚马逊,谷歌还是微软.';
-
-$GLOBALS["lang"]['Either none or present.
-
-<strong>None</strong> - The successful attack does not depend on the deployment and execution conditions of the vulnerable system. The attacker can expect to be able to reach the vulnerability and execute the exploit under all or most instances of the vulnerability.
-
-<strong>Present</strong> - The successful attack depends on the presence of specific deployment and execution conditions of the vulnerable system that enable the attack. These include:
-
-A race condition must be won to successfully exploit the vulnerability. The successfulness of the attack is conditioned on execution conditions that are not under full control of the attacker. The attack may need to be launched multiple times against a single target before being successful.
-
-Network injection. The attacker must inject themselves into the logical network path between the target and the resource requested by the victim (e.g. vulnerabilities requiring an on-path attacker).'] = '要么没有,要么现在。
-
-<strong>无</strong> - 攻击的成功不取决于脆弱系统的部署和执行条件。 攻击者可以期望能够达到脆弱性,并在所有或大多数脆弱性情况下进行剥削。
-
-<strong>现</strong> - 攻击成功与否,取决于脆弱系统的具体部署和执行条件。 其中包括:
-
-必须赢得一个种族条件,以成功地利用脆弱性。 攻击成功与否取决于执行条件,而这些条件并非完全由攻击者控制。 在成功之前,可能需要对单一目标进行多次攻击。
-
-网络注射. 攻击者必须在目标与受害者请求的资源之间注入逻辑网络路径(例如需要路径上攻击者的弱点).';
-
-$GLOBALS["lang"]['El Salvador'] = '萨尔瓦多';
-
-$GLOBALS["lang"]['email'] = '电子邮件';
-
-$GLOBALS["lang"]['Email'] = '电子邮件';
-
-$GLOBALS["lang"]['email_address'] = '电子邮件地址';
-
-$GLOBALS["lang"]['Email Address'] = '电子邮件地址';
-
-$GLOBALS["lang"]['Email Configuration'] = '电子邮件配置';
-
-$GLOBALS["lang"]['Email to send test to'] = '发送测试的电子邮件';
-
-$GLOBALS["lang"]['Enable'] = '启用';
-
-$GLOBALS["lang"]['Enable Distributed COM on this computer - Option is checked'] = '启用此计算机上的分布式COM - 选中选项';
-
-$GLOBALS["lang"]['enabled'] = '已启用';
-
-$GLOBALS["lang"]['Enabled'] = '已启用';
-
-$GLOBALS["lang"]['Enabling the Feature Under Windows'] = '启用窗口下的特性';
-
-$GLOBALS["lang"]['encryption'] = '加密';
-
-$GLOBALS["lang"]['Encryption'] = '加密';
-
-$GLOBALS["lang"]['encryption_method'] = '加密方法';
-
-$GLOBALS["lang"]['Encryption Method'] = '加密方法';
-
-$GLOBALS["lang"]['encryption_status'] = '加密状态';
-
-$GLOBALS["lang"]['Encryption Status'] = '加密状态';
-
-$GLOBALS["lang"]['end_date'] = '结束日期';
-
-$GLOBALS["lang"]['End Date'] = '结束日期';
-
-$GLOBALS["lang"]['End OF Life Product ID'] = '生命产品标识';
-
-$GLOBALS["lang"]['end_of_life'] = '生命的终结';
-
-$GLOBALS["lang"]['End Of Life'] = '生命的终结';
-
-$GLOBALS["lang"]['end_of_production'] = '生产结束';
-
-$GLOBALS["lang"]['End Of Production'] = '生产结束';
-
-$GLOBALS["lang"]['end_of_service'] = '服务终了';
-
-$GLOBALS["lang"]['End Of Service'] = '服务终了';
-
-$GLOBALS["lang"]['end_of_service_life'] = '服务寿命终止';
-
-$GLOBALS["lang"]['End Of Service Life'] = '服务寿命终止';
-
-$GLOBALS["lang"]['Endpoint'] = '终点';
-
-$GLOBALS["lang"]['English'] = '联合国';
-
-$GLOBALS["lang"]['Enhances regulatory compliance'] = '提高监管合规性';
-
-$GLOBALS["lang"]['Enrichment is complete. The CVE has full metadata and is considered stable.'] = '浓缩完成. CVE拥有完整的元数据,被认为是稳定的.';
-
-$GLOBALS["lang"]['Ensure documentation is controlled and accessible'] = '确保文件得到控制和查阅';
-
-$GLOBALS["lang"]['enterprise'] = '企业';
-
-$GLOBALS["lang"]['Enterprise'] = '企业';
-
-$GLOBALS["lang"]['Enterprise Private Network'] = '企业私营网络';
-
-$GLOBALS["lang"]['Enterprise private network'] = '企业私营网络';
-
-$GLOBALS["lang"]['Entitlement Type'] = '应享权利类型';
-
-$GLOBALS["lang"]['Entra'] = '内容';
-
-$GLOBALS["lang"]['environment'] = '环境';
-
-$GLOBALS["lang"]['Environment'] = '环境';
-
-$GLOBALS["lang"]['Equal To'] = '等为';
-
-$GLOBALS["lang"]['Equal To or Greater Than'] = '等于或大于';
-
-$GLOBALS["lang"]['Equal To or Less Than'] = '等于或小于';
-
-$GLOBALS["lang"]['Equals'] = '等数';
-
-$GLOBALS["lang"]['Equatorial Guinea'] = '赤道几内亚';
-
-$GLOBALS["lang"]['Eritrea'] = '厄立特里亚';
-
-$GLOBALS["lang"]['Error'] = '错误';
-
-$GLOBALS["lang"]['Error Code'] = '错误代码';
-
-$GLOBALS["lang"]['Esperanto'] = '世界语';
-
-$GLOBALS["lang"]['Establish a project plan and timeline'] = '制定项目计划和时间表';
-
-$GLOBALS["lang"]['Establish an information security policy'] = '制定信息安全政策';
-
-$GLOBALS["lang"]['Established'] = '已设立';
-
-$GLOBALS["lang"]['Estonia'] = '爱沙尼亚';
-
-$GLOBALS["lang"]['Estonian'] = '爱沙尼亚语';
-
-$GLOBALS["lang"]['Ethernet MAC'] = '以太网MAC';
-
-$GLOBALS["lang"]['ethernet_mac'] = '以太网麦克';
-
-$GLOBALS["lang"]['Ethernet Mac'] = '以太网麦克';
-
-$GLOBALS["lang"]['Ethiopia'] = '埃塞俄比亚';
-
-$GLOBALS["lang"]['Evaluate the ISMS internally'] = '内部评价信息系统管理系统';
-
-$GLOBALS["lang"]['Every'] = '每个';
-
-$GLOBALS["lang"]['Every Day'] = '每天都会';
-
-$GLOBALS["lang"]['Example'] = '示例';
-
-$GLOBALS["lang"]['Example Devices'] = '示例设备';
-
-$GLOBALS["lang"]['Example Org Chart with Access'] = '有访问权限的示例曲线图';
-
-$GLOBALS["lang"]['Example text from'] = '示例文本从';
-
-$GLOBALS["lang"]['Examples'] = '实例';
-
-$GLOBALS["lang"]['Exceptions'] = '例外';
-
-$GLOBALS["lang"]['exclude'] = '不包括';
-
-$GLOBALS["lang"]['Exclude'] = '不包括';
-
-$GLOBALS["lang"]['exclude_ip'] = '不包括 IP';
-
-$GLOBALS["lang"]['Exclude IP'] = '不包括 IP';
-
-$GLOBALS["lang"]['Exclude IP Addresses'] = '排除 IP 地址';
-
-$GLOBALS["lang"]['Exclude IP Addresses (individual IP - 192.168.1.20, ranges - 192.168.1.30-40 or subnets - 192.168.1.100/30) listed from being scanned. Comma seperated, no spaces.'] = '不包括所列IP地址(个人IP - 192.168.1.20,范围 - 192.168.1.30-40或子网 - 192.168.1.100/30)的扫描。 逗号隔离,没有空格.';
-
-$GLOBALS["lang"]['Exclude TCP Ports'] = '不包括 TCP 端口';
-
-$GLOBALS["lang"]['exclude_tcp_ports'] = '不包括 Tcp 端口';
-
-$GLOBALS["lang"]['Exclude Tcp Ports'] = '不包括 Tcp 端口';
-
-$GLOBALS["lang"]['Exclude UDP Ports'] = '不包括 UDP 端口';
-
-$GLOBALS["lang"]['exclude_udp_ports'] = '不包括 Udp 端口';
-
-$GLOBALS["lang"]['Exclude Udp Ports'] = '不包括 Udp 端口';
-
-$GLOBALS["lang"]['Exclude any ports listed from being scanned. Comma seperated, no spaces.'] = '排除任何列出的端口进行扫描。 逗号隔离,没有空格.';
-
-$GLOBALS["lang"]['Exclude these IP addresses from being Nmap scanned.'] = '排除这些IP地址进行Nmap扫描.';
-
-$GLOBALS["lang"]['Excluded'] = '不包括';
-
-$GLOBALS["lang"]['exclusion_reasons'] = '排除理由';
-
-$GLOBALS["lang"]['Exclusion Reasons'] = '排除理由';
-
-$GLOBALS["lang"]['executable'] = '可执行文件';
-
-$GLOBALS["lang"]['Executable'] = '可执行文件';
-
-$GLOBALS["lang"]['executable_id'] = '可执行的ID';
-
-$GLOBALS["lang"]['Executable ID'] = '可执行的ID';
-
-$GLOBALS["lang"]['executables'] = '可执行文件';
-
-$GLOBALS["lang"]['Executables'] = '可执行文件';
-
-$GLOBALS["lang"]['Execute'] = '执行';
-
-$GLOBALS["lang"]['Executing'] = '执行';
-
-$GLOBALS["lang"]['exemption_reason'] = '豁免理由';
-
-$GLOBALS["lang"]['Exemption Reason'] = '豁免理由';
-
-$GLOBALS["lang"]['Existing Building'] = '现有大楼';
-
-$GLOBALS["lang"]['Existing Floor'] = '现有楼层';
-
-$GLOBALS["lang"]['Existing Room'] = '现有房间';
-
-$GLOBALS["lang"]['Existing Row'] = '现有行';
-
-$GLOBALS["lang"]['expire_date'] = '过期日期';
-
-$GLOBALS["lang"]['Expire Date'] = '过期日期';
-
-$GLOBALS["lang"]['expire_minutes'] = '过期分钟';
-
-$GLOBALS["lang"]['Expire Minutes'] = '过期分钟';
-
-$GLOBALS["lang"]['expires'] = '过期';
-
-$GLOBALS["lang"]['Expires'] = '过期';
-
-$GLOBALS["lang"]['expiry_date'] = '过期日期';
-
-$GLOBALS["lang"]['Expiry Date'] = '过期日期';
-
-$GLOBALS["lang"]['exploit_maturity'] = '剥削';
-
-$GLOBALS["lang"]['Exploit Maturity'] = '剥削';
-
-$GLOBALS["lang"]['Export'] = '导出';
-
-$GLOBALS["lang"]['Export by Device'] = '通过设备导出';
-
-$GLOBALS["lang"]['Export by Policy'] = '按政策导出';
-
-$GLOBALS["lang"]['Export data to'] = '导出数据到';
-
-$GLOBALS["lang"]['Exporting a Device'] = '导出设备';
-
-$GLOBALS["lang"]['expose'] = '曝光';
-
-$GLOBALS["lang"]['Expose'] = '曝光';
-
-$GLOBALS["lang"]['External'] = '外部';
-
-$GLOBALS["lang"]['External Field Name'] = '外部字段名称';
-
-$GLOBALS["lang"]['External Field Type'] = '外部字段类型';
-
-$GLOBALS["lang"]['External Field Types'] = '外部字段类型';
-
-$GLOBALS["lang"]['external_ident'] = '外部标识';
-
-$GLOBALS["lang"]['External Ident'] = '外部标识';
-
-$GLOBALS["lang"]['external_link'] = '外部链接';
-
-$GLOBALS["lang"]['External Link'] = '外部链接';
-
-$GLOBALS["lang"]['extra_columns'] = '额外列';
-
-$GLOBALS["lang"]['Extra Columns'] = '额外列';
-
-$GLOBALS["lang"]['Extra and Time based Reporting'] = '额外报告和基于时间的报告';
-
-$GLOBALS["lang"]['Extra and more verbose logging is generated for troubleshooting.'] = '额外的和更多的动词记录生成用于排除故障.';
-
-$GLOBALS["lang"]['FAQ'] = '财务问题';
-
-$GLOBALS["lang"]['FQDN'] = '东帝汶国防军';
-
-$GLOBALS["lang"]['FW Revision'] = 'FW 修订';
-
-$GLOBALS["lang"]['Fail'] = '失败';
-
-$GLOBALS["lang"]['Failed'] = '失败';
-
-$GLOBALS["lang"]['Failed Severity'] = '严重性失败';
-
-$GLOBALS["lang"]['Falkland Islands (Malvinas)'] = '福克兰群岛(马尔维纳斯)';
-
-$GLOBALS["lang"]['Family'] = '家庭';
-
-$GLOBALS["lang"]['Faroe Islands'] = '法罗群岛';
-
-$GLOBALS["lang"]['Features'] = '特征';
-
-$GLOBALS["lang"]['February'] = '2月(半天会议)';
-
-$GLOBALS["lang"]['field'] = '外地';
-
-$GLOBALS["lang"]['Field'] = '外地';
-
-$GLOBALS["lang"]['field_id'] = '实地标识';
-
-$GLOBALS["lang"]['Field ID'] = '实地标识';
-
-$GLOBALS["lang"]['Field Name'] = '字段名称';
-
-$GLOBALS["lang"]['Field Type'] = '字段类型';
-
-$GLOBALS["lang"]['Fields'] = '字段';
-
-$GLOBALS["lang"]['fields'] = '字段';
-
-$GLOBALS["lang"]['Fields attributes are'] = '字段属性为';
-
-$GLOBALS["lang"]['Fiji the Fiji Islands'] = '斐济、斐济群岛';
-
-$GLOBALS["lang"]['File'] = '文件';
-
-$GLOBALS["lang"]['File Auditing'] = '文件审计';
-
-$GLOBALS["lang"]['File Import'] = '文件导入';
-
-$GLOBALS["lang"]['File Input'] = '文件输入';
-
-$GLOBALS["lang"]['file_name'] = '文件名称';
-
-$GLOBALS["lang"]['File Name'] = '文件名称';
-
-$GLOBALS["lang"]['File Share Discovery'] = '文件共享发现';
-
-$GLOBALS["lang"]['file_size'] = '文件大小';
-
-$GLOBALS["lang"]['File Size'] = '文件大小';
-
-$GLOBALS["lang"]['filename'] = '文件名';
-
-$GLOBALS["lang"]['Filename'] = '文件名';
-
-$GLOBALS["lang"]['files'] = '文件';
-
-$GLOBALS["lang"]['Files'] = '文件';
-
-$GLOBALS["lang"]['files_id'] = '文件编号';
-
-$GLOBALS["lang"]['Files ID'] = '文件编号';
-
-$GLOBALS["lang"]['filter'] = '过滤器';
-
-$GLOBALS["lang"]['Filter'] = '过滤器';
-
-$GLOBALS["lang"]['filtered'] = '过滤';
-
-$GLOBALS["lang"]['Filtered'] = '过滤';
-
-$GLOBALS["lang"]['Filtered Ports'] = '过滤的端口';
-
-$GLOBALS["lang"]['Finland'] = '芬兰';
-
-$GLOBALS["lang"]['Finnish'] = '芬兰语';
-
-$GLOBALS["lang"]['Firewall'] = '防火墙';
-
-$GLOBALS["lang"]['Firewall Packages'] = '防火墙包';
-
-$GLOBALS["lang"]['firewall_rule'] = '防火墙规则';
-
-$GLOBALS["lang"]['Firewall Rule'] = '防火墙规则';
-
-$GLOBALS["lang"]['firmware'] = '固件';
-
-$GLOBALS["lang"]['Firmware'] = '固件';
-
-$GLOBALS["lang"]['firmware_revision'] = '固件修订';
-
-$GLOBALS["lang"]['Firmware Revision'] = '固件修订';
-
-$GLOBALS["lang"]['First'] = '第一届';
-
-$GLOBALS["lang"]['First Name'] = '名称';
-
-$GLOBALS["lang"]['first_run'] = '第一个运行';
-
-$GLOBALS["lang"]['First Run'] = '第一个运行';
-
-$GLOBALS["lang"]['first_seen'] = '第一次见到';
-
-$GLOBALS["lang"]['First Seen'] = '第一次见到';
-
-$GLOBALS["lang"]['First focus on what the end need is: are you trying to baseline software, users, or Netstat data? What is the important thing(s) to compare and report on?'] = '首先关注最终需要的是什么:你是否试图基线软件,用户,还是Netstat数据? 比较和报告哪些重要事项?';
-
-$GLOBALS["lang"]['FirstWave'] = '第一条';
-
-$GLOBALS["lang"]['Fix'] = '修补';
-
-$GLOBALS["lang"]['Fixed'] = '固定';
-
-$GLOBALS["lang"]['Fixing the Issue'] = '解决问题';
-
-$GLOBALS["lang"]['Floor'] = '楼层';
-
-$GLOBALS["lang"]['Follow any of the links below and discover how to use Open-AudIT to find out <b>Whats On Your Network?</b>'] = '跟踪下面的任何链接并发现如何使用 Open-AudIT 查找 <b>你的网络上有什么?</b>';
-
-$GLOBALS["lang"]['For'] = '对于';
-
-$GLOBALS["lang"]['For <i>Type</i> make sure to select Baseline, and for Group you should select a Group of devices, if applicable to this baseline, that best represent the devices to apply the baseline against. This will prevent erroneous entries.'] = '对于 <i>类型</i> 确保选择基线,对于分组,如果适用于这一基线,则您应当选择一组设备,这些设备最能代表各种设备,以应用基准。 这将防止错误的条目。';
-
-$GLOBALS["lang"]['For Debian/Ubuntu run, including setting dpkg to remember your override so an apt-get upgrade will not break'] = '对于 Debian/Ubuntu 运行, 包括设置 dpkg 来记住您的覆盖, 这样一个 apt-get 升级将不会中断';
-
-$GLOBALS["lang"]['For SNMP Open-AudIT can use v1, v2 and v3 credentials. The device is queried regardless of it being a router, switch (regular network devices) or a computer (Linux and Windows often run SNMP for monitoring tools).'] = '对于SNMP Open-AudIT,可以使用v1,v2和v3证书. 该设备无论是路由器,切换器(常规网络设备)还是计算机(Linux和Windows经常为监测工具运行SNMP),都会被询问.';
-
-$GLOBALS["lang"]['For a primer on cron, see this Wikipedia page'] = 'Cron上的初级读物请参见此维基百科页面';
-
-$GLOBALS["lang"]['For a seed discovery, should I only discover IPs in the private IP address space.'] = '对于种子发现,我是否应该只在私人IP地址空间中发现IP.';
-
-$GLOBALS["lang"]['For a seed discovery, should I only discover IPs on the chosen subnet.'] = '对于种子的发现,我是否只 发现IP在选定的子网。';
-
-$GLOBALS["lang"]['For a seed discovery, should I ping the subnet before running the discovery.'] = '对于种子的发现, 我应该在运行 发现之前打开子网。';
-
-$GLOBALS["lang"]['For advanced entry of a raw SQL query. As per Queries, you must include <code>WHERE @filter AND<code> in your SQL.'] = '用于原始 SQL 查询的高级条目 。 根据查询,您必须包含 <code>WHERE @filter AND<code> in your SQL.</code></code>';
-
-$GLOBALS["lang"]['For each spawned process, the below occurs.'] = '对于每个产卵过程,以下发生.';
-
-$GLOBALS["lang"]['For example - you might create a baseline from a device running Redhat 9 which acts as one of your Apache servers in a cluster. You know this particular server is configured just the way you want it but you are unsure if other servers in the cluster are configured exactly the same. Baselines enable you to determine this.'] = '例如,您可能从运行 Redhat 9 的设备中创建基线,该设备在集群中充当您的 Apache 服务器之一 。 您知道这个特定的服务器是按您想要的方式配置的, 但是您不确定集群中的其他服务器是否配置完全相同 。 基线可以让你确定这一点。';
-
-$GLOBALS["lang"]['For example - you might create a baseline from a device running Redhat 9 which acts as one of your Apache servers in a cluster. You know this particular server is configured just the way you want it but you are unsure if other servers in the cluster are configured exactly the same. Baselines enables you to determine this.'] = '例如,您可能从运行 Redhat 9 的设备中创建基线,该设备在集群中充当您的 Apache 服务器之一 。 您知道这个特定的服务器是按您想要的方式配置的, 但是您不确定集群中的其他服务器是否配置完全相同 。 基线可以让你确定这一点。';
-
-$GLOBALS["lang"]['For further details information, see the wiki.'] = '详见维基文库.';
-
-$GLOBALS["lang"]['For licenses that are not perpetual, when does the license expire.'] = '对于不是永久的许可证,许可证何时到期。';
-
-$GLOBALS["lang"]['For more detailed information, check the Open-AudIT Knowledge Base.'] = '详情请查看Open-AudIT知识库.';
-
-$GLOBALS["lang"]['For more information please see the following guide which includes a video. Use'] = '详情请见以下指南,其中包括录像。 使用';
-
-$GLOBALS["lang"]['For more information, see'] = '更多信息见';
-
-$GLOBALS["lang"]['form_factor'] = '窗体因子';
-
-$GLOBALS["lang"]['Form Factor'] = '窗体因子';
-
-$GLOBALS["lang"]['format'] = '格式';
-
-$GLOBALS["lang"]['Format'] = '格式';
-
-$GLOBALS["lang"]['Forth'] = '福尔';
-
-$GLOBALS["lang"]['fqdn'] = '弗克当';
-
-$GLOBALS["lang"]['Fqdn'] = '弗克当';
-
-$GLOBALS["lang"]['France, French Republic'] = '法国、法兰西共和国';
-
-$GLOBALS["lang"]['free'] = '免费';
-
-$GLOBALS["lang"]['Free'] = '免费';
-
-$GLOBALS["lang"]['French'] = '法语';
-
-$GLOBALS["lang"]['French Guiana'] = '法属圭亚那';
-
-$GLOBALS["lang"]['French Polynesia'] = '法属波利尼西亚';
-
-$GLOBALS["lang"]['French Southern Territories'] = '法国南部领地';
-
-$GLOBALS["lang"]['Frequently Asked Questions'] = '经常问的问题';
-
-$GLOBALS["lang"]['Friday'] = '星期五';
-
-$GLOBALS["lang"]['From 100 Devices'] = '来自100个设备';
-
-$GLOBALS["lang"]['From 500 Devices'] = '从500个设备';
-
-$GLOBALS["lang"]['From that page'] = '从那页';
-
-$GLOBALS["lang"]['full_name'] = '完整名称';
-
-$GLOBALS["lang"]['Full Name'] = '完整名称';
-
-$GLOBALS["lang"]['Full cloud auditing with all the details from a regular Open-AudIT audit AND details such as the machine type and size.'] = '全云审计包含定期开放-AudIT审计的所有细节以及机器类型和大小等细节.';
-
-$GLOBALS["lang"]['function'] = '函数';
-
-$GLOBALS["lang"]['Function'] = '函数';
-
-$GLOBALS["lang"]['GROUP BY'] = '集团';
-
-$GLOBALS["lang"]['Gabon'] = '加蓬';
-
-$GLOBALS["lang"]['Galician'] = '加利西亚语Name';
-
-$GLOBALS["lang"]['Gambia the'] = '冈比亚';
-
-$GLOBALS["lang"]['Gap Analysis (optional)'] = '差距分析(可选)';
-
-$GLOBALS["lang"]['gateway'] = '网关';
-
-$GLOBALS["lang"]['Gateway'] = '网关';
-
-$GLOBALS["lang"]['gateways'] = '网关';
-
-$GLOBALS["lang"]['Gateways'] = '网关';
-
-$GLOBALS["lang"]['Generated By'] = '生成者';
-
-$GLOBALS["lang"]['geo'] = '地理';
-
-$GLOBALS["lang"]['Geo'] = '地理';
-
-$GLOBALS["lang"]['Geographical Maps'] = '地理地图';
-
-$GLOBALS["lang"]['Georgia'] = '格鲁吉亚';
-
-$GLOBALS["lang"]['German'] = '德语';
-
-$GLOBALS["lang"]['Germany'] = '德国';
-
-$GLOBALS["lang"]['Get Lat/Long'] = '获取 Lat/ 长';
-
-$GLOBALS["lang"]['Get News'] = '获取新闻';
-
-$GLOBALS["lang"]['Get Started'] = '开始';
-
-$GLOBALS["lang"]['Get a Free License'] = '获取自由许可证';
-
-$GLOBALS["lang"]['Get familiar with the Open-AudIT platform and explore some of its features.'] = '熟悉Open-AudIT平台,探索其部分功能.';
-
-$GLOBALS["lang"]['Getting Started'] = '开始';
-
-$GLOBALS["lang"]['Ghana'] = '加纳';
-
-$GLOBALS["lang"]['Gibraltar'] = '直布罗陀';
-
-$GLOBALS["lang"]['Github'] = '吉图布';
-
-$GLOBALS["lang"]['Global Discovery Options'] = '全球发现选项';
-
-$GLOBALS["lang"]['Global area network'] = '局域网';
-
-$GLOBALS["lang"]['Go'] = '走开';
-
-$GLOBALS["lang"]['Go back to your Open-AudIT server and create a discovery with the target Windows computers IP Address as the subnet (this will save having to discover the entire subnet again). Run the discovery, taking note of any issues. For any issues found, take appropriate actions.'] = '回到您的 Open-AudIT 服务器, 以目标 Windows 计算机 IP 地址作为子网创建一个发现( 这将节省再次发现整个子网) 。 调查一下发现情况 注意任何问题 对于发现的任何问题,采取适当行动。';
-
-$GLOBALS["lang"]['Go the target Windows PC (or use RDP) and log on as the user used by your discovery credential set.'] = '访问目标 Windows PC( 或使用 RDP) 并登录为您发现证书集使用的用户 。';
-
-$GLOBALS["lang"]['Go to menu'] = '转到菜单';
-
-$GLOBALS["lang"]['Go to the <i>Applications</i> -> <i>App registrations</i> menu item on the far left. Search for Open-AudIT. Click the Open-AudIT entry in the list (assuming you named the app Open-AudIT).'] = '转到 <i>应用程序</i> - > 开口 <i>应用程序注册</i> 菜单项。 寻找开放AudIT. 点击列表中的 Open-AudIT 条目(假设您命名了 app Open-AudIT) 。';
-
-$GLOBALS["lang"]['Go to the <i>Certificates and secrets</i> menu item under <i>Manage</i> in the center menu.'] = '转到 <i>证书和秘密</i> 菜单 <i>管理</i> 在中菜单中。';
-
-$GLOBALS["lang"]['Go to the <i>Single sign-on</i> menu item and click SAML for <i>Select a single sign-on method</i>.'] = '转到 <i>单笔签名</i> 菜单项并单击 SAML <i>选择单一的签名方法</i>。 。 。';
-
-$GLOBALS["lang"]['Google Compute Fields'] = '谷歌计算字段';
-
-$GLOBALS["lang"]['Google JSON Credentials'] = 'Google JSON (英语) 全权证书';
-
-$GLOBALS["lang"]['Google Maps API Key'] = '谷歌地图 API 密钥';
-
-$GLOBALS["lang"]['Great, then you can help! Send FirstWave the text shown in the GUI and what should be shown. We will include that in the language file so going forward, the translation is improved and you do not need to worry about updating it for every release!'] = '好极了,你可以帮忙了! 先发送 挥动图形界面中显示的文本和应当显示的内容。 我们将包含在语言文件中,如此向前发展, 翻译得到改进, 你不需要担心更新它 对于每次发布!';
-
-$GLOBALS["lang"]['Greater Than'] = '超过';
-
-$GLOBALS["lang"]['Greater Than or Equals'] = '大于等于数';
-
-$GLOBALS["lang"]['Greece'] = '希腊';
-
-$GLOBALS["lang"]['Greek'] = '捷克语Name';
-
-$GLOBALS["lang"]['Green Query'] = '绿色查询';
-
-$GLOBALS["lang"]['Greenland'] = '格陵兰';
-
-$GLOBALS["lang"]['Grenada'] = '格林纳达';
-
-$GLOBALS["lang"]['Group'] = '组';
-
-$GLOBALS["lang"]['group_by'] = '分组方式';
-
-$GLOBALS["lang"]['Group By'] = '分组方式';
-
-$GLOBALS["lang"]['group_id'] = '组 ID';
-
-$GLOBALS["lang"]['Group ID'] = '组 ID';
-
-$GLOBALS["lang"]['groups'] = '组';
-
-$GLOBALS["lang"]['Groups'] = '组';
-
-$GLOBALS["lang"]['Groups are used as simple lists of devices that match the required conditions. If requested using JSON they return a list of <i>devices.id</i> only. If requested using the web interface, they return the standard column attribute list. Groups can be used for Integrations, Baselines and other items.'] = '组作为符合所需条件的简单设备列表. 如果要求使用JSON,他们将返回一份清单。 <i>设备.id</i> 仅此而已。 如果请求使用网络界面,它们会返回标准列属性列表. 组合可用于整合,基线和其他项目.';
-
-$GLOBALS["lang"]['Guadeloupe'] = '瓜德罗普岛';
-
-$GLOBALS["lang"]['Guam'] = '关岛';
-
-$GLOBALS["lang"]['Guatemala'] = '危地马拉';
-
-$GLOBALS["lang"]['Guernsey'] = '根西岛';
-
-$GLOBALS["lang"]['guest_device_id'] = '客机设备标识';
-
-$GLOBALS["lang"]['Guest Device ID'] = '客机设备标识';
-
-$GLOBALS["lang"]['guid'] = '指导';
-
-$GLOBALS["lang"]['Guid'] = '指导';
-
-$GLOBALS["lang"]['Guinea'] = '几内亚';
-
-$GLOBALS["lang"]['Guinea-Bissau'] = '几内亚比绍';
-
-$GLOBALS["lang"]['Guyana'] = '圭亚那';
-
-$GLOBALS["lang"]['HP-UX'] = 'HP- UX 设备';
-
-$GLOBALS["lang"]['HW Revision'] = 'HW 修订';
-
-$GLOBALS["lang"]['Haiti'] = '海地';
-
-$GLOBALS["lang"]['hard_drive_index'] = '硬盘索引';
-
-$GLOBALS["lang"]['Hard Drive Index'] = '硬盘索引';
-
-$GLOBALS["lang"]['Hardware'] = '硬件';
-
-$GLOBALS["lang"]['hardware_revision'] = '硬件修订';
-
-$GLOBALS["lang"]['Hardware Revision'] = '硬件修订';
-
-$GLOBALS["lang"]['Has this policy been applied in this organization.'] = '这个组织是否实行过这项政策。';
-
-$GLOBALS["lang"]['hash'] = '哈许';
-
-$GLOBALS["lang"]['Hash'] = '哈许';
-
-$GLOBALS["lang"]['Have the agent always run the latest audit script (if you upgrade Open-AudIT and manually copy the scripts to the targets, then set cron - you will need to update these scripts for each upgrade).'] = '让代理总是运行最新的审计脚本(如果您将 Open-AudIT 升级并手动将脚本复制到目标,然后设置 cron - 您需要为每次升级更新这些脚本) 。';
-
-$GLOBALS["lang"]['Have your user open a command prompt (using <i>Run as Administrator</i>). Paste the below into the prompt to download the Agent.'] = '让用户打开命令提示( 使用 ) <i>作为管理员运行</i>) (中文(简体) ). 粘贴到下面以下载代理 。';
-
-$GLOBALS["lang"]['Head'] = '头';
-
-$GLOBALS["lang"]['Heard Island and McDonald Islands'] = '霍德岛和麦当劳群岛';
-
-$GLOBALS["lang"]['Hebrew'] = '希伯来语Name';
-
-$GLOBALS["lang"]['height'] = '高度';
-
-$GLOBALS["lang"]['Height'] = '高度';
-
-$GLOBALS["lang"]['Height in RU'] = '在 RU 中的高度';
-
-$GLOBALS["lang"]['Help'] = '帮助';
-
-$GLOBALS["lang"]['Help and Frequently Asked Questions'] = '帮助和常问问题';
-
-$GLOBALS["lang"]['Helps manage and mitigate information security risks'] = '帮助管理和减轻信息安全风险';
-
-$GLOBALS["lang"]['Hide Audit Window'] = '隐藏审计窗口';
-
-$GLOBALS["lang"]['high'] = '高级';
-
-$GLOBALS["lang"]['High'] = '高级';
-
-$GLOBALS["lang"]['High Availability'] = '高可用性';
-
-$GLOBALS["lang"]['Hindi'] = '印地语';
-
-$GLOBALS["lang"]['Holy See (Vatican City State)'] = '罗马教廷(瓦蒂坎州)';
-
-$GLOBALS["lang"]['Home'] = '首页';
-
-$GLOBALS["lang"]['home'] = '首页';
-
-$GLOBALS["lang"]['Home Area Network'] = '家园区域网';
-
-$GLOBALS["lang"]['Home area network'] = '家园区域网';
-
-$GLOBALS["lang"]['Honduras'] = '洪都拉斯';
-
-$GLOBALS["lang"]['Hong Kong'] = '香港';
-
-$GLOBALS["lang"]['host'] = '东道主';
-
-$GLOBALS["lang"]['Host'] = '东道主';
-
-$GLOBALS["lang"]['hostname'] = '主机名';
-
-$GLOBALS["lang"]['Hostname'] = '主机名';
-
-$GLOBALS["lang"]['hour'] = '小时';
-
-$GLOBALS["lang"]['Hour'] = '小时';
-
-$GLOBALS["lang"]['How Does It Work?'] = '怎么样?';
-
-$GLOBALS["lang"]['How Does it Work?'] = '怎么样?';
-
-$GLOBALS["lang"]['How Long Does it Take'] = '需要多长时间';
-
-$GLOBALS["lang"]['How and Why is'] = '如何和为什么';
-
-$GLOBALS["lang"]['How and Why is Open-AudIT More Secure'] = '开放-AudIT如何和为什么更加安全';
-
-$GLOBALS["lang"]['How do they work?'] = '他们怎么工作的?';
-
-$GLOBALS["lang"]['How does a Device Seed Discovery find known IPs?'] = '设备种子发现如何找到已知的IP?.';
-
-$GLOBALS["lang"]['How long did the command take to execute.'] = '命令执行需要多长时间.';
-
-$GLOBALS["lang"]['How long should Nmap wait for a response, per device.'] = 'Nmap应该等待多久 每个设备的反应。';
-
-$GLOBALS["lang"]['How many circuit feed to this rack.'] = '这个架子有多少个电路';
-
-$GLOBALS["lang"]['How many policies results in a fail.'] = '有多少政策导致失败。';
-
-$GLOBALS["lang"]['How many policies results in a pass.'] = '有多少政策取得了成功。';
-
-$GLOBALS["lang"]['How many power sockets in this rack.'] = '这个架子有多少个电源插座';
-
-$GLOBALS["lang"]['How many rack units in height is this rack.'] = '高处有多少架子是这个架子.';
-
-$GLOBALS["lang"]['How often should the collector ask the server for a task.'] = '收藏家应该多久向服务器询问一个任务.';
-
-$GLOBALS["lang"]['How should we select devices to be integrated (using an Attribute, Query or a Group).'] = '我们应该如何选择要集成的设备(使用属性、查询或组)。';
-
-$GLOBALS["lang"]['How the vulnerability is exploited (e.g., Network, Adjacent, Local, Physical).'] = '如何利用脆弱性(例如网络、邻近、地方、物质)。';
-
-$GLOBALS["lang"]['How to compare'] = '如何比较';
-
-$GLOBALS["lang"]['Human-readable explanation of the vulnerability.'] = '人能读到的关于脆弱性的解释。';
-
-$GLOBALS["lang"]['Hungarian'] = '匈牙利语Name';
-
-$GLOBALS["lang"]['Hungary'] = '匈牙利';
-
-$GLOBALS["lang"]['hw_cpe'] = '高调';
-
-$GLOBALS["lang"]['Hw Cpe'] = '高调';
-
-$GLOBALS["lang"]['hyperthreading'] = '超线程';
-
-$GLOBALS["lang"]['Hyperthreading'] = '超线程';
-
-$GLOBALS["lang"]['I have read the EULA.'] = '我读过欧洲国际法。';
-
-$GLOBALS["lang"]['I hope this post has alleviated any concerns you have about Open-AudIT and Security. If you have any questions at all, please do not hesitate to reach out to us here at FirstWave. We are always happy to discuss your concerns and needs. And maybe if your question is not something I have addressed here, I can add it here for future users'] = '希望这篇文章能缓解你对开放-AudIT和安全的任何担忧。 如果你有任何问题 请在第一大道和我们联系 我们总是乐于讨论你们的关切和需要。 如果你的问题不是我在这里讨论过的问题, 我可以在这里添加它给未来的用户';
-
-$GLOBALS["lang"]['id'] = '身份证';
-
-$GLOBALS["lang"]['ID'] = 'ID';
-
-$GLOBALS["lang"]['IF'] = '若为';
-
-$GLOBALS["lang"]['IMPORTANT'] = '重要性';
-
-$GLOBALS["lang"]['INPUTS'] = '投资';
-
-$GLOBALS["lang"]['IOS Version'] = 'iOS 版本';
-
-$GLOBALS["lang"]['IP'] = '执行伙伴';
-
-$GLOBALS["lang"]['ip'] = '执行伙伴';
-
-$GLOBALS["lang"]['IP Address'] = 'IP 地址';
-
-$GLOBALS["lang"]['IP Addresses'] = 'IP 地址';
-
-$GLOBALS["lang"]['IP Last Seen'] = 'IP 最后一个视图';
-
-$GLOBALS["lang"]['IP Set By'] = 'IP 设置为';
-
-$GLOBALS["lang"]['ISMS'] = '信息管理系统';
-
-$GLOBALS["lang"]['ISO 27001 only.'] = '仅限ISO 27001。';
-
-$GLOBALS["lang"]['Iceland'] = '冰岛';
-
-$GLOBALS["lang"]['icon'] = '图标';
-
-$GLOBALS["lang"]['Icon'] = '图标';
-
-$GLOBALS["lang"]['Icon and Text'] = '图标和文本';
-
-$GLOBALS["lang"]['Icon only, text only or icon and text.'] = '只有图标,只有文本或图标和文本。';
-
-$GLOBALS["lang"]['id_internal'] = '内部';
-
-$GLOBALS["lang"]['Id Internal'] = '内部';
-
-$GLOBALS["lang"]['id_number'] = '编号';
-
-$GLOBALS["lang"]['Id Number'] = '编号';
-
-$GLOBALS["lang"]['identification'] = '鉴定';
-
-$GLOBALS["lang"]['Identification'] = '鉴定';
-
-$GLOBALS["lang"]['Identify information assets'] = '识别信息资产';
-
-$GLOBALS["lang"]['Identify interested parties and their requirements'] = '确定有关各方及其要求';
-
-$GLOBALS["lang"]['Identify key stakeholders and assign roles'] = '确定关键利益攸关方并分配角色';
-
-$GLOBALS["lang"]['Identify the device(s) that are your exemplary, or <i>gold image</i> you want to compare similar devices against.'] = '确定属于你的模范设备,或 <i>金色图像</i> 您想要比较类似的设备。';
-
-$GLOBALS["lang"]['Identifying and evaluating security risks'] = '查明和评价安全风险';
-
-$GLOBALS["lang"]['If'] = '若为';
-
-$GLOBALS["lang"]['If a device is individually discovered using the <i>Discover Device</i> link on the device details page, we first check if this device has been discovered previously (by Discovery) and if so, use the discovery options from that scan. If it has not been previously discovered, we revert to the configuration item discovery_default_scan_option the settings.'] = '如果使用下列设备单独发现: <i>发现设备</i> 链接在设备细节页面上,我们首先检查此设备是否在之前(通过发现)被发现,如果是的话,使用从扫描中发现的选项。 如果它之前尚未发现, 我们恢复到配置项目发现_ default_scan_ 选择设置 。';
-
-$GLOBALS["lang"]['If a new Org is created, an LDAP group name is automatically derived from the name. For example, if a new Org is created and is named Test, the corresponding LDAP group will be named open-audit_orgs_test.'] = '如果创建了新的Org,则LDAP组名会自动从名称中衍生出来. 例如,如果创建一个新的Org并命名为Test,相应的LDAP组将被命名为open-audit_orgs_test.';
-
-$GLOBALS["lang"]['If a port responds with filtered, should we consider it available.'] = '如果一个端口用过滤器响应,我们是否认为它可用.';
-
-$GLOBALS["lang"]['If a port responds with open|filtered, should we consider it available.'] = '如果一个端口有被打开的过滤器响应, 我们是否认为它可用 。';
-
-$GLOBALS["lang"]['If a remote device does not exist in the Open-AudIT selected devices, should we delete it from the external system.'] = '如果在Open-AudIT所选设备中不存在远程设备,我们是否应该从外部系统中删除.';
-
-$GLOBALS["lang"]['If an Open-AudIT device has been changed, should we update the external system.'] = '如果 Open-AudIT 设备已被更改, 我们是否应该更新外部系统 。';
-
-$GLOBALS["lang"]['If an Open-AudIT device is not on the external system, should we create it.'] = '如果一个 Open-AudIT 设备不在外部系统中,我们是否应该创建它.';
-
-$GLOBALS["lang"]['If an agent reports its primary IP is in this subnet, perform the actions.'] = '如果代理报称其主IP在此子网中,则执行动作.';
-
-$GLOBALS["lang"]['If any of these (comma seperated, no spaces) ports are detected, assume SSH is running on them and use them for auditing. No need to add this port to the Custom TCP ports - it will be added automatically.'] = '如果检测到任何这些( 压缩、 无空格 ) 端口, 假设 SSH 运行在端口上, 并将其用于审计 。 不需要将此端口添加到自定义 TCP 端口 - 它将自动添加 。';
-
-$GLOBALS["lang"]['If no operator is specified, the default is =. Properties should be fully qualified - ie, devices.hostname (not just hostname).'] = '如果没有指定运算符,则默认值为=. 属性应完全合格 - ie, 设备. hostname( 不仅仅是主机名) 。';
-
-$GLOBALS["lang"]['If no value is present, supply this value. EG: for system.nmis_group / configuraion.group we use'] = '如果没有值,请提供该值。 EG:用于system.nmis_group / 配置. 我们使用的组';
-
-$GLOBALS["lang"]['If set, holds a JSON array of specific device columns this user has chosen to see, other than the configuration default.'] = '如果设定了, 则持有一个 JSON 阵列, 由该用户选择查看的特定设备列组成, 但配置默认值除外 。';
-
-$GLOBALS["lang"]['If the OS Family (as reported by the device) contains this item, pass.</li>'] = '如果OS Family(由设备报告)包含此项目,请通过.';
-
-$GLOBALS["lang"]['If the Open-AudIT Server has Collectors reporting to it, an additional drop down is provided. You can select this to specify which Collector the task should run on. Only Discovery tasks are supported for Collectors.'] = '如果Open-AudIT服务器有向它报告的收集器,则会提供额外的下调. 您可以选择此选项来指定任务要运行的收集器 。 仅支持收集器的发现任务 。';
-
-$GLOBALS["lang"]['If the agent OS family (case insensitive) contains this string, perform the actions.'] = '如果代理 OS 家族( 大小写不敏感) 包含此字符串, 请执行动作 。';
-
-$GLOBALS["lang"]['If the binary is not found in either of these locations, a warning message will be displayed in the installer.'] = '如果在上述两个位置都找不到二进制,则会在安装器中显示警告消息.';
-
-$GLOBALS["lang"]['If the following conditions are met:<br><ul><li>a Role has an assigned ad_group</li><li>an Org has an assigned ad_group</li><li>an LDAP Server has use_roles set to y</li><li>a user exists in LDAP (be it Active Directory or OpenLDAP) and is in the assigned ad_groups</li></ul>That user can log on to Open-AudIT without an account in Open-AudIT needing to be created. Open-AudIT will query the LDAP in question and if the user is in the required groups but not in Open-AudIT, their user attributes (name, full name, email,  roles, orgs, etc) within Open-AudIT will be automatically populated and they will be logged on.<br> <br>'] = '符合下列条件的: 1.<br/><ul><li>a 角色指定了组</li><li>一个 Org 指定了一个 ad_ 组</li><li>一个 LDAP 服务器已使用_ roles 设置为 Y</li><li>用户存在于 LDAP( 无论是活动目录还是 OpenLDAP) , 并存在于指定的 ad_ groups</li></ul>该用户无需在 Open-AudIT 中创建账户即可登录到 Open-AudIT 。 Open-AudIT将查询相关的LDAP,如果用户属于需要的组,但不属于Open-AudIT,其Open-AudIT内部的用户属性(名称,全名,电子邮件,角色,orgs等)将自动被登录并登录.<br/> <br/>';
-
-$GLOBALS["lang"]['If the local field is true (bool) or y (string) or Y (string) or 1 (integer) then set the external data to 1.'] = '如果本地字段为真(bool)或y(字符串)或Y(字符串)或1(整数),那么将外部数据设置为1.';
-
-$GLOBALS["lang"]['If the local field is true (bool) or y (string) or Y (string) or 1 (integer) then set the external data to y.'] = '如果本地字段为真(bool)或y(字符串)或Y(字符串)或1(整数),则将外部数据设置为y.';
-
-$GLOBALS["lang"]['If the primary IP (as reported by the device) is in this subnet, pass.</li>'] = '如果初级IP(由设备报告)在这个子网中,通过.';
-
-$GLOBALS["lang"]['If the user account does not actually exist within Open-AudIT and <code>use_authorisation</code> is set, the user will be created. If it does exist, details such as email, full name, etc will be populated.'] = '如果用户账户在 Open-AudIT 和 <code>use_authorisation</code> ,将创建用户。 如果它确实存在,则会包含电子邮件,全名等细节.';
-
-$GLOBALS["lang"]['If the user either does not have valid credentials or is not in at least one Open-AudIT Role and Group (when using <code>use_authorisation</code>), Open-AudIT will fallback to using local Open-AudIT user details and attempt authentication and authorization there. Failing that, the user will be denied access.'] = '如果用户没有有效证书,或至少没有在 Open-AudIT 角色和组中(在使用时) <code>use_authorisation</code>),Open-AudIT将回落到使用本地的Open-AudIT用户细节,并在那里尝试认证和授权. 否则,用户将被拒绝访问。';
-
-$GLOBALS["lang"]['If the user logging on to Open-AudIT does not have the access to search LDAP, you can use another account which does have this access.'] = '如果登录到 Open-AudIT 的用户无法访问搜索 LDAP, 您可以使用另一个有此访问权限的账户 。';
-
-$GLOBALS["lang"]['If the user logging on to Open-AudIT does not have the access to search OpenLDAP, you can use another account which does have this access. Use the dn_account and dn_password to configure this.'] = '如果登录到 Open-AudIT 的用户无法访问搜索 OpenLDAP, 您可以使用另一个有此访问权限的账户 。 使用 dn_count 和 dn_ password 来配置此选项 。';
-
-$GLOBALS["lang"]['If the value is not set, the current timestamp will be used.'] = '如果不设定值,将使用当前时间戳 。';
-
-$GLOBALS["lang"]['If the value is set, that timestamp value will be used.'] = '如果设置了值,则使用时间戳值。';
-
-$GLOBALS["lang"]['If this change does not work for you, all is not lost. We have added a configuration item (set to n by default, so it will use not this new option out of the box) called discovery_use_org_id_match. If you change it to y then the OrgID assigned to the device by the discovery will be used in the relevant match rules.'] = '如果这个改变对你没有用,就不会失去一切。 我们添加了一个配置项目(默认设置为n,因此它不会使用框外的这个新选项),称为发现_use_org_id_ match. 如果将其更改为y,则由发现分配给设备的OrgID将在相关匹配规则中使用.';
-
-$GLOBALS["lang"]['If this many minutes (or more) have passed since the server last saw the device, pass.</li>'] = '如果从服务器上次看到设备后这几分钟(或更长)已经过去,请通过.';
-
-$GLOBALS["lang"]['If this many or more minutes have passed since the device contacted the server, perform the actions.'] = '如果设备联系到服务器后这多或多分钟已经过去,请执行动作.';
-
-$GLOBALS["lang"]['If this occurs then the issue you are seeing is related to the table control being used on the webpage. It only stores in memory the state of the check boxes for the current page being viewed. If you make selections, then page forward/back those selections will be lost. You can, however, accomplish what you want by expanding the number of devices shown on each page. In the top-left corner is a drop-down labeled “records per page”; use this to expand the number of entries displayed until you see all you want to select for Bulk Edit.'] = '如果发生这种情况, 那么您所看到的问题与网页上使用的表格控制有关 。 它只存储当前页面查看的复选框状态。 如果您选择了, 那么这些选择将会丢失 。 然而,您可以通过扩充每页显示的设备数量来完成您想要的任务. 在左上角有一个下拉式标签的“每页记录”;使用这个来扩展显示的条目数,直到您看到您想要为批量编辑选择的所有条目。';
-
-$GLOBALS["lang"]['If we detect the san management software, should we run an auto-discover before the query.'] = '如果我们检测到San管理软件,我们应该在查询前运行一个自动发现器.';
-
-$GLOBALS["lang"]['If you add a Location Type, add those icons to'] = '如果添加位置类型,请将图标添加到';
-
-$GLOBALS["lang"]['If you add a device type, to display the associated icon you will have to manually copy the .svg formatted file to the directory'] = '如果您添加了设备类型, 要显示相关的图标, 您必须手动将 . svg 格式化文件复制到目录中';
-
-$GLOBALS["lang"]['If you are a supported FirstWave customer,a couple of items will make helping your easier. Open a support ticket with FirstWave and attach the logfile. Also include the output from the Support button on the upper right of the'] = '如果您是FirstWave的客户,一些东西会帮助您。 使用 FirstWave 打开支持票并附加日志文件. 还包括支持按钮在右上方的输出';
-
-$GLOBALS["lang"]['If you are a supported customer and open a support ticket with FirstWave, please attach these files.'] = '如果您是受支持的客户, 并用 FirstWave 打开支持票, 请附上这些文件 。';
-
-$GLOBALS["lang"]['If you are having issues with Google Maps API keys or your company does not have access to create Google Maps API keys, please contact the FirstWave support team.'] = '如果您与 Google Maps API 密钥有问题, 或者您的公司无法创建 Google Maps API 密钥, 请联系 FirstWave 支援团队 。';
-
-$GLOBALS["lang"]['If you are on Windows or your NMIS server is remote, you will need to supply the URL, username and password to access that server.'] = '如果您在 Windows 或者您的 NMIS 服务器是远程的, 您需要提供访问该服务器的 URL、 用户名和密码 。';
-
-$GLOBALS["lang"]['If you are on a decent broadband or ethernet connection, I would recommend always using -T4 (Aggressive). Some people love -T5 (Insane) though it is too aggressive for my taste. People sometimes specify -T2 (Polite) because they think it is less likely to crash hosts or because they consider themselves to be polite in general. They often do not realize just how slow -T2 really is. Their scan may take ten times longer than a default scan. Machine crashes and bandwidth problems are rare with the default timing options -T3 (Normal) and so I normally recommend that for cautious scanners. Omitting version detection is far more effective than playing with timing values at reducing these problems.'] = '若您使用良好的宽带或网路连接, 有些人喜欢T5, 人们有时会指定-T2(Polite),因为他们认为崩溃主机的可能性较小,或者因为他们认为自己在一般情况下是礼貌的. 他们常常不知道T2到底有多慢 他们的扫描可能比默认扫描要长十倍. 机器崩溃和带宽问题在默认的计时选项-T3(Normal)中是罕见的,所以我通常建议谨慎的扫描仪使用. 刻录版本检测比玩计时值减少这些问题更有效.';
-
-$GLOBALS["lang"]['If you are running a RedHat or Centos system and you have upgraded Nmap, please reset the SUID on the binary by'] = '如果您正在运行一个 RedHat 或 Centos 系统, 您已经升级了 Nmap, 请在二进制上重置 SUID 。';
-
-$GLOBALS["lang"]['If you are running an Open-AudIT server on Linux, this does not affect you.'] = '如果您正在 Linux 上运行 Open-AudIT 服务器, 这不会影响您 。';
-
-$GLOBALS["lang"]['If you are using Open-AudIT on Windows or if your NMIS server is not on your Open-AudIT Server (in the case of some Linux installs), you will need to supply access credentials and a URL to the remote NMIS - but that is all! Yes - Integrations between NMIS and Open-AudIT even work with Windows based Open-AudIT now!'] = '如果您正在Windows上使用 Open-AudIT, 或者您的 NMIS 服务器不在 Open-AudIT 服务器上( 如果是一些 Linux 安装的话), 您将需要向远程 NMIS 提供访问权限和 URL - 但仅此而已 ! 是的 - NMIS和Open-AudIT之间的整合,甚至现在与基于Windows的Open-AudIT合作!';
-
-$GLOBALS["lang"]['If you choose a Collector, it will be scheduled to execute on the next 5 minute boundary.'] = '如果你选择一个收集器,它将被安排在接下来的5分钟边界上执行.';
-
-$GLOBALS["lang"]['If you do normally set devices_assigned_to_org and the configuration item is enabled, then the OrgID will be used to further refine the match.'] = '如果您在正常情况下设置了设备_ assigned_to_org,并启用了配置项目,则会使用OrgID来进一步完善匹配.';
-
-$GLOBALS["lang"]['If you do not normally set devices_assigned_to_org, then it will have no effect. We only check using the OrgID if it has been set in discovery (or manually in an audit script) and enabled in the configuration.'] = '如果您通常不设置设备_ assigned_to_org,则将无效果 。 我们只检查OrgID是否在发现中被设定(或手动在审计脚本中),并在配置中启用.';
-
-$GLOBALS["lang"]['If you enable the configuration item, use discovery to assign an Org and then subsequently change the OrgID of a device after discovery then you will likely have a new device created the next time the discovery runs. In this instance, you should probably just unset devices_assigned_to_org before running subsequent discoveries. This is because (in this instance) you have told Open-AudIT <i>these devices from this discovery belong to Org X<i>, but then changed the Org of the device. You have changed the stored devices information. In this case - there is no no longer a device belonging to Org X, so we create a new one.'] = '如果您启用配置项目, 请使用发现来指定一个 Org , 然后在发现后更改设备的 OrgID , 那么您很可能在下一次发现运行时创建一个新设备 。 在此情况下, 在运行后续发现之前, 您可能只应该使用未设置的设备_ assigned_to_org 。 这是因为你告诉了Open-AudIT <i>这些设备属于Org X<i>,但后来更改了设备的 Org 。 您已更改存储的设备信息 。 在这种情况下 - 不再有属于Org X的设备,所以我们创造了一个新的设备.</i></i>';
-
-$GLOBALS["lang"]['If you have Anti-Virus software running, allowing the services of Opmantek (omkd), Apache (apache2.2) and MySQL (mysql) to auto start and run is essential. These services are used by Open-AudIT. You should only need to do this once. If your Anti-Virus program keeps prompting you about Open-AudIT, please post to the forums or send an email to support with the name and version of your Anti-Virus software.'] = '如果您有Anti-Virus软件运行,允许Opmantek(omkd),Apache(apach2.2)和MySQL(mysql)自动启动和运行的服务是必不可少的. 这些服务被Open-AudIT使用. 你应该只做一次 如果您的反病毒程序继续提示您关于 Open-AudIT 的内容, 请发送到论坛或发送电子邮件支持您的反病毒软件的名称和版本 。';
-
-$GLOBALS["lang"]['If you have working credentials, you can expect the full amount of information possible.<br><br>Obviously, the best way to use Open-AudIT is to have working credentials for the devices being discovered (be they WMI, SSH, or SNMP credentials).<br><br>We also have a page on auditing without credentials.'] = '若您有工作证明,您可期待获得所有可能的信息。<br/><br/>显然,使用Open-AudIT的最佳方式是拥有被发现设备的工作证书(无论是WMI,SSH,还是SNMP证书).<br/><br/>我们还有一个关于无证书的审计的网页。';
-
-$GLOBALS["lang"]['If you include the \"id\" field <strong>and</strong> set it with a number, that item will be updated rather than created.'] = '如果您包含 & “ id\” 字段 <strong>和</strong> 设置一个编号,该项目将更新而不是创建。';
-
-$GLOBALS["lang"]['If you need to configure Active Directory access, you can usually use the example of <code>cn=Users,dc=your,dc=domain,dc=com</code> for your <code>base_dn</code>. There is no need to set <code>user_dn</code>.'] = '如果需要配置活动目录访问,通常可以使用示例 <code>cn=Users,dc=your,dc=domain,dc=com</code> 送给你的 <code>base_dn</code>。 。 。 没有必要设置 <code>user_dn</code>。 。 。';
-
-$GLOBALS["lang"]['If you need to configure OpenLDAP access for your users and a given users access DN is normally <code>uid=username@domain,cn=People,dc=your,dc=domain,dc=com</code> then you should set <code>base_dn</code> to <code>dc=your,dc=domain,dc=com</code> and <code>user_dn</code> to <code>uid=@username@@domain,cn=People</code>. The special words <code>@username</code> and <code>@domain</code> will be replaced by the login details provided by your user on the login page.'] = '如果您需要配置用户的 OpenLDAP 访问权限, 而给定用户访问 DN 通常是 <code>uid=username@domain,cn=People,dc=your,dc=domain,dc=com</code> 那你应该准备好 <code>base_dn</code> 改为: <code>dc=your,dc=domain,dc=com</code> 和 <code>user_dn</code> 改为: <code>uid=@username@@domain,cn=People</code>。 。 。 特别的词 <code>@username</code> 和 <code>@domain</code> 将被用户在登录页面上提供的登录细节所取代。';
-
-$GLOBALS["lang"]['If you run discovery upon a subnet that the Server (or Collector) is directly installed on, you can expect the following for responding devices'] = '如果您在服务器( 或收集器) 直接安装的子网上运行发现, 您可以期待响应设备的以下操作';
-
-$GLOBALS["lang"]['If you run discovery upon a subnet that your Server (or Collector) is not directly installed on, you can expect the following for responding devices'] = '如果您运行一个子网发现您的服务器( 或 Collector) 没有直接安装, 您可以期待响应设备的以下操作';
-
-$GLOBALS["lang"]['If you select a List type, an additional field will appear called Values. You should put a comma separated list of selectable values here. These will display in a dropdown box whenever the field is edited.'] = '如果选择列表类型,则会出现一个额外的字段,称为值。 您应该在此设置一个可选值的逗号分隔列表 。 当字段被编辑时, 这些字段会显示在一个下拉框中 。';
-
-$GLOBALS["lang"]['If you set the values for'] = '如果设置值为:';
-
-$GLOBALS["lang"]['If you want to force your Agents to use a particular configuration, you can supply the ID of the agents entry to use, as below (replace $id with the number of the Agents entry). When this Agent is installed, it will check-in with the sevrer and <strong>only</strong> check that one individual Agent entrys attributes (tests and actions). This may be useful if you are an MSP - create an Agents entry for a particular customer and have their devices all use this entry, which assigns them to an Org and Location.'] = '如果您想要强迫你的特工使用特定的配置,您可以提供要使用的代理条目的ID,如下文所示(用代理条目的号码替换$id). 当这个代理安装后,它将会与Sevrer和 <strong>仅限</strong> 检查一个人 代理条目属性(测试和动作). 如果您是MSP - 为特定客户创建代理条目, 并让其设备全部使用此条目, 指定它们为 Org 和 位置, 这可能有用 。';
-
-$GLOBALS["lang"]['If you wish to dig in and customize the Integration, click the Advanced button (and try not to be overwhelmed!).'] = '如果您想要挖掘并自定义集成, 请单击高级按钮( 并尽量不被覆盖 !) 。';
-
-$GLOBALS["lang"]['If you wish to run a Discovery on an externally provided device, select the option and when the Integration is created, so s the Discovery.'] = '如果您希望在外部提供的设备上运行一个发现器,请选择选项和创建集成器时,所以选择发现器.';
-
-$GLOBALS["lang"]['If you would like to use the script outside of Discovery we have created another endpoint called <i>scripts</i>. See the documentation'] = '如果您想在"发现"之外使用剧本,我们创建了另一个终点,叫做 <i>脚本</i>。 。 。 见文件';
-
-$GLOBALS["lang"]['If your user does not have <i>Run as Administrator</i> rights, they can still download the agent (first command above) and run it to submit an audit as below. It will be a one-off audit without the Agent being installed or scheduled.'] = '如果用户没有 <i>作为管理员运行</i> 权利,他们仍然可以下载代理(上面的第一命令)并运行它提交如下的审计. 这将是一次性审计,没有安装或安排代理。';
-
-$GLOBALS["lang"]['ifadminstatus'] = '成人状态';
-
-$GLOBALS["lang"]['Ifadminstatus'] = '成人状态';
-
-$GLOBALS["lang"]['iflastchange'] = '最后更改';
-
-$GLOBALS["lang"]['Iflastchange'] = '最后更改';
-
-$GLOBALS["lang"]['Ignore Invalid SSL'] = '忽略无效的 SSL';
-
-$GLOBALS["lang"]['Ignored'] = '已忽略';
-
-$GLOBALS["lang"]['image'] = '图像';
-
-$GLOBALS["lang"]['Image'] = '图像';
-
-$GLOBALS["lang"]['Images'] = '图像';
-
-$GLOBALS["lang"]['impact_availability'] = '影响';
-
-$GLOBALS["lang"]['Impact Availability'] = '影响';
-
-$GLOBALS["lang"]['impact_confidentiality'] = '影响 保密';
-
-$GLOBALS["lang"]['Impact Confidentiality'] = '影响 保密';
-
-$GLOBALS["lang"]['impact_integrity'] = '完整性';
-
-$GLOBALS["lang"]['Impact Integrity'] = '完整性';
-
-$GLOBALS["lang"]['Implement selected controls and procedures'] = '执行选定的控制和程序';
-
-$GLOBALS["lang"]['Implementation'] = '执行情况';
-
-$GLOBALS["lang"]['implementation_notes'] = '执行说明';
-
-$GLOBALS["lang"]['Implementation Notes'] = '执行说明';
-
-$GLOBALS["lang"]['Import'] = '导入';
-
-$GLOBALS["lang"]['Import Example Data'] = '导入示例数据';
-
-$GLOBALS["lang"]['Import multiple {collection} using a CSV.'] = '使用 CSV 导入多个 {收集} 。';
-
-$GLOBALS["lang"]['improvement_opportunities'] = '改善机会';
-
-$GLOBALS["lang"]['Improvement Opportunities'] = '改善机会';
-
-$GLOBALS["lang"]['Improves business continuity and resilience'] = '提高业务连续性和复原力';
-
-$GLOBALS["lang"]['In'] = '内';
-
-$GLOBALS["lang"]['In a second tab or window go to your OKTA console and click <i>Create App Integration</i>.'] = '在第二个标签或窗口中到您的 OKTA 控制台点击 <i>创建 App 集成</i>。 。 。';
-
-$GLOBALS["lang"]['In a second tab or window sign-on to your'] = '在第二个标签或窗口上签名到您';
-
-$GLOBALS["lang"]['In my personal opinion, the best way to find and audit every single item on your network is a Seed Discovery for each subnet, restricted to that subnet (using credentials). Seed Discoveries use switch, router and computer MAC Address tables to not miss a single device. If it is connected to the network and uses TCP/IP, a switch/router/computer has to know it is there - thats just how TCP/IP works. Combine that with custom TCP and/or UDP ports and you should then be able to determine the device type as well. But thats just my personal preference'] = '我个人认为,在你的网络上找到和审计每个单项的最佳方式是每个子网的种子发现,仅限于该子网(使用证书). 种子发现者使用开关,路由器和计算机MAC地址表来不错过单个设备. 如果连接到网络并使用TCP/IP,开关/路由器/计算机必须知道它的存在——这就是TCP/IP的运作方式. 与自定义 TCP 和/或 UDP 端口合并, 您也应该能够确定设备类型 。 但那只是我个人的偏好';
-
-$GLOBALS["lang"]['In order for Open-AudIT to be able to apply user permissions on items, we mandate the user of <code>WHERE @filter</code>. If you do not use this format, the queryCreateForm will throw a warning. Only users with the Admin role are permitted to create queries that lack this attribute and even then, only after the configuration item for <i>advanced_queries</i> has been enabled.'] = '为了使Open-AudIT能够对项目应用用户权限,我们授权用户 <code>WHERE @filter</code>。 。 。 如果您不使用此格式, 查询CreateForm 将发出警告 。 仅允许具有管理员作用的用户创建缺少此属性的查询,即使如此,也只能在配置项之后 <i>高级</i> 已启用。';
-
-$GLOBALS["lang"]['In order to enable Google Maps you will need to a Google API Key follow this link and log in with your Google account,'] = '为了启用 Google 地图, 您需要一个 Google API 密钥 。 谷歌账户,';
-
-$GLOBALS["lang"]['In order to use the Azure Rest API, you will need to create an Azure Active Directory Application that is used for authentication.'] = '为了使用Azure Rest API,您需要创建用于认证的Azure Active 目录应用程序.';
-
-$GLOBALS["lang"]['In order to use this functionality, it must be enabled in the configuration - click'] = '要使用此功能, 必须启用配置 - 单击';
-
-$GLOBALS["lang"]['In the (comma seperated) list'] = '在( 汇总) 列表中';
-
-$GLOBALS["lang"]['In the case of <code>in</code> and <code>notin</code>, you should enclose the values in round brackets and separate them using a comma (just a comma, not a comma, then space).<br><br>With these operators you can filter quite comprehensively.<br><br>When you add data and filter on multiple columns, those columns are combined using <strong>AND</strong>. You cannot filter using an <strong>OR</strong> condition. With the inclusion of <code>notin</code>, you should be able to get most searches working. And for those that do really require unsupported and complex selections, you can always write an actual query.'] = '在涉及 <code>in</code> 和 <code>notin</code>中,您应当将数值置于圆括号中,并使用逗号(只是逗号,而不是逗号,然后是空格)将其分开。<br/><br/>使用这些运算符,您可以相当全面地过滤 。<br/><br/>当在多个列上添加数据和过滤器时,这些列会使用 <strong>和</strong>。 。 。 您无法使用一个 <strong>或</strong> 条件。 列入 <code>notin</code>,你应该能够 让大多数搜索工作。 而对于那些确实需要不支持和复杂的选择的人,你总是可以写一个实际的查询.';
-
-$GLOBALS["lang"]['In the case where we store several fields (usually in JSON format) inside a BIGTEXT MySQL field (eg: credentials.credentials - the credentials column in the credentials table), you should use the format'] = '在BIGTEXT MySQL字段(如:certification)内存储多个字段(通常为JSON格式)的情况下. 全权证书 - 全权证书表内的全权证书栏,请使用格式';
-
-$GLOBALS["lang"]['In the command prompt shell, navigate to the download directory (likely <code>cd Downloads</code>).'] = '在命令提示 shell中,导航到下载目录(可能 <code>cd Downloads</code>) (中文(简体) ).';
-
-$GLOBALS["lang"]['Inactive'] = '非活动';
-
-$GLOBALS["lang"]['Incomplete'] = '不完整';
-
-$GLOBALS["lang"]['Index'] = '指数';
-
-$GLOBALS["lang"]['India'] = '印度';
-
-$GLOBALS["lang"]['Indonesia'] = '印度尼西亚';
-
-$GLOBALS["lang"]['Indonesian'] = '印度尼西亚语';
-
-$GLOBALS["lang"]['Info'] = '资讯';
-
-$GLOBALS["lang"]['Information only.'] = '仅供参考。';
-
-$GLOBALS["lang"]['Informational'] = '资料';
-
-$GLOBALS["lang"]['initial_size'] = '初始大小';
-
-$GLOBALS["lang"]['Initial Size'] = '初始大小';
-
-$GLOBALS["lang"]['Initial login credentials are'] = '初始登录证书为';
-
-$GLOBALS["lang"]['Initiation'] = '启动';
-
-$GLOBALS["lang"]['inode'] = '图标';
-
-$GLOBALS["lang"]['Inode'] = '图标';
-
-$GLOBALS["lang"]['Input'] = '投入';
-
-$GLOBALS["lang"]['Input Type'] = '输入类型';
-
-$GLOBALS["lang"]['inputs'] = '输入';
-
-$GLOBALS["lang"]['Inputs'] = '输入';
-
-$GLOBALS["lang"]['Insane'] = '神经病';
-
-$GLOBALS["lang"]['Insert a new {collection} entry.'] = '插入新 {收集} 条目 。';
-
-$GLOBALS["lang"]['Insert example data and discover all that Open-AudIT can tell you.'] = '插入示例数据并发现 Open-AudIT 能告诉你的所有信息 。';
-
-$GLOBALS["lang"]['Insert your Purchased license Key'] = '插入您的密码 购买许可证 密钥';
-
-$GLOBALS["lang"]['install'] = '安装';
-
-$GLOBALS["lang"]['Install'] = '安装';
-
-$GLOBALS["lang"]['install_date'] = '安装日期';
-
-$GLOBALS["lang"]['Install Date'] = '安装日期';
-
-$GLOBALS["lang"]['install_directory'] = '安装目录';
-
-$GLOBALS["lang"]['Install Directory'] = '安装目录';
-
-$GLOBALS["lang"]['Install OpenScap if required'] = '需要安装 OpenScap';
-
-$GLOBALS["lang"]['install_source'] = '安装源';
-
-$GLOBALS["lang"]['Install Source'] = '安装源';
-
-$GLOBALS["lang"]['Install Support'] = '安装支持';
-
-$GLOBALS["lang"]['installed_by'] = '安装于';
-
-$GLOBALS["lang"]['Installed By'] = '安装于';
-
-$GLOBALS["lang"]['installed_on'] = '安装于';
-
-$GLOBALS["lang"]['Installed On'] = '安装于';
-
-$GLOBALS["lang"]['Installing'] = '安装';
-
-$GLOBALS["lang"]['Installing on Linux'] = '在 Linux 上安装';
-
-$GLOBALS["lang"]['Installing on MacOS'] = '在 MacOS 上安装';
-
-$GLOBALS["lang"]['Installing on Windows'] = '在窗口上安装';
-
-$GLOBALS["lang"]['instance'] = '实例';
-
-$GLOBALS["lang"]['Instance'] = '实例';
-
-$GLOBALS["lang"]['instance_ident'] = '实例标识';
-
-$GLOBALS["lang"]['Instance Ident'] = '实例标识';
-
-$GLOBALS["lang"]['instance_options'] = '实例选项';
-
-$GLOBALS["lang"]['Instance Options'] = '实例选项';
-
-$GLOBALS["lang"]['instance_provider'] = '实例提供者';
-
-$GLOBALS["lang"]['Instance Provider'] = '实例提供者';
-
-$GLOBALS["lang"]['instance_reservation_ident'] = '实例保留 标识';
-
-$GLOBALS["lang"]['Instance Reservation Ident'] = '实例保留 标识';
-
-$GLOBALS["lang"]['instance_state'] = '实例国';
-
-$GLOBALS["lang"]['Instance State'] = '实例国';
-
-$GLOBALS["lang"]['instance_tags'] = '实例标记';
-
-$GLOBALS["lang"]['Instance Tags'] = '实例标记';
-
-$GLOBALS["lang"]['instance_type'] = '实例类型';
-
-$GLOBALS["lang"]['Instance Type'] = '实例类型';
-
-$GLOBALS["lang"]['Integer'] = '整数';
-
-$GLOBALS["lang"]['Integration'] = '一体化';
-
-$GLOBALS["lang"]['integrations'] = '一体化';
-
-$GLOBALS["lang"]['Integrations'] = '一体化';
-
-$GLOBALS["lang"]['integrations_id'] = '整合标识';
-
-$GLOBALS["lang"]['Integrations ID'] = '整合标识';
-
-$GLOBALS["lang"]['integrations_log'] = '整合日志';
-
-$GLOBALS["lang"]['Integrations Log'] = '整合日志';
-
-$GLOBALS["lang"]['Integrations can be scheduled as desired. This is left to the user.'] = '一体化可以按需要安排。 这是留给用户的 。';
-
-$GLOBALS["lang"]['Integrations can be scheduled as per Discoveries, Queries, et al.'] = '整合可以按照"发现","查询"等计划进行.';
-
-$GLOBALS["lang"]['Interactive Dashboards'] = '交互式盘片';
-
-$GLOBALS["lang"]['Interactive dashboards provide instant visibility into the status of network inventory allowing IT teams to spot newly discovered devices and unusual device behaviour at a glance.'] = '互动仪表板可以即时可见网络库存状况,使IT团队可以一目了然地发现新发现的装置和不寻常的装置行为.';
-
-$GLOBALS["lang"]['interface'] = '接口';
-
-$GLOBALS["lang"]['Interface'] = '接口';
-
-$GLOBALS["lang"]['interface_id'] = '接口 ID';
-
-$GLOBALS["lang"]['Interface ID'] = '接口 ID';
-
-$GLOBALS["lang"]['interface_type'] = '接口类型';
-
-$GLOBALS["lang"]['Interface Type'] = '接口类型';
-
-$GLOBALS["lang"]['Internal'] = '内部';
-
-$GLOBALS["lang"]['Internal Audit'] = '内部审计';
-
-$GLOBALS["lang"]['Internal Audit & Review'] = '内部审计和审查';
-
-$GLOBALS["lang"]['Internal Field Name'] = '内部字段名称';
-
-$GLOBALS["lang"]['Internal ID'] = '内部标识';
-
-$GLOBALS["lang"]['Internal JSON array of valid access tokens for this user.'] = '内部 JSON 阵列, 此用户的有效访问符 。';
-
-$GLOBALS["lang"]['Introduction'] = '导言';
-
-$GLOBALS["lang"]['invoice'] = '发票';
-
-$GLOBALS["lang"]['Invoice'] = '发票';
-
-$GLOBALS["lang"]['invoice_id'] = '发票身份证';
-
-$GLOBALS["lang"]['Invoice ID'] = '发票身份证';
-
-$GLOBALS["lang"]['invoice_item'] = '发票项目';
-
-$GLOBALS["lang"]['Invoice Item'] = '发票项目';
-
-$GLOBALS["lang"]['ios_version'] = 'Ios 版本';
-
-$GLOBALS["lang"]['Ios Version'] = 'Ios 版本';
-
-$GLOBALS["lang"]['ip_address_external_a'] = '叶地址外部 A';
-
-$GLOBALS["lang"]['Ip Address External A'] = '叶地址外部 A';
-
-$GLOBALS["lang"]['ip_address_external_b'] = '叶地址 外部 B';
-
-$GLOBALS["lang"]['Ip Address External B'] = '叶地址 外部 B';
-
-$GLOBALS["lang"]['ip_address_internal_a'] = '叶地址内部 A';
-
-$GLOBALS["lang"]['Ip Address Internal A'] = '叶地址内部 A';
-
-$GLOBALS["lang"]['ip_address_internal_b'] = '叶地址 内部 B';
-
-$GLOBALS["lang"]['Ip Address Internal B'] = '叶地址 内部 B';
-
-$GLOBALS["lang"]['ip_all_count'] = '叶子全数';
-
-$GLOBALS["lang"]['Ip All Count'] = '叶子全数';
-
-$GLOBALS["lang"]['ip_audited_count'] = '叶子审计数';
-
-$GLOBALS["lang"]['Ip Audited Count'] = '叶子审计数';
-
-$GLOBALS["lang"]['ip_discovered_count'] = '发现的叶子数';
-
-$GLOBALS["lang"]['Ip Discovered Count'] = '发现的叶子数';
-
-$GLOBALS["lang"]['ip_enabled'] = '叶子已启用';
-
-$GLOBALS["lang"]['Ip Enabled'] = '叶子已启用';
-
-$GLOBALS["lang"]['ip_responding_count'] = '叶回应计数';
-
-$GLOBALS["lang"]['Ip Responding Count'] = '叶回应计数';
-
-$GLOBALS["lang"]['ip_scanned_count'] = '叶子扫描数';
-
-$GLOBALS["lang"]['Ip Scanned Count'] = '叶子扫描数';
-
-$GLOBALS["lang"]['Iran'] = '伊朗伊斯兰共和国';
-
-$GLOBALS["lang"]['Iraq'] = '伊拉克';
-
-$GLOBALS["lang"]['Ireland'] = '爱尔兰';
-
-$GLOBALS["lang"]['Irish'] = '爱尔兰语Name';
-
-$GLOBALS["lang"]['Is FRU'] = '是FRU吗?';
-
-$GLOBALS["lang"]['is_fru'] = '是芙鲁吗?';
-
-$GLOBALS["lang"]['Is Fru'] = '是芙鲁吗?';
-
-$GLOBALS["lang"]['Is the NMIS server local (on this Open-AudIT server) or remote?'] = 'NSIS服务器是本地的(在这个Open-AudIT服务器上)还是远程的?';
-
-$GLOBALS["lang"]['Is this account active? If set to <code>n</code>, the user cannot logon.'] = '这个账户正常吗? 如果设置为 <code>n</code>,用户无法登录。';
-
-$GLOBALS["lang"]['Is this query restricted to licensed customers.'] = '此查询是否仅限于有执照的客户 。';
-
-$GLOBALS["lang"]['Is this task enabled (y/n).'] = '是否启用此任务( y/ n) 。';
-
-$GLOBALS["lang"]['Isle of Man'] = '马恩岛';
-
-$GLOBALS["lang"]['Israel'] = '以色列';
-
-$GLOBALS["lang"]['Issue'] = '问题';
-
-$GLOBALS["lang"]['issuer'] = '发行商';
-
-$GLOBALS["lang"]['Issuer'] = '发行商';
-
-$GLOBALS["lang"]['issuer_name'] = '发行者名称';
-
-$GLOBALS["lang"]['Issuer Name'] = '发行者名称';
-
-$GLOBALS["lang"]['Issues'] = '问题';
-
-$GLOBALS["lang"]['It <i>Just Works</i> with NMIS'] = '这个 <i>刚刚工作</i> 与 NMIS 连接';
-
-$GLOBALS["lang"]['It is available at Menu -> Help ->'] = '可在菜单上查阅 - > 帮助 - >';
-
-$GLOBALS["lang"]['It is important to note that when Open-AudIT determines a match any properties set to <i>y</i> must match exactly (and not be blank) in order for Open-AudIT to determine that the discovered device matches a device already in the database. If none of the properties marked <i>y</i> match, then a new device entry will be created, which could result in duplicate device entries. In situations where properties are duplicated, for example a dbus_id is copied during a VM clone, then an existing device may incorrectly get overwritten/updated rather then a new entry being created resulting in missing devices.'] = '需要注意的是,当 Open-AudIT 确定匹配任意属性时, <i>尔</i> 必须精确匹配(而不是空白),以便Open-AudIT确定发现的设备是否匹配数据库中已经存在的设备。 如果没有标记属性 <i>尔</i> 匹配,然后创建一个新设备条目,这可能导致设备条目重复。 在属性重复的情况下,例如dbus_id在VM克隆时被复制,那么一个已有的设备可能会被错误地重写/更新,而不是生成一个新的条目,导致设备缺失.';
-
-$GLOBALS["lang"]['It is not uncommon to have an overlapping address space in a given Organisation. Not ideal, but not uncommon.'] = '在特定组织内有重叠地址空间的情况并不罕见。 不理想 但并不罕见';
-
-$GLOBALS["lang"]['It is very common for second tier motherboard manufacturers to not set this, to set it to all <i>0</i>s or even all <i>F</i>s.'] = '第二级母板制造商通常不设置,而是设置给所有人 <i>0 个</i>甚至是所有 <i>页:1</i>编号';
-
-$GLOBALS["lang"]['Italian'] = '意大利语Name';
-
-$GLOBALS["lang"]['Italy'] = '意大利';
-
-$GLOBALS["lang"]['Items not in Baseline'] = '非基线项目';
-
-$GLOBALS["lang"]['JSON'] = '贾森';
-
-$GLOBALS["lang"]['JSON to Import'] = 'JSON 到导入';
-
-$GLOBALS["lang"]['Jamaica'] = '牙买加';
-
-$GLOBALS["lang"]['January'] = '1月(半天会议)';
-
-$GLOBALS["lang"]['Japan'] = '日本';
-
-$GLOBALS["lang"]['Japanese'] = '日语';
-
-$GLOBALS["lang"]['Jersey'] = '泽西岛';
-
-$GLOBALS["lang"]['Jordan'] = '约旦';
-
-$GLOBALS["lang"]['July'] = '7月(半天会议)';
-
-$GLOBALS["lang"]['June'] = '6月份';
-
-$GLOBALS["lang"]['Kazakhstan'] = '哈萨克斯坦';
-
-$GLOBALS["lang"]['Kenya'] = '肯尼亚';
-
-$GLOBALS["lang"]['kernel_version'] = '内核版本';
-
-$GLOBALS["lang"]['Kernel Version'] = '内核版本';
-
-$GLOBALS["lang"]['Key'] = '密钥';
-
-$GLOBALS["lang"]['Key Components'] = '关键部件';
-
-$GLOBALS["lang"]['Key Password (optional)'] = '密钥密码( 可选)';
-
-$GLOBALS["lang"]['keys'] = '键';
-
-$GLOBALS["lang"]['Keys'] = '键';
-
-$GLOBALS["lang"]['Kiribati'] = '基里巴斯';
-
-$GLOBALS["lang"]['Korea'] = '韩国';
-
-$GLOBALS["lang"]['Korean'] = '韩语';
-
-$GLOBALS["lang"]['Kuwait'] = '科威特';
-
-$GLOBALS["lang"]['Kyrgyz'] = '吉尔吉斯斯坦语Name';
-
-$GLOBALS["lang"]['Kyrgyz Republic'] = '吉尔吉斯共和国';
-
-$GLOBALS["lang"]['LDAP Group'] = 'LDAP 组';
-
-$GLOBALS["lang"]['LDAP was searched for this user and their account was found.'] = 'LDAP被搜索到这个用户,他们的账户被找到.';
-
-$GLOBALS["lang"]['LDAP was searched for this user and their account was not found. Check the LDAP server logs. The user credentials have worked, but the user was not found. Also check you have specified the correct Base DN attribute when you created the LDAP Server in Open-AudIT.'] = 'LDAP 被搜索到此用户, 而他们的账户没有找到 。 检查 LDAP 服务器日志 。 用户证书已经奏效,但是没有找到用户。 同时检查您在 Open-AudIT 中创建 LDAP 服务器时指定了正确的 Base DN 属性 。';
-
-$GLOBALS["lang"]['lang'] = '兰';
-
-$GLOBALS["lang"]['Lang'] = '兰';
-
-$GLOBALS["lang"]['language'] = '语言';
-
-$GLOBALS["lang"]['Language'] = '语言';
-
-$GLOBALS["lang"]['Lao'] = '老挝';
-
-$GLOBALS["lang"]['last_changed'] = '上次更改';
-
-$GLOBALS["lang"]['Last Changed'] = '上次更改';
-
-$GLOBALS["lang"]['last_finished'] = '上次完成';
-
-$GLOBALS["lang"]['Last Finished'] = '上次完成';
-
-$GLOBALS["lang"]['last_logon'] = '最后一个登录';
-
-$GLOBALS["lang"]['Last Logon'] = '最后一个登录';
-
-$GLOBALS["lang"]['Last Name'] = '姓';
-
-$GLOBALS["lang"]['last_os_update'] = '最后一个 Os 更新';
-
-$GLOBALS["lang"]['Last Os Update'] = '最后一个 Os 更新';
-
-$GLOBALS["lang"]['last_result'] = '最后结果';
-
-$GLOBALS["lang"]['Last Result'] = '最后结果';
-
-$GLOBALS["lang"]['last_run'] = '上次运行';
-
-$GLOBALS["lang"]['Last Run'] = '上次运行';
-
-$GLOBALS["lang"]['last_seen'] = '最后见到';
-
-$GLOBALS["lang"]['Last Seen'] = '最后见到';
-
-$GLOBALS["lang"]['last_seen_by'] = '最后见到 以';
-
-$GLOBALS["lang"]['Last Seen By'] = '最后见到 以';
-
-$GLOBALS["lang"]['last_user'] = '最后一个用户';
-
-$GLOBALS["lang"]['Last User'] = '最后一个用户';
-
-$GLOBALS["lang"]['Last up is WMI. For Windows as in Linux, a user with Administrator level access is preferred (see Target Client Configuration on the wiki).'] = '最后一个是WMI。 对于像Linux中的Windows,首选的是具有管理员级别访问权限的用户(见wiki上的目标客户端配置).';
-
-$GLOBALS["lang"]['lastModified'] = '最后修改';
-
-$GLOBALS["lang"]['LastModified'] = '最后修改';
-
-$GLOBALS["lang"]['latitude'] = '纬度';
-
-$GLOBALS["lang"]['Latitude'] = '纬度';
-
-$GLOBALS["lang"]['Latvia'] = '拉脱维亚';
-
-$GLOBALS["lang"]['Latvian'] = '拉脱维亚语Name';
-
-$GLOBALS["lang"]['Layout'] = '版式';
-
-$GLOBALS["lang"]['ldap'] = '长发';
-
-$GLOBALS["lang"]['Ldap'] = '长发';
-
-$GLOBALS["lang"]['ldap_base_dn'] = '立体基础 Dn';
-
-$GLOBALS["lang"]['Ldap Base Dn'] = '立体基础 Dn';
-
-$GLOBALS["lang"]['ldap_dn_account'] = 'Ldap Dn 账户';
-
-$GLOBALS["lang"]['Ldap Dn Account'] = 'Ldap Dn 账户';
-
-$GLOBALS["lang"]['ldap_dn_password'] = 'Ldap Dn 密码';
-
-$GLOBALS["lang"]['Ldap Dn Password'] = 'Ldap Dn 密码';
-
-$GLOBALS["lang"]['Learn About'] = '学习关于';
-
-$GLOBALS["lang"]['Learn More'] = '学习更多';
-
-$GLOBALS["lang"]['lease_expiry_date'] = '租赁到期日期';
-
-$GLOBALS["lang"]['Lease Expiry Date'] = '租赁到期日期';
-
-$GLOBALS["lang"]['Lebanon'] = '黎巴嫩';
-
-$GLOBALS["lang"]['legal_requirements'] = '法律要求';
-
-$GLOBALS["lang"]['Legal Requirements'] = '法律要求';
-
-$GLOBALS["lang"]['Lesotho'] = '莱索托';
-
-$GLOBALS["lang"]['Less Than'] = '减去';
-
-$GLOBALS["lang"]['Less Than or Equals'] = '小于或等于';
-
-$GLOBALS["lang"]['Lets set the logging to debug. Copy the file:'] = '让我们设定日志以调试 。 复制文件 :';
-
-$GLOBALS["lang"]['level'] = '职等';
-
-$GLOBALS["lang"]['Level'] = '职等';
-
-$GLOBALS["lang"]['Level of privileges needed to exploit (None, Low, High).'] = '开发所需的特权水平(无、低、高)。';
-
-$GLOBALS["lang"]['Liberia'] = '利比里亚';
-
-$GLOBALS["lang"]['Libraries (ie, code that another program might include). These are typically items like Wordpress extensions, drupal extensions, node.js libraries, Android / iPhone / Windows libraries, python libraries, etc.'] = '图书馆(i,另一个程序可能包含的代码). 这些通常是Wordpress扩展,drupal扩展,节点.js库,Android / iPhone / Windows库,python库等项目.';
-
-$GLOBALS["lang"]['Libyan Arab Jamahiriya'] = '阿拉伯利比亚民众国';
-
-$GLOBALS["lang"]['License'] = '许可证';
-
-$GLOBALS["lang"]['License Key'] = '许可证密钥';
-
-$GLOBALS["lang"]['License Required'] = '需要许可证';
-
-$GLOBALS["lang"]['Licensed users are free to add or modify the rules as you see fit. If you have a device with an SNMP OID that does not match a model already in the file - now you can add it easily. No more waiting for us to provide a patch and add it to the code base for you.<br><br>When you create a Rules entry, you will need to provide a name and a list of inputs and outputs. The inputs and outputs are stored as JSON arrays within the database.<br><br>Inputs have a table and attribute, an operator and a value. When executing the condition, it works thus: If $table . $attribute $operator $value then apply the outputs.<br><br>An example rule to match an SNMP OID and set the model is below.<br>'] = '被许可的用户可以随意添加或修改您认为合适的规则. 如果您有一个设备带有一个SNMP OID, 它不匹配已经存在于文件中的模型 - 现在你可以轻松添加它 。 不要再等待我们提供补丁 并添加到你的代码基础。<br/><br/>创建规则条目时,需要提供名称和输入及输出列表。 投入和产出作为JSON阵列储存在数据库中.<br/><br/>输入有一个表格和属性,一个操作符和一个值. 因此,在执行条件时,可以: 如果使用$表. $属性$operator $值,则应用产出。<br/><br/>匹配 SNMP OID 并设置模型的示例规则如下.<br/>';
-
-$GLOBALS["lang"]['Licenses'] = '许可证';
-
-$GLOBALS["lang"]['Liechtenstein'] = '列支敦士登';
-
-$GLOBALS["lang"]['Like'] = '喜欢';
-
-$GLOBALS["lang"]['Like most other attributes, Additional Fields can be bulk edited. Use the Bulk Edit function as you normally would and you will see the Additional Fields are available for input.'] = '与大多数其他属性一样,附加字段可以进行批量编辑. 使用通常情况下的批量编辑功能,您将看到附加字段可供输入 。';
-
-$GLOBALS["lang"]['Like versus Equals'] = '像对等';
-
-$GLOBALS["lang"]['limit'] = '限制';
-
-$GLOBALS["lang"]['Limit'] = '限制';
-
-$GLOBALS["lang"]['Limit the query to the first X items.'] = '将查询限制在第一批 X 项 。';
-
-$GLOBALS["lang"]['Limited to 100 rows.'] = '限于百行.';
-
-$GLOBALS["lang"]['line_amount'] = '金额';
-
-$GLOBALS["lang"]['Line Amount'] = '金额';
-
-$GLOBALS["lang"]['Line Graph'] = '行图';
-
-$GLOBALS["lang"]['line_number_a'] = 'A号线';
-
-$GLOBALS["lang"]['Line Number A'] = 'A号线';
-
-$GLOBALS["lang"]['line_number_b'] = 'B号线';
-
-$GLOBALS["lang"]['Line Number B'] = 'B号线';
-
-$GLOBALS["lang"]['line_text'] = '线条文字';
-
-$GLOBALS["lang"]['Line Text'] = '线条文字';
-
-$GLOBALS["lang"]['Line charts must return date or my_date, description or my_description and count.'] = '线性图表必须返回日期或我的_日期、描述或我的_描述和计算。';
-
-$GLOBALS["lang"]['link'] = '链接';
-
-$GLOBALS["lang"]['Link'] = '链接';
-
-$GLOBALS["lang"]['Link (Advanced)'] = '链接( 高级)';
-
-$GLOBALS["lang"]['Linked Files'] = '链接文件';
-
-$GLOBALS["lang"]['links'] = '链接';
-
-$GLOBALS["lang"]['Links'] = '链接';
-
-$GLOBALS["lang"]['Links this discovery to the associated cloud (if required). Links to <code>clouds.id</code>.'] = '将此发现链接到关联云(如果需要). 链接到 <code>clouds.id</code>。 。 。';
-
-$GLOBALS["lang"]['Links to <code>discovery_scan_options.id</code>.'] = '链接到 <code>discovery_scan_options.id</code>。 。 。';
-
-$GLOBALS["lang"]['Links to <code>standards.id</code>'] = '链接到 <code>standards.id</code>';
-
-$GLOBALS["lang"]['Links to <standards_policies.id</code>'] = '链接到 <standards_policies.id< code=""></standards_policies.id<>';
-
-$GLOBALS["lang"]['Linux'] = '链接';
-
-$GLOBALS["lang"]['Linux Packages'] = 'Linux 软件包';
-
-$GLOBALS["lang"]['List'] = '列表';
-
-$GLOBALS["lang"]['List All NMAP Ports, Protocols and Programs for Each Device'] = '列出每个设备的所有 NMAP 端口、协议和程序';
-
-$GLOBALS["lang"]['List Devices'] = '列出设备';
-
-$GLOBALS["lang"]['List Discoveries'] = '列表发现';
-
-$GLOBALS["lang"]['list_table_format'] = '列表格式';
-
-$GLOBALS["lang"]['List Table Format'] = '列表格式';
-
-$GLOBALS["lang"]['List Tables'] = '列表表格';
-
-$GLOBALS["lang"]['Lithuania'] = '立陶宛';
-
-$GLOBALS["lang"]['Lithuanian'] = '立陶宛语Name';
-
-$GLOBALS["lang"]['Load Balancing'] = '装入平衡';
-
-$GLOBALS["lang"]['Local'] = '当地';
-
-$GLOBALS["lang"]['Local Area Network'] = '局域网';
-
-$GLOBALS["lang"]['local_port'] = '本地端口';
-
-$GLOBALS["lang"]['Local Port'] = '本地端口';
-
-$GLOBALS["lang"]['Local area network'] = '局域网';
-
-$GLOBALS["lang"]['Localhost'] = '本地主机';
-
-$GLOBALS["lang"]['Localisation'] = '本地化';
-
-$GLOBALS["lang"]['Location'] = '地点';
-
-$GLOBALS["lang"]['Location A'] = '地点A';
-
-$GLOBALS["lang"]['Location B'] = '地点B';
-
-$GLOBALS["lang"]['location_id'] = '位置标识';
-
-$GLOBALS["lang"]['Location ID'] = '位置标识';
-
-$GLOBALS["lang"]['location_id_a'] = '地点 ID A';
-
-$GLOBALS["lang"]['Location ID A'] = '地点 ID A';
-
-$GLOBALS["lang"]['location_id_b'] = '地点 ID B';
-
-$GLOBALS["lang"]['Location ID B'] = '地点 ID B';
-
-$GLOBALS["lang"]['location_latitude'] = '位置纬度';
-
-$GLOBALS["lang"]['Location Latitude'] = '位置纬度';
-
-$GLOBALS["lang"]['location_level'] = '地点级别';
-
-$GLOBALS["lang"]['Location Level'] = '地点级别';
-
-$GLOBALS["lang"]['location_longitude'] = '位置经度';
-
-$GLOBALS["lang"]['Location Longitude'] = '位置经度';
-
-$GLOBALS["lang"]['Location Name'] = '地点名称';
-
-$GLOBALS["lang"]['location_rack'] = '地点 Rack';
-
-$GLOBALS["lang"]['Location Rack'] = '地点 Rack';
-
-$GLOBALS["lang"]['location_rack_position'] = '地点 Rack 位置';
-
-$GLOBALS["lang"]['Location Rack Position'] = '地点 Rack 位置';
-
-$GLOBALS["lang"]['location_rack_size'] = '地点 Rack 大小';
-
-$GLOBALS["lang"]['Location Rack Size'] = '地点 Rack 大小';
-
-$GLOBALS["lang"]['location_room'] = '地点';
-
-$GLOBALS["lang"]['Location Room'] = '地点';
-
-$GLOBALS["lang"]['location_suite'] = '地点套件';
-
-$GLOBALS["lang"]['Location Suite'] = '地点套件';
-
-$GLOBALS["lang"]['Locations'] = '地点';
-
-$GLOBALS["lang"]['Locations in this'] = '此处的位置';
-
-$GLOBALS["lang"]['log'] = '日志';
-
-$GLOBALS["lang"]['Log'] = '日志';
-
-$GLOBALS["lang"]['log_format'] = '日志格式';
-
-$GLOBALS["lang"]['Log Format'] = '日志格式';
-
-$GLOBALS["lang"]['Log Line'] = '日志行';
-
-$GLOBALS["lang"]['log_path'] = '日志路径';
-
-$GLOBALS["lang"]['Log Path'] = '日志路径';
-
-$GLOBALS["lang"]['log_rotation'] = '日志旋转';
-
-$GLOBALS["lang"]['Log Rotation'] = '日志旋转';
-
-$GLOBALS["lang"]['log_status'] = '日志状态';
-
-$GLOBALS["lang"]['Log Status'] = '日志状态';
-
-$GLOBALS["lang"]['Logging in'] = '登录';
-
-$GLOBALS["lang"]['Logical Cores '] = '逻辑核心 ';
-
-$GLOBALS["lang"]['logical_count'] = '逻辑计算';
-
-$GLOBALS["lang"]['Logical Count'] = '逻辑计算';
-
-$GLOBALS["lang"]['Logout'] = '注销';
-
-$GLOBALS["lang"]['Logs'] = '日志';
-
-$GLOBALS["lang"]['longitude'] = '经度';
-
-$GLOBALS["lang"]['Longitude'] = '经度';
-
-$GLOBALS["lang"]['low'] = '低档';
-
-$GLOBALS["lang"]['Low'] = '低档';
-
-$GLOBALS["lang"]['Lower Case'] = '小写';
-
-$GLOBALS["lang"]['Lowercase Hostname'] = '小写主机名';
-
-$GLOBALS["lang"]['Luxembourg'] = '卢森堡';
-
-$GLOBALS["lang"]['MAC Address'] = 'MAC 地址';
-
-$GLOBALS["lang"]['MAC Manufacturer'] = '邮件 制造商';
-
-$GLOBALS["lang"]['mac'] = '麦克';
-
-$GLOBALS["lang"]['Mac'] = '麦克';
-
-$GLOBALS["lang"]['Mac Address'] = '麦克地址';
-
-$GLOBALS["lang"]['MacOS'] = '麦克OS';
-
-$GLOBALS["lang"]['MacOS Packages'] = 'MacOS 软件包';
-
-$GLOBALS["lang"]['Macao'] = '澳门';
-
-$GLOBALS["lang"]['Macedonia'] = '马其顿';
-
-$GLOBALS["lang"]['Madagascar'] = '马达加斯加';
-
-$GLOBALS["lang"]['Maintain records of risk assessments and treatments'] = '保持风险评估和治疗记录';
-
-$GLOBALS["lang"]['maintenance_expires'] = '保养过期';
-
-$GLOBALS["lang"]['Maintenance Expires'] = '保养过期';
-
-$GLOBALS["lang"]['Make My Default Dashboard'] = '制作我的默认板';
-
-$GLOBALS["lang"]['Make this install a Collector'] = '将此安装为收藏器';
-
-$GLOBALS["lang"]['Malawi'] = '马拉维';
-
-$GLOBALS["lang"]['Malay'] = '马来语Name';
-
-$GLOBALS["lang"]['Malaysia'] = '马来西亚';
-
-$GLOBALS["lang"]['Maldives'] = '马尔代夫';
-
-$GLOBALS["lang"]['Mali'] = '马里';
-
-$GLOBALS["lang"]['Malta'] = '马耳他';
-
-$GLOBALS["lang"]['Manage'] = '管理';
-
-$GLOBALS["lang"]['Manage Licenses'] = '管理许可证';
-
-$GLOBALS["lang"]['Manage in NMIS'] = '在 NMIS 中管理';
-
-$GLOBALS["lang"]['Manage incidents and nonconformities'] = '管理事件和不合规定之处';
-
-$GLOBALS["lang"]['Managed'] = '管理';
-
-$GLOBALS["lang"]['managed_by'] = '管理单位';
-
-$GLOBALS["lang"]['Managed By'] = '管理单位';
-
-$GLOBALS["lang"]['Manual Input'] = '手动输入';
-
-$GLOBALS["lang"]['Manually set by user, defaults to Production.'] = '用户手动设定,默认为Production.';
-
-$GLOBALS["lang"]['Manually set by user.'] = '用户手动设定 。';
-
-$GLOBALS["lang"]['manufacture_date'] = '制造日期';
-
-$GLOBALS["lang"]['Manufacture Date'] = '制造日期';
-
-$GLOBALS["lang"]['manufacturer'] = '制造商';
-
-$GLOBALS["lang"]['Manufacturer'] = '制造商';
-
-$GLOBALS["lang"]['manufacturer_code'] = '制造商代码';
-
-$GLOBALS["lang"]['Manufacturer Code'] = '制造商代码';
-
-$GLOBALS["lang"]['Map'] = '地图';
-
-$GLOBALS["lang"]['maps'] = '地图';
-
-$GLOBALS["lang"]['Maps'] = '地图';
-
-$GLOBALS["lang"]['March'] = '3月(半天会议)';
-
-$GLOBALS["lang"]['Marshall Islands'] = '马绍尔群岛';
-
-$GLOBALS["lang"]['Martinique'] = '马提尼克语Name';
-
-$GLOBALS["lang"]['mask'] = '遮罩';
-
-$GLOBALS["lang"]['Mask'] = '遮罩';
-
-$GLOBALS["lang"]['Match'] = '匹配';
-
-$GLOBALS["lang"]['match_options'] = '匹配选项';
-
-$GLOBALS["lang"]['Match Options'] = '匹配选项';
-
-$GLOBALS["lang"]['Match Order'] = '匹配顺序';
-
-$GLOBALS["lang"]['Match Process'] = '匹配进程';
-
-$GLOBALS["lang"]['match_string'] = '匹配字符串';
-
-$GLOBALS["lang"]['Match String'] = '匹配字符串';
-
-$GLOBALS["lang"]['Matching Attribute'] = '匹配属性';
-
-$GLOBALS["lang"]['Matching Devices - Including OrgID'] = '匹配设备 - 包括 OrgID';
-
-$GLOBALS["lang"]['Matching Linux Devices'] = '匹配 Linux 设备';
-
-$GLOBALS["lang"]['Matching is conducted in the following order'] = '匹配按以下顺序进行';
-
-$GLOBALS["lang"]['maturity_level'] = '成熟程度';
-
-$GLOBALS["lang"]['Maturity Level'] = '成熟程度';
-
-$GLOBALS["lang"]['maturity_score'] = '成熟分数';
-
-$GLOBALS["lang"]['Maturity Score'] = '成熟分数';
-
-$GLOBALS["lang"]['Mauritania'] = '毛里塔尼亚';
-
-$GLOBALS["lang"]['Mauritius'] = '毛里求斯';
-
-$GLOBALS["lang"]['max_file_size'] = '最大文件大小';
-
-$GLOBALS["lang"]['Max File Size'] = '最大文件大小';
-
-$GLOBALS["lang"]['Max Length'] = '最大长度';
-
-$GLOBALS["lang"]['max_size'] = '最大大小';
-
-$GLOBALS["lang"]['Max Size'] = '最大大小';
-
-$GLOBALS["lang"]['May'] = '5月(半天会议)';
-
-$GLOBALS["lang"]['Mayotte'] = '马约特';
-
-$GLOBALS["lang"]['Measures the likelihood of the vulnerability being attacked, and is based on the current state of exploit techniques, exploit code availability, or active, “in-the-wild” exploitation.'] = '衡量脆弱性受到攻击的可能性,其依据是目前开发技术、开发代码可用性或积极、“无处不在”开发的现状。';
-
-$GLOBALS["lang"]['medium'] = '中型';
-
-$GLOBALS["lang"]['Medium'] = '中型';
-
-$GLOBALS["lang"]['members'] = '成员';
-
-$GLOBALS["lang"]['Members'] = '成员';
-
-$GLOBALS["lang"]['memory'] = '内存';
-
-$GLOBALS["lang"]['Memory'] = '内存';
-
-$GLOBALS["lang"]['memory_count'] = '内存计数';
-
-$GLOBALS["lang"]['Memory Count'] = '内存计数';
-
-$GLOBALS["lang"]['memory_slot_count'] = '记忆槽计数';
-
-$GLOBALS["lang"]['Memory Slot Count'] = '记忆槽计数';
-
-$GLOBALS["lang"]['menu_category'] = '菜单类别';
-
-$GLOBALS["lang"]['Menu Category'] = '菜单类别';
-
-$GLOBALS["lang"]['menu_display'] = '菜单显示';
-
-$GLOBALS["lang"]['Menu Display'] = '菜单显示';
-
-$GLOBALS["lang"]['message'] = '消息';
-
-$GLOBALS["lang"]['Message'] = '消息';
-
-$GLOBALS["lang"]['meta_last_changed'] = '上次更改的元';
-
-$GLOBALS["lang"]['Meta Last Changed'] = '上次更改的元';
-
-$GLOBALS["lang"]['metric'] = '计量';
-
-$GLOBALS["lang"]['Metric'] = '计量';
-
-$GLOBALS["lang"]['Metropolitan Area Network'] = '都市地区网.';
-
-$GLOBALS["lang"]['Metropolitan area network'] = '都市局域网';
-
-$GLOBALS["lang"]['Mexico'] = '墨西哥';
-
-$GLOBALS["lang"]['Micronesia'] = '密克罗尼西亚';
-
-$GLOBALS["lang"]['Microsoft Azure Fields'] = '微软 Azure 字段';
-
-$GLOBALS["lang"]['microtime'] = '微时间';
-
-$GLOBALS["lang"]['Microtime'] = '微时间';
-
-$GLOBALS["lang"]['minute'] = '分钟';
-
-$GLOBALS["lang"]['Minute'] = '分钟';
-
-$GLOBALS["lang"]['Minutes'] = '分钟';
-
-$GLOBALS["lang"]['Minutes Since last Audit are Greater than'] = '自上次审计以来';
-
-$GLOBALS["lang"]['model'] = '型号';
-
-$GLOBALS["lang"]['Model'] = '型号';
-
-$GLOBALS["lang"]['model_family'] = '模范家庭组织';
-
-$GLOBALS["lang"]['Model Family'] = '模范家庭组织';
-
-$GLOBALS["lang"]['Modified'] = '已修改';
-
-$GLOBALS["lang"]['Modifying an Existing Script'] = '修改已有脚本';
-
-$GLOBALS["lang"]['module'] = '模块';
-
-$GLOBALS["lang"]['Module'] = '模块';
-
-$GLOBALS["lang"]['module_index'] = '模块索引';
-
-$GLOBALS["lang"]['Module Index'] = '模块索引';
-
-$GLOBALS["lang"]['Modules'] = '模块';
-
-$GLOBALS["lang"]['Moldova'] = '摩尔多瓦';
-
-$GLOBALS["lang"]['Monaco'] = '摩纳哥';
-
-$GLOBALS["lang"]['Monday'] = '星期一';
-
-$GLOBALS["lang"]['Mongolia'] = '蒙古国';
-
-$GLOBALS["lang"]['monitor'] = '监视器';
-
-$GLOBALS["lang"]['Monitor'] = '监视器';
-
-$GLOBALS["lang"]['Monitor and measure ISMS performance'] = '监测和衡量ISMS的绩效';
-
-$GLOBALS["lang"]['Montenegro'] = '黑山';
-
-$GLOBALS["lang"]['month'] = '月数';
-
-$GLOBALS["lang"]['Month'] = '月数';
-
-$GLOBALS["lang"]['Montserrat'] = '蒙特塞拉特';
-
-$GLOBALS["lang"]['More Information'] = '更多信息';
-
-$GLOBALS["lang"]['More Secure'] = '更加安全';
-
-$GLOBALS["lang"]['More elaborate SQL can used to group attributes within a range. Below shows the SQL for devices not seen in a pie chart grouped by last seen date ranges.'] = '更细致的SQL可以用来在一个范围内分组属性. 以下显示在馅饼图中未见的设备的 SQL 。';
-
-$GLOBALS["lang"]['More information about debugging this can be found on a helpful Stack Overflow thread'] = '关于调试的更多信息可以在有用的 Stack Overflow 线条中找到';
-
-$GLOBALS["lang"]['Morocco'] = '摩洛哥';
-
-$GLOBALS["lang"]['Most likely the Windows firewall (or a third party firewall) is denying the connection attempt.<br><br>Please log on to the target Windows machine and check the firewall settings.'] = '很可能Windows防火墙(或第三方防火墙)正在否认连接尝试.<br/><br/>请登录目标Windows机器并检查防火墙设置.';
-
-$GLOBALS["lang"]['Most of Open-AudIT is Licensed with GNU AGPL.'] = '大部分Open-AudIT的许可使用GNU AGPL.';
-
-$GLOBALS["lang"]['motherboard'] = '主板';
-
-$GLOBALS["lang"]['Motherboard'] = '主板';
-
-$GLOBALS["lang"]['mount_point'] = '挂载点';
-
-$GLOBALS["lang"]['Mount Point'] = '挂载点';
-
-$GLOBALS["lang"]['mount_type'] = '挂载类型';
-
-$GLOBALS["lang"]['Mount Type'] = '挂载类型';
-
-$GLOBALS["lang"]['Mozambique'] = '莫桑比克';
-
-$GLOBALS["lang"]['Must Respond To Ping. If set, Nmap will fist attempt to send and listen for an ICMP response. If the device does not respond, no further scanning will occur.<br>Previously a device did not have to respond to a ping for Open-AudIT to continue scanning.'] = '一定要回复到平. 如果设定, Nmap 会尝试发送并听取 ICMP 响应 。 如果设备不响应,将不再进行扫描.<br/>以前一个设备不需要响应一个ping,Open-AudIT就可以继续扫描.';
-
-$GLOBALS["lang"]['Must Respond to Ping'] = '一定要回复到小平';
-
-$GLOBALS["lang"]['My AntiVirus is prompting me to deny/allow things'] = '我的抗病毒药正促使我否认/保有';
-
-$GLOBALS["lang"]['My time is off in Open-AudIT'] = '我在Open-AudIT休息时间';
-
-$GLOBALS["lang"]['Myanmar'] = '缅甸';
-
-$GLOBALS["lang"]['N+1'] = 'N+1 数据';
-
-$GLOBALS["lang"]['N+M'] = '无+M';
-
-$GLOBALS["lang"]['N-to-1'] = 'N-1级';
-
-$GLOBALS["lang"]['N-to-N'] = 'N对N';
-
-$GLOBALS["lang"]['NMIS Business Service'] = 'NMIS 业务处';
-
-$GLOBALS["lang"]['NMIS Customer'] = 'NMIS 客户';
-
-$GLOBALS["lang"]['NMIS Device Options'] = 'NMIS 设备选项';
-
-$GLOBALS["lang"]['NMIS Device Selection'] = 'NMIS 设备选择';
-
-$GLOBALS["lang"]['NMIS Field Name'] = 'NMIS 字段名称';
-
-$GLOBALS["lang"]['NMIS Field Type'] = 'NMIS 字段类型';
-
-$GLOBALS["lang"]['NMIS Group'] = '国家管理信息系统小组';
-
-$GLOBALS["lang"]['NMIS Poller'] = 'NMIS POLLER 系统';
-
-$GLOBALS["lang"]['NMIS Role'] = '国家管理信息系统 作用';
-
-$GLOBALS["lang"]['NOTE'] = '说明';
-
-$GLOBALS["lang"]['NOTE #2'] = '说明2';
-
-$GLOBALS["lang"]['NOTE - For more info on DateTime formats, see'] = '注 - 关于日期时间格式的更多信息,见';
-
-$GLOBALS["lang"]['NOTE - If you request a downloaded CSV, XML or JSON format (either a single credential, or the complete collection) the actual credential details will be sent. Not the encrypted string, the actual username, password, community string, etc. Any sensitive details are not displayed in the web GUI, but are made available via other formats. To prevent this export a configuration item is available called decrypt_credentials.'] = '注 - 如果您要求下载 CSV, XML 或 JSON 格式( 单份证书, 或完整的收藏) , 将发送实际的证书细节 。 不是加密字符串,是实际用户名,密码,社区字符串等. 任何敏感的细节都不在网页图形界面中显示,而是通过其他格式提供. 为了防止此导出, 一个配置项叫做解密_ 证书 。';
-
-$GLOBALS["lang"]['NOTE - The curly brackets in the data filed should be used as-is (not replaced as per other examples above).'] = '注 -- 所提交数据中的卷曲括号应作为现用(而不是按照以上其他例子替换)。';
-
-$GLOBALS["lang"]['NOTE - You can prevent plain text credentials being displayed below by setting the configuration item for <code>decrypt_credentials</code> to <code>n</code>.'] = '注 - 您可以设置配置项目, 防止下面显示纯文本证书 <code>decrypt_credentials</code> 改为: <code>n</code>。 。 。';
-
-$GLOBALS["lang"]['name'] = '名称';
-
-$GLOBALS["lang"]['Name'] = '名称';
-
-$GLOBALS["lang"]['Name: The name you are giving to this field. Ideally it should be unique.'] = '名称: 您给此字段的名称 。 理想的情况应该是独一无二的。';
-
-$GLOBALS["lang"]['Namibia'] = '纳米比亚';
-
-$GLOBALS["lang"]['Nauru'] = '瑙鲁';
-
-$GLOBALS["lang"]['Nepal'] = '尼泊尔';
-
-$GLOBALS["lang"]['net_index'] = '净指数';
-
-$GLOBALS["lang"]['Net Index'] = '净指数';
-
-$GLOBALS["lang"]['Netherlands Antilles'] = '荷属安的列斯群岛';
-
-$GLOBALS["lang"]['Netherlands the'] = '荷兰';
-
-$GLOBALS["lang"]['netmask'] = '网络任务';
-
-$GLOBALS["lang"]['Netmask'] = '网络任务';
-
-$GLOBALS["lang"]['netstat'] = '净统计';
-
-$GLOBALS["lang"]['Netstat'] = '净统计';
-
-$GLOBALS["lang"]['Netstat Policies'] = '净统计政策';
-
-$GLOBALS["lang"]['Netstat Ports'] = '净点端口';
-
-$GLOBALS["lang"]['Netstat Ports use a combination of port number, protocol and program. If all are present the policy passes.'] = 'Netstat Ports使用端口号,协议和程序的组合. 如果所有人都在场,则政策通过。';
-
-$GLOBALS["lang"]['Network'] = '网络';
-
-$GLOBALS["lang"]['network_address'] = '网络地址';
-
-$GLOBALS["lang"]['Network Address'] = '网络地址';
-
-$GLOBALS["lang"]['Network Discovery'] = '网络发现';
-
-$GLOBALS["lang"]['network_domain'] = '网络域';
-
-$GLOBALS["lang"]['Network Domain'] = '网络域';
-
-$GLOBALS["lang"]['Network Types'] = '网络类型';
-
-$GLOBALS["lang"]['Network type is set to Local Area Network by default, but can be changed by the user as they see fit. The types supported are below (with thanks to Wikipedia).<br><br>A network can be characterized by its physical capacity or its organizational purpose. Use of the network, including user authorization and access rights, differ accordingly.'] = '网络类型默认设置为局域网,但用户可以视情修改. 所支持的类型如下(感谢维基百科).<br/><br/>一个网络的特点可以是其实际能力或组织目的。 网络的使用,包括用户授权和访问权,也相应不同.';
-
-$GLOBALS["lang"]['networks'] = '网络';
-
-$GLOBALS["lang"]['Networks'] = '网络';
-
-$GLOBALS["lang"]['Networks Generated By'] = '由网络生成';
-
-$GLOBALS["lang"]['Networks are updated with every discovery. Items such as IPs Available and IPs Used, along with Gateways, DHCP and DNS Servers are added as found.'] = '网络随时随地更新 如所发现的,添加了诸如现有和使用的IP以及Gateways、DHCP和DNS服务器等项目。';
-
-$GLOBALS["lang"]['Networks respond differently depending on how they are configured. Some routers and/or firewalls can respond <i>on behalf</i> of IPs on the other side of their interfaces to the Open-AudIT Server. It is quite common to see Nmap report a probe for SNMP (UDP port 161) to respond as open|filtered for devices that do and do not exist. This is misleading as there is no device at that IP, yet it ends up with a device entry in the database. 99.9% of the time, it is not Open-AudIT, nor even Nmap, but the network causing this issue. Now that we have the options to treat open|filtered ports as either open or closed, we can eliminate a lot of this confusion. Enterprise users even have the option to change this on a per discovery basis (more than just using the Medium (Classic) item, as above).'] = '网络的反应因如何配置而异. 一些路由器和/或防火墙可以响应 <i>代表</i> 将 IP 设置在连接到 Open-AudIT 服务器的接口的另一端。 Nmap 报告 SNMP (UDP 端口 161) 的探测器以 openQQ filtered 的形式对存在和不存在的设备进行响应是很常见的. 这有误导性,因为在那个IP上没有设备,然而它最后却在数据库中有一个设备条目. 99.9%的时间,它不是Open-AudIT,甚至Nmap,而是导致这个问题的网络. 现在我们可以选择将开放的 过滤端口视为开放的或封闭的, 我们可以消除很多这样的混乱。 企业用户甚至可以选择在每次发现的基础上修改(比仅使用Medium(Classic)项,如上).';
-
-$GLOBALS["lang"]['Networks using a CIDR Mask of'] = '使用 CIDR 遮罩的网络';
-
-$GLOBALS["lang"]['New Building Name'] = '新建筑名称';
-
-$GLOBALS["lang"]['New Caledonia'] = '新喀里多尼亚';
-
-$GLOBALS["lang"]['New Floor Name'] = '新楼层名称';
-
-$GLOBALS["lang"]['New Room Name'] = '新建房间名称';
-
-$GLOBALS["lang"]['New Row Name'] = '新建行名称';
-
-$GLOBALS["lang"]['New Zealand'] = '新西兰';
-
-$GLOBALS["lang"]['News'] = '新闻';
-
-$GLOBALS["lang"]['News checks-in each time you login for updated queries & packages, configuration recommendations, release announcements, blog posts and more.'] = '每次登入新闻检查时,都会进行更新的查询和包,配置建议,发布公告,博客帖子等等.';
-
-$GLOBALS["lang"]['News is our way of keeping you up-to-date with the latest fixes, announcements, query updates, software versions and more.<br><br>You do not need to keep on top of the wiki or check for new releases, we can send these to you!'] = '新闻是我们不断向您通报最新修改、公告、查询更新、软件版本等情况的方式。<br/><br/>你不需要在维基上面 或检查新的发行, 我们可以发送这些给你!';
-
-$GLOBALS["lang"]['next_hop'] = '下一个跳';
-
-$GLOBALS["lang"]['Next Hop'] = '下一个跳';
-
-$GLOBALS["lang"]['next_run'] = '下一个运行';
-
-$GLOBALS["lang"]['Next Run'] = '下一个运行';
-
-$GLOBALS["lang"]['Next click <i>Create your own application</i>.'] = '下一次点击 <i>创建自己的应用程序</i>。 。 。';
-
-$GLOBALS["lang"]['Next, click OK, then right click the Apache 2.4 service and click Restart. Done!'] = '接下来点击“确定”,然后右键点击“Apache 2.4”服务,然后点击“重新启动”。 没问题!';
-
-$GLOBALS["lang"]['Next, right click the Apache2.4 service and select Properties, then click the Log On tab.'] = '接下来,右键单击 Apache2.4 服务并选择属性,然后单击日志标签。';
-
-$GLOBALS["lang"]['Nicaragua'] = '尼加拉瓜';
-
-$GLOBALS["lang"]['Niger'] = '尼日尔';
-
-$GLOBALS["lang"]['Nigeria'] = '尼日利亚';
-
-$GLOBALS["lang"]['Niue'] = '纽埃';
-
-$GLOBALS["lang"]['nmap'] = '地图';
-
-$GLOBALS["lang"]['Nmap'] = '地图';
-
-$GLOBALS["lang"]['Nmap Port Scanning Responses'] = 'Nmap 端口扫描响应';
-
-$GLOBALS["lang"]['nmap_tcp_ports'] = 'Nmap Tcp 端口';
-
-$GLOBALS["lang"]['Nmap Tcp Ports'] = 'Nmap Tcp 端口';
-
-$GLOBALS["lang"]['nmap_udp_ports'] = 'Nmap Udp 端口';
-
-$GLOBALS["lang"]['Nmap Udp Ports'] = 'Nmap Udp 端口';
-
-$GLOBALS["lang"]['Nmap cannot determine whether the port is open because packet filtering prevents its probes from reaching the port. The filtering could be from a dedicated firewall device, router rules, or host-based firewall software. These ports frustrate attackers because they provide so little information. Sometimes they respond with ICMP error messages such as type 3 code 13 (destination unreachable: communication administratively prohibited), but filters that simply drop probes without responding are far more common. This forces Nmap to retry several times just in case the probe was dropped due to network congestion rather than filtering. This slows down the scan dramatically.'] = 'Nmap无法确定端口是否打开,因为包过滤阻止其探测器到达端口. 过滤可能来自专用防火墙设备,路由器规则,或基于主机的防火墙软件. 这些港口让攻击者感到沮丧,因为它们提供的信息很少。 有时它们会用ICMP错误消息如3型代码13(命运无法到达:通讯在行政上被禁止)进行响应,但简单地放下探针而不响应的过滤器则更为常见. 这迫使Nmap多次重试,以防探测器因网络拥堵而不是过滤而掉落. 这大大降低了扫描速度。';
-
-$GLOBALS["lang"]['Nmap places ports in this state when it is unable to determine whether a port is open or filtered. This occurs for scan types in which open ports give no response. The lack of response could also mean that a packet filter dropped the probe or any response it elicited. So Nmap does not know for sure whether the port is open or being filtered. The UDP, IP protocol, FIN, NULL, and Xmas scans classify ports this way.'] = 'Nmap 无法确定一个端口是否打开或过滤时将端口置于此状态. 这对于打开的端口没有响应的扫描类型发生. 缺乏响应还可能意味着一个包过滤器放下了探测器或它引发的任何响应. 因此Nmap不确定端口是开放的还是被过滤的. UDP,IP协议,FIN,NULL,和Xmas扫描将端口这样分类.';
-
-$GLOBALS["lang"]['Nmap timing details are found on the bottom of this linked page'] = '在链接页面的底部找到 Nmap 计时细节';
-
-$GLOBALS["lang"]['nmis_business_service'] = 'Nmis 商业服务';
-
-$GLOBALS["lang"]['Nmis Business Service'] = 'Nmis 商业服务';
-
-$GLOBALS["lang"]['nmis_customer'] = 'Nmis 客户';
-
-$GLOBALS["lang"]['Nmis Customer'] = 'Nmis 客户';
-
-$GLOBALS["lang"]['nmis_group'] = 'Nmis 集团';
-
-$GLOBALS["lang"]['Nmis Group'] = 'Nmis 集团';
-
-$GLOBALS["lang"]['nmis_manage'] = 'Nmis 管理';
-
-$GLOBALS["lang"]['Nmis Manage'] = 'Nmis 管理';
-
-$GLOBALS["lang"]['nmis_name'] = 'Nmis 名称';
-
-$GLOBALS["lang"]['Nmis Name'] = 'Nmis 名称';
-
-$GLOBALS["lang"]['nmis_notes'] = '注解';
-
-$GLOBALS["lang"]['Nmis Notes'] = '注解';
-
-$GLOBALS["lang"]['nmis_poller'] = '纳米斯·波勒';
-
-$GLOBALS["lang"]['Nmis Poller'] = '纳米斯·波勒';
-
-$GLOBALS["lang"]['nmis_poller_uuid'] = '尼斯·波勒·乌伊德';
-
-$GLOBALS["lang"]['Nmis Poller Uuid'] = '尼斯·波勒·乌伊德';
-
-$GLOBALS["lang"]['nmis_role'] = 'Nmis 角色';
-
-$GLOBALS["lang"]['Nmis Role'] = 'Nmis 角色';
-
-$GLOBALS["lang"]['No'] = '没有';
-
-$GLOBALS["lang"]['No Devices Returned'] = '没有设备返回';
-
-$GLOBALS["lang"]['No Google Maps API Key present, you will not be able to display the map.'] = '没有谷歌地图 API 密钥当前, 您无法显示地图 。';
-
-$GLOBALS["lang"]['No License for Professional or Enterprise'] = '无专业或企业许可证';
-
-$GLOBALS["lang"]['No Results'] = '无结果';
-
-$GLOBALS["lang"]['No data in License Key'] = '许可证密钥中没有数据';
-
-$GLOBALS["lang"]['No database upgrade required at this time.'] = '目前不需要更新数据库 。';
-
-$GLOBALS["lang"]['No devices are in the database.'] = '数据库中没有设备 。';
-
-$GLOBALS["lang"]['Node'] = '节点';
-
-$GLOBALS["lang"]['None'] = '无';
-
-$GLOBALS["lang"]['Norfolk Island'] = '诺福克岛';
-
-$GLOBALS["lang"]['Normal'] = '常规';
-
-$GLOBALS["lang"]['Northern Mariana Islands'] = '北马里亚纳群岛';
-
-$GLOBALS["lang"]['Norway'] = '挪威';
-
-$GLOBALS["lang"]['Norwegian'] = '挪威语';
-
-$GLOBALS["lang"]['Not Applicable'] = '不适用';
-
-$GLOBALS["lang"]['Not Checked'] = '未检查';
-
-$GLOBALS["lang"]['Not Equals'] = '不等于';
-
-$GLOBALS["lang"]['Not In'] = '不进';
-
-$GLOBALS["lang"]['Not Like'] = '不喜欢';
-
-$GLOBALS["lang"]['Not Set'] = '未设定';
-
-$GLOBALS["lang"]['Not every computer will be able to successfully complete a benchmark. We have seen in some fail in testing for reasons beyond our control. The logs should help point you in the right direction for these items.'] = '并不是每台计算机都能成功完成一个基准. 我们看到,由于我们无法控制的原因,试验失败。 日志应帮助您为这些项目指明正确的方向。';
-
-$GLOBALS["lang"]['Not in the (comma seperated) list'] = '不在( 压缩) 列表中';
-
-$GLOBALS["lang"]['Not normally used. If set, this requires the device to have an open port (as per Scan Options) to be considered responding. A MAC address, arp response or ping response is not considered sufficient to be considered responding. Useful if a router or firewall between the Open-AudIT server and target IP is responding to port scans on the IPs behalf.'] = '通常不使用。 如果设定, 这需要设备有一个开放的端口( 根据扫描选项) 来考虑响应 。 一个MAC地址、ARP响应或ping响应被认为不足以被视为响应。 如果Open-AudIT服务器与目标IP之间的路由器或防火墙正代表IP响应端口扫描,则有用.';
-
-$GLOBALS["lang"]['Note'] = '说明';
-
-$GLOBALS["lang"]['Note - Selecting a parent will automatically provide access to its children (although it wont be shown here).'] = '注 - 选择父母会自动为孩子提供访问权限(虽然不会在这里显示).';
-
-$GLOBALS["lang"]['Note that the 100 device Enterprise license does not include support.'] = '注意100设备企业许可证不包括支持.';
-
-$GLOBALS["lang"]['Note, you may need to make the script executable with'] = '注意,可能需要使脚本可执行';
-
-$GLOBALS["lang"]['Notes'] = '页:1';
-
-$GLOBALS["lang"]['notes'] = '页:1';
-
-$GLOBALS["lang"]['Notice'] = '通知';
-
-$GLOBALS["lang"]['notin'] = '笔记';
-
-$GLOBALS["lang"]['Notin'] = '笔记';
-
-$GLOBALS["lang"]['November'] = '11月(半天会议)';
-
-$GLOBALS["lang"]['Now for the Subscription ID, click All Services, Subscriptions and copy it.'] = '现在用于订阅ID,点击所有服务,订阅并复制.';
-
-$GLOBALS["lang"]['Now we need to provide the Azure Active Directory application access to your subscription.<br><br>Click on Resource Groups and then the resource group you would like your Azure Active Directory Application to have access to.<br><br>Click Add. The role should be Contributor and then search for the app (Open-AudIT). Then click Save.<br><br>Now the application has access to the subscription, so we can make API calls. The API calls will be requested on behalf of the application, not your user.'] = '现在我们需要为您的订阅提供 Azure Active Directory 应用程序访问权限.<br/><br/>点击资源组, 然后点击您想要访问的 Azure 活动目录应用程序的资源组 。<br/><br/>点击添加。 角色应为贡献者,然后搜索应用(Open-AudIT). 然后点击“保存”。<br/><br/>现在应用程序可以访问订阅,这样我们就可以给API打电话. API 呼叫将代表应用程序而不是您的用户请求.';
-
-$GLOBALS["lang"]['nvd_json'] = '恩夫德·杰森(英语:Nvd Json)';
-
-$GLOBALS["lang"]['Nvd Json'] = '恩夫德·杰森(英语:Nvd Json)';
-
-$GLOBALS["lang"]['ORDER BY'] = '命令';
-
-$GLOBALS["lang"]['OS'] = '业务办';
-
-$GLOBALS["lang"]['OS Families'] = 'OS 家庭';
-
-$GLOBALS["lang"]['OS Family'] = 'OS 家庭';
-
-$GLOBALS["lang"]['OS Group'] = 'OS 组';
-
-$GLOBALS["lang"]['OUTPUTS'] = '输出';
-
-$GLOBALS["lang"]['oae_manage'] = 'Oae 管理系统';
-
-$GLOBALS["lang"]['Oae Manage'] = 'Oae 管理系统';
-
-$GLOBALS["lang"]['object_ident'] = '对象标识';
-
-$GLOBALS["lang"]['Object Ident'] = '对象标识';
-
-$GLOBALS["lang"]['Obtain top management support'] = '获得高层管理支持';
-
-$GLOBALS["lang"]['October'] = '10月(半天会议)';
-
-$GLOBALS["lang"]['Offset'] = '折换';
-
-$GLOBALS["lang"]['Okta'] = '大冈';
-
-$GLOBALS["lang"]['Oman'] = '阿曼';
-
-$GLOBALS["lang"]['omk_uuid'] = '奥姆克·威德';
-
-$GLOBALS["lang"]['Omk Uuid'] = '奥姆克·威德';
-
-$GLOBALS["lang"]['On'] = '打开';
-
-$GLOBALS["lang"]['On Windows, Open-AudIT uses WMI as it is primary method of auditing. Windows has a notorious reputation where remote WMI is concerned. It tends to either <i>just work</i> or some mystery item on the target requires changing. If you are experiencing difficulty auditing remote Windows PCs, we have created a script called test_windows_client.vbs. You can run this script <strong>locally</strong> on the machine in question, after signing on as the user that is used by Open-AudIT to perform the audit. The script makes <strong>no changes</strong> to the target devices. It checks most (not all) of the items below and generates PASS, FAIL and INFO tags for various properties. NOTE - If your target system is being audited correctly, you should not change any settings. Some of the below do not exist on Windows PCs that are able to be audited and some do exist. Only change settings if your discoveries on particular PCs are not working as intended.'] = '在Windows上,Open-AudIT使用WMI作为主要的审计方法. Windows在远程WMI方面有着臭名昭著的声誉. 也一样 <i>刚刚工作</i> 或者目标上的一些神秘物品需要改变 如果您在审计远程 Windows 个人计算机时遇到困难, 我们创建了一个名为 test_windows_client.vbs 的脚本 。 您可以运行此脚本 <strong>当地</strong> ,在作为Open-AudIT用于执行审计的用户签字后。 剧本制作 <strong>无变化</strong> 到目标设备。 它检查下面的大部分(不是全部)物品,并生成各种属性的PASS,FAIL和INFO标记. 注 - 如果您的目标系统正在被正确审计, 您不应该改变任何设置 。 以下一些在Windows PC上并不存在能够被审计,有些确实存在. 只有在您在特定个人计算机上的发现没有达到预期效果时才会更改设置 。';
-
-$GLOBALS["lang"]['On the Tasks List page, click the <i>Add New</i> button to configure a task.'] = '在任务列表页面上,单击 <i>添加新内容</i> 按钮来配置任务。';
-
-$GLOBALS["lang"]['On the field <i>Match String</i> you should provide the name of the software that you want to track. You can use the percent sign (%) as a wildcard in where required.'] = '现场 <i>匹配字符串</i> 您应当提供要跟踪的软件的名称。 您可以在需要时使用% 符号作为通配符 。';
-
-$GLOBALS["lang"]['On the next page you will be able to select Access Keys and see your key or create a new key.'] = '在下一页,您可以选择访问密钥并查看您的密钥或创建新密钥 。';
-
-$GLOBALS["lang"]['On the target Windows PC, run the DCOM utility and verify (or set) the below attributes. Start -> Run, Enter DCOMCNFG and press OK. This will open the DCOMCNFG window.'] = '在目标Windows PC上,运行DCOM工具并验证(或设置)以下属性. 开始 - > 运行, 输入 DCOMCNFG 并按好 。 这将打开 DCOMCNFG 窗口 。';
-
-$GLOBALS["lang"]['On the top right (underneath the menu bar) you will see several buttons. These allow you to select another dashboard, set the current dashboard as your homepage (if it is not already) and edit the current dashboard (if you have permission).'] = '在右上方(菜单栏下面),你会看到几个按钮。 这些允许您选择另一个仪表板,将当前仪表板设定为您的主页(如果还没有),并编辑当前仪表板(如果您有权限).';
-
-$GLOBALS["lang"]['On-Premise, Not Cloud'] = '精选,不是云';
-
-$GLOBALS["lang"]['Once an Additional Field has been created it can be used in queries and groups just like any other attribute in the database.'] = '附加字段创建后,它可以像数据库中任何其他属性一样用于查询和分组.';
-
-$GLOBALS["lang"]['Once commented out, your certificate will be validated, but may also fail this validation if you are using self-signed certificates and have not configured your server correctly.'] = '一旦评论出来,您的证书将会被验证,但是如果您正在使用自签名的证书,并且没有正确配置您的服务器,也可能失败此验证.';
-
-$GLOBALS["lang"]['Once the script has run on a target, should the script delete itself.'] = '一旦脚本运行在目标上,脚本就应当自行删除.';
-
-$GLOBALS["lang"]['Once those initial queries (snmp, ssh, wmi) are complete, if the device is a supported by the audit scripts (Windows, Linux, OSX, AIX, HP-UX, Solaris and ESXi), the correct audit script will be copied to the target and executed. The audit script will self delete upon completion. The result will be stored on the target machine as an XML file. The Open-AudIT server will then retrieve the result file for processing and delete the result file on the target. The location the audit script is copied to on the target device (at least for SSH audits) is configurable by editing the discovery_linux_script_directory config item. By default it is set to /tmp/. This may need changing if /tmp has noexec set. The result file is then processed and the device details updated within Open-AudIT.'] = '一旦这些初始查询(snmp, ssh, wmi)完成,如果设备是由审计脚本(Windows, Linux, OSX, AIX, HP-UX, Solaris和ESXi)支持的,正确的审计脚本将被复制到目标并被执行. 审计脚本完成后将自行删除。 结果将作为XML文件存储在目标机上. Open-AudIT服务器随后会检索结果文件进行处理,并删除目标上的结果文件. 在目标设备上复制的审计脚本的位置(至少用于SSH审计)通过编辑发现_linux_scription_directory config项目可以配置. 默认为 /tmp/ 。 如果 /tmp 没有执行设置, 这可能需要改变 。 然后处理结果文件,并在Open-AudIT中更新设备细节.';
-
-$GLOBALS["lang"]['Once you click the execute button, Open-AudIT will spawn a process to initiate the discovery and return the user to the discovery details page. The newly spawned process takes the configured discovery options and executes Nmap commands to determine the initial list of IP addresses to be scanned (or queries Active Directory if that type is used). Each IP to be scanned is placed into a queue. Once the initial process has completed (and there are IPs to be scanned in the queue) a number of processes will be spawned to further scan each IP in parallel. This number of processes is configurable in the configuration, edit the attribute <i>queue_limit</i>. By default this is set to 20.'] = '一旦点击执行按钮,Open-AudIT将生成启动发现的过程,并将用户返回到发现细节页面. 新产卵过程采用配置的发现选项,执行Nmap命令,以确定要扫描的IP地址的初始列表(或者如果使用该类型的话查询Active Directory). 每个要扫描的IP都被排入队列. 一旦初始过程完成(并且队列中还有需要扫描的IP),将培育出一些过程来进一步平行扫描每个IP. 在配置中可配置这些进程, 编辑属性 <i>队列(_L)</i>。 。 。 默认情况下, 设定为 20 。';
-
-$GLOBALS["lang"]['Once you have chosen your devices to edit, click the pencil button on the top right of the table.'] = '一旦您选择了您要编辑的设备, 请单击表格右上角的铅笔按钮 。';
-
-$GLOBALS["lang"]['Once you have done this, Open-AudIT will attempt to verify your user logon details against the configured Auth Method. If the user has valid credentials and <code>use_authorisation</code> is set, Open-AudIT will ask for the list of groups that the user belongs to. If the user is in the corresponding groups for Open-AudIT Roles and Orgs, those Roles and Orgs will be applied to that user.'] = '完成此任务后, Open- AudIT 会尝试对照配置的 Auth 方法验证您的用户登录细节 。 如果用户持有有效全权证书,且 <code>use_authorisation</code> 设置, Open-AudIT 将询问用户所属组的列表。 如果用户在 Open-AudIT 角色和类群中,这些角色和类群将应用于该用户.';
-
-$GLOBALS["lang"]['Once you have generated a Baseline Definition you can schedule it to be run against a specified group of devices.'] = '一旦您生成了基线定义, 您就可以将它排在指定的设备组上 。';
-
-$GLOBALS["lang"]['Once you have those items, in Open-AudIT Enterprise you can go to menu -> Discover -> Clouds -> Create Clouds, select the <i>Amazon AWS</i> type and paste them in. Done.'] = '一旦你拿到这些东西,在Open-AudIT 企业可以到菜单 - > 发现 - > 云 - > 创建 云,选择 <i>亚马逊AWS</i> 类型并粘贴在。 结束了。';
-
-$GLOBALS["lang"]['Once you have those items, in Open-AudIT Enterprise you can go to menu -> Discover -> Clouds -> Create Clouds, select the <i>Microsoft Azure</i> type and paste them in. Done.'] = '一旦你拿到这些东西,在Open-AudIT 企业可以到菜单 - > 发现 - > 云 - > 创建 云,选择 <i>微软 Azure</i> 类型并粘贴在。 结束了。';
-
-$GLOBALS["lang"]['Once you have your cloud credentials, it is merely a matter of creating a new cloud and running the discovery - or scheduling first/future discoveries. Make sure you also have the credentials required to log on to your cloud machines, and it is all done for you just like a regular discovery. Credentials for your cloud'] = '一旦你拿到你的云层证书, 这仅仅是一个问题 创建一个新的云层 运行发现 - 或者安排第一个/未来的发现。 确保您也拥有登录云端机器所需的资质, 这一切都是为了您而做的 就像一个正常的发现。 您云层的证明';
-
-$GLOBALS["lang"]['One of <code>3x2</code>, <code>4x2</code>, <code>4x3</code> or <code>4x4</code>.'] = '一个 <code>3x2</code>, (中文). <code>4x2</code>, (中文). <code>4x3</code> 或者说 <code>4x4</code>。 。 。';
-
-$GLOBALS["lang"]['One of Campus Area Network, Cloud Network, Enterprise Private Network, Home Area Network, Local Area Network, Metropolitan Area Network, Passive Optical Local Area Network, Personal Area Network, Storage-Area Network, System-Area Network, Virtual Private Network, Wide Area Network, Wireless Local Area Network.'] = '校园区网之一 云网 企业民营网 家园区网 局域网 都市区网 被动光学局域网 个人区网 存储区网 系统区网 虚拟民营网 广域网 无线局域网';
-
-$GLOBALS["lang"]['One of Development, Disaster Recovery, Evaluation, Pre-Production, Production, Testing, Training, User Acceptance Testing'] = '发展、灾后恢复、评价、前期生产、生产、测试、培训、用户接受测试';
-
-$GLOBALS["lang"]['One of allocated, delegated, planning, reserved, unallocated, unknown, unmanaged. Defaults to allocated.'] = '其中分配,授权,规划,预留,未分配,未知,未管理. 默认分配 。';
-
-$GLOBALS["lang"]['One of either <code>active directory</code> or <code>openldap</code>.'] = '其中一个 <code>active directory</code> 或者说 <code>openldap</code>。 。 。';
-
-$GLOBALS["lang"]['One of: antivirus, backup, firewall, approved, banned, ignored or other.'] = '其中:抗病毒,备份,防火墙,批准,禁止,忽略或其他.';
-
-$GLOBALS["lang"]['One other item to be careful of - make sure you use the hostname (or fqdn) of your LDAP Server that matches what is in the certificate (not just the LDAP Servers IP address) when creating the LDAP entry in Open-AudIT.'] = '另一个要小心的项目 - 确保您使用您的 LDAP 的主机名( 或 fqdn) 。 在 Open-AudIT 中创建 LDAP 条目时匹配证书中内容的服务器(不仅仅是 LDAP Servers IP 地址).';
-
-$GLOBALS["lang"]['Online Documentation'] = '在线文档';
-
-$GLOBALS["lang"]['Open'] = '打开';
-
-$GLOBALS["lang"]['Open Data'] = '打开数据';
-
-$GLOBALS["lang"]['Open Source'] = '开源';
-
-$GLOBALS["lang"]['Open-AudIT'] = '打开AudIT';
-
-$GLOBALS["lang"]['Open-AudIT Community source code is available on GitHub. You are encouraged to inspect any code you have concerns about, and because it is open source - you are also encouraged to ask us about any issues you have or report any findings. We are always more than happy to accept code contributions, vulnerability reports, or even simple questions. We are here to help.<br><br>The audit scripts themselves (Windows, Linux, MacOS, et al) are deliberately written in readable native shell script (VBScript for Windows, Bash for *nix). You can see exactly what commands are run. You can remove any commands you feel you do not need. You can ask a third party to inspect the code for you and (if you want to) report any findings.<br><br>Open-AudIT Enterprise performs the add-on commercial functions for Open-AudIT Community. It is included as a single compiled file with no external dependencies. Where Enterprise itself performs the function(s), if you are concerned with any issues Firstwave is happy to work through them with you - just ask! Try that with another commercial software vendor!'] = '打开AudIT GitHub上有社区源代码。 鼓励您检查您所关心的任何代码, 并且因为它是开放源码 - 您还鼓励您询问我们您有任何问题或报告任何发现 。 我们总是非常乐于接受代码贡献,脆弱性报告,甚至简单的问题. 我们是来帮忙的<br/><br/>审计脚本本身(Windows,Linux,MacOS等)被刻意用可读的本地贝壳脚本(VBScript for Windows,Bash for *nix)写成. 你可以看到什么命令是运行。 您可以删除任何你觉得不需要的命令 。 您可以要求第三方为您检查密码( 如果您愿意) 报告任何发现 。<br/><br/>打开AudIT 企业为Open-AudIT社区履行附加商业功能。 它作为单一编译文件列入,没有外部依赖性. 企业部本身履行该职能的地方,如果涉及任何问题 第一波乐于与你合作, 跟另一个商业软件供应商试试看!';
-
-$GLOBALS["lang"]['Open-AudIT Device Selection'] = 'Open-AudIT 设备选择';
-
-$GLOBALS["lang"]['Open-AudIT Enterprise has the ability to choose from a pre-defined list of discovery scan options and also to customise individual options per discovery.'] = '打开AudIT 企业有能力从预定义的发现扫描选项列表中进行选择,也可以自定义每个发现的单个选项.';
-
-$GLOBALS["lang"]['Open-AudIT Enterprise. High-scale flexible discovery and audit solution for large networks. All the features of Professional plus: Baselines, File Auditing, Cloud Discovery, Rack Management, Configurable Role Based Access Control including Active Directory and LDAP.'] = '开放AudIT企业. 大型网络的高尺度灵活发现和审计解决方案. 专业+的所有特征:基线,文件审计,云发现,Rack管理,可配置角色基础访问控制包括Active Directory和LDAP.';
-
-$GLOBALS["lang"]['Open-AudIT Field Name'] = '打开 AudIT 字段名称';
-
-$GLOBALS["lang"]['Open-AudIT Licenses'] = '开放AudIT许可证';
-
-$GLOBALS["lang"]['Open-AudIT Options'] = '打开AudIT 选项';
-
-$GLOBALS["lang"]['Open-AudIT Professional and Enterprise include Enhanced Reporting features, including time-based, historical, and muti-query based reporting features in multiple formats.'] = 'Open-AudIT专业和企业包括强化报告功能,包括基于时间的,历史的,基于哗变的多种格式报告功能.';
-
-$GLOBALS["lang"]['Open-AudIT Professional has the ability to choose from a pre-defined list of discovery scan options, per discovery.'] = '打开AudIT 专业人员有能力从预定义的发现扫描选项列表中选择,每个发现.';
-
-$GLOBALS["lang"]['Open-AudIT Professional. The worlds'] = '开放AudIT专业. 这个世界';
-
-$GLOBALS["lang"]['Open-AudIT can be configured to use LDAP servers (Microsoft Active Directory and/or OpenLDAP) to authenticate and authorize a user and in addition, to create a user account in Open-AudIT using assigned roles and orgs based on LDAP group membership. It can also use'] = '打开Aud IT可以配置为使用LDAP服务器(微软主动目录和(或)OpenLDAP)认证和授权一个用户,此外,在Open-AudIT中使用基于LDAP组成员的指定角色和类群创建用户账户. 还可以用';
-
-$GLOBALS["lang"]['Open-AudIT can be run on your server in your data center. It does not need access to the internet at all. Even the installation on Linux where we use the distribution package manager for our prerequisites can be negated by you using an in-house and security team-approved package repository.<br><br>Open-AudIT does not store any of your data in the cloud. Even licensing information can be provided without having to access the internet from the Open-AudIT server.<br><br>Sure, it is easier to allow it to access the internet to download packages (including security fixes) for your distribution, but that is up to you and your security policies. Open-AudIT does not need the internet.'] = '打开Aud 可以在你的数据中心的服务器上运行 它根本不需要互联网。 连Linux上的安装,我们使用分发包管理器作为我们的先决条件,也可以通过你使用一个内部和安全团队批准的包存储器来抵消.<br/><br/>打开Aud 它不存储任何数据 在云。 甚至可以提供许可证发放信息,而不必从Open-AudIT服务器进入互联网。<br/><br/>当然,允许它上网下载您分发的软件包(包括安全修正)比较容易,但这取决于您和您的安全政策。 Open-AudIT不需要互联网。';
-
-$GLOBALS["lang"]['Open-AudIT can download, parse and use NIST CVE Vulnerability reports.'] = 'Open-AudIT可以下载,剖析和使用NIST CVE脆弱性报告.';
-
-$GLOBALS["lang"]['Open-AudIT can show in one of several languages. How you can improve this?'] = '打开Aud 它可以用几种语言之一显示。 你怎么能改进这个?';
-
-$GLOBALS["lang"]['Open-AudIT can store information in additional fields that are associated with each device.'] = '打开Aud 信息技术可以在与每个设备相关的额外领域存储信息.';
-
-$GLOBALS["lang"]['Open-AudIT can use Microsoft Entra (previously known as Microsoft Azure Active Directory) as an authentication method. This means your user in Open-AudIT can click the Logon using Entra button on the logon page and use their Entra credentials to logon. That user will need to already exist within Open-AudIT (and be assigned'] = 'Open-AudIT可以使用Microsoft Entra(以前称为Microsoft Azure Active Directory)作为认证方法. 这意味着在Open-AudIT中的用户可以使用登录页面上的Entra按钮点击登录,并使用他们的Entra证书进行登录. 该用户需要在 Open-AudIT 中已经存在(并被指定)';
-
-$GLOBALS["lang"]['Open-AudIT can use OKTA as an authentication method. This means your user in Open-AudIT can click the Logon using OKTA button on the logon page and use their OKTA credentials to logon. That user will need to already exist within Open-AudIT (and be assigned Roles and Orgs), but will not need to remember a separate set of logon credentials.'] = 'Open-AudIT可以使用OKTA作为认证方法. 这意味着在 Open-AudIT 中的用户可以使用 OKTA 按钮在登录页面上点击登录,并使用他们的 OKTA 证书进行登录. 该用户需要在Open-AudIT中已经存在(并被指派角色和Orgs),但无需记住单独的一组登录证书.';
-
-$GLOBALS["lang"]['Open-AudIT comes with many queries inbuilt. If you require a specific query and none of the pre-packaged queries fit your needs, it is quite easy to create a new one and load it into Open-AudIT for running.'] = 'Open-AudIT带来许多内置的查询. 如果您需要特定查询, 且预装的查询都不符合您的需要, 很容易创建新查询并加载到 Open- AudIT 中进行运行 。';
-
-$GLOBALS["lang"]['Open-AudIT has a JSON Restful API to be used both in the web interface and via JSON requests.'] = 'Open-AudIT有一个JSON休息API,既用于网络界面,也通过JSON请求.';
-
-$GLOBALS["lang"]['Open-AudIT has a granular permissions system to determine what a user within Open-AudIT can do, and the items he can do it to. Open-AudIT can be entirely self-contained, or use Active Directory or OpenLDAP for authentication and/or authorization.<br><br>It is entirely up to the administrator of Open-AudIT how they would like the Role Based Access Control to work.'] = '打开Aud IT有一个颗粒授权系统来确定Open-AudIT内部的用户可以做什么,以及他可以做的项目. Open-AudIT可以完全自成一体,也可以使用Active Directory或OpenLDAP进行认证和/或授权.<br/><br/>这完全取决于Open-AudIT的管理员,他们希望基于角色的接入控制如何工作。';
-
-$GLOBALS["lang"]['Open-AudIT has a powerful change detection engine. Any device attributes that are added, removed or changed will be detected and stored. These changes can be reported upon and the relevant data confirmed as to what was expected from your company change and release process.<br><br>When a device is audited, attributes are divided into sections which correspond to tables in the database.<br><br>Each device (computer, router, printer, et al) has an entry in the <code>devices</code> table. Each entry in the devices table has an <code>id</code> column. This value is unique - it is an auto-incrementing id.<br><br>When the audit result is processed, each item in each section has its audit result compared to what is in the database.<br><br>For each section, if the key columns (see below table) contain the identical values, it is considered already installed and has its <code>last_seen</code> attribute updated. No change_log entry is created.<br><br>If any of the key columns do not match, it is considered a new attribute and is inserted. A <code>change_log</code> entry is created if the device had other attributes already present in the table.<br><br>At the completion of the audit processing, any database items that have not been updated (or inserted) are considered to not be present. The <code>current</code> attribute for this item is set to <i>n</i> and a change_log entry is generated.<br><br>So, we can determine if something is currently installed - the current column is <i>y</i>.<br><br>We can determine when something was initially detected - the <i>first_seen</i>.<br><br>We can determine if something was installed after the initial audit - first seen will be different in the component and device tables.<br><br>We can determine if something is not currently installed, but previously was - current = <i>n</i>.<br><br>We can determine the last time we detected an item - last_seen.<br><br>At any given point, we can determine what was on a system - by using the audit_log table and selecting the relevant components based on first_seen and last_seen.<br><br>Each section and its matching key columns are below.<br><br>NOTE - There are some exceptions as detailed below.<br><br>*1 - For network cards, if the computer is a VMware Esx machine it also uses the net_index and connection columns.<br><br>*2 - For partitions, f the computer is an AIX machine, we use the partition name.'] = '打开Aud IT拥有强大的变化探测引擎. 任何添加,移除或更改的设备属性都会被检测和存储. 可以报告这些变化,并证实有关数据,说明你们公司的变更和发布过程预期会发生什么。<br/><br/>当一个设备被审计时,属性被分为与数据库中的表格相对应的部分.<br/><br/>每个设备(计算机、路由器、打印机等)都有一个条目。 <code>devices</code> 表单。 设备表格中的每个条目都有 <code>id</code> 栏。 这个值是独一无二的——它是自动递增的ID.<br/><br/>当处理审计结果时,每个科的每个项目都拥有与数据库中内容相比的审计结果.<br/><br/>对于每一节,如果关键栏(见下表)包含相同的值,则视为已安装,并有其 <code>last_seen</code> 属性更新。 没有创建更改_log条目 。<br/><br/>如果任何密钥列不匹配,则视为新属性并插入. A级 <code>change_log</code> 如果设备在表格中已有其他属性,则创建条目。<br/><br/>在完成审计处理时,任何尚未更新(或插入)的数据库项目都被视为不存在。 那个 <code>current</code> 此项目的属性设定为 <i>无</i> 并生成更改_日志条目。<br/><br/>因此,我们可以确定是否正在安装某物 - 当前列是 <i>尔</i>。 。 。<br/><br/>我们可以确定什么时候才发现... <i>先见</i>。 。 。<br/><br/>我们可以确定在初步审计之后是否安装了某种东西——首先看到的是组件和设备表格中的不同.<br/><br/>我们可以确定某物是否目前没有安装, 但以前是 - 当前 = <i>无</i>。 。 。<br/><br/>我们可以确定我们最后一次检测到物品的时间 - 最后一次_ 见.<br/><br/>在任何特定的时间点,我们可以确定一个系统上的内容——通过使用审计_日志表,并根据先看后看来选择相关组件.<br/><br/>每一节及其对应的关键栏如下。<br/><br/>注 - 有一些例外情况,详见下文。<br/><br/>*1 - 对于网络卡,如果计算机是VMware Esx机,它也使用net_index和连接列.<br/><br/>*2 - 对于分区,f计算机是AIX机,我们使用分区名称.';
-
-$GLOBALS["lang"]['Open-AudIT is a program designed to track and report on your IT and related assets details and configuration. Open-AudIT can tell <i>What is On Your Network?</i>, how it is configured and if there have been any changes. Open-AudIT delivers a sleek, flexible and easy to use platform for device discovery, IT auditing and inventory management automation straight out of the box.'] = 'Open-AudIT是一个程序,旨在跟踪和报告您的IT和相关资产细节和配置. Open-AudIT 能分辨出来 <i>你的网络是什么?</i>,如何配置,是否有变化。 Open-AudIT为设备的发现,IT审计和库存管理自动化直接提供精密,灵活和易于使用的平台.';
-
-$GLOBALS["lang"]['Open-AudIT makes it easy to edit the attributes of multiple devices at once.'] = '打开Aud IT使得同时编辑多个设备的属性变得容易.';
-
-$GLOBALS["lang"]['Open-AudIT needs specific directory permissions to be able to create files, upload results, etc. Please set as below.'] = '打开Aud IT需要特定的目录权限才能创建文件,上传结果等. 请如下。';
-
-$GLOBALS["lang"]['Open-AudIT provides many built-in queries and makes it simple to create your own.'] = 'Open-AudIT提供了许多内置的查询,并使得创建自己的简单.';
-
-$GLOBALS["lang"]['Open-AudIT ships with inbuilt roles for admin, org_admin and user.<br><br>Generally, a user who is an administrator of the Open-AudIT application itself should have admin and possible org_admin roles.<br><br>A user can have multiple roles. The permission will be applied at the most permissive level - IE, if a user has the roles of user and org_admin, they will be able to create locations because org_admin grants this permission, even though the user role does not.<br><br>The admin role allows access to collections such as configuration, database, groups, ldap servers, logs, queries and roles. Global items that affect the entire application.<br><br>The org_admin role usually allows create, read, update and delete actions for any collection that contains the org_id column. Virtually all data except some of the collections mentioned above will contain an <code>org_id</code> column.<br><br>The user role generally allows read only access to all items with an org_id column.'] = '打开Aud IT船具有内置的角色,供管理员,org_admin和用户使用.<br/><br/>一般来说,作为Open-AudIT应用程序管理员的用户本身应该具有管理员和可能的org_admin角色.<br/><br/>用户可以扮演多个角色. 许可将在最允许的级别上应用 - IE,如果用户具有用户和org_admin的作用,他们将能够创建位置,因为org_admin给予此许可,即使用户角色没有.<br/><br/>管理员角色可以访问集,如配置,数据库,组,ldap服务器,日志,查询和角色. 影响整个应用程序的全球项目。<br/><br/>org_admin角色通常允许为包含org_id列的任何收藏创建,读取,更新和删除动作. 除上述一些收集资料外,几乎所有数据都将包括: <code>org_id</code> 栏。<br/><br/>用户角色一般只允许读取带有 Org_id 列的所有项目.';
-
-$GLOBALS["lang"]['Open-AudIT ships with inbuilt roles for admin, org_admin and user.<br><br>Generally, a user who is an administrator of the Open-AudIT application itself should have admin and possible org_admin roles.<br><br>A user can have multiple roles. The permission will be applied at the most permissive level - IE, if a user has the roles of user and org_admin, they will be able to create locations because org_admin grants this permission, even though the user role does not.<br><br>The admin role allows access to collections such as configuration, database, groups, ldap servers, logs, queries and roles. Global items that affect the entire application.<br><br>The org_admin role usually allows create, read, update and delete actions for any collection that contains the org_id column. Virtually all data except some of the collections mentioned above will contain an org_id column.<br><br>The user role generally allows read only access to all items with an org_id column.'] = '打开Aud IT船具有内置的角色,供管理员,org_admin和用户使用.<br/><br/>一般来说,作为Open-AudIT应用程序管理员的用户本身应该具有管理员和可能的org_admin角色.<br/><br/>用户可以扮演多个角色. 许可将在最允许的级别上应用 - IE,如果用户具有用户和org_admin的作用,他们将能够创建位置,因为org_admin给予此许可,即使用户角色没有.<br/><br/>管理员角色可以访问集,如配置,数据库,组,ldap服务器,日志,查询和角色. 影响整个应用程序的全球项目。<br/><br/>org_admin角色通常允许为包含org_id列的任何收藏创建,读取,更新和删除动作. 除上述部分集合外,几乎所有数据都将包含一个org_id列.<br/><br/>用户角色一般只允许读取带有 Org_id 列的所有项目.';
-
-$GLOBALS["lang"]['Open-AudIT ships with several pre-configured Dashboards. If you are a Professional user, you can select between two of these and set it as your default page when you logon. If you are an Enterprise user, you can not only select between the five preconfigured Dashboards, but you also have the ability to create your own.'] = '开放AudIT舰载数艘预装Dashboard. 如果您是专业用户, 您可以在其中两个用户之间选择, 在登录时设置为默认页面 。 如果您是企业号用户,您不仅可以在预配置的5个Dashboard中选择,还拥有自己创建的能力.';
-
-$GLOBALS["lang"]['Open-AudIT should be installed on 64bit Windows <strong>Server</strong> systems only. Windows 10 and Windows 11 are <strong>not</strong> supported.'] = 'Open-AudIT 应安装在64bit Windows上 <strong>服务器</strong> 仅限系统。 Windows 10和Windows 11分别是 <strong>没有</strong> 支持 。';
-
-$GLOBALS["lang"]['Open-AudIT uses Nmap in its Discovery function. Nmap probes devices for open ports. Devices ideally should respond with open for working ports. Devices often do not respond with this. The varying responses are detailed below.'] = 'Open-AudIT在其发现功能中使用Nmap. Nmap 探测器设备用于开放端口. 设备最好能对工作端口开放。 设备经常不用这个响应. 下文详述了不同的答复。';
-
-$GLOBALS["lang"]['Open-AudIT uses Nmap in its Discovery function. Without Nmap, Open-AudIT will not function correctly. Every Open-AudIT install assumes Nmap is installed and will also test for it on the Discovery web pages. More information about Open-AudIT and Nmap is available here'] = 'Open-AudIT在其发现功能中使用Nmap. 没有Nmap, Open-AudIT将无法正确运行. 每一个Open-AudIT安装都假设Nmap已经安装,也会在发现者网页上测试. 关于Open-AudIT和Nmap的更多信息,请访问';
-
-$GLOBALS["lang"]['Open-AudIT uses Nmap in its Discovery function. Without Nmap, Open-AudIT will not function correctly. Every Open-AudIT install assumes Nmap is installed and will test for it on the Discovery web pages.'] = 'Open-AudIT在其发现功能中使用Nmap. 没有Nmap, Open-AudIT将无法正确运行. 每个Open-AudIT安装都假定Nmap已经安装,并将在发现者网页上测试.';
-
-$GLOBALS["lang"]['Open-AudIT uses credentials to access your devices. These are encrypted and stored, just as you would expect.'] = '打开Aud 它使用证书 访问您的设备。 这些是加密和存储的 就像你所期望的';
-
-$GLOBALS["lang"]['Open-AudIT was written by an English speaking Australian. Everything in the application uses English wording. However Open-AudIT has always supported multiple languages for display. These translations are not always correct, because the developers do not natively speak the language of every translation offered.<br><br>What can you do if something is not correct in the translation?'] = 'Open-AudIT是由一位说英语的澳大利亚人写的. 应用程序中的所有内容都使用英语措辞. 然而Open-AudIT一直支持多种语言进行显示. 这些译名并不总是正确的,因为开发者不会在本地说每个译名的语言.<br/><br/>如果翻译中有些不对劲,你能做什么?';
-
-$GLOBALS["lang"]['OpenLDAP'] = '打开LDAP';
-
-$GLOBALS["lang"]['OpenScap is Installed'] = 'OpenScap 已安装';
-
-$GLOBALS["lang"]['Opening a Support Ticket?'] = '开张支持票?';
-
-$GLOBALS["lang"]['openldap_user_dn'] = 'Openldap 用户 Dn';
-
-$GLOBALS["lang"]['Openldap User Dn'] = 'Openldap 用户 Dn';
-
-$GLOBALS["lang"]['openldap_user_membership_attribute'] = 'Openldap 用户成员属性';
-
-$GLOBALS["lang"]['Openldap User Membership Attribute'] = 'Openldap 用户成员属性';
-
-$GLOBALS["lang"]['open|filtered'] = '已过滤';
-
-$GLOBALS["lang"]['Open|filtered'] = '已过滤';
-
-$GLOBALS["lang"]['Operating System'] = '操作系统';
-
-$GLOBALS["lang"]['Operating System Family Contains'] = '操作系统家庭包含';
-
-$GLOBALS["lang"]['Operating Systems'] = '操作系统';
-
-$GLOBALS["lang"]['Operators'] = '运算符';
-
-$GLOBALS["lang"]['optical'] = '光学';
-
-$GLOBALS["lang"]['Optical'] = '光学';
-
-$GLOBALS["lang"]['Optimized'] = '优化';
-
-$GLOBALS["lang"]['Option #1 - Change the data'] = '选项 # 1 - 更改数据';
-
-$GLOBALS["lang"]['Option #2 - Change the translation file'] = '选项 # 2 - 更改翻译文件';
-
-$GLOBALS["lang"]['Optional Agent Based Auditing'] = '选择性代理审计';
-
-$GLOBALS["lang"]['Optional version as audited by Open-AudIT. Use the percent sign % as a wildcard.'] = '经Open-AudIT审计的可选版本. 使用% 签名% 作为通配符 。';
-
-$GLOBALS["lang"]['options'] = '选项';
-
-$GLOBALS["lang"]['Options'] = '选项';
-
-$GLOBALS["lang"]['Options, options, options'] = '选项、选项、选项';
-
-$GLOBALS["lang"]['Or'] = '或者说';
-
-$GLOBALS["lang"]['Or select from the below fields.'] = '或从以下字段选择.';
-
-$GLOBALS["lang"]['org_descendants'] = '欧格后裔';
-
-$GLOBALS["lang"]['Org Descendants'] = '欧格后裔';
-
-$GLOBALS["lang"]['org_id'] = '奥尔格标识';
-
-$GLOBALS["lang"]['Org ID'] = '奥尔格标识';
-
-$GLOBALS["lang"]['Organisation'] = '日历';
-
-$GLOBALS["lang"]['organisation'] = '日历';
-
-$GLOBALS["lang"]['Organisation Descendants'] = '后代组织';
-
-$GLOBALS["lang"]['Organisations'] = '组织';
-
-$GLOBALS["lang"]['Organisations can extend and enhance the level of detail that is stored against every discovered device using custom fields and the open core allows for easy integration into CMDB, event management and ticketing systems.'] = '组织可以使用自定义字段来扩展和提高每个发现的设备的存储细节水平,开放的核心可以方便地融入CMDB,事件管理和罚单系统.';
-
-$GLOBALS["lang"]['orgs'] = '鸟类';
-
-$GLOBALS["lang"]['Orgs'] = '鸟类';
-
-$GLOBALS["lang"]['Orgs Name'] = '兽名';
-
-$GLOBALS["lang"]['Orgs in Open-AudIT are a key item. A user has a primary Org as well as a list of Orgs they can access. A user combines this with a list of assigned roles that define what actions they can take on items assigned to the Orgs they have access to. The combination of a users <i>orgs</i> and <i>roles</i> define what they can and cannot do within Open-AudIT.<br><br>Most items in Open-AudIT are assigned to an Org. Devices, Locations, Networks, etc, etc.<br><br>Orgs can have child Orgs. Think of an organisational chart (tree) structure. If a user has access to a specific Org, most of the time (not always) they also have access to that Orgs descendants.'] = 'Open-AudIT中的 Orgs 是一个关键项目. 一个用户有一个主 Org 以及可以访问的 Org 列表. 一个用户将此与指定角色列表相结合,该列表定义了他们可以对其可以访问的Orgs项目采取的行动. 用户组合 <i>鸟类</i> 和 <i>角色</i> 定义它们在 Open-AudIT 中能够和不能做什么。<br/><br/>Open-AudIT中的大多数项目被分配到一个 Org. 设备,位置,网络等.<br/><br/>兽人可以生孩子. 想想组织图(树)结构. 如果用户可以访问特定的Org,大多数时间(并不总是)他们也可以访问该Orgs后代.';
-
-$GLOBALS["lang"]['orientation'] = '方向';
-
-$GLOBALS["lang"]['Orientation'] = '方向';
-
-$GLOBALS["lang"]['os'] = '奥斯';
-
-$GLOBALS["lang"]['Os'] = '奥斯';
-
-$GLOBALS["lang"]['os_arch'] = '奥斯拱门';
-
-$GLOBALS["lang"]['Os Arch'] = '奥斯拱门';
-
-$GLOBALS["lang"]['os_bit'] = '奥斯比特';
-
-$GLOBALS["lang"]['Os Bit'] = '奥斯比特';
-
-$GLOBALS["lang"]['os_cpe'] = '奥斯 Cpe';
-
-$GLOBALS["lang"]['Os Cpe'] = '奥斯 Cpe';
-
-$GLOBALS["lang"]['os_display_version'] = 'Os 显示版本';
-
-$GLOBALS["lang"]['Os Display Version'] = 'Os 显示版本';
-
-$GLOBALS["lang"]['os_family'] = '奥斯家庭';
-
-$GLOBALS["lang"]['Os Family'] = '奥斯家庭';
-
-$GLOBALS["lang"]['os_group'] = '奥斯组';
-
-$GLOBALS["lang"]['Os Group'] = '奥斯组';
-
-$GLOBALS["lang"]['os_installation_date'] = 'Os 安装日期';
-
-$GLOBALS["lang"]['Os Installation Date'] = 'Os 安装日期';
-
-$GLOBALS["lang"]['os_licence_expiry'] = '许可证过期';
-
-$GLOBALS["lang"]['Os Licence Expiry'] = '许可证过期';
-
-$GLOBALS["lang"]['os_license'] = '奥斯许可证';
-
-$GLOBALS["lang"]['Os License'] = '奥斯许可证';
-
-$GLOBALS["lang"]['os_license_code'] = '奥斯许可证代码';
-
-$GLOBALS["lang"]['Os License Code'] = '奥斯许可证代码';
-
-$GLOBALS["lang"]['os_license_mode'] = 'Os 许可模式';
-
-$GLOBALS["lang"]['Os License Mode'] = 'Os 许可模式';
-
-$GLOBALS["lang"]['os_license_type'] = '许可证类型';
-
-$GLOBALS["lang"]['Os License Type'] = '许可证类型';
-
-$GLOBALS["lang"]['os_name'] = '奥斯名称';
-
-$GLOBALS["lang"]['Os Name'] = '奥斯名称';
-
-$GLOBALS["lang"]['os_version'] = '奥斯版本';
-
-$GLOBALS["lang"]['Os Version'] = '奥斯版本';
-
-$GLOBALS["lang"]['Other'] = '其他人员';
-
-$GLOBALS["lang"]['Other than that restriction, you are free to select attributes as required. It is a good idea to use the menu'] = '除此限制外, 您可以根据需要选择属性 。 使用菜单是个好主意';
-
-$GLOBALS["lang"]['Others'] = '其他人员';
-
-$GLOBALS["lang"]['Our default Integration also enables a discovery on any externally supplied devices. So we ship a default discovery for the Default Integration out of the box. These use the default matching rules, but also enable matching on IP address.'] = '我们的默认集成还能发现任何外部设备。 所以我们将默认的发现 用于默认的集成 从盒子。 这些使用默认匹配规则,但也允许在IP地址上进行匹配.';
-
-$GLOBALS["lang"]['Our examples will use the <i>type</i> column.'] = '我们的例子将使用 <i>类型</i> 栏。';
-
-$GLOBALS["lang"]['Our framework uploads files here for processing, then deletes them. Think submitted audit results, etc.'] = '我们的框架在这里上传文件进行处理,然后删除它们. 考虑提交审计结果等。';
-
-$GLOBALS["lang"]['Our goal with the initial integrations release was specifically for NMIS to Open-AudIT integration to <i>just work</i>. If you are using the programs on Linux, you can literally click a single button to execute the integration. Nothing more is required. Having said that, the integration itself is extremely configurable - so if something is not to your preference, it can easily be changed.'] = '我们最初的集成发布目标 具体是NMIS到Open-AudIT集成到 <i>刚刚工作</i>。 。 。 如果您正在 Linux 上使用程序, 您可以按下一个按钮来执行整合 。 不需要更多的钱。 虽然如此,融合本身是极其可塑的,因此,如果不是你所偏爱的,就很容易改变。';
-
-$GLOBALS["lang"]['Our new feature called Vulnerabilities gives you the ability to quickly determine if any devices are affected by any CVE (Common Vulnerability Exposure) - but how?<br><br>FirstWave constantly consumes the output from the Nist NVD feed. We take this and apply a few restrictions, then extract the affected programs and build a SQL query for reporting. Your Open-AudIT instance reaches out to FirstWave and requests any new vulnerabilities on a regular basis. When it receives a new vulnerability record, it is run against the database and the result stored. Each time a device is processed, all matching vulnerabilities are again executed and the result stored. This means when viewing a vulnerability list, we do not need to calculate all affected devices - we already have the result. When you view an individual vulnerability record, we do indeed recalculate the result for this singular vulnerability.<br><br>So, you are always up to date!<br><br>In addition to this, we also calculate the result of all vulnerabilities for all devices daily (usually at a quiet time, say 2am).<br><br>In your instance of Open-AudIT, we allow you to select which vendors you care about. i.e. there is no use retrieving vulnerability records from a vendor whose software you do not use or have installed. By default, our vendor list is Adobe, Apple, Cisco, Google, Microsoft, Mozilla, and Redhat.<br><br>This all sounds very simple, but behind the scenes a <b>lot</b> is going on. For instance, the CVE record contains a list of affected software - but those software names do not match what we receive when we audit a computer. A good example is Apache. Typically, a CVE record will say the affected software is http_server. In reality, this appears as apache2 (Ubuntu), httpd (Redhat), Apache HTTP Server (Windows) - and others. So, we have to first determine what is the actual name of the program we receive when we ask a computer, and there may be multiple names. After that we must parse the CVE record and create a matching SQL statement. Allowing for multiple program names as above, and multiple versions, version ranges, and even multiple different pieces of software (an example is Thunderbird and Firefox in a single CVE). And your instance of Open-AudIT must take this and apply Orgs filtering as well. And that is just a single CVE. What about determining which CVEs you have and do not have? What about adding a vendor to the list later? So many things to consider!<br><br>As well as the usual reporting, we also have a few new widgets available for Dashboards, based on Vulnerabilities data.'] = '我们的新特性叫做“脆弱” 使你能够迅速确定是否有任何设备受到任何CVE(共同脆弱性暴露)的影响,但如何?<br/><br/>FirstWave不断消耗Nist NVD种子的输出. 我们接受这个并应用一些限制,然后提取受影响的程序并构建一个SQL查询来进行报告. 您的 Open-AudIT 实例可联系到 FirstWave, 并请求任何新的弱点。 当它收到新的脆弱性记录时,就会与数据库和储存的结果相对应。 每次处理一个设备时,都会再次执行所有匹配的漏洞并存储结果. 这意味着,在查看脆弱程度清单时,我们不需要计算所有受影响的设备,我们已经有了结果。 当你看到个人的脆弱性记录时,我们确实会重新计算这种独特的脆弱性的结果。<br/><br/>所以,你总是更新的!<br/><br/>除此之外,我们还每天计算所有设备(通常在一个安静的时间,如2am)所有弱点的结果.<br/><br/>在Open-AudIT的例子中,我们允许你选择你关心的哪些摊贩. 即从软件不使用或安装的供应商处检索脆弱程度记录是没有用的。 默认情况下,我们的供应商名单是Adobe,苹果,思科,谷歌,微软,Mozilla,和Redhat.<br/><br/>这听起来很简单 但幕后是 <b>数量</b> 正在继续。 例如,CVE记录载有一份受影响的软件清单,但这些软件名称与我们在审计计算机时收到的内容不符。 一个很好的例子就是阿帕奇。 通常,一个CVE记录会说受影响的软件是http_server. 在现实中,它以apache2(Ubuntu),httpd(Redhat),Apache HTTP服务器(Windows)等形式出现. 因此,我们必须首先确定当我们问电脑时我们收到的程序的实际名称,可能还有多个名称. 在此之后,我们必须解析 CVE 记录并创建匹配的 SQL 语句 。 允许上面的多个程序名称,以及多个版本,版本范围,甚至多个不同的软件块(一个实例是雷鸟和Firefox在一个单一的CVE). 您的 Open-AudIT 实例必须接受这个并应用 Orgs 过滤。 这只是一个CVE。 确定你拥有和没有哪个CVE怎么样? 那以后再把卖家列入名单怎么样? 这么多事情要考虑!<br/><br/>与通常的报告一样,我们还根据脆弱性数据为Dashboards提供了一些新的部件。';
-
-$GLOBALS["lang"]['Our timeout for a SSH response'] = '我们暂停使用 SSH 响应';
-
-$GLOBALS["lang"]['Our timeout for a WMI response'] = '我们暂停WMI的响应';
-
-$GLOBALS["lang"]['Our timeout for an SNMP response'] = '我们暂停 SNMP 响应';
-
-$GLOBALS["lang"]['Our timeout for an audit script response'] = '我们暂停审计脚本回应';
-
-$GLOBALS["lang"]['output'] = '产出';
-
-$GLOBALS["lang"]['Output'] = '产出';
-
-$GLOBALS["lang"]['outputs'] = '产出';
-
-$GLOBALS["lang"]['Outputs'] = '产出';
-
-$GLOBALS["lang"]['Overall severity score (0–10).'] = '总严重程度分(0–10).';
-
-$GLOBALS["lang"]['overwrite'] = '覆盖';
-
-$GLOBALS["lang"]['Overwrite'] = '覆盖';
-
-$GLOBALS["lang"]['owner'] = '拥有者';
-
-$GLOBALS["lang"]['Owner'] = '拥有者';
-
-$GLOBALS["lang"]['PAExec is a freely-redistributable re-implementation of SysInternal/Microsofts popular PsExec program.  PAExec aims to be a drop in replacement for PsExec, so the command-line usage is identical, with additional options also supported.  This work was originally inspired by Talha Tariqs RemCom.'] = 'PAExec是SysInternal/Microsofts流行的PsExec程序的可自由回放的再执行程序. PAExec旨在作为PsExec的替换减少,因此命令行使用相同,另外还支持附加选项. 这部作品最初灵感来自塔尔哈·塔里克斯·雷姆科姆(Talha Tariks RemCom).';
-
-$GLOBALS["lang"]['PHP'] = 'ưμ㼯A';
-
-$GLOBALS["lang"]['POD'] = 'POD 密码';
-
-$GLOBALS["lang"]['POSTing data'] = 'POST 数据';
-
-$GLOBALS["lang"]['Package'] = '软件包';
-
-$GLOBALS["lang"]['packages'] = '软件包';
-
-$GLOBALS["lang"]['Packages'] = '软件包';
-
-$GLOBALS["lang"]['Packages are used to report on things such as <i>banned software</i>, AntiVirus on servers, etc.<br><br>Open-AudIT provides widgets that build upon also supplied repots to detemine the status of antivirus, firewall and other software.'] = '软件包被用来报告诸如 <i>被禁软件</i>,服务器上的AntiVirus等.<br/><br/>Open-AudIT提供了一些部件,这些部件也以所供应的可拆解抗病毒、防火墙和其他软件状态的复体为基础。';
-
-$GLOBALS["lang"]['pagefile'] = '页面文件';
-
-$GLOBALS["lang"]['Pagefile'] = '页面文件';
-
-$GLOBALS["lang"]['Pakistan'] = '巴基斯坦';
-
-$GLOBALS["lang"]['Palau'] = '帕劳';
-
-$GLOBALS["lang"]['Palestinian Territory'] = '巴勒斯坦领土';
-
-$GLOBALS["lang"]['Panama'] = '巴拿马';
-
-$GLOBALS["lang"]['Papua New Guinea'] = '巴布亚新几内亚';
-
-$GLOBALS["lang"]['Paraguay'] = '巴拉圭';
-
-$GLOBALS["lang"]['Parameters'] = '参数';
-
-$GLOBALS["lang"]['Paranoid'] = '妄想症';
-
-$GLOBALS["lang"]['Parent'] = '家长';
-
-$GLOBALS["lang"]['parent_id'] = '父母身份证';
-
-$GLOBALS["lang"]['Parent ID'] = '父母身份证';
-
-$GLOBALS["lang"]['parent_name'] = '父名称';
-
-$GLOBALS["lang"]['Parent Name'] = '父名称';
-
-$GLOBALS["lang"]['part_number'] = '编 号';
-
-$GLOBALS["lang"]['Part Number'] = '编 号';
-
-$GLOBALS["lang"]['part_of_domain'] = '域部分';
-
-$GLOBALS["lang"]['Part Of Domain'] = '域部分';
-
-$GLOBALS["lang"]['Partition'] = '分区';
-
-$GLOBALS["lang"]['partition_count'] = '分区数';
-
-$GLOBALS["lang"]['Partition Count'] = '分区数';
-
-$GLOBALS["lang"]['partition_disk_index'] = '分区磁盘索引';
-
-$GLOBALS["lang"]['Partition Disk Index'] = '分区磁盘索引';
-
-$GLOBALS["lang"]['Pass'] = '过';
-
-$GLOBALS["lang"]['Passed'] = '已经通过';
-
-$GLOBALS["lang"]['Passive Optical Local Area Network'] = '被动光学局域网';
-
-$GLOBALS["lang"]['Password'] = '密码';
-
-$GLOBALS["lang"]['password'] = '密码';
-
-$GLOBALS["lang"]['password_changeable'] = '密码可更改';
-
-$GLOBALS["lang"]['Password Changeable'] = '密码可更改';
-
-$GLOBALS["lang"]['password_disabled'] = '密码已禁用';
-
-$GLOBALS["lang"]['Password Disabled'] = '密码已禁用';
-
-$GLOBALS["lang"]['password_expires'] = '密码过期';
-
-$GLOBALS["lang"]['Password Expires'] = '密码过期';
-
-$GLOBALS["lang"]['password_last_changed'] = '密码上次更改';
-
-$GLOBALS["lang"]['Password Last Changed'] = '密码上次更改';
-
-$GLOBALS["lang"]['password_required'] = '需要密码';
-
-$GLOBALS["lang"]['Password Required'] = '需要密码';
-
-$GLOBALS["lang"]['patch_panel'] = '补丁面板';
-
-$GLOBALS["lang"]['Patch Panel'] = '补丁面板';
-
-$GLOBALS["lang"]['patch_panel_port'] = '补丁面板端口';
-
-$GLOBALS["lang"]['Patch Panel Port'] = '补丁面板端口';
-
-$GLOBALS["lang"]['path'] = '路径';
-
-$GLOBALS["lang"]['Path'] = '路径';
-
-$GLOBALS["lang"]['Performance'] = '业绩';
-
-$GLOBALS["lang"]['Performed'] = '已执行';
-
-$GLOBALS["lang"]['Permission'] = '权限';
-
-$GLOBALS["lang"]['Permission Required'] = '需要权限';
-
-$GLOBALS["lang"]['permissions'] = '权限';
-
-$GLOBALS["lang"]['Permissions'] = '权限';
-
-$GLOBALS["lang"]['Persian'] = '波斯语Name';
-
-$GLOBALS["lang"]['Personal Area Network'] = '个人区域网';
-
-$GLOBALS["lang"]['Personal area network'] = '个人区域网';
-
-$GLOBALS["lang"]['Peru'] = '秘鲁';
-
-$GLOBALS["lang"]['Philippines'] = '菲律宾';
-
-$GLOBALS["lang"]['phone'] = '电话';
-
-$GLOBALS["lang"]['Phone'] = '电话';
-
-$GLOBALS["lang"]['Physical CPUs'] = '物理 CPU 软件';
-
-$GLOBALS["lang"]['physical_count'] = '物理计数';
-
-$GLOBALS["lang"]['Physical Count'] = '物理计数';
-
-$GLOBALS["lang"]['physical_depth'] = '物理深度';
-
-$GLOBALS["lang"]['Physical Depth'] = '物理深度';
-
-$GLOBALS["lang"]['physical_height'] = '物理高度';
-
-$GLOBALS["lang"]['Physical Height'] = '物理高度';
-
-$GLOBALS["lang"]['physical_width'] = '物理宽度';
-
-$GLOBALS["lang"]['Physical Width'] = '物理宽度';
-
-$GLOBALS["lang"]['picture'] = '图片';
-
-$GLOBALS["lang"]['Picture'] = '图片';
-
-$GLOBALS["lang"]['pid'] = '管道';
-
-$GLOBALS["lang"]['Pid'] = '管道';
-
-$GLOBALS["lang"]['Pie Chart'] = '派图';
-
-$GLOBALS["lang"]['Pie charts must return name or my_name, description or my_description and count.'] = '拼图必须返回姓名或我的_名称、描述或我的_描述和计数。';
-
-$GLOBALS["lang"]['ping'] = 'ing';
-
-$GLOBALS["lang"]['Ping'] = 'ing';
-
-$GLOBALS["lang"]['Ping Target'] = '平目标';
-
-$GLOBALS["lang"]['Pitcairn Islands'] = '皮特凯恩群岛';
-
-$GLOBALS["lang"]['placement'] = '安置情况';
-
-$GLOBALS["lang"]['Placement'] = '安置情况';
-
-$GLOBALS["lang"]['Plan and conduct internal audits'] = '规划和进行内部审计';
-
-$GLOBALS["lang"]['Please have an Open-AudIT administrator logon and upgrade the database.'] = '请有一个 Open-AudIT 管理员登录并升级数据库 。';
-
-$GLOBALS["lang"]['Please log in and change these ASAP.'] = '请尽快登录和更改这些';
-
-$GLOBALS["lang"]['Please log on to the Open-AudIT Server (either Windows or Linux) and run <code>nslookup IP_ADDRESS_OF_TARGET</code> in the command prompt or shell. It must be able to resolve the IP to a name.'] = '请登录到 Open-AudIT 服务器( Windows 或 Linux) 并运行 <code>nslookup IP_ADDRESS_OF_TARGET</code> 在命令提示或贝壳中。 它必须能够解决IP到一个名字.';
-
-$GLOBALS["lang"]['Please note that the select box will override the text input box.'] = '请注意,选定的框将覆盖文本输入框。';
-
-$GLOBALS["lang"]['Please see the FAQ'] = '请看FAQ';
-
-$GLOBALS["lang"]['Please send all three files to your support contact at Opmantek and describe your issue.'] = '请将所有三个文件发送到您在Opmantek的支持联系人,并描述您的问题.';
-
-$GLOBALS["lang"]['Please set using'] = '请使用';
-
-$GLOBALS["lang"]['Please visit the homepage at'] = '请访问网站主页';
-
-$GLOBALS["lang"]['pod'] = '邮箱';
-
-$GLOBALS["lang"]['Pod'] = '邮箱';
-
-$GLOBALS["lang"]['Poland'] = '波兰';
-
-$GLOBALS["lang"]['Policies'] = '政策';
-
-$GLOBALS["lang"]['Policies have exceptions.'] = '政策有例外。';
-
-$GLOBALS["lang"]['policy'] = '政策';
-
-$GLOBALS["lang"]['Policy'] = '政策';
-
-$GLOBALS["lang"]['policy_id'] = '政策标识';
-
-$GLOBALS["lang"]['Policy ID'] = '政策标识';
-
-$GLOBALS["lang"]['Policy Result'] = '政策结果';
-
-$GLOBALS["lang"]['Policy Results'] = '政策成果';
-
-$GLOBALS["lang"]['Polish'] = '波兰语Name';
-
-$GLOBALS["lang"]['Polite'] = '礼貌';
-
-$GLOBALS["lang"]['Populate the with values provided below:'] = '以下列数值填充:';
-
-$GLOBALS["lang"]['Populated by audit.'] = '通过审计进行。';
-
-$GLOBALS["lang"]['Populated by discovery and audit.'] = '以发现和审计为主。';
-
-$GLOBALS["lang"]['Populated dynamically.'] = '充满活力。';
-
-$GLOBALS["lang"]['Populated from DNS.'] = '由DNS传播.';
-
-$GLOBALS["lang"]['Populated from SNMP discovery.'] = '由 SNMP 发现而成。';
-
-$GLOBALS["lang"]['Populated from device audits.'] = '由设备审计提供。';
-
-$GLOBALS["lang"]['Populated from hostname.'] = '从主机名复制.';
-
-$GLOBALS["lang"]['Populated from machine-id on Linux.'] = '由Linux上的机器编号传播.';
-
-$GLOBALS["lang"]['Populated from the IP for the default route or the IP detected in discovery.'] = '用于默认路径或发现时检测到的IP的IP充值.';
-
-$GLOBALS["lang"]['Populated from the hostname command.'] = '从主机名命令复制 。';
-
-$GLOBALS["lang"]['Populated with additional data from the external system, in a JSON representation.'] = '以外部系统的额外数据作为JSON代表。';
-
-$GLOBALS["lang"]['port'] = '端口';
-
-$GLOBALS["lang"]['Port'] = '端口';
-
-$GLOBALS["lang"]['port_name'] = '端口名称';
-
-$GLOBALS["lang"]['Port Name'] = '端口名称';
-
-$GLOBALS["lang"]['port_number'] = '端口编号';
-
-$GLOBALS["lang"]['Port Number'] = '端口编号';
-
-$GLOBALS["lang"]['ports_in_order'] = '端口顺序';
-
-$GLOBALS["lang"]['Ports In Order'] = '端口顺序';
-
-$GLOBALS["lang"]['ports_stop_after'] = '后端口停止';
-
-$GLOBALS["lang"]['Ports Stop After'] = '后端口停止';
-
-$GLOBALS["lang"]['Portugal, Portuguese Republic'] = '葡萄牙、葡萄牙共和国';
-
-$GLOBALS["lang"]['Portuguese'] = '葡萄牙语';
-
-$GLOBALS["lang"]['Portuguese (Brazil)'] = '葡萄牙语( 巴西 )';
-
-$GLOBALS["lang"]['position'] = '立场';
-
-$GLOBALS["lang"]['Position'] = '立场';
-
-$GLOBALS["lang"]['Post-Certification'] = '认证后';
-
-$GLOBALS["lang"]['postcode'] = '邮政编码';
-
-$GLOBALS["lang"]['Postcode'] = '邮政编码';
-
-$GLOBALS["lang"]['power_circuit'] = '电路';
-
-$GLOBALS["lang"]['Power Circuit'] = '电路';
-
-$GLOBALS["lang"]['power_sockets'] = '电袜';
-
-$GLOBALS["lang"]['Power Sockets'] = '电袜';
-
-$GLOBALS["lang"]['Predictable'] = '可预见';
-
-$GLOBALS["lang"]['Preferences'] = '首选项';
-
-$GLOBALS["lang"]['Prepare for recertification every 3 years'] = '准备每三年重新认证一次';
-
-$GLOBALS["lang"]['Prerequisites'] = '先决条件';
-
-$GLOBALS["lang"]['Prerequisites and Tests'] = '先决条件和试验';
-
-$GLOBALS["lang"]['present'] = '现';
-
-$GLOBALS["lang"]['Present'] = '现';
-
-$GLOBALS["lang"]['previous_value'] = '上一个数值';
-
-$GLOBALS["lang"]['Previous Value'] = '上一个数值';
-
-$GLOBALS["lang"]['primary'] = '小学';
-
-$GLOBALS["lang"]['Primary'] = '小学';
-
-$GLOBALS["lang"]['Primary Key'] = '主密钥';
-
-$GLOBALS["lang"]['print_queue'] = '打印队列';
-
-$GLOBALS["lang"]['Print Queue'] = '打印队列';
-
-$GLOBALS["lang"]['printer_color'] = '打印机颜色';
-
-$GLOBALS["lang"]['Printer Color'] = '打印机颜色';
-
-$GLOBALS["lang"]['printer_duplex'] = '打印机双面';
-
-$GLOBALS["lang"]['Printer Duplex'] = '打印机双面';
-
-$GLOBALS["lang"]['printer_port_name'] = '打印机端口名称';
-
-$GLOBALS["lang"]['Printer Port Name'] = '打印机端口名称';
-
-$GLOBALS["lang"]['printer_shared'] = '打印机共享';
-
-$GLOBALS["lang"]['Printer Shared'] = '打印机共享';
-
-$GLOBALS["lang"]['printer_shared_name'] = '打印机共享名称';
-
-$GLOBALS["lang"]['Printer Shared Name'] = '打印机共享名称';
-
-$GLOBALS["lang"]['priority'] = '优先权';
-
-$GLOBALS["lang"]['Priority'] = '优先权';
-
-$GLOBALS["lang"]['Privacy Passphrase'] = '隐私密码句';
-
-$GLOBALS["lang"]['Privacy Protocol'] = '隐私议定书';
-
-$GLOBALS["lang"]['privileges_required'] = '所需特权';
-
-$GLOBALS["lang"]['Privileges Required'] = '所需特权';
-
-$GLOBALS["lang"]['processor'] = '处理器';
-
-$GLOBALS["lang"]['Processor'] = '处理器';
-
-$GLOBALS["lang"]['processor_count'] = '处理器计数';
-
-$GLOBALS["lang"]['Processor Count'] = '处理器计数';
-
-$GLOBALS["lang"]['processor_slot_count'] = '处理器槽计数';
-
-$GLOBALS["lang"]['Processor Slot Count'] = '处理器槽计数';
-
-$GLOBALS["lang"]['processor_type'] = '处理器类型';
-
-$GLOBALS["lang"]['Processor Type'] = '处理器类型';
-
-$GLOBALS["lang"]['Processors'] = '处理器';
-
-$GLOBALS["lang"]['product_name'] = '产品名称';
-
-$GLOBALS["lang"]['Product Name'] = '产品名称';
-
-$GLOBALS["lang"]['Product Name Match from CPE: '] = 'CPE产品名称匹配 : ';
-
-$GLOBALS["lang"]['products'] = '产品';
-
-$GLOBALS["lang"]['Products'] = '产品';
-
-$GLOBALS["lang"]['Professional'] = '专业人员';
-
-$GLOBALS["lang"]['profile'] = '简介';
-
-$GLOBALS["lang"]['Profile'] = '简介';
-
-$GLOBALS["lang"]['program'] = '程序';
-
-$GLOBALS["lang"]['Program'] = '程序';
-
-$GLOBALS["lang"]['Properties'] = '属性';
-
-$GLOBALS["lang"]['Proprietary. If you want to modify HighCharts you may require a'] = '专制. 如果您想要修改高图, 您可能需要';
-
-$GLOBALS["lang"]['Protects confidentiality, integrity, and availability of information'] = '保护信息的保密性、完整性和可获得性';
-
-$GLOBALS["lang"]['protocol'] = '议定书';
-
-$GLOBALS["lang"]['Protocol'] = '议定书';
-
-$GLOBALS["lang"]['Provide a description and select and expires duration.'] = '提供说明,并选定期限。';
-
-$GLOBALS["lang"]['Provide a name - we humbly recommand Open-AudIT &#128512;, but you can name it anything you like.<br>From the Open-AudIT form, copy the value for the <i>Redirect URI</i> field and paste it into the <i>Sign-in redirect URIs</i> field in OKTA.<br>The Sign-out redirect URIs is optional, but if you want you can use open-audit/index.php/logout with your Open-AudIT servers http address, as per the screenshot.<br>Normally your Open-AudIT URL will look something like'] = '提供一个名字 - 我们谦卑地重新指挥 Open-AudIT QQ, 但你可以随便命名它。<br/>从 Open-AudIT 表格复制 <i>重定向 URI</i> 字段并粘贴到 <i>登录重定向 URI</i> 数据库中。<br/>Sign-out direct URI是可选的,但如果需要,可以使用开放审计/索引. 使用您的 Open- AudIT 服务器的 php/ logout 地址, 根据截图 。<br/>平时是你的 Open-AudIT URL 将看起来像';
-
-$GLOBALS["lang"]['Provided you have the correct credentials, Device Seed Discovery works as follows'] = '设备种子发现工作如下';
-
-$GLOBALS["lang"]['provider'] = '供应商';
-
-$GLOBALS["lang"]['Provider'] = '供应商';
-
-$GLOBALS["lang"]['published'] = '已出版';
-
-$GLOBALS["lang"]['Published'] = '已出版';
-
-$GLOBALS["lang"]['published_date'] = '发布日期';
-
-$GLOBALS["lang"]['Published Date'] = '发布日期';
-
-$GLOBALS["lang"]['publisher'] = '出版商';
-
-$GLOBALS["lang"]['Publisher'] = '出版商';
-
-$GLOBALS["lang"]['Puerto Rico'] = '波多黎各';
-
-$GLOBALS["lang"]['Purchase'] = '购买';
-
-$GLOBALS["lang"]['purchase_amount'] = '采购额';
-
-$GLOBALS["lang"]['Purchase Amount'] = '采购额';
-
-$GLOBALS["lang"]['purchase_cost_center'] = '采购费用中心';
-
-$GLOBALS["lang"]['Purchase Cost Center'] = '采购费用中心';
-
-$GLOBALS["lang"]['purchase_count'] = '采购数';
-
-$GLOBALS["lang"]['Purchase Count'] = '采购数';
-
-$GLOBALS["lang"]['purchase_date'] = '采购日期';
-
-$GLOBALS["lang"]['Purchase Date'] = '采购日期';
-
-$GLOBALS["lang"]['purchase_invoice'] = '购货发票';
-
-$GLOBALS["lang"]['Purchase Invoice'] = '购货发票';
-
-$GLOBALS["lang"]['purchase_order'] = '采购订单';
-
-$GLOBALS["lang"]['Purchase Order'] = '采购订单';
-
-$GLOBALS["lang"]['purchase_order_number'] = '采购订单号';
-
-$GLOBALS["lang"]['Purchase Order Number'] = '采购订单号';
-
-$GLOBALS["lang"]['purchase_service_contract_number'] = '采购服务合同编号';
-
-$GLOBALS["lang"]['Purchase Service Contract Number'] = '采购服务合同编号';
-
-$GLOBALS["lang"]['purchase_vendor'] = '采购供应商';
-
-$GLOBALS["lang"]['Purchase Vendor'] = '采购供应商';
-
-$GLOBALS["lang"]['purpose'] = '目的';
-
-$GLOBALS["lang"]['Purpose'] = '目的';
-
-$GLOBALS["lang"]['Qatar'] = '卡塔尔';
-
-$GLOBALS["lang"]['queries'] = '查询';
-
-$GLOBALS["lang"]['Queries'] = '查询';
-
-$GLOBALS["lang"]['Queries are an important part of Open-AudIT. They are what enables you to get meaningful information from all the device data you have discovered. Along with summaries and groups, they provide a powerful mechanism to extract crucial information.'] = '查询是Open-AudIT的重要组成部分. 它们能让你从你发现的所有设备数据中获得有意义的信息。 它们与摘要和团体一道,为获取关键信息提供了强有力的机制。';
-
-$GLOBALS["lang"]['Queries for Groups should select only the'] = '组查询只选择';
-
-$GLOBALS["lang"]['Query'] = '查询';
-
-$GLOBALS["lang"]['Query this Active Directory attribute first to determine the users work unit.'] = '查询此活动目录属性首先确定用户的工作单位 。';
-
-$GLOBALS["lang"]['Query this Active Directory attribute second to determine the users work unit.'] = '查询此活动目录属性的第二位以确定用户工作单位 。';
-
-$GLOBALS["lang"]['queue'] = '队列';
-
-$GLOBALS["lang"]['Queue'] = '队列';
-
-$GLOBALS["lang"]['Queue Limit'] = '队列限制';
-
-$GLOBALS["lang"]['Queued Device Audits'] = '排队设备审计';
-
-$GLOBALS["lang"]['Queued IP Scans'] = '排队 IP 扫描';
-
-$GLOBALS["lang"]['Queued Items'] = '排队项目';
-
-$GLOBALS["lang"]['RBAC for Active Directory and openLDAP'] = 'RBAC 活动目录和开放LDAP';
-
-$GLOBALS["lang"]['RU Start'] = 'RU 启动';
-
-$GLOBALS["lang"]['RX Bitrate'] = 'RX 比特率';
-
-$GLOBALS["lang"]['RX Freq'] = 'RX 弗赖克';
-
-$GLOBALS["lang"]['RX Level'] = 'RX 级别';
-
-$GLOBALS["lang"]['RX Power'] = 'RX 电源';
-
-$GLOBALS["lang"]['RX Profile'] = 'RX 配置';
-
-$GLOBALS["lang"]['Rack'] = '马克';
-
-$GLOBALS["lang"]['rack_devices'] = 'Rack 设备';
-
-$GLOBALS["lang"]['Rack Devices'] = 'Rack 设备';
-
-$GLOBALS["lang"]['rack_id'] = '麦克身份证';
-
-$GLOBALS["lang"]['Rack ID'] = '麦克身份证';
-
-$GLOBALS["lang"]['Rack Management and Reporting'] = 'Rack 管理和报告';
-
-$GLOBALS["lang"]['Racks'] = '机柜';
-
-$GLOBALS["lang"]['racks'] = '机柜';
-
-$GLOBALS["lang"]['radio'] = '无线电';
-
-$GLOBALS["lang"]['Radio'] = '无线电';
-
-$GLOBALS["lang"]['Radio MAC'] = 'MAC电台';
-
-$GLOBALS["lang"]['rationale'] = '理由';
-
-$GLOBALS["lang"]['Rationale'] = '理由';
-
-$GLOBALS["lang"]['raw'] = '原始内容';
-
-$GLOBALS["lang"]['Raw'] = '原始内容';
-
-$GLOBALS["lang"]['read'] = '读取';
-
-$GLOBALS["lang"]['Read'] = '读取';
-
-$GLOBALS["lang"]['Read our online documentation on the Open-AudIT Wiki.'] = '央视网上"开放AudIT维基"的文档.';
-
-$GLOBALS["lang"]['Read through the log file at'] = '通过日志文件读取 。';
-
-$GLOBALS["lang"]['Received'] = '实收';
-
-$GLOBALS["lang"]['Recently we have been asked the question - do you consider Open-AudIT more secure than other similar programs? As with most things, the answer is <i>it depends</i>.<br><br>Open-AudIT can be operated in such a way as to be extremely secure. But as usual with computer-based security, the more secure you wish to make something, the more inconvenient it becomes to use. The old phrase <i>the most secure computer is one that is turned off and in the cupboard<i> comes to mind.<br><br>Below we will outline some options that can be used with Open-AudIT that will increase security. Like most items within Open-AudIT, these are options and not mandatory. How far you take security is up to you.'] = '最近我们被问到这个问题——你觉得Open-AudIT比其它类似的程序安全吗? 就像大多数事情一样,答案是 <i>看情况</i>。 。 。<br/><br/>打开Aud 信息技术的操作可以极为安全。 但和通常的计算机安全一样, 你越想制造东西, 它就越不方便。 老话 <i>最安全的电脑是关机和柜子里的电脑<i> 想到了这一点。<br/><br/>下面我们概述一些可以与Open-AudIT一起使用的,可以增加安全性的选项. 同Open-AudIT中的大多数项目一样,这些是选项,而不是强制性的. 你带保安有多远取决于你</i></i>';
-
-$GLOBALS["lang"]['Recertification:</strong> Required every three years'] = '重新认证 : 每三年需要一次';
-
-$GLOBALS["lang"]['Red Query'] = '红色查询';
-
-$GLOBALS["lang"]['Redirect URI'] = '重定向 URI';
-
-$GLOBALS["lang"]['redirect_uri'] = '调整 Uri 方向';
-
-$GLOBALS["lang"]['Redirect Uri'] = '调整 Uri 方向';
-
-$GLOBALS["lang"]['Reduces risk of data breaches and cyber threats'] = '减少数据被破坏和网络威胁的风险';
-
-$GLOBALS["lang"]['references'] = '参考资料';
-
-$GLOBALS["lang"]['References'] = '参考资料';
-
-$GLOBALS["lang"]['region'] = '地区';
-
-$GLOBALS["lang"]['Region'] = '地区';
-
-$GLOBALS["lang"]['registered_user'] = '注册用户';
-
-$GLOBALS["lang"]['Registered User'] = '注册用户';
-
-$GLOBALS["lang"]['Rejected'] = '被拒绝';
-
-$GLOBALS["lang"]['rel'] = '转动';
-
-$GLOBALS["lang"]['Rel'] = '转动';
-
-$GLOBALS["lang"]['Release'] = '发布';
-
-$GLOBALS["lang"]['remediation'] = '补救';
-
-$GLOBALS["lang"]['Remediation'] = '补救';
-
-$GLOBALS["lang"]['Remote'] = '远程';
-
-$GLOBALS["lang"]['remote_address'] = '远程地址';
-
-$GLOBALS["lang"]['Remote Address'] = '远程地址';
-
-$GLOBALS["lang"]['remote_port'] = '远程端口';
-
-$GLOBALS["lang"]['Remote Port'] = '远程端口';
-
-$GLOBALS["lang"]['Remove'] = '删除';
-
-$GLOBALS["lang"]['Remove Exception'] = '删除例外';
-
-$GLOBALS["lang"]['Repeat until you have a completely discovered and audited Windows PC.'] = '重复一次,直到你有一个完全发现和审计过的Windows PC.';
-
-$GLOBALS["lang"]['Report'] = '报告';
-
-$GLOBALS["lang"]['Report on your devices, networks and more'] = '报告您的设备、网络和更多';
-
-$GLOBALS["lang"]['reportable'] = '可报告';
-
-$GLOBALS["lang"]['Reportable'] = '可报告';
-
-$GLOBALS["lang"]['Reports'] = '报告';
-
-$GLOBALS["lang"]['request'] = '请求';
-
-$GLOBALS["lang"]['Request'] = '请求';
-
-$GLOBALS["lang"]['Request Method'] = '请求方法';
-
-$GLOBALS["lang"]['Request Vulnerability'] = '请求脆弱性';
-
-$GLOBALS["lang"]['Request a Specific CVE'] = '具体请求a 简历';
-
-$GLOBALS["lang"]['requested'] = '请求';
-
-$GLOBALS["lang"]['Requested'] = '请求';
-
-$GLOBALS["lang"]['require_port'] = '需要端口';
-
-$GLOBALS["lang"]['Require Port'] = '需要端口';
-
-$GLOBALS["lang"]['Require an Open Port'] = '需要打开端口';
-
-$GLOBALS["lang"]['Required'] = '要求数';
-
-$GLOBALS["lang"]['Required AWS user permissions'] = '需要的 AWS 用户权限';
-
-$GLOBALS["lang"]['Required Fields'] = '需要的字段';
-
-$GLOBALS["lang"]['Reset'] = '重设';
-
-$GLOBALS["lang"]['Reset All Data'] = '重置全部数据';
-
-$GLOBALS["lang"]['Reset to Default'] = '重置为默认值';
-
-$GLOBALS["lang"]['resource'] = '资源';
-
-$GLOBALS["lang"]['Resource'] = '资源';
-
-$GLOBALS["lang"]['Resource Name'] = '资源名称';
-
-$GLOBALS["lang"]['Resources'] = '资源';
-
-$GLOBALS["lang"]['response'] = '回应';
-
-$GLOBALS["lang"]['Response'] = '回应';
-
-$GLOBALS["lang"]['responsibility'] = '责任';
-
-$GLOBALS["lang"]['Responsibility'] = '责任';
-
-$GLOBALS["lang"]['Restore my Licenses'] = '恢复我的驾照';
-
-$GLOBALS["lang"]['Restrict to Private'] = '限于私人';
-
-$GLOBALS["lang"]['Restrict to Subnet'] = '限于子网';
-
-$GLOBALS["lang"]['result'] = '结果';
-
-$GLOBALS["lang"]['Result'] = '结果';
-
-$GLOBALS["lang"]['Resulting Function'] = '结果函数';
-
-$GLOBALS["lang"]['Results'] = '结果';
-
-$GLOBALS["lang"]['Retrieve a list of devices in the'] = '在';
-
-$GLOBALS["lang"]['Retrieve a list of devices with OS Name like Windows 2008'] = '获取像 Windows 2008 这样的 OS 名称的设备列表';
-
-$GLOBALS["lang"]['Retrieve all details about the device with id 88.'] = '用 id 88. 获取设备的所有细节.';
-
-$GLOBALS["lang"]['Retrieve all devices running Windows.'] = '获取所有运行 Windows 的设备 。';
-
-$GLOBALS["lang"]['Retrieve all devices with the standard columns'] = '用标准栏检索所有设备';
-
-$GLOBALS["lang"]['Retrieve the first 10 devices running Windows ordered by hostname'] = '获取按主机名命令运行 Windows 的前10个设备';
-
-$GLOBALS["lang"]['Retrieve the properties id, ip, hostname, domain, type from all devices'] = '从所有设备中获取属性 id、 ip、 主机名、 域名、 类型';
-
-$GLOBALS["lang"]['retrieved'] = '获取';
-
-$GLOBALS["lang"]['Retrieved'] = '获取';
-
-$GLOBALS["lang"]['retrieved_ident'] = '获取标识';
-
-$GLOBALS["lang"]['Retrieved Ident'] = '获取标识';
-
-$GLOBALS["lang"]['retrieved_name'] = '获取名称';
-
-$GLOBALS["lang"]['Retrieved Name'] = '获取名称';
-
-$GLOBALS["lang"]['Retrieved from the device - Windows:Win32_ComputerSystemProduct, Linux:dmidecode, MacOS:system_profiler, ESXi:vim-cmd hostsvc/hostsummary, HP-UX:machinfo, Solaris:smbios, AIX:uname.'] = '从设备中检索到 - Windows:Win32_ComputerSystemProduction, Linux:dmidecode, , MacOS:系统定位器,ESXi:vim-cmd hostsvc/主机摘要,HP-UX:machinfo, Solaris:smbios, AIX: uname. 中国植物物种信息数据库.';
-
-$GLOBALS["lang"]['Retrieving a List of Credentials'] = '获取全权证书清单';
-
-$GLOBALS["lang"]['Retrieving or Creating'] = '获取或创建';
-
-$GLOBALS["lang"]['Return a collection of devices with the default set of columns (devices.id, devices.icon, devices.type, devices.name, devices.ip, devices.dns_fqdn, devices.identification, devices.description, devices.manufacturer, devices.os_family, devices.status)'] = '返回默认列集(devices.id,ublices.icon,ublices.type,ublices.name,ublices.ip,ublic.dns_fqdn,ublices.description,ublic.manucourer,ublics.os_family,ublic.status)的设备集合.';
-
-$GLOBALS["lang"]['Return a list of all Modules installed on Routers'] = '返回在路由器上安装的所有模块列表';
-
-$GLOBALS["lang"]['Return an individual device details'] = '返回单个设备\\\\';
-
-$GLOBALS["lang"]['Returns a list of {collection}.'] = '返回 {收集} 的列表 。';
-
-$GLOBALS["lang"]['Returns a {collection} details.'] = '返回 {收集} 细节 。';
-
-$GLOBALS["lang"]['Reunion'] = '团圆';
-
-$GLOBALS["lang"]['Review current practices against ISO 27001 requirements'] = '对照ISO 27001要求审查目前的做法';
-
-$GLOBALS["lang"]['revision'] = '订正';
-
-$GLOBALS["lang"]['Revision'] = '订正';
-
-$GLOBALS["lang"]['risk_assesment_result'] = '风险分担结果';
-
-$GLOBALS["lang"]['Risk Assesment Result'] = '风险分担结果';
-
-$GLOBALS["lang"]['Risk Assessment & Treatment'] = '风险评估和治疗';
-
-$GLOBALS["lang"]['Risk Management'] = '风险管理';
-
-$GLOBALS["lang"]['Role'] = '作用';
-
-$GLOBALS["lang"]['roles'] = '角色';
-
-$GLOBALS["lang"]['Roles'] = '角色';
-
-$GLOBALS["lang"]['Roles can only be created and edited if you have an Open-AudIT Enterprise license. For most users, the default set of Roles should be all that is required.'] = '角色只有在拥有Open-AudIT Enterprise许可证的情况下才能创建和编辑. 对于大多数用户来说,默认的一组角色应该是所需要的全部.';
-
-$GLOBALS["lang"]['Romania'] = '罗马尼亚';
-
-$GLOBALS["lang"]['Romanian'] = '罗马尼亚语';
-
-$GLOBALS["lang"]['Room'] = '会议室';
-
-$GLOBALS["lang"]['route'] = '路线';
-
-$GLOBALS["lang"]['Route'] = '路线';
-
-$GLOBALS["lang"]['Row'] = '行';
-
-$GLOBALS["lang"]['Row Count'] = '行数';
-
-$GLOBALS["lang"]['row_position'] = '行位置';
-
-$GLOBALS["lang"]['Row Position'] = '行位置';
-
-$GLOBALS["lang"]['Rows'] = '行数';
-
-$GLOBALS["lang"]['ru_height'] = '鲁高';
-
-$GLOBALS["lang"]['Ru Height'] = '鲁高';
-
-$GLOBALS["lang"]['ru_start'] = '开始';
-
-$GLOBALS["lang"]['Ru Start'] = '开始';
-
-$GLOBALS["lang"]['rule_group'] = '规则组';
-
-$GLOBALS["lang"]['Rule Group'] = '规则组';
-
-$GLOBALS["lang"]['rules'] = '规则';
-
-$GLOBALS["lang"]['Rules'] = '规则';
-
-$GLOBALS["lang"]['Rules are created and run against a device when the device is discovered or an audit result is processed. Rules can be used to set a device attribute based on other attributes.<br><br>NOTE - At present we cannot delete a rule input or output that contains a /. This is because the framework is parsing the / as part of the URL and returning a 404, even before our code runs. The work-around for this is to delete the Rule itself, then recreate the inputs and outputs as required. Fortunately inputs and outputs that contain a / are rare (indeed, none exist by default).'] = '规则是在发现设备或处理审计结果时针对设备创建和运行的. 规则可以用来根据其他属性设置设备属性.<br/><br/>注 - 目前,我们不能删除包含 / 的规则输入或输出。 这是因为框架正在解析 / 作为 URL 的一部分并返回一个 404 , 甚至在我们代码运行之前 。 要做到这一点,就要删除规则本身,然后根据需要重新创建投入和产出。 幸运的是,含有 / 的输入和产出很少(事实上不存在默认)。';
-
-$GLOBALS["lang"]['Run Discovery'] = '运行发现';
-
-$GLOBALS["lang"]['Run Discovery on Devices'] = '在设备上运行发现';
-
-$GLOBALS["lang"]['Run Your Discovery'] = '运行您的发现';
-
-$GLOBALS["lang"]['Run a Command'] = '运行命令';
-
-$GLOBALS["lang"]['Run a discovery and find out <b>Whats On Your Network?</b>'] = '调查一下发现 <b>你的网络上有什么?</b>';
-
-$GLOBALS["lang"]['Run the script by typing <code>cscript test_windows_client.vbs</code> in the console.'] = '通过打字运行脚本 <code>cscript test_windows_client.vbs</code> 在操纵台。';
-
-$GLOBALS["lang"]['Run this Command'] = '运行此命令';
-
-$GLOBALS["lang"]['runas'] = '鲁纳斯';
-
-$GLOBALS["lang"]['Runas'] = '鲁纳斯';
-
-$GLOBALS["lang"]['Running'] = '运行';
-
-$GLOBALS["lang"]['Running Open-AudIT Apache Service Under Windows'] = '在窗口下运行 Open-AudIT Apache 服务';
-
-$GLOBALS["lang"]['Russian'] = '俄罗斯联邦';
-
-$GLOBALS["lang"]['Russian Federation'] = '俄罗斯联邦';
-
-$GLOBALS["lang"]['Rwanda'] = '卢旺达';
-
-$GLOBALS["lang"]['rx_bitrate'] = 'Rx 位速率';
-
-$GLOBALS["lang"]['Rx Bitrate'] = 'Rx 位速率';
-
-$GLOBALS["lang"]['rx_freq'] = '缩写:Rx Freq';
-
-$GLOBALS["lang"]['Rx Freq'] = '缩写:Rx Freq';
-
-$GLOBALS["lang"]['rx_level'] = 'Rx 级别';
-
-$GLOBALS["lang"]['Rx Level'] = 'Rx 级别';
-
-$GLOBALS["lang"]['rx_power'] = 'Rx 电源';
-
-$GLOBALS["lang"]['Rx Power'] = 'Rx 电源';
-
-$GLOBALS["lang"]['rx_profile'] = 'Rx 配置文件';
-
-$GLOBALS["lang"]['Rx Profile'] = 'Rx 配置文件';
-
-$GLOBALS["lang"]['SAN Audit'] = 'SAN 审计';
-
-$GLOBALS["lang"]['SAN Auto-Discover'] = 'SAN 自动发现';
-
-$GLOBALS["lang"]['SELECT'] = '独立';
-
-$GLOBALS["lang"]['SID'] = '小岛屿发展中国家';
-
-$GLOBALS["lang"]['SM Version'] = 'SM 版本';
-
-$GLOBALS["lang"]['SNMP (v1 / v2)'] = 'SNMP (v1 / v2) (韩语).';
-
-$GLOBALS["lang"]['SNMP Details'] = 'SNMP 状态 细节';
-
-$GLOBALS["lang"]['SNMP OID'] = 'SNMP OID 编辑器';
-
-$GLOBALS["lang"]['SNMP Version'] = 'SNMP 版本';
-
-$GLOBALS["lang"]['SNMP v3'] = 'SNMP v3 (英语).';
-
-$GLOBALS["lang"]['SQL'] = 'SQL 数据';
-
-$GLOBALS["lang"]['SQL (Advanced)'] = 'SQL (高级)';
-
-$GLOBALS["lang"]['SQL Creation Statements'] = 'SQL 创建语句';
-
-$GLOBALS["lang"]['SQL not containing this condition will result in the widget failing to be executed.'] = '不包含此条件的 SQL 将会导致部件无法执行 。';
-
-$GLOBALS["lang"]['SSH'] = 'SSH 服务器';
-
-$GLOBALS["lang"]['SSH Key'] = 'SSH 服务器 密钥';
-
-$GLOBALS["lang"]['SW Revision'] = 'SW 修订';
-
-$GLOBALS["lang"]['Saint Barthelemy'] = '圣巴瑟莱米';
-
-$GLOBALS["lang"]['Saint Helena'] = '圣赫勒拿';
-
-$GLOBALS["lang"]['Saint Kitts and Nevis'] = '圣基茨和尼维斯';
-
-$GLOBALS["lang"]['Saint Lucia'] = '圣卢西亚';
-
-$GLOBALS["lang"]['Saint Martin'] = '圣马丁';
-
-$GLOBALS["lang"]['Saint Pierre and Miquelon'] = '圣皮埃尔和密克隆';
-
-$GLOBALS["lang"]['Saint Vincent and the Grenadines'] = '圣文森特和格林纳丁斯';
-
-$GLOBALS["lang"]['Samoa'] = '萨摩亚';
-
-$GLOBALS["lang"]['san'] = '参';
-
-$GLOBALS["lang"]['San'] = '参';
-
-$GLOBALS["lang"]['San Marino'] = '圣马力诺';
-
-$GLOBALS["lang"]['Sao Tome and Principe'] = '圣多美和普林西比';
-
-$GLOBALS["lang"]['Saturday'] = '星期六(周六)';
-
-$GLOBALS["lang"]['Saudi Arabia'] = '沙特阿拉伯';
-
-$GLOBALS["lang"]['Save and run the file. Make sure you run the file as an Administrator in order to install it (right click, Run as Administrator).'] = '保存并运行文件 。 确保您以管理员身份运行文件以安装( 右键单击, 以管理员身份运行) 。';
-
-$GLOBALS["lang"]['Save as Default'] = '另存为默认';
-
-$GLOBALS["lang"]['Save the downloaded file.'] = '保存下载的文件 。';
-
-$GLOBALS["lang"]['scaling'] = '缩放';
-
-$GLOBALS["lang"]['Scaling'] = '缩放';
-
-$GLOBALS["lang"]['scan_options'] = '扫描选项';
-
-$GLOBALS["lang"]['Scan Options'] = '扫描选项';
-
-$GLOBALS["lang"]['Scan Options ID'] = '扫描选项 ID';
-
-$GLOBALS["lang"]['Scan for this port(s) and if detected open, use this port for SSH communication. This is added to the list of Custom TCP Ports above (if not already included), so there is no need to include it in that list as well. Comma seperated, no spaces.'] = '扫描此端口, 如果检测到打开, 请使用此端口进行 SSH 通信 。 这一点被添加到上面的自定义TCP端口列表中(如果尚未包括的话),因此没有必要也将其列入该列表中. 逗号隔离,没有空格.';
-
-$GLOBALS["lang"]['Scan the Nmap top number of TCP ports.'] = '扫描 TCP 端口的 Nmap 顶号 。';
-
-$GLOBALS["lang"]['Scan the Nmap top number of UDP ports.'] = '扫描 UDP 端口的 Nmap 顶号 。';
-
-$GLOBALS["lang"]['schedule'] = '时间表';
-
-$GLOBALS["lang"]['Schedule'] = '时间表';
-
-$GLOBALS["lang"]['Scheduled device discovery and reporting make Open-AudIT Professional an efficient solution for busy IT professionals looking to reduce overheads and increase insights.'] = '计划设备的发现和报告使Open-AudIT专业成为繁忙的信息技术专业人员寻求减少间接费用和增加见解的有效解决办法。';
-
-$GLOBALS["lang"]['Scheduling - discovery, reporting &amp; more'] = '时间安排 - 发现、报告和更多';
-
-$GLOBALS["lang"]['scope'] = '范围';
-
-$GLOBALS["lang"]['Scope'] = '范围';
-
-$GLOBALS["lang"]['Scope is known as Authorization Scope, representing whether a vulnerability affects resources beyond the original security authority of the vulnerable component.<br><br>The only two valid values for this attribute are'] = '范围称为授权范围,代表脆弱性是否影响到脆弱部分原先的安全权力以外的资源。<br/><br/>此属性唯一的两个有效值是';
-
-$GLOBALS["lang"]['script_timeout'] = '脚本超时';
-
-$GLOBALS["lang"]['Script Timeout'] = '脚本超时';
-
-$GLOBALS["lang"]['scripts'] = '脚本';
-
-$GLOBALS["lang"]['Scripts'] = '脚本';
-
-$GLOBALS["lang"]['scsi'] = '斯凯';
-
-$GLOBALS["lang"]['Scsi'] = '斯凯';
-
-$GLOBALS["lang"]['scsi_bus'] = '斯克西公共汽车';
-
-$GLOBALS["lang"]['Scsi Bus'] = '斯克西公共汽车';
-
-$GLOBALS["lang"]['scsi_logical_unit'] = 'Scsi 逻辑股';
-
-$GLOBALS["lang"]['Scsi Logical Unit'] = 'Scsi 逻辑股';
-
-$GLOBALS["lang"]['scsi_port'] = '斯凯港';
-
-$GLOBALS["lang"]['Scsi Port'] = '斯凯港';
-
-$GLOBALS["lang"]['Search'] = '搜索';
-
-$GLOBALS["lang"]['Search For a Device'] = '搜索设备';
-
-$GLOBALS["lang"]['Searching Using DataTables'] = '使用数据表搜索';
-
-$GLOBALS["lang"]['Second'] = '第二届';
-
-$GLOBALS["lang"]['secondary'] = '中学';
-
-$GLOBALS["lang"]['Secondary'] = '中学';
-
-$GLOBALS["lang"]['Secondary Text'] = '次要文本';
-
-$GLOBALS["lang"]['Secret Key'] = '密钥';
-
-$GLOBALS["lang"]['section'] = '节次';
-
-$GLOBALS["lang"]['Section'] = '节次';
-
-$GLOBALS["lang"]['secure'] = '安全';
-
-$GLOBALS["lang"]['Secure'] = '安全';
-
-$GLOBALS["lang"]['Security Content Automation Protocol'] = '安全内容自动化协议';
-
-$GLOBALS["lang"]['Security Level'] = '安全级别';
-
-$GLOBALS["lang"]['Security Name'] = '安全名称';
-
-$GLOBALS["lang"]['Security Status'] = '安全状况';
-
-$GLOBALS["lang"]['security_zone'] = '安全区';
-
-$GLOBALS["lang"]['Security Zone'] = '安全区';
-
-$GLOBALS["lang"]['See above. NOTE - This could also be caused by a self-signed certificate on the LDAP server. We are working to allow for this in a future release.'] = '见上文。 注 - 这也可能是LDAP服务器上自签名的证书造成的. 我们正努力在今后的释放中允许这样做。';
-
-$GLOBALS["lang"]['See our page on enabling'] = '见我们关于启用的页面';
-
-$GLOBALS["lang"]['Seed Discoveries'] = '种子发现';
-
-$GLOBALS["lang"]['seed_ip'] = '种子 IP';
-
-$GLOBALS["lang"]['Seed IP'] = '种子 IP';
-
-$GLOBALS["lang"]['seed_ping'] = '种子平';
-
-$GLOBALS["lang"]['Seed Ping'] = '种子平';
-
-$GLOBALS["lang"]['seed_restrict_to_private'] = '种子限制为私人';
-
-$GLOBALS["lang"]['Seed Restrict To Private'] = '种子限制为私人';
-
-$GLOBALS["lang"]['seed_restrict_to_subnet'] = '种子限制到子网';
-
-$GLOBALS["lang"]['Seed Restrict To Subnet'] = '种子限制到子网';
-
-$GLOBALS["lang"]['Select'] = '选择';
-
-$GLOBALS["lang"]['Select Admin -> Tasks -> Create Task from the menu.'] = '选择管理员 - > 任务 - > 创建 菜单中的任务 。';
-
-$GLOBALS["lang"]['Select All'] = '全部选择';
-
-$GLOBALS["lang"]['Select All Devices'] = '选择所有设备';
-
-$GLOBALS["lang"]['select_external_attribute'] = '选择外部属性';
-
-$GLOBALS["lang"]['Select External Attribute'] = '选择外部属性';
-
-$GLOBALS["lang"]['select_external_count'] = '选择外部计数';
-
-$GLOBALS["lang"]['Select External Count'] = '选择外部计数';
-
-$GLOBALS["lang"]['select_external_type'] = '选择外部 类型';
-
-$GLOBALS["lang"]['Select External Type'] = '选择外部 类型';
-
-$GLOBALS["lang"]['select_external_value'] = '选择外部 数值';
-
-$GLOBALS["lang"]['Select External Value'] = '选择外部 数值';
-
-$GLOBALS["lang"]['select_internal_attribute'] = '选择内部属性';
-
-$GLOBALS["lang"]['Select Internal Attribute'] = '选择内部属性';
-
-$GLOBALS["lang"]['select_internal_count'] = '选择内部计数';
-
-$GLOBALS["lang"]['Select Internal Count'] = '选择内部计数';
-
-$GLOBALS["lang"]['select_internal_type'] = '选择内部 类型';
-
-$GLOBALS["lang"]['Select Internal Type'] = '选择内部 类型';
-
-$GLOBALS["lang"]['select_internal_value'] = '选择内部 数值';
-
-$GLOBALS["lang"]['Select Internal Value'] = '选择内部 数值';
-
-$GLOBALS["lang"]['Select Menu -> Manage -> Baselines -> List Baselines.'] = '选择菜单 - > 管理 - > 基线 - > 清单基线。';
-
-$GLOBALS["lang"]['Select a Table'] = '选择表格';
-
-$GLOBALS["lang"]['Select an accredited certification body'] = '选择认证机构';
-
-$GLOBALS["lang"]['Select and apply appropriate controls (Annex A)'] = '选择和应用适当的控制措施(附件A)';
-
-$GLOBALS["lang"]['Select the <i>COM Security</i> tab<br><br>Click on Access Permissions Edit Default'] = '选择 <i>通讯 警卫</i> 选项卡<br/><br/>点击访问权限 编辑默认';
-
-$GLOBALS["lang"]['Select the <i>Sign On</i> tab and copy the value for <i>Issuer</i> (just the URL itself). Paste this into the Open-AudIT <i>Issuer</i> field.'] = '选择 <i>签名打开</i> 选项卡和复制值 <i>发行商</i> (只是URL本身). 粘贴到 Open-AudIT 中 <i>发行商</i> 字段。';
-
-$GLOBALS["lang"]['Select the <i>This Account</i> checkbox and provide the account name and password.'] = '选择 <i>此账户</i> 复选框并提供账户名称和密码。';
-
-$GLOBALS["lang"]['Select the Start menu and type <i>services<.i>. Click the Services icon.'] = '选择开始菜单和类型 <i>服务<.i>。 单击服务图标。</i>';
-
-$GLOBALS["lang"]['Select the type of Auth Menthod to create and input the relevant details.'] = '选择用于创建和输入相关细节的 Auth Menthod 类型。';
-
-$GLOBALS["lang"]['Self Delete'] = '自删除';
-
-$GLOBALS["lang"]['Senegal'] = '塞内加尔';
-
-$GLOBALS["lang"]['sensitivity'] = '敏感性';
-
-$GLOBALS["lang"]['Sensitivity'] = '敏感性';
-
-$GLOBALS["lang"]['September'] = '9月 (中文(简体) ).';
-
-$GLOBALS["lang"]['Serbia'] = '塞尔维亚';
-
-$GLOBALS["lang"]['serial'] = '序列';
-
-$GLOBALS["lang"]['Serial'] = '序列';
-
-$GLOBALS["lang"]['serial_imei'] = '序列 Imei';
-
-$GLOBALS["lang"]['Serial Imei'] = '序列 Imei';
-
-$GLOBALS["lang"]['serial_sim'] = '序列符号';
-
-$GLOBALS["lang"]['Serial Sim'] = '序列符号';
-
-$GLOBALS["lang"]['series'] = '系列';
-
-$GLOBALS["lang"]['Series'] = '系列';
-
-$GLOBALS["lang"]['server'] = '服务器';
-
-$GLOBALS["lang"]['Server'] = '服务器';
-
-$GLOBALS["lang"]['server_id'] = '服务器代号';
-
-$GLOBALS["lang"]['Server ID'] = '服务器代号';
-
-$GLOBALS["lang"]['Server Is'] = '服务器是';
-
-$GLOBALS["lang"]['server_item'] = '服务器项目';
-
-$GLOBALS["lang"]['Server Item'] = '服务器项目';
-
-$GLOBALS["lang"]['Server Status'] = '服务器状态';
-
-$GLOBALS["lang"]['Servers'] = '服务器';
-
-$GLOBALS["lang"]['Servers Only'] = '只有服务器';
-
-$GLOBALS["lang"]['service'] = '服务';
-
-$GLOBALS["lang"]['Service'] = '服务';
-
-$GLOBALS["lang"]['service_identifier'] = '服务标识符';
-
-$GLOBALS["lang"]['Service Identifier'] = '服务标识符';
-
-$GLOBALS["lang"]['service_level_a'] = 'A级服务';
-
-$GLOBALS["lang"]['Service Level A'] = 'A级服务';
-
-$GLOBALS["lang"]['service_level_b'] = 'B级服务';
-
-$GLOBALS["lang"]['Service Level B'] = 'B级服务';
-
-$GLOBALS["lang"]['service_network'] = '服务网络';
-
-$GLOBALS["lang"]['Service Network'] = '服务网络';
-
-$GLOBALS["lang"]['service_number'] = '服务人数';
-
-$GLOBALS["lang"]['Service Number'] = '服务人数';
-
-$GLOBALS["lang"]['service_pack'] = '服务包';
-
-$GLOBALS["lang"]['Service Pack'] = '服务包';
-
-$GLOBALS["lang"]['service_plan'] = '服务计划';
-
-$GLOBALS["lang"]['Service Plan'] = '服务计划';
-
-$GLOBALS["lang"]['service_provider'] = '服务提供者';
-
-$GLOBALS["lang"]['Service Provider'] = '服务提供者';
-
-$GLOBALS["lang"]['service_tag'] = '服务标记';
-
-$GLOBALS["lang"]['Service Tag'] = '服务标记';
-
-$GLOBALS["lang"]['service_type'] = '服务类型';
-
-$GLOBALS["lang"]['Service Type'] = '服务类型';
-
-$GLOBALS["lang"]['Service Under Windows'] = '窗口下的服务';
-
-$GLOBALS["lang"]['service_version'] = '服务版本';
-
-$GLOBALS["lang"]['Service Version'] = '服务版本';
-
-$GLOBALS["lang"]['Set'] = '设定';
-
-$GLOBALS["lang"]['set_by'] = '设定';
-
-$GLOBALS["lang"]['Set By'] = '设定';
-
-$GLOBALS["lang"]['Set by the Discovery function - do not normally set this manually.'] = '由发现函数设定 - 通常不手工设置 。';
-
-$GLOBALS["lang"]['Set by the audit_domain or discover_domain scripts. Do not set.'] = '由审计_域或发现_域脚本设定. 不设.';
-
-$GLOBALS["lang"]['Set the external text to capitalized version of the internal data.'] = '设置外部文本为内部数据资本化版本。';
-
-$GLOBALS["lang"]['Set the external text to lowercase.'] = '将外部文本设置为小写。';
-
-$GLOBALS["lang"]['Set the external text to uppercase.'] = '设置外部文本为大写 。';
-
-$GLOBALS["lang"]['Set the size (normal or compact) of the tables on the List screens.'] = '设置列表屏幕上表格的大小(正常或紧凑)。';
-
-$GLOBALS["lang"]['Set this if you wish to insert systems from AD that may not be contactable, but have been seen by AD since that date.'] = '如果您希望从AD中插入可能无法接触的系统,但AD从该日期开始就已看到这些系统,请设定此功能。';
-
-$GLOBALS["lang"]['Setting up Discovery on a subnet is almost identical to running a regular Discovery via the web interface. The only additional items are the scheduled hour and day(s) and a name for the Scheduled Task itself. You can take advantage of this to schedule multiple discoveries using different sets of credentials.<br><br>As per the Subnet Discovery, the Active Directory Discovery is also simply the same fields as a regular Active Directory Discovery with the addition of a day, hour(s) and name.<br><br>If the Open-AudIT Server has Collectors reporting to it, an additional drop down is provided. You can select this to specify which Collector the task should run on. Only Discovery tasks are supported for Collectors. Specify the same items as a regular Discovery, but provide the alternate Collector to run this task.'] = '在子网上设置Discovery几乎与通过网络界面运行常规Discovery完全相同. 唯一的附加项目是排定的时数和日数,以及计划任务本身的名称。 你可以利用这个来利用不同的证书来安排多个发现.<br/><br/>根据"子网发现","主动目录发现"也只是与普通的"主动目录发现"相同的字段,增加了一天,小时(s)和名称.<br/><br/>如果Open-AudIT服务器有向它报告的收集器,则会提供额外的下调. 您可以选择此选项来指定任务要运行的收集器 。 仅支持收集器的发现任务 。 指定与常规发现项目相同的项目, 但提供运行此任务的替代收集器 。';
-
-$GLOBALS["lang"]['severity'] = '严重性';
-
-$GLOBALS["lang"]['Severity'] = '严重性';
-
-$GLOBALS["lang"]['severity_text'] = '严重性文本';
-
-$GLOBALS["lang"]['Severity Text'] = '严重性文本';
-
-$GLOBALS["lang"]['Severity is calculated from the <code>base_score</code> and can be one of: None, Low, Medium, High, Critical.'] = '严重性从 <code>base_score</code> 也可以是:无,低,中,高,临界之一.';
-
-$GLOBALS["lang"]['Seychelles'] = '塞舌尔';
-
-$GLOBALS["lang"]['share'] = '份额';
-
-$GLOBALS["lang"]['Share'] = '份额';
-
-$GLOBALS["lang"]['Share Name'] = '共享名称';
-
-$GLOBALS["lang"]['shared'] = '共享';
-
-$GLOBALS["lang"]['Shared'] = '共享';
-
-$GLOBALS["lang"]['shared_name'] = '共享名称';
-
-$GLOBALS["lang"]['Shared Name'] = '共享名称';
-
-$GLOBALS["lang"]['shell'] = '贝壳';
-
-$GLOBALS["lang"]['Shell'] = '贝壳';
-
-$GLOBALS["lang"]['Ship Date'] = '船舶日期';
-
-$GLOBALS["lang"]['Shipped are a set of default items. These can be found by going to menu'] = '已装运是一组默认项目 。 这些可以通过菜单找到';
-
-$GLOBALS["lang"]['short'] = '短数';
-
-$GLOBALS["lang"]['Short'] = '短数';
-
-$GLOBALS["lang"]['Should I remove all non-current data from this device?'] = '我应该从这个设备中删除所有非当前数据吗?';
-
-$GLOBALS["lang"]['Should this file (or pattern) be used to exclude files from being reported. Normally, to audit files, this is set to <code>y</code>.'] = '如果使用此文件( 或模式) 来排除文件被报告 。 通常情况下,对于审计文件,此设定为 <code>y</code>。 。 。';
-
-$GLOBALS["lang"]['Should this vendor be used when retrieving vulnerabilities from FirstWave.'] = '如果在从FirstWave检索弱点时使用该供应商。';
-
-$GLOBALS["lang"]['Should we add devices from the remote service, locally.'] = '我们是否应该从远程服务中添加设备, 本地。';
-
-$GLOBALS["lang"]['Should we apply this license to the selected Org as well as the Orgs children?'] = '我们是否应该对被选中的Org以及Orgs的孩子发放这种许可证?';
-
-$GLOBALS["lang"]['Should we audit a SAN if the management software is detected.'] = '如果发现管理软件,我们是否应该审计一个 SAN 。';
-
-$GLOBALS["lang"]['Should we audit mount points.'] = '我们是否应该审计点数。';
-
-$GLOBALS["lang"]['Should we audit netstat ports (yes, no, servers only).'] = '我们是否应该审计净数据端口(是、否,只审计服务器)。';
-
-$GLOBALS["lang"]['Should we audit the installed software.'] = '我们应该对安装的软件进行审计。';
-
-$GLOBALS["lang"]['Should we consider a filtered port to be an open port - and therefore flag this IP as having a device attached?'] = '我们是否应该将过滤的端口视为一个开放端口——因此将这个IP标为带有设备附加?';
-
-$GLOBALS["lang"]['Should we consider an open|filtered port to be an open port - and therefore flag this IP as having a device attached?'] = '我们是否应该将一个开放的QQ过滤端口视为一个开放端口——因此将这个IP标为带有设备的标志?';
-
-$GLOBALS["lang"]['Should we convert the hostname to lowercase.'] = '我们是否应该将主机名转换为小写 。';
-
-$GLOBALS["lang"]['Should we create a file based on the audit result.'] = '我们是否应根据审计结果创建文件。';
-
-$GLOBALS["lang"]['Should we expose this group in the web interface.'] = '我们是否应该在网络界面中曝光这个组.';
-
-$GLOBALS["lang"]['Should we expose this query in the list of reports under the Report menu in the web interface.'] = '如果我们在网络界面“报告”菜单下的报告列表中披露此查询。';
-
-$GLOBALS["lang"]['Should we expose this query in the list of reports under the Reports menu in the web interface.'] = '如果我们在网络界面的《报告》菜单下的报告列表中披露这一查询。';
-
-$GLOBALS["lang"]['Should we hide the audit script window when executing.'] = '执行时应该隐藏审计脚本窗口.';
-
-$GLOBALS["lang"]['Should we ignore an invalid or self signed SSL certificate and submit the result anyway.'] = '如果我们忽略一个无效的或自签名的 SSL 证书, 无论如何提交结果 。';
-
-$GLOBALS["lang"]['Should we install Open-Scap on the target machine.'] = '我们应该在目标机器上安装Open-Scap';
-
-$GLOBALS["lang"]['Should we match a device based mac address even if its a known likely duplicate from VMware.'] = '我们是否应该匹配基于设备的 mac 地址, 即使它可能从 VMware 复制 。';
-
-$GLOBALS["lang"]['Should we match a device based on its DNS fqdn.'] = '我们是否应该匹配基于其DNS fqdn的设备.';
-
-$GLOBALS["lang"]['Should we match a device based on its DNS hostname.'] = '是否匹配基于 DNS 主机名的设备 。';
-
-$GLOBALS["lang"]['Should we match a device based on its UUID.'] = '如果我们匹配一个基于其UUID的设备.';
-
-$GLOBALS["lang"]['Should we match a device based on its dbus id.'] = '我们是否应该匹配基于其dbus id的装置.';
-
-$GLOBALS["lang"]['Should we match a device based on its fqdn.'] = '我们是否应该匹配一个基于fqdn的设备.';
-
-$GLOBALS["lang"]['Should we match a device based on its hostname and UUID.'] = '是否匹配基于主机名和 UUID 的设备 。';
-
-$GLOBALS["lang"]['Should we match a device based on its hostname and dbus id.'] = '是否匹配基于主机名和 dbus id 的设备 。';
-
-$GLOBALS["lang"]['Should we match a device based on its hostname and serial.'] = '我们是否应该匹配基于其主机名和序列的设备 。';
-
-$GLOBALS["lang"]['Should we match a device based on its ip if we have an existing device with no data.'] = '如果我们有一个没有数据的现有设备, 我们是否应该根据它的 ip 来匹配一个设备 。';
-
-$GLOBALS["lang"]['Should we match a device based on its ip.'] = '我们是否应该匹配基于其ip的设备.';
-
-$GLOBALS["lang"]['Should we match a device based on its mac address.'] = '我们是否应该匹配基于其mac地址的设备.';
-
-$GLOBALS["lang"]['Should we match a device based on its serial and type.'] = '我们是否应该根据其序列和类型来匹配一个设备.';
-
-$GLOBALS["lang"]['Should we match a device based on its serial number.'] = '我们是否应该根据其序列号来匹配一个设备.';
-
-$GLOBALS["lang"]['Should we match a device based only on its SNMP sysName and serial.'] = '我们是否应该匹配一个仅基于其SNMP sysName和串行的设备.';
-
-$GLOBALS["lang"]['Should we match a device based only on its SNMP sysName.'] = '我们是否应该匹配仅基于其 SNMP sys 的设备Name';
-
-$GLOBALS["lang"]['Should we match a device based only on its hostname.'] = '我们是否应该只根据其主机名匹配一个设备 。';
-
-$GLOBALS["lang"]['Should we ping the IP before attempting to scan it? If it does not respond to the ping, skip this device.'] = '在试图扫描前, 要不要先查一下IP? 如果它不响应 ping , 请跳过此设备 。';
-
-$GLOBALS["lang"]['Should we populate the external system from our local devices.'] = '如果我们把外部系统从本地设备中充斥出来';
-
-$GLOBALS["lang"]['Should we retrieve all DNS names'] = '我们是否应该检索所有 DNS 名称';
-
-$GLOBALS["lang"]['Should we run an audit and submit it (y/n).'] = '我们是否应该进行审计并提交(y/n)。';
-
-$GLOBALS["lang"]['Should we test for SNMP using UDP port 161.'] = '是否应该使用UDP端口161测试SNMP.';
-
-$GLOBALS["lang"]['Should we test for SSH using TCP port 22.'] = '我们应该使用TCP端口22测试SSH.';
-
-$GLOBALS["lang"]['Should we test for WMI using TCP port 135.'] = '我们应该使用TCP端口135测试WMI.';
-
-$GLOBALS["lang"]['Should we uninstall the agent (y/n).'] = '是否应该解除代理(y/n).';
-
-$GLOBALS["lang"]['Should we use the system or user level proxy to submit the audit result.'] = '如果我们使用系统或用户级代理来提交审计结果.';
-
-$GLOBALS["lang"]['Should we use the win32_product WMI class (not recommended by Microsoft) when retrieving installed software.'] = '如果我们在检索已安装软件时使用win32_产品WMI类(不是微软推荐的).';
-
-$GLOBALS["lang"]['Should we use this method to authenticate user credentials. Set to <code>y</code> or <code>n</code>.'] = '我们是否应该使用这种方法验证用户证书 。 设定为 <code>y</code> 或者说 <code>n</code>。 。 。';
-
-$GLOBALS["lang"]['Should we use this method to populate a users roles. The field <code>use_auth</code> must be set to <code>y</code> to use this. Set to <code>y</code> or <code>n</code>.'] = '如果我们使用这种方法来充斥用户角色. 实地 <code>use_auth</code> 必须设定为 <code>y</code> 用这个 设定为 <code>y</code> 或者说 <code>n</code>。 。 。';
-
-$GLOBALS["lang"]['Should we use this value to match external and internal devices. Our default Integration uses IP and UUID here. If either of these match between external and internal device, we consider them to be the same device.'] = '如果我们用这个值来匹配外部和内部设备. 我们的默认集成在这里使用IP和UUID. 如果这些内外设备中的任何一个匹配,我们认为它们是同一个设备.';
-
-$GLOBALS["lang"]['Show All'] = '全部显示';
-
-$GLOBALS["lang"]['sid'] = '西德语Name';
-
-$GLOBALS["lang"]['Sid'] = '西德语Name';
-
-$GLOBALS["lang"]['sidebar'] = '边栏';
-
-$GLOBALS["lang"]['Sidebar'] = '边栏';
-
-$GLOBALS["lang"]['Sierra Leone'] = '塞拉利昂';
-
-$GLOBALS["lang"]['Singapore'] = '新加坡';
-
-$GLOBALS["lang"]['Site A'] = 'A站点';
-
-$GLOBALS["lang"]['Site B'] = 'B站点';
-
-$GLOBALS["lang"]['site_hours_a'] = 'A站点小时';
-
-$GLOBALS["lang"]['Site Hours A'] = 'A站点小时';
-
-$GLOBALS["lang"]['site_hours_b'] = 'B站点时数';
-
-$GLOBALS["lang"]['Site Hours B'] = 'B站点时数';
-
-$GLOBALS["lang"]['size'] = '大小';
-
-$GLOBALS["lang"]['Size'] = '大小';
-
-$GLOBALS["lang"]['slaves'] = '奴隶';
-
-$GLOBALS["lang"]['Slaves'] = '奴隶';
-
-$GLOBALS["lang"]['Slovak'] = '斯洛伐克语Name';
-
-$GLOBALS["lang"]['Slovakia (Slovak Republic)'] = '斯洛伐克(斯洛伐克共和国)';
-
-$GLOBALS["lang"]['Slovenia'] = '斯洛文尼亚';
-
-$GLOBALS["lang"]['Slovenian'] = '斯洛文尼亚语';
-
-$GLOBALS["lang"]['Smart Status'] = '智能状态';
-
-$GLOBALS["lang"]['smversion'] = '扭曲';
-
-$GLOBALS["lang"]['Smversion'] = '扭曲';
-
-$GLOBALS["lang"]['Sneaky'] = '狡猾';
-
-$GLOBALS["lang"]['snmp_enterprise_id'] = 'Snmp 企业标识';
-
-$GLOBALS["lang"]['Snmp Enterprise ID'] = 'Snmp 企业标识';
-
-$GLOBALS["lang"]['snmp_enterprise_name'] = 'Snmp 企业名称';
-
-$GLOBALS["lang"]['Snmp Enterprise Name'] = 'Snmp 企业名称';
-
-$GLOBALS["lang"]['snmp_oid'] = '缩写 Oid';
-
-$GLOBALS["lang"]['Snmp Oid'] = '缩写 Oid';
-
-$GLOBALS["lang"]['snmp_timeout'] = '暂停';
-
-$GLOBALS["lang"]['Snmp Timeout'] = '暂停';
-
-$GLOBALS["lang"]['snmp_version'] = 'Snmp 版本';
-
-$GLOBALS["lang"]['Snmp Version'] = 'Snmp 版本';
-
-$GLOBALS["lang"]['So a script is not working on a recalcitrant device. Grrr. The scripts for Windows, Linux, and MacOS all accept the debugging argument. This can be set in the script itself, or provided on the command line. Run the script using that option set to 5 and you should see in which section of the script the failure occurs. For example'] = '因此一个脚本没有在顽抗设备上工作. 额 Windows,Linux,和MacOS的脚本都接受调试参数. 这可以设置在脚本本身,也可以在命令行上提供. 使用设置为 5 的选项运行脚本, 您应该看到脚本的哪个部分发生失败 。 比如说';
-
-$GLOBALS["lang"]['So apart from a regular word, what other options are there - I am glad you asked! As per the standard Open-AudIT API, we have several operators for filtering. Operators that can precede the value are'] = '所以除了一个普通的词之外 还有别的选择吗? 根据Open-AudIT API的标准,我们有几个操作器进行过滤. 可以在数值前置的运算符是';
-
-$GLOBALS["lang"]['So you have an issue providing Open-AudIT credentials to discover your devices. I have an answer - dont then! Sure, I mean, discovery is the best thing since sliced bread. You do not need to know ahead of time <i>Whats On Your Network</i>. But how can you extract data from devices without providing credentials?<br><br>In the case of computers, an easy option is to copy the appropriate audit script to the target machines and set it to execute on a schedule. More details on the wiki. The machines will send their data to Open-AudIT on that schedule, almost as if you were running discovery. The device simply runs the audit script on a schedule (again, you can read the audit script) as the user you tell it to and sends the output to the server. No credentials are involved at all.<br><br>And now we have Agents for Windows. The advantages of an actual installed Agent are'] = '所以你有一个问题提供 Open-AudIT 证书来发现您的设备。 我有一个答案 - 那就不要! 当然,我的意思是,发现是最好的事情 自从切面包。 你不需要提前知道 <i>您的网络中的内容</i>。 。 。 但你怎么能在没有提供资质的情况下从设备中提取数据?<br/><br/>对于计算机,一个容易的选择是将适当的审计脚本复制到目标机器上,并设定在时间表上执行. 详见维基文库. 机器会把数据传送到Open-AudIT上, 几乎就好像你在运行发现。 该设备只是按一个时间表运行审计脚本(再次,您可以读取审计脚本),作为您告诉的用户,并将输出发送到服务器. 根本不涉及任何全权证书。<br/><br/>现在我们有Windows的特工 实际安装的代理的好处是';
-
-$GLOBALS["lang"]['socket'] = '套装';
-
-$GLOBALS["lang"]['Socket'] = '套装';
-
-$GLOBALS["lang"]['software'] = '软件';
-
-$GLOBALS["lang"]['Software'] = '软件';
-
-$GLOBALS["lang"]['Software Found Last 7 Days'] = '软件找到最后7天';
-
-$GLOBALS["lang"]['Software Found Today'] = '今天找到软件';
-
-$GLOBALS["lang"]['Software Found Yesterday'] = '昨天发现的软件';
-
-$GLOBALS["lang"]['software_key'] = '软件密钥';
-
-$GLOBALS["lang"]['Software Key'] = '软件密钥';
-
-$GLOBALS["lang"]['Software License Reporting'] = '软件许可证报告';
-
-$GLOBALS["lang"]['software_name'] = '软件名称';
-
-$GLOBALS["lang"]['Software Name'] = '软件名称';
-
-$GLOBALS["lang"]['Software Policies'] = '软件政策';
-
-$GLOBALS["lang"]['software_revision'] = '软件修订版';
-
-$GLOBALS["lang"]['Software Revision'] = '软件修订版';
-
-$GLOBALS["lang"]['software_version'] = '软件版本';
-
-$GLOBALS["lang"]['Software Version'] = '软件版本';
-
-$GLOBALS["lang"]['Solaris'] = '索拉里斯语Name';
-
-$GLOBALS["lang"]['Solomon Islands'] = '所罗门群岛';
-
-$GLOBALS["lang"]['Somalia, Somali Republic'] = '索马里、索马里共和国';
-
-$GLOBALS["lang"]['Some collections can be executed - queries, etc - see below.'] = '一些收藏可以执行——查询等,见下文.';
-
-$GLOBALS["lang"]['Some examples are at the bottom of this page. All endpoints also have a minimum list of required fields. These are below.'] = '一些例子位于本页底部. 所有终点也都有一个要求的字段的最小列表. 现列于下文。';
-
-$GLOBALS["lang"]['Some of our templates support the new move to dataTables, using server side processing. This massivley improves load times.'] = '我们的一些模板支持新移动到数据表,使用服务器侧处理. 这辆大米维利改进了载荷时间.';
-
-$GLOBALS["lang"]['Some other error has occurred when attempting to bind to the LDAP server. It is contactable (ie, the <i>connect</i> above has worked), but for some other reason, binding has not occurred. Check the logs on the LDAP server.'] = '在试图绑定到 LDAP 服务器时还发生了其他一些错误. 它可以接触(即: <i>连接</i> 但出于其他原因,没有产生约束力。 检查 LDAP 服务器上的日志 。';
-
-$GLOBALS["lang"]['Something has gone seriously wrong. Open-AudIT cannot read the <i>orgs</i> table.'] = '出了点大问题 无法读取 Open-AudIT <i>鸟类</i> 表单。';
-
-$GLOBALS["lang"]['Something has gone seriously wrong. Open-AudIT cannot read the <i>roles</i> table.'] = '出了点大问题 无法读取 Open-AudIT <i>角色</i> 表单。';
-
-$GLOBALS["lang"]['Sometimes agentless discovery just does not fit your use-case. Maybe your PCs have tight firewalls. Maybe they are not on the network when your discoveries are scheduled. Maybe they are used by remote workers. Whatever the case, this is where an agent can help. Install it on the target machine and it will <i>check-in</i> with your Open-AudIT server on a schedule and accept tasks. The most common task the server requests is for the agent to audit itself and send the result.'] = '有时无剂的发现 不符合你的用法 也许你的电脑有严密的防火墙 也许当你的发现被安排的时候 他们不在网络上 也许他们被远程工人使用。 不管发生什么 特工可以帮忙 安装在目标机器上,它会 <i>报到</i> 将您的 Open-AudIT 服务器设置在时间表上并接受任务。 服务器要求的最常见任务是让代理机构自行审计并发送结果.';
-
-$GLOBALS["lang"]['Sort'] = '排序';
-
-$GLOBALS["lang"]['sound'] = '声音';
-
-$GLOBALS["lang"]['Sound'] = '声音';
-
-$GLOBALS["lang"]['source'] = '来源';
-
-$GLOBALS["lang"]['Source'] = '来源';
-
-$GLOBALS["lang"]['South Africa'] = '南非';
-
-$GLOBALS["lang"]['South Georgia and the South Sandwich Islands'] = '南乔治亚岛和南桑威奇群岛';
-
-$GLOBALS["lang"]['Spain'] = '页:1';
-
-$GLOBALS["lang"]['Spanish'] = '西班牙语';
-
-$GLOBALS["lang"]['Specific to Azure.'] = '特指阿苏尔.';
-
-$GLOBALS["lang"]['Specific to OKTA.'] = '具体到OKTA.';
-
-$GLOBALS["lang"]['Specifies a comma-separated list of targets (no spaces) to be excluded from the scan. The list you pass in uses normal Nmap syntax, so it can include hostnames, CIDR netblocks, octet ranges, etc.'] = '指定一个以逗号分隔的目标列表(无空格),以排除在扫描之外。 您通过的清单使用正常的 Nmap 语法, 因此可以包括主机名、 CIDR 网块、 octet 范围等 。';
-
-$GLOBALS["lang"]['speed'] = '速度';
-
-$GLOBALS["lang"]['Speed'] = '速度';
-
-$GLOBALS["lang"]['speed_down_a'] = '减速 A级';
-
-$GLOBALS["lang"]['Speed Down A'] = '减速 A级';
-
-$GLOBALS["lang"]['speed_down_b'] = '减速 B';
-
-$GLOBALS["lang"]['Speed Down B'] = '减速 B';
-
-$GLOBALS["lang"]['speed_up_a'] = '加速 A';
-
-$GLOBALS["lang"]['Speed Up A'] = '加速 A';
-
-$GLOBALS["lang"]['speed_up_b'] = '加速 B';
-
-$GLOBALS["lang"]['Speed Up B'] = '加速 B';
-
-$GLOBALS["lang"]['sql'] = '单曲';
-
-$GLOBALS["lang"]['Sql'] = '单曲';
-
-$GLOBALS["lang"]['Sri Lanka'] = '斯里兰卡';
-
-$GLOBALS["lang"]['ssh_ports'] = 'Ssh 端口';
-
-$GLOBALS["lang"]['Ssh Ports'] = 'Ssh 端口';
-
-$GLOBALS["lang"]['ssh_timeout'] = 'sh 超时';
-
-$GLOBALS["lang"]['Ssh Timeout'] = 'sh 超时';
-
-$GLOBALS["lang"]['Stage 1: Documentation review'] = '第一阶段:文件审查';
-
-$GLOBALS["lang"]['Stage 2: Implementation and effectiveness review'] = '第二阶段:执行情况和成效审查';
-
-$GLOBALS["lang"]['Stand-Alone'] = '无人驾驶';
-
-$GLOBALS["lang"]['Standard'] = '标准';
-
-$GLOBALS["lang"]['standard_id'] = '标准标识';
-
-$GLOBALS["lang"]['Standard ID'] = '标准标识';
-
-$GLOBALS["lang"]['standards'] = '标准';
-
-$GLOBALS["lang"]['Standards'] = '标准';
-
-$GLOBALS["lang"]['standards_policies'] = '标准政策';
-
-$GLOBALS["lang"]['Standards Policies'] = '标准政策';
-
-$GLOBALS["lang"]['standards_results'] = '结果';
-
-$GLOBALS["lang"]['Standards Results'] = '结果';
-
-$GLOBALS["lang"]['start_date'] = '开始日期';
-
-$GLOBALS["lang"]['Start Date'] = '开始日期';
-
-$GLOBALS["lang"]['start_mode'] = '开始模式';
-
-$GLOBALS["lang"]['Start Mode'] = '开始模式';
-
-$GLOBALS["lang"]['Start a web browser and go to'] = '启动网页浏览器并前往';
-
-$GLOBALS["lang"]['started_date'] = '开始日期';
-
-$GLOBALS["lang"]['Started Date'] = '开始日期';
-
-$GLOBALS["lang"]['Starting June 2018 Google has implemented a pay-as-you-go pricing model for the Google Maps Platform APIs. Previously, most users with moderate usage could use Google Maps, which are embedded into opCharts and Open-AudIT Professional/Enterprise, for free. Googles new policy is outlined here,'] = '2018年6月开始 Google为Google地图平台API实施了现收现付定价模式. 以前,大多数使用中度的用户都可以免费使用Google Maps,这些地图嵌入了opCharts和Open-AudIT专业/企业. 谷歌的新政策在此概述,';
-
-$GLOBALS["lang"]['Starts With'] = '开始于';
-
-$GLOBALS["lang"]['state'] = '状态';
-
-$GLOBALS["lang"]['State'] = '状态';
-
-$GLOBALS["lang"]['Stats'] = '状态';
-
-$GLOBALS["lang"]['status'] = '状态';
-
-$GLOBALS["lang"]['Status'] = '状态';
-
-$GLOBALS["lang"]['Storage'] = '储存';
-
-$GLOBALS["lang"]['storage_count'] = '存储数';
-
-$GLOBALS["lang"]['Storage Count'] = '存储数';
-
-$GLOBALS["lang"]['Storage area network'] = '储域网';
-
-$GLOBALS["lang"]['Storage-Area Network'] = '存储区域网络';
-
-$GLOBALS["lang"]['string'] = '字符串';
-
-$GLOBALS["lang"]['String'] = '字符串';
-
-$GLOBALS["lang"]['sub_resource_id'] = '子资源标识';
-
-$GLOBALS["lang"]['Sub Resource ID'] = '子资源标识';
-
-$GLOBALS["lang"]['sub_type'] = '子类型';
-
-$GLOBALS["lang"]['Sub Type'] = '子类型';
-
-$GLOBALS["lang"]['subject_key_ident'] = '主题密钥标识符';
-
-$GLOBALS["lang"]['Subject Key Ident'] = '主题密钥标识符';
-
-$GLOBALS["lang"]['Submit'] = '提交';
-
-$GLOBALS["lang"]['Submit Online'] = '在线提交';
-
-$GLOBALS["lang"]['Submitted From'] = '提交日期';
-
-$GLOBALS["lang"]['Subnet'] = '子网络';
-
-$GLOBALS["lang"]['Subnet Discoveries'] = '子网发现';
-
-$GLOBALS["lang"]['Subscription ID'] = '订阅编号';
-
-$GLOBALS["lang"]['suburb'] = '郊区';
-
-$GLOBALS["lang"]['Suburb'] = '郊区';
-
-$GLOBALS["lang"]['Success'] = '成绩';
-
-$GLOBALS["lang"]['Sudan'] = '苏丹';
-
-$GLOBALS["lang"]['Sudo Password'] = 'Sudo 密码';
-
-$GLOBALS["lang"]['Sudo Password (optional)'] = 'Sudo 密码( 可选)';
-
-$GLOBALS["lang"]['suite'] = '套间';
-
-$GLOBALS["lang"]['Suite'] = '套间';
-
-$GLOBALS["lang"]['summaries'] = '摘要';
-
-$GLOBALS["lang"]['Summaries'] = '摘要';
-
-$GLOBALS["lang"]['Summaries are a single query against the database with a <i>group by</i> command. Using this simple method we can easily create a summary for virtually any attribute.<br><br>We no longer require a separate report for each <i>type</i> of a device. We now simply have a summary that groups by <i>devices.type</i> and shows the result. You can then click on a given type from the list and see the matching devices. In this case, one Summary replaces (potentially) 78 reports (there are 78 device types).<br><br>A summary is different to a query in that a summary is designed to group items by a given attribute then provide a <i>click through</i> link to the actual devices. A query is simply a list of items with no further links. As above - this of a Summary as a combined <i>report + subreport</i>, whereas a query is simply a single Report.<br><br>Summaries have a different collection template to the other resources within Open-AudIT. This template shows the Summary as you would expect and also shows buttons with counts of other resources. This page is designed to be the HomePage of Open-AudIT.'] = '摘要是一个针对数据库的单一查询,其中有一个 <i>组合</i> 命令。 使用这个简单的方法,我们很容易为几乎所有属性创建一个摘要.<br/><br/>我们不再需要对每个项目分别提出报告 <i>类型</i> 一个装置。 我们现在简单总结一下, <i>设备。 类型</i> 并显示结果。 然后从列表中单击指定类型,并查看匹配设备。 在这种情况下,一份摘要(可能)取代78份报告(有78种设备)。<br/><br/>摘要与查询不同,因为摘要旨在按给定属性分组项目,然后提供 <i>点击通过</i> 链接到实际设备。 查询只是一份没有进一步链接的项目清单。 上文----摘要作为综合 <i>报告+子报告</i>,而查询只是单一报告。<br/><br/>摘要在Open-AudIT内部的其他资源有不同的收藏模板. 本模板按您的期望显示摘要, 并显示包含其他资源的按钮 。 本页面设计为Open-AudIT的HomePage.';
-
-$GLOBALS["lang"]['Summaries are designed to group items by a particular matching column and then to provide a link to individual devices. In the previous versions of Open-AudIT, this would have been two different items - a report and subreport. We have now bundled these into what we call a Summary.'] = '摘要旨在按特定匹配列组合项目,然后提供单个设备的链接. 在以前的Open-AudIT版本中,这将是两个不同的项目:报告和子报告。 我们现在把这些内容整理成我们所说的摘要。';
-
-$GLOBALS["lang"]['Summaries provide drilldown reporting capabilities. Simple, intuitive, powerful.'] = '摘要提供钻井报告能力。 简单,直观,强大.';
-
-$GLOBALS["lang"]['Summaries take the same arguments as Queries.'] = '摘要采用与查询相同的参数.';
-
-$GLOBALS["lang"]['Summary'] = '目 录';
-
-$GLOBALS["lang"]['Sunday'] = '礼拜';
-
-$GLOBALS["lang"]['supplier'] = '供应商';
-
-$GLOBALS["lang"]['Supplier'] = '供应商';
-
-$GLOBALS["lang"]['Support'] = '支助';
-
-$GLOBALS["lang"]['Supported types are <code>subnet</code>, <code>seed</code> and <code>active directory</code>.'] = '支持类型为 <code>subnet</code>, (中文). <code>seed</code> 和 <code>active directory</code>。 。 。';
-
-$GLOBALS["lang"]['Supports compliance with legal and regulatory requirements'] = '支持遵守法律和规章要求';
-
-$GLOBALS["lang"]['Suriname'] = '苏里南';
-
-$GLOBALS["lang"]['Surveillance Audits:</strong> Annual audits to maintain certification'] = '监督审计: 维持核证的年度审计';
-
-$GLOBALS["lang"]['Svalbard & Jan Mayen Islands'] = '斯瓦尔巴德和扬马延群岛';
-
-$GLOBALS["lang"]['Swaziland'] = '斯威士兰';
-
-$GLOBALS["lang"]['Sweden'] = '瑞典';
-
-$GLOBALS["lang"]['Swedish'] = '瑞典语';
-
-$GLOBALS["lang"]['switch_device_id'] = '切换设备标识';
-
-$GLOBALS["lang"]['Switch Device ID'] = '切换设备标识';
-
-$GLOBALS["lang"]['switch_port'] = '切换端口';
-
-$GLOBALS["lang"]['Switch Port'] = '切换端口';
-
-$GLOBALS["lang"]['Switzerland, Swiss Confederation'] = '瑞士、瑞士联邦';
-
-$GLOBALS["lang"]['Symptom'] = '症状';
-
-$GLOBALS["lang"]['Syrian Arab Republic'] = '阿拉伯叙利亚共和国';
-
-$GLOBALS["lang"]['sysContact'] = '关联';
-
-$GLOBALS["lang"]['SysContact'] = '关联';
-
-$GLOBALS["lang"]['sysDescr'] = 'SysDescr 软件';
-
-$GLOBALS["lang"]['SysDescr'] = 'SysDescr 软件';
-
-$GLOBALS["lang"]['sysLocation'] = '循环';
-
-$GLOBALS["lang"]['SysLocation'] = '循环';
-
-$GLOBALS["lang"]['sysName'] = '赛斯Name';
-
-$GLOBALS["lang"]['SysName'] = '赛斯Name';
-
-$GLOBALS["lang"]['sysObjectID'] = '对象';
-
-$GLOBALS["lang"]['SysObjectID'] = '对象';
-
-$GLOBALS["lang"]['sysUpTime'] = '时节';
-
-$GLOBALS["lang"]['SysUpTime'] = '时节';
-
-$GLOBALS["lang"]['system_component'] = '系统组件';
-
-$GLOBALS["lang"]['System Component'] = '系统组件';
-
-$GLOBALS["lang"]['System-Area Network'] = '系统区域网络';
-
-$GLOBALS["lang"]['TX Bitrate'] = 'TX 位速率';
-
-$GLOBALS["lang"]['TX Freq'] = 'TX 弗莱克语Name';
-
-$GLOBALS["lang"]['TX Level'] = 'TX 级别';
-
-$GLOBALS["lang"]['TX Power'] = 'TX 电源';
-
-$GLOBALS["lang"]['TX Profile'] = 'TX 简介';
-
-$GLOBALS["lang"]['Table'] = '图表';
-
-$GLOBALS["lang"]['tag'] = '标记';
-
-$GLOBALS["lang"]['Tag'] = '标记';
-
-$GLOBALS["lang"]['tag_1'] = '标记 1';
-
-$GLOBALS["lang"]['Tag 1'] = '标记 1';
-
-$GLOBALS["lang"]['tag_2'] = '标记 2';
-
-$GLOBALS["lang"]['Tag 2'] = '标记 2';
-
-$GLOBALS["lang"]['tag_3'] = '标记 3';
-
-$GLOBALS["lang"]['Tag 3'] = '标记 3';
-
-$GLOBALS["lang"]['Tagalog'] = '标记';
-
-$GLOBALS["lang"]['tags'] = '标记';
-
-$GLOBALS["lang"]['Tags'] = '标记';
-
-$GLOBALS["lang"]['Tags :: '] = '* 标记 ';
-
-$GLOBALS["lang"]['Taiwan'] = '台湾';
-
-$GLOBALS["lang"]['Tajikistan'] = '塔吉克斯坦';
-
-$GLOBALS["lang"]['Take note of all output and action each item as appropriate.'] = '酌情注意到每个项目的所有产出和行动。';
-
-$GLOBALS["lang"]['Tanzania'] = '坦桑尼亚';
-
-$GLOBALS["lang"]['Target Computer'] = '目标计算机';
-
-$GLOBALS["lang"]['task'] = '任务';
-
-$GLOBALS["lang"]['Task'] = '任务';
-
-$GLOBALS["lang"]['tasks'] = '任务';
-
-$GLOBALS["lang"]['Tasks'] = '任务';
-
-$GLOBALS["lang"]['Tasks can be one of several distinct types: Baseline, Discovery, Report, Query, Summary or Collector.'] = '任务可以是几种不同类型之一:基线、发现、报告、查询、摘要或收集器。';
-
-$GLOBALS["lang"]['tcp_ports'] = 'Tcp 端口';
-
-$GLOBALS["lang"]['Tcp Ports'] = 'Tcp 端口';
-
-$GLOBALS["lang"]['Technical Details'] = '技术细节';
-
-$GLOBALS["lang"]['tenant'] = '租户';
-
-$GLOBALS["lang"]['Tenant'] = '租户';
-
-$GLOBALS["lang"]['Tenant ID'] = '租户身份证';
-
-$GLOBALS["lang"]['Tennant ID'] = '端口标识';
-
-$GLOBALS["lang"]['ternary'] = '三级';
-
-$GLOBALS["lang"]['Ternary'] = '三级';
-
-$GLOBALS["lang"]['Test 1'] = '测试 1';
-
-$GLOBALS["lang"]['Test 2'] = '试验2';
-
-$GLOBALS["lang"]['Test 3'] = '测试 3';
-
-$GLOBALS["lang"]['Test Email'] = '测试电子邮件';
-
-$GLOBALS["lang"]['test_minutes'] = '测试分钟';
-
-$GLOBALS["lang"]['Test Minutes'] = '测试分钟';
-
-$GLOBALS["lang"]['test_os'] = '测试 Os';
-
-$GLOBALS["lang"]['Test Os'] = '测试 Os';
-
-$GLOBALS["lang"]['test_subnet'] = '测试子网';
-
-$GLOBALS["lang"]['Test Subnet'] = '测试子网';
-
-$GLOBALS["lang"]['tests'] = '测试';
-
-$GLOBALS["lang"]['Tests'] = '测试';
-
-$GLOBALS["lang"]['Text'] = '文本';
-
-$GLOBALS["lang"]['Thai'] = '泰国语Name';
-
-$GLOBALS["lang"]['Thailand'] = '泰国';
-
-$GLOBALS["lang"]['Thank you for starting your journey with the best discovery and inventory tool around.'] = '谢谢你用最好的发现和盘点工具开始你的旅程';
-
-$GLOBALS["lang"]['Thanks to'] = '感谢';
-
-$GLOBALS["lang"]['Thats it! You have just edited the attributes of as many devices as you need to.'] = '就这样! 您刚刚编辑了所需设备的属性 。';
-
-$GLOBALS["lang"]['The <i>Roles</i> endpoint allows you to manage the set of permissions(Create, Read, Update, Delete) that are granted to the users and are applied to each endpoint.'] = '那个 <i>角色</i> 端点允许您管理授予用户并应用于每个端点的一组权限(创建,读取,更新,删除).';
-
-$GLOBALS["lang"]['The API uses a cookie. You can request a cookie by sending a POST to the URL below, containing the username and password attributes and values:'] = 'API使用饼干. 您可以通过向下面的 URL 发送 POST 请求 cookie, 包含用户名和密码属性和值 :';
-
-$GLOBALS["lang"]['The Active Directory domain to retrieve a list of subnets from.'] = '从中获取子网列表的 Active Directory 域 。';
-
-$GLOBALS["lang"]['The Active Directory server to retrieve a list of subnets from.'] = '活动目录服务器从中获取子网列表 。';
-
-$GLOBALS["lang"]['The Applications endpoint allows you to define an application which you can then associate to a device (or devices).'] = '应用程序端点允许您定义一个应用程序,然后可以将其连接到设备(或设备)中.';
-
-$GLOBALS["lang"]['The Attributes endpoint allows you to add customized values to different attributes in Open-AudIT, at the moment this feature works on the Class, Environment, Status and Type attributes on Devices, the Type attribute for both Locations and Orgs as well as the Menu Category for Queries. If you view an item of one of the prvious types (say view a Lkocation) you will notice the Type attribute must be selected from a drop-down box. This is where those values are stored. Hence, if you would like to add a new Type to be chosen for a Location, add it using the Attributes feature.'] = '属性端点允许您在 Open-AudIT 中将定制值添加到不同的属性中,此时此特性在设备上的类,环境,状态和类型属性,位置和兽类的类型属性以及查询的菜单类. 如果您查看了其中一种类型的项目( 显示 Lkocation) , 您会注意到必须从下拉框中选择类型属性 。 这就是这些值被存储的地方。 因此,如果您想要为位置添加新类型,请使用属性特性添加该类型。';
-
-$GLOBALS["lang"]['The Automatable metric captures the answer to the question <strong>Can an attacker automate exploitation events for this vulnerability across multiple targets?</strong> based on steps 1-4 of the kill chain. These steps are reconnaissance, weaponization, delivery, and exploitation (Not Defined, No, Yes).'] = '可自动调试的度量衡抓住了问题的答案 <strong>攻击者能否将针对这种脆弱性的剥削事件自动化到多个目标?</strong> 根据杀戮链的1 -4步骤 这些步骤是侦察、武器化、交货和剥削(未界定,否,是)。';
-
-$GLOBALS["lang"]['The CVE has been marked as invalid or withdrawn in the CVE List. It remains in the NVD but is excluded from default search results.'] = 'CVE在CVE列表中被标记为无效或撤回. 它仍保留在NVD中,但被排除在默认搜索结果之外.';
-
-$GLOBALS["lang"]['The CVE has been published to the CVE List and included in the NVD dataset. Initial ingestion only.'] = 'CVE已发布至CVE列表,并被纳入NVD数据集. 初摄入而已.';
-
-$GLOBALS["lang"]['The CVE has been updated after initial analysis. NVD enrichment data may have been revised.'] = '经过初步分析,CVE已经更新. NVD浓缩数据可能已经修订.';
-
-$GLOBALS["lang"]['The CVE identifier.'] = 'CVE识别码.';
-
-$GLOBALS["lang"]['The CVE is actively being enriched with CVSS scores, CWE classifications, reference tags, and CPE applicability.'] = 'CVE正在积极丰富CVSS的分数,CWE分类,参考标记,以及CPE的适用性.';
-
-$GLOBALS["lang"]['The CVE is not currently prioritized for enrichment due to resource constraints or other reasons.'] = '由于资源限制或其他原因,目前没有优先进行浓缩工作。';
-
-$GLOBALS["lang"]['The CVE is queued for enrichment by NVD analysts. No detailed metadata yet.'] = 'CVE被NVD分析员排队进行浓缩. 还没有详细的元数据 。';
-
-$GLOBALS["lang"]['The Cloud that owns this item. Links to <code>clouds.id</code>.'] = '拥有此品之云. 链接到 <code>clouds.id</code>。 。 。';
-
-$GLOBALS["lang"]['The Device Seed Discovery type is the newest highly-effective method for network crawling, giving you the ability to target your network as narrowly or as broadly as you need. It is fast, it works and it is great.'] = '设备种子发现类型是网络爬行的最新高效方法,使你有能力以你所需要的范围狭小或广泛的方式瞄准你的网络. 它很快,它工作,它是伟大的。';
-
-$GLOBALS["lang"]['The Discovery Scan Options we ship are detailed in the table below. As above, Enterprise users can create more of these or edit the shipped items.'] = '发现扫描 下表中详细列出了我们所运送的选项。 如上,企业用户可以创建更多的这些或编辑已发运的项目.';
-
-$GLOBALS["lang"]['The Elevated User query'] = '高级用户查询';
-
-$GLOBALS["lang"]['The Executables feature scans the disk of a device as part of the audit and checks that every executable file is known to the package manager. Because it uses the package manager, the feature applies to Linux target devices only, and further than that, only rpm or deb based distributions. Anything Redhat or Debian based should work.'] = '可执行文件功能扫描设备的磁盘,作为审计的一部分,并检查每个可执行文件是否为软件包管理器所知. 由于它使用软件包管理器,该特性仅适用于Linux目标设备,并且更进一步,只有 rpm 或 deb 基于分布. 任何Redhat或Debian基地应该有用';
-
-$GLOBALS["lang"]['The FROM'] = '从';
-
-$GLOBALS["lang"]['The Group used to run the Baseline. Links to <code>groups.id</code>.'] = '专家组曾管理基线。 链接到 <code>groups.id</code>。 。 。';
-
-$GLOBALS["lang"]['The ID from the devices table (the devices.name will be displayed) of the NTU at this end of the connection. Links to <code>devices.id</code>.'] = 'NTU 设备表( 设备. 名称将显示) 的ID 在连接的这一端 。 链接到 <code>devices.id</code>。 。 。';
-
-$GLOBALS["lang"]['The ID from the imported benchmark policy.'] = '进口基准政策的ID。';
-
-$GLOBALS["lang"]['The ID from the locations table (the locations.name will be displayed) of this end of the connection. Links to <code>locations.id</code>. The A location is usually the <code>FROM</code> location.'] = '连接此端位置表( 位置. name 将显示) 的ID 。 链接到 <code>locations.id</code>。 。 。 A位置通常是 <code>FROM</code> 地点。';
-
-$GLOBALS["lang"]['The ID from the locations table (the locations.name will be displayed) of this end of the connection. Links to <code>locations.id</code>. The B location is usually the <code>TO</code> location.'] = '连接此端位置表( 位置. name 将显示) 的ID 。 链接到 <code>locations.id</code>。 。 。 B位置通常是 <code>TO</code> 地点。';
-
-$GLOBALS["lang"]['The ID of the associated device (if any). Links to <code>devices.id</code>.'] = '相关设备的ID( 如果有的话) 。 链接到 <code>devices.id</code>。 。 。';
-
-$GLOBALS["lang"]['The ID of the associated discovery. Linked to <code>discoveries.id</code>'] = '相关发现的ID. 链接到 <code>discoveries.id</code>';
-
-$GLOBALS["lang"]['The ID of the item of the associated type.'] = '相关类型项目的ID 。';
-
-$GLOBALS["lang"]['The ID of this orgs parent org. Linked to <code>orgs.id</code>'] = '此 Orgs 父 Org 的标识 。 链接到 <code>orgs.id</code>';
-
-$GLOBALS["lang"]['The ID provided by the provider.'] = '提供人提供的身份证。';
-
-$GLOBALS["lang"]['The ID retrieved from a Cloud discovery.'] = '身份是从云号发现中找到的';
-
-$GLOBALS["lang"]['The IP address of this collector used to communicate with the server.'] = '此收藏器的IP地址曾与服务器通信.';
-
-$GLOBALS["lang"]['The IP of the device to start a seed discovery with.'] = '用于启动种子发现的设备的IP.';
-
-$GLOBALS["lang"]['The IP of the external interface.'] = '外部接口的IP.';
-
-$GLOBALS["lang"]['The IP of the internal interface.'] = '内部接口的IP.';
-
-$GLOBALS["lang"]['The ISO/IEC 27001 certification process and its key elements.'] = 'ISO/IEC 27001认证程序及其关键要素。';
-
-$GLOBALS["lang"]['The ISP or Telco providing this link.'] = '提供这种链接的ISP或Telco.';
-
-$GLOBALS["lang"]['The JSON record from Mitre.'] = '米特雷的JSON唱片.';
-
-$GLOBALS["lang"]['The JSON record from the NVD feed.'] = 'JSON唱片来自NVD的种子.';
-
-$GLOBALS["lang"]['The LDAP OU of this user (if LDAP is used).'] = '这个用户的LDAP OU(如果使用LDAP).';
-
-$GLOBALS["lang"]['The LDAP server could not be connected to. At all. Check it is pingable from the Open-AudIT server. Check the correct port is open to the Open-AudIT server. An nmap from the Open-AudIT server will show this. Substitute your LDAP servers IP for $ip. Try:<code>nmap -vv $ip</code>'] = 'LDAP 服务器无法连接 。 一点都没有 请从 Open-AudIT 服务器中选中它 。 检查正确的端口对 Open-AudIT 服务器开放 。 Open-AudIT 服务器的nmap将显示此信息 。 将您的 LDAP 服务器 IP 替换为$ip 。 尝试 :<code>nmap -vv $ip</code>';
-
-$GLOBALS["lang"]['The LDAP server type is invalid. It should be either <i>active directory</i> or <i>openldap</i>.'] = 'LDAP 服务器类型无效 。 应该是 <i>活动目录</i> 或者说 <i>打开</i>。 。 。';
-
-$GLOBALS["lang"]['The LDAP server was connected to and the user credentials accepted for bind.'] = 'LDAP服务器已连接,用户证书被接受绑定.';
-
-$GLOBALS["lang"]['The Linux Open-AudIT installer will test for and if required, install Open-AudITs dependencies from your distributions repository, including setting the Nmap SetUID. This is required for SNMP (UDP 161) detection by a non-root user. This is supported on RedHat/CentOS and Debian/Ubuntu. If you need to manually install Nmap:<br><br>For RedHat/CentOS do (NOTE - if you upgrade using yum, you will need to reapply this <i>chmod</i> setting).'] = 'Linux Open-AudIT 安装器将测试并在需要时从您的分发寄存器中安装 Open-AudITs 依赖性,包括设置 Nmap SetUID 。 这是由非根基用户检测SNMP(UDP 161)所需要的. 这在RedHat/CentOS和Debian/Ubuntu上得到了支持。 如果您需要手动安装 Nmap :<br/><br/>对于RedHat/CentOS do(注 - 如果您使用yum升级, 您需要重新应用此功能) <i>常规</i> 页:1';
-
-$GLOBALS["lang"]['The Location that contains this network. Links to <code>locations.id</code>.'] = '包含此网络的位置 。 链接到 <code>locations.id</code>。 。 。';
-
-$GLOBALS["lang"]['The NVD assigned base status.'] = 'NVD指定了基础状态.';
-
-$GLOBALS["lang"]['The National Institute of Standards and Technology is the federal technology agency. They advance official technology, measurement science and standards.'] = '国家标准和技术研究所是联邦技术机构。 它们推进官方技术,测量科学和标准.';
-
-$GLOBALS["lang"]['The Network to Discover'] = '要发现的网络';
-
-$GLOBALS["lang"]['The Nmap timing preset.'] = 'Nmap 计时预设 。';
-
-$GLOBALS["lang"]['The OS this package should be reported against. Blank for all. Use the percent sign % as a wildcard. Will be tested against os_group, os_family and os_name in that order.'] = '这套软件包应对照OS报告。 空为众生. 使用% 签名% 作为通配符 。 将按此顺序测试 os_ group, os_ family 和 os_ name 。';
-
-$GLOBALS["lang"]['The Open-AudIT API'] = '开放的AudIT API';
-
-$GLOBALS["lang"]['The Open-AudIT id of the linked cloud. Links to <code>clouds.id</code>.'] = '链接云的Open-AudIT id. 链接到 <code>clouds.id</code>。 。 。';
-
-$GLOBALS["lang"]['The Open-AudIT server code was exeucted within this file.'] = '开放的奥德 IT服务器代码在此文件中被执行.';
-
-$GLOBALS["lang"]['The Open-AudIT server code was exeucted within this function.'] = '开放的奥德 IT服务器代码在此功能内被执行.';
-
-$GLOBALS["lang"]['The OpenSCAP ecosystem provides multiple tools to assist administrators and auditors with assessment, measurement, and enforcement of security baselines including a wide variety of hardening guides and configuration baselines developed by the open source community, ensuring that you can choose a security policy which best suits the needs of your organization, regardless of its size.'] = 'OpenSCAP生态系统提供多种工具,协助管理员和审计人员评估、衡量和执行安全基线,包括开放源码社区制定的各种硬化指南和配置基线,确保你们能够选择最适合你们组织需要的安全政策,而不论其规模大小。';
-
-$GLOBALS["lang"]['The OpenSCAP project is a collection of open source tools for implementing and enforcing this standard, and has been awarded the SCAP 1.2 certification by NIST in 2014.'] = 'OpenSCAP项目是一套用于实施和执行本标准的开源工具,并在2014年被NIST授予SCAP 1.2认证.';
-
-$GLOBALS["lang"]['The Organisation that owns this item. Links to <code>orgs.id</code>.'] = '拥有此项目的组织 。 链接到 <code>orgs.id</code>。 。 。';
-
-$GLOBALS["lang"]['The Process Identifier of the running associated discovery.'] = '运行中相关发现的流程识别符 。';
-
-$GLOBALS["lang"]['The RU positon of the top of this device.'] = '这个装置顶部的RU正体';
-
-$GLOBALS["lang"]['The Racks feature is used to manage and visualize your rack use with an Organisation, Location, Building, Floor, Room and Row.'] = 'Racks的功能用于管理和可视化您的机架使用,包括组织,位置,建筑,地板,房间和行.';
-
-$GLOBALS["lang"]['The SCAP is a specification for expressing and manipulating security data in standardized ways. SCAP uses several individual specifications in concert to automate continuous monitoring, vulnerability management, and security policy compliance evaluation reporting'] = 'SCAP是用于以标准化方式表达和操纵安全数据的规格. SCAP统一使用若干个别规格,实现持续监测、脆弱性管理和安全政策遵守情况评价报告自动化';
-
-$GLOBALS["lang"]['The SELECT'] = '光线';
-
-$GLOBALS["lang"]['The SELECT section of the query should use full dot notation and also request the field with its full dot name. IE - SELECT devices.id AS `devices.id`. Each field should be selected in this fashion to enable GUI side attribute filtering.'] = '查询中的 SELECT 部分应当使用全点标记,同时请求字段全点名称. IE - SELECT设备. id AS ‘devices.id\'. 每个字段都应该以这种方式选择,以便GUI侧属性过滤.';
-
-$GLOBALS["lang"]['The SELECT section of your SQL must contain fully qualified columns and specify certain columns.'] = '您的 SQL 中的 SELECT 部分必须包含完全合格的列并指定某些列 。';
-
-$GLOBALS["lang"]['The SNMP community string.'] = 'SNMP社区字符串.';
-
-$GLOBALS["lang"]['The SNMP v3 Authentication Passphrase.'] = 'SNMP v3 认证密码句 。';
-
-$GLOBALS["lang"]['The SNMP v3 Authentication Protocol.'] = 'SNMP v3 认证协议.';
-
-$GLOBALS["lang"]['The SNMP v3 Privacy Passphrase.'] = 'SNMP v3 隐私密码句 。';
-
-$GLOBALS["lang"]['The SNMP v3 Privacy Protocol.'] = 'SNMP v3 隐私协议.';
-
-$GLOBALS["lang"]['The SNMP v3 Security Level.'] = 'SNMP v3 安全级别.';
-
-$GLOBALS["lang"]['The SNMP v3 Security Name.'] = 'SNMP v3 安全名称.';
-
-$GLOBALS["lang"]['The SNMPv3 context Engine ID (optional).'] = 'SNMPv3 上下文引擎 ID (可选).';
-
-$GLOBALS["lang"]['The SNMPv3 context Name (optional).'] = 'SNMPv3 上下文名称( 可选) 。';
-
-$GLOBALS["lang"]['The SQL cannot contain <strong>WHERE @filter OR</strong>. That SQL will not be executed, however <strong>WHERE @filter AND</strong> queries are allowed.'] = 'SQL 无法包含 <strong>位于 @ filter 或</strong>。 。 。 但SQL不会被执行 <strong>@ filter 和 @</strong> 允许查询。';
-
-$GLOBALS["lang"]['The SQL queries used in Open-AudIT require the use of the backtick - ` character and NOT the standard single quote for fields. On most US Windows keyboards the backtick key is located in the top-left of the keyboard along with the tilde ~. On a US Mac keyboard the backtick key is located next to the SHIFT key. The standard single quote is still used to enclose values as the examples below illustrate.'] = 'Open-AudIT中使用的SQL查询需要使用 backtick - \' 字符和字段的标准单引号。 在大多数美国Windows键盘上,反键与tilde~一起位于键盘左上方. 在美国的Mac键盘上,反键位于SHIFT键旁边. 如以下例子所示,标准单引号仍然用于附加数值。';
-
-$GLOBALS["lang"]['The SQL query is essentially broken into three parts.'] = 'SQL查询基本上分为三个部分.';
-
-$GLOBALS["lang"]['The Standards functionality in Open-AudIT allows you to, ahead of time, complete the questions auditors require when completing ISO 27001 certification.'] = 'Open-AudIT中的标准功能允许您在完成ISO 27001认证时提前完成问题审计员需要的问题.';
-
-$GLOBALS["lang"]['The URL of the external system.'] = '外部系统的URL.';
-
-$GLOBALS["lang"]['The URL of your Open-AudIT Server that this Collector will report to (no trailing slash).'] = '您的 Open-AudIT 的 URL 服务器, 此收藏器将报告( 没有跟踪斜线 ) 。';
-
-$GLOBALS["lang"]['The URL the audit scripts should submit their result to.'] = '审计脚本应当向URL提交结果.';
-
-$GLOBALS["lang"]['The User endpoint allows you to manage user accounts within Open-AudIT.'] = '用户端点允许您管理Open-AudIT内的用户账户.';
-
-$GLOBALS["lang"]['The WHERE'] = '何处';
-
-$GLOBALS["lang"]['The WHERE section of your SQL <em>must</em> contain'] = '您的SQL 的哪个部分 <em>必须</em> 包含';
-
-$GLOBALS["lang"]['The Windows'] = '窗口';
-
-$GLOBALS["lang"]['The Windows log may say the following'] = 'Windows 日志可能表示如下';
-
-$GLOBALS["lang"]['The account must have a password; WMI does not allow blank passwords.'] = '账户必须有密码; WMI 不允许空白密码.';
-
-$GLOBALS["lang"]['The account password must NOT contain \" (double quotes). This is because cscript (and wscript) cannot parse argument values containing double quotes. They are simply stripped. No (before you ask) escaping will not work. This is a cscript limitation and nothing to do with Open-AudIT.'] = '账户密码不得包含\"(双引号). 这是因为cript (和 wript) 无法解析包含双引号的参数值 。 他们只是被剥光。 逃跑是行不通的。 这是一种文字限制,与Open-AudIT无关.';
-
-$GLOBALS["lang"]['The actual full name of this user.'] = '此用户的实际全名.';
-
-$GLOBALS["lang"]['The address of the Open-AudIT server submit page.'] = 'Open-AudIT服务器的地址提交页面.';
-
-$GLOBALS["lang"]['The administrator supplied credentials that were successfully used to bind to LDAP.'] = '管理员提供了成功用于绑定LDAP的证书.';
-
-$GLOBALS["lang"]['The administrator supplied credentials to bind to the LDAP server, but they have not been accepted by the LDAP sevrer. Double check the credentials work on the LDAP server, and then check (or reset them) in the Open-AudIT LDAP Server entry.'] = '管理员提供了与LDAP服务器绑定的证书,但是这些证书未被LDAP sevrer接受. 双重检查LDAP服务器的证书工作,然后在Open-AudIT LDAP服务器条目中检查(或重置).';
-
-$GLOBALS["lang"]['The agent and server are also intelligent enough to self-update the agent if a newer version is installed on the server (say after upgrading Open-AudIT).'] = '如果在服务器上安装了较新的版本(在升级Open-AudIT后说),代理和服务器也足够智能,可以自行更新代理.';
-
-$GLOBALS["lang"]['The agent should download a fresh copy of the audit script, run it and submit the result to the server.'] = '代理机应当下载审计脚本的新稿件,运行,并将结果报送服务器.';
-
-$GLOBALS["lang"]['The application creates temporary audit scrtips here, copies them to the target machines, then deletes them.'] = '应用程序在此创建临时审计scrtips,将其复制到目标机器,然后删除.';
-
-$GLOBALS["lang"]['The associated baseline. Links to <code>baselines.id</code>.'] = '相关基线。 链接到 <code>baselines.id</code>。 。 。';
-
-$GLOBALS["lang"]['The associated discovery (if required). Links to <code>discoveries.id</code>.'] = '相关发现(如有需要). 链接到 <code>discoveries.id</code>。 。 。';
-
-$GLOBALS["lang"]['The attribute to test (from the <code>devices</code> table).'] = '测试的属性(来自 <code>devices</code> 页:1';
-
-$GLOBALS["lang"]['The attribute to test (must match an external field name from below).'] = '测试的属性( 必须从下面匹配外部字段名称) 。';
-
-$GLOBALS["lang"]['The attributes for discovery scan options are as below.'] = '用于发现扫描选项的属性如下.';
-
-$GLOBALS["lang"]['The audit script upon which to base your customisations.'] = '您自定义所依据的审计脚本 。';
-
-$GLOBALS["lang"]['The audit script will use the files[ ] array and retrieve the file details.'] = '审计脚本将使用文件[ ]阵列并检索文件细节.';
-
-$GLOBALS["lang"]['The audit scripts all accept a debugging argument. You can run the script utilizing that and see in more detail what the issue is. And if you cannot figure it out - that is what we are here for! Open a support case and we will get things running in no time.'] = '审计脚本都接受调试参数. 你可以用这个来运行剧本,并更详细地看到问题是什么. 如果你搞不懂 那就是我们来这里的目的 打开一个支持箱,我们马上就能办到';
-
-$GLOBALS["lang"]['The base path from which to search for Users.'] = '查找用户的基础路径 。';
-
-$GLOBALS["lang"]['The below steps are not the fault of or unique to Open-AudIT and would affect <strong>any</strong> discovery application using remote WMI and/or Windows.'] = '以下步骤并非Open-AudIT的过错或独有,而且会影响 <strong>任何</strong> 使用远程 WMI 和/或 Windows 的发现应用程序。';
-
-$GLOBALS["lang"]['The benchmark type.'] = '基准类型。';
-
-$GLOBALS["lang"]['The building the rack is located in.'] = '车架所在的建筑.';
-
-$GLOBALS["lang"]['The calculated number of devices to be created externally.'] = '外部创建的设备的计算数量 。';
-
-$GLOBALS["lang"]['The calculated number of devices to be created in Open-AudIT.'] = 'Open-AudIT中要创建的设备的计算数量.';
-
-$GLOBALS["lang"]['The client ID is the ID of an Azure Active Directory application. The client secret is the key that you give that application.'] = '客户端ID是Azure Active Directory应用程序的ID. 客户秘密是你给申请的关键';
-
-$GLOBALS["lang"]['The collector is essentially a full install of Open-AudIT in <i>collector</i> mode. The collector is designed to run discovery upon the network it is situated in. It is not restricted to only that network, but ideally it would essentially be one collector per subnet where required. The collector is driven on a schedule by the server and runs discovery upon the network as specified.<br>When in Stand Alone mode the Collector acts as an independant server, simply forwarding all devices found to the main server.<br><br>Once installed and setup, control of the Collector is performed on the Server (not in Stand Alone mode).<br><br>The only required network ports between the collector and server are 80 or 443 (TCP connection established from the Collector to the Server). The Open-AudIT database is not (and cannot be) shared between these installs.<br><br>By default the collector (not in Stand Alone mode) will request from the server any discovery tasks every 5 minutes (you can configure this on the server for new Collectors using the configuration item collector_check_minutes) therefor any discovery tasks for the collector should be scheduled for 0, 5, 10, 15, etc minutes.'] = '收集器基本上是在Open-AudIT中全装 <i>收藏家</i> 模式。 收集器的设计是为了在其所在的网络上进行发现。 它不仅仅限于该网络,而且最好是在必要时每个子网都有一个收集器。 收集器由服务器按时间表驱动,并按规定在网络上运行发现.<br/>当站立时 单独模式 Collector 充当不依赖的服务器, 简单地将找到的所有设备转发到主服务器 。<br/><br/>一旦安装和设置,对收集器的控制将在服务器上进行(不以Stand Oleone模式).<br/><br/>采集器和服务器之间唯一需要的网络端口是80或443(从收集器到服务器建立的TCP连接). Open-AudIT数据库不是(也不能)在这些安装之间共享。<br/><br/>默认情况下,采集器(不是Stand Oone模式)将每5分钟向服务器请求任何发现任务(您可以在服务器上为新采集器配置此功能,使用配置项采集器_check_minutes),因此采集器的任何发现任务应排在0,5,10,15等分钟.';
-
-$GLOBALS["lang"]['The collector is essentially a full install of Open-AudIT in <i>collector</i> mode. This mode would reduce visible functionality in an effort to simplify and focus the application. It is designed to collect information about local networks and devices, where firewall and/or network traversal is an issue from the server.'] = '收集器基本上是在Open-AudIT中全装 <i>收藏家</i> 模式。 这种模式将减少可见的功能,以努力简化和集中应用. 它旨在收集本地网络和设备的信息,其中防火墙和/或网络转盘是服务器的问题.';
-
-$GLOBALS["lang"]['The collectors internal IP used when it runs a discovery.'] = '收集器内部IP在运行一个发现时使用.';
-
-$GLOBALS["lang"]['The column name from the foreign table. Should be one of: class, environment, status, type or menu_category.'] = '列名从外表. 应为:类,环境,状态,类型或菜单_类之一.';
-
-$GLOBALS["lang"]['The command executed upon the target device or Open-AudIT server code executed during discovery.'] = '在发现时执行的目标设备或Open-AudIT服务器代码上执行的命令.';
-
-$GLOBALS["lang"]['The configuration of your cluster can be: <code>active/active</code>, <code>active/passive</code>, <code>N+1</code>, <code>N+M</code>, <code>N-to-1</code>, <code>N-to-N</code>, <code>other</code> or blank.'] = '您集群的配置可以是: <code>active/active</code>, (中文). <code>active/passive</code>, (中文). <code>N+1</code>, (中文). <code>N+M</code>, (中文). <code>N-to-1</code>, (中文). <code>N-to-N</code>, (中文). <code>other</code> 或空白。';
-
-$GLOBALS["lang"]['The credentials password. If the credentials are an SSH Key, this is the password used to unlock the key and is optional.'] = '证书密码 如果证书是 SSH 密钥, 这是用于解锁密钥的密码, 是可选的 。';
-
-$GLOBALS["lang"]['The credentials supplied by the user have failed.'] = '用户提供的证书失败 。';
-
-$GLOBALS["lang"]['The credentials username.'] = '证书用户名.';
-
-$GLOBALS["lang"]['The current date and time in the format: Y-m-d H:i:s.'] = '格式中的当前日期和时间 : 对,对 H:i:s. (中文(简体) ).';
-
-$GLOBALS["lang"]['The current date in Y-m-d format.'] = '以 Y- m- d 格式显示的当前日期 。';
-
-$GLOBALS["lang"]['The current status of the Cloud Discovery.'] = '云发现者现状.';
-
-$GLOBALS["lang"]['The current status of the discovery.'] = '发现现状.';
-
-$GLOBALS["lang"]['The dashboard that will be shown by default for this user. Links to <code>dashboards.id</code>.'] = '该用户默认显示的仪表板 。 链接到 <code>dashboards.id</code>。 。 。';
-
-$GLOBALS["lang"]['The data stored in the database is not showing in the application translated. We leave the data as it is. However, there is nothing to stop you, the user, changing the name (for example) of an item in the database to your language.'] = '存储在数据库中的数据没有在翻译的应用程序中显示. 我们把数据留在原地 然而,没有任何东西可以阻止您这个用户将数据库中某个项目的名称(例如)更改为您的语言。';
-
-$GLOBALS["lang"]['The data you input will be used in a <code>LIKE</code> clause, not (as per the API) an <code>equals</code> clause. Another example - if you input <code>comput</code>, it would still return all computers. And because we are using a <code>LIKE</code> clause, it is case-insensitive.'] = '您输入的数据将被用于 <code>LIKE</code> 条款,而不是(根据API) <code>equals</code> 条款。 另一个示例 - 如果您输入 <code>comput</code>它仍然会归还所有的电脑。 因为我们正在使用 <code>LIKE</code> 条款,它是对案例的不敏感。';
-
-$GLOBALS["lang"]['The database schema can be found in the application if the user has database::read permission by going to menu: Admin -> Database ->'] = '如果用户有数据库:通过菜单读取权限: Admin - > ,则可以在应用程序中找到数据库计划。 数据库 - >';
-
-$GLOBALS["lang"]['The database version and web version are inconsistent.'] = '数据库版本和网页版本不一致.';
-
-$GLOBALS["lang"]['The date of license expiration.'] = '执照失效日期.';
-
-$GLOBALS["lang"]['The date the software is discontinued by the manufacturer. Usually replaced by a newer version. Maintenance may still be available.'] = '该软件被制造商终止的日期。 通常被较新的版本所取代. 仍可提供维修。';
-
-$GLOBALS["lang"]['The date the software no longer receives updates and is effectively discontinued altogether. Maintenance is discontinued.'] = '该软件不再得到更新的日期实际上完全停止。 维护工作中止。';
-
-$GLOBALS["lang"]['The date this item was changed or added (read only). NOTE - This is the timestamp from the server.'] = '本项目更改或添加的日期(仅阅读)。 注 - 这是服务器发送的时间戳 。';
-
-$GLOBALS["lang"]['The date/time when this result was created.'] = '创建此结果的日期/ 时间 。';
-
-$GLOBALS["lang"]['The day of the month when this task should execute (* for every day).'] = '执行这项任务的月份日(*每天)。';
-
-$GLOBALS["lang"]['The day of the week when this task should execute (* for every day).'] = '每周执行这项任务的当天(*每天)。';
-
-$GLOBALS["lang"]['The debug level (will output to command prompt window). Lower means less output with 0 being no output.'] = '调试级别( 输出到命令快速窗口) 。 较低表示输出较少, 0 表示没有输出.';
-
-$GLOBALS["lang"]['The default discovery scan option is the UltraFast set.'] = '默认的发现扫描选项是UltraFast集.';
-
-$GLOBALS["lang"]['The default language assigned to any user created by this method.'] = '此方法创建的任何用户都使用默认语言 。';
-
-$GLOBALS["lang"]['The device must respond to an Nmap ping before it is considered online.'] = '该设备必须响应Nmap ping,然后才被视为在线.';
-
-$GLOBALS["lang"]['The device within Open-AudIT. Links to <code>devices.id</code>.'] = 'Open-AudIT内部的设备. 链接到 <code>devices.id</code>。 。 。';
-
-$GLOBALS["lang"]['The direct link for the script is'] = '脚本的直接链接是';
-
-$GLOBALS["lang"]['The email address of the receiver'] = '回信器的电子邮件地址';
-
-$GLOBALS["lang"]['The enterprise binary from FirstWave is required for a license. Please download Open-AudIT from'] = '来自FirstWave的企业二进制必须持有许可证。 请从 Open-AudIT 下载';
-
-$GLOBALS["lang"]['The entire associated baseline this result is from.'] = '这一结果来自整个相关基线。';
-
-$GLOBALS["lang"]['The exploited vulnerability can affect resources beyond the security authority of the vulnerable component. This usually means a privilege or trust boundary is crossed (for example, escaping from a container to the host OS).'] = '被利用的脆弱性会影响到超出脆弱部分安全权限的资源。 这通常意味着跨越特权或信任边界(例如从容器逃到主机OS).';
-
-$GLOBALS["lang"]['The exploited vulnerability only impacts resources within the same security authority as the vulnerable component. In other words, the attacker’s actions stay within the original trust boundary.'] = '被利用的脆弱性只影响到与脆弱部分相同的安全当局内的资源。 换句话说,攻击者的行为不超出最初的信任界限。';
-
-$GLOBALS["lang"]['The externally referenced location ID. Usually populated by Cloud audits.'] = '外部引用的地点编号 。 通常以Cloud审计为居民.';
-
-$GLOBALS["lang"]['The fields associated with an Integration are stored in the database as a JSON array of objects. Each field has the following attributes'] = '与集成相关的字段作为JSON对象阵列存储在数据库中. 每个字段都有以下属性:';
-
-$GLOBALS["lang"]['The first time that Open-AudIT retrieved details of this device.'] = 'Open-AudIT首次检索此设备的细节.';
-
-$GLOBALS["lang"]['The floor the rack is located on.'] = '架子位于地面上.';
-
-$GLOBALS["lang"]['The foreign table to reference. Should be one of: devices, locations, orgs or queries.'] = '外表为参考. 应该是设备、地点、兽群或查询之一。';
-
-$GLOBALS["lang"]['The format of your data should be in the form'] = '您的数据格式应当为:';
-
-$GLOBALS["lang"]['The format used for the output to be emailed.'] = '以电子邮件传送输出所使用的格式 。';
-
-$GLOBALS["lang"]['The fully qualified column upon which to group by. NOTE: When type = traffic, this represents the red query id.'] = '完全合格的栏目,可编组。 注:当类型=流量时,这代表红色查询编号。';
-
-$GLOBALS["lang"]['The fully qualified name returned by the external system. EG: for NMIS we use configuration.roleType.'] = '外部系统返回的完全合格的名称 。 EG: 对于NMIS,我们使用配置。 角色 类型';
-
-$GLOBALS["lang"]['The fully qualified table.column. Multiple may be provided, separated by a comma (no spaces).'] = '完全合格表. 栏目. 多个可以提供,用逗号分隔(没有空格).';
-
-$GLOBALS["lang"]['The generated SQL query to test for this vulnerability. This field can be edited to correct the query as required.'] = '生成的 SQL 查询以测试此脆弱性 。 可以编辑此字段, 以便按要求更正查询 。';
-
-$GLOBALS["lang"]['The group of devices on which the baseline was run against.'] = '基线所对应的一组装置。';
-
-$GLOBALS["lang"]['The group that provides a list of devices for the integration. Links to <code>groups.id</code>.'] = '提供集成设备列表的组. 链接到 <code>groups.id</code>。 。 。';
-
-$GLOBALS["lang"]['The hour of the day when this task should execute (* for every hour).'] = '执行这项任务的当天时间(*每个小时)。';
-
-$GLOBALS["lang"]['The id of the linked device. Links to <code>devices.id</code>'] = '链接设备的ID. 链接到 <code>devices.id</code>';
-
-$GLOBALS["lang"]['The identifier column (integer) in the database (read only).'] = '数据库中的标识栏(整数)(只读).';
-
-$GLOBALS["lang"]['The importance of this baseline (not used yet).'] = '这一基线的重要性(尚未使用)。';
-
-$GLOBALS["lang"]['The integer of severity.'] = '严重程度的整数。';
-
-$GLOBALS["lang"]['The internal value, reformatted in this format.'] = '内部值,按此格式重新编排 。';
-
-$GLOBALS["lang"]['The ip address of the Auth method.'] = 'Auth 方法的 ip 地址 。';
-
-$GLOBALS["lang"]['The language to translate the web interface into for the user.'] = '为用户翻译网页界面的语言.';
-
-$GLOBALS["lang"]['The last date and time this item was executed (read only).'] = '此项目的最后日期和时间被执行( 只读) 。';
-
-$GLOBALS["lang"]['The last time that Open-AudIT retrieved details of this device.'] = 'Open-AudIT最后一次检索此设备的细节.';
-
-$GLOBALS["lang"]['The last time this benchmarks was executed.'] = '上一次执行这一基准。';
-
-$GLOBALS["lang"]['The last time this integration was run.'] = '最后一次进行这种整合。';
-
-$GLOBALS["lang"]['The license endpoint allows you to track the number of licenses found on your devices.'] = '许可端点允许您追踪设备上发现的许可数量 。';
-
-$GLOBALS["lang"]['The line number assigned by the provider to the line at this end of the connection.'] = '连接的这一端由提供者指定给线路的行号.';
-
-$GLOBALS["lang"]['The location the rack is located in. Links to <code>locations.id</code>.'] = '车架所在位置. 链接到 <code>locations.id</code>。 。 。';
-
-$GLOBALS["lang"]['The locations address.'] = '地点地址';
-
-$GLOBALS["lang"]['The locations area.'] = '地点';
-
-$GLOBALS["lang"]['The locations city.'] = '地点城市。';
-
-$GLOBALS["lang"]['The locations country.'] = '地点国.';
-
-$GLOBALS["lang"]['The locations district.'] = '地点区。';
-
-$GLOBALS["lang"]['The locations latitude.'] = '位置纬度。';
-
-$GLOBALS["lang"]['The locations level.'] = '地点级别。';
-
-$GLOBALS["lang"]['The locations longitude.'] = '位置经纬度。';
-
-$GLOBALS["lang"]['The locations phone.'] = '地点电话。';
-
-$GLOBALS["lang"]['The locations postcode.'] = '地点邮编码。';
-
-$GLOBALS["lang"]['The locations region.'] = '地点区域。';
-
-$GLOBALS["lang"]['The locations room.'] = '地点的房间。';
-
-$GLOBALS["lang"]['The locations state.'] = '地点州。';
-
-$GLOBALS["lang"]['The locations suburb.'] = '地点在郊区';
-
-$GLOBALS["lang"]['The locations suite.'] = '地点套房。';
-
-$GLOBALS["lang"]['The logic for device matching is contained in the devices_helper.php file, which on a Linux install can be found here'] = '设备匹配的逻辑包含在设备_ helper.php文件中,在 Linux 安装上可以在这里找到';
-
-$GLOBALS["lang"]['The machine-default permission settings do not grant Local Activation permission for the COM Server application with'] = '机器默认权限设置不会给 COM 服务器应用程序以本地激活权限';
-
-$GLOBALS["lang"]['The maximum physical weight (in KGs) this rack can hold.'] = '最大物理重量(以KGs计) 这个架子可以保持.';
-
-$GLOBALS["lang"]['The maximum total BTUs this rack is rated for.'] = '这个架子的最大总BTU被评为.';
-
-$GLOBALS["lang"]['The minimum required attributes for attributes are'] = '属性所需的最小属性是 :';
-
-$GLOBALS["lang"]['The minute of the hour when this task should execute (* for every minute).'] = '此任务执行时的分钟( * 每分钟) 。';
-
-$GLOBALS["lang"]['The month of the year when this task should execute (* for every month).'] = '这一任务应当执行的年份的月份(*每月)。';
-
-$GLOBALS["lang"]['The name given to this item.'] = '本项目的名称 。';
-
-$GLOBALS["lang"]['The name given to this item. Ideally it should be unique.'] = '本项目的名称 。 理想的情况应该是独一无二的。';
-
-$GLOBALS["lang"]['The name given to this user (used to login). Ideally it should be unique.'] = '给这个用户的名称( 用于登录) 。 理想的情况应该是独一无二的。';
-
-$GLOBALS["lang"]['The name of the associated cloud (if required).'] = '相关云名称(如有需要).';
-
-$GLOBALS["lang"]['The name of the software package, as audited by Open-AudIT. Use the percent sign % as a wildcard.'] = '软件包的名称,由Open-AudIT审计. 使用% 签名% 作为通配符 。';
-
-$GLOBALS["lang"]['The name of the user who last changed or added this item (read only).'] = '最后更改或添加此项目的用户名称( 只读) 。';
-
-$GLOBALS["lang"]['The name provided by the provider.'] = '供养者提供之名.';
-
-$GLOBALS["lang"]['The network in the format 192.168.1.0/24.'] = '网易格式192.168.1.0/24.';
-
-$GLOBALS["lang"]['The network subnet to execute the discovery on.'] = '执行此发现的网络子网 。';
-
-$GLOBALS["lang"]['The new Agent runs a PowerShell version of the old audit script in preparation for the depreciation of VBScript (yes, it is coming).'] = '新代理运行了PowerShell版本的旧审计脚本,为VBScript的折旧做准备(是的,即将出现).';
-
-$GLOBALS["lang"]['The number of RUs this device occupies.'] = '此设备占用的 RU 数量 。';
-
-$GLOBALS["lang"]['The number of associated locations. Links to <code>locations.cloud_id</code>.'] = '相关地点的数目。 链接到 <code>locations.cloud_id</code>。 。 。';
-
-$GLOBALS["lang"]['The number of associated networks. Links to <code>networks.cloud_id</code>.'] = '关联网络的数量. 链接到 <code>networks.cloud_id</code>。 。 。';
-
-$GLOBALS["lang"]['The number of audited devices in this cloud. Links to <code>devices.cloud_id</code> and <code>devices.serial</code>.'] = '此云中已审计设备的数量 。 链接到 <code>devices.cloud_id</code> 和 <code>devices.serial</code>。 。 。';
-
-$GLOBALS["lang"]['The number of critical severity vulnerabilities held by FirstWave (not in your database).'] = 'FirstWave持有的临界严重弱点数量(不在您的数据库中).';
-
-$GLOBALS["lang"]['The number of devices found by this discovery.'] = '这个发现发现的装置数量.';
-
-$GLOBALS["lang"]['The number of devices in the associated group.'] = '关联组中的设备数量 。';
-
-$GLOBALS["lang"]['The number of devices in this cloud with a state of running. Links to <code>devices.cloud_id</code> and <code>devices.instance_state</code>.'] = '此云中具有运行状态的设备数量 。 链接到 <code>devices.cloud_id</code> 和 <code>devices.instance_state</code>。 。 。';
-
-$GLOBALS["lang"]['The number of devices in this cloud with a state of stopped. Links to <code>devices.cloud_id</code> and <code>devices.instance_state</code>.'] = '此云中已停止状态的设备数量 。 链接到 <code>devices.cloud_id</code> 和 <code>devices.instance_state</code>。 。 。';
-
-$GLOBALS["lang"]['The number of devices in this cloud. Links to <code>devices.cloud_id</code>.'] = '此云器数. 链接到 <code>devices.cloud_id</code>。 。 。';
-
-$GLOBALS["lang"]['The number of devices this benchmark will be executed upon. Derived from <code>benchmarks.devices</code>.'] = '此基准将执行设备的数量 。 来源 <code>benchmarks.devices</code>。 。 。';
-
-$GLOBALS["lang"]['The number of devices to limit this discovery to.'] = '限制此发现的装置数量 。';
-
-$GLOBALS["lang"]['The number of high severity vulnerabilities held by FirstWave (not in your database).'] = 'FirstWave持有的高度脆弱性数量(不在您的数据库中).';
-
-$GLOBALS["lang"]['The number of low severity vulnerabilities held by FirstWave (not in your database).'] = 'FirstWave持有的低度弱点数量(不在数据库中).';
-
-$GLOBALS["lang"]['The number of medium severity vulnerabilities held by FirstWave (not in your database).'] = 'FirstWave持有的中等严重性弱点数量(不在数据库中)。';
-
-$GLOBALS["lang"]['The number of purchased licenses.'] = '购买许可证的数量。';
-
-$GLOBALS["lang"]['The number of seconds to try and communicate with the target IP.'] = '尝试与目标IP通信的秒数.';
-
-$GLOBALS["lang"]['The number of vulnerabilities without a severity held by FirstWave (not in your database).'] = 'FirstWave(不在数据库中)持有的不严重弱点数量。';
-
-$GLOBALS["lang"]['The offset is the count of devices you wish to return data from.'] = '偏移是您想要返回数据的设备数。';
-
-$GLOBALS["lang"]['The only required permission / policy name (in our testing) is'] = '唯一需要的许可/政策名称(在我们测试中)是';
-
-$GLOBALS["lang"]['The optional secondary column. NOTE: When type = traffic, this represents the yellow query id.'] = '选第二栏. 注:当类型=流量时,这代表黄色查询id。';
-
-$GLOBALS["lang"]['The optional third column. NOTE: When type = traffic, this represents the green query id.'] = '选第三栏. 注:当类型=流量时,这代表绿色查询编号。';
-
-$GLOBALS["lang"]['The order of information retrieval is snmp, ssh, wmi.'] = '信息检索顺序为snmp,ssh,wmi.';
-
-$GLOBALS["lang"]['The orientation of this device.'] = '这个装置的方向.';
-
-$GLOBALS["lang"]['The password (if not using the user running the script).'] = '密码(如果不使用运行脚本的用户).';
-
-$GLOBALS["lang"]['The password for the dn_account attribute.'] = 'dn_count 属性的密码 。';
-
-$GLOBALS["lang"]['The password used to access the external system.'] = '用于访问外部系统的密码.';
-
-$GLOBALS["lang"]['The path to the file or directory.'] = '文件或目录的路径 。';
-
-$GLOBALS["lang"]['The path to the file or directory. Directories should end with a trailing slash.'] = '文件或目录的路径 。 Directories的结尾应该有一个后遗症。';
-
-$GLOBALS["lang"]['The physical depth (in CMs) of the rack.'] = '机架的物理深度(在CMS中).';
-
-$GLOBALS["lang"]['The physical height (in CMs) of the rack.'] = '机架的物理高度(在CMS).';
-
-$GLOBALS["lang"]['The physical weight (in KGs) of the rack at present.'] = '目前机架的物理重量(KGs).';
-
-$GLOBALS["lang"]['The physical weight (in KGs) of the rack when empty.'] = '架空时的物理重量(KGs).';
-
-$GLOBALS["lang"]['The physical width (in CMs) of the rack.'] = '机架的物理宽度(在CMS中).';
-
-$GLOBALS["lang"]['The pod (if any) that this rack is part of.'] = '这个架子是其中的一部分';
-
-$GLOBALS["lang"]['The power circuit this rack attaches to.'] = '这个架子的电路';
-
-$GLOBALS["lang"]['The primary database table upon which to base this widget.'] = '用于此部件的主数据库表 。';
-
-$GLOBALS["lang"]['The primary method for authorization (what a user can do) is now based on the users Roles. Roles are defined as admin, org_admin, reporter, and user by default. Each role has a set of permissions (Create, Read, Update, Delete) for each endpoint. Standard roles as shipped should cover 99.9 percent of use-cases. The ability to define additional roles and edit existing roles is enabled in Open-AudIT Enterprise.'] = '授权的主要方法(用户可以做什么)现在是基于用户角色. 角色被定义为管理员,org_admin,记者,以及默认的用户. 每个角色对每个端点都有一组权限(创建,读,更新,删除). 运出的标准角色应占使用案例的99.9%。 在Open-AudIT Entertainment中启用了定义额外角色和编辑现有角色的能力.';
-
-$GLOBALS["lang"]['The process identifier of this queue item.'] = '此队列项的进程标识符 。';
-
-$GLOBALS["lang"]['The process that was used last to retrieve details about the device'] = '最后用于获取设备细节的过程';
-
-$GLOBALS["lang"]['The purpose of this licensing page is to list the products and licenses included in Firstwave Commercial products including products based upon open source works.Open-AudIT is licensed from Firstwave under AGPLv3 or later with Enterprise and Professional functionality licensed under commercial terms.Open-AudIT when downloaded from FirstWave may include the following libraries and projects, which are supplied unmodified and licensed as indicated:'] = '本许可证页的目的是列出Firstwave商业产品包括基于开放源码的产品所包含的产品和许可证。 Open-AudIT根据AGPLv3从第一波或以后根据商业条件获得企业和专业功能许可证。 从FirstWave下载时,Open-AudIT可能包括以下图书馆和项目,这些图书馆和项目提供未经修改,并按所示许可:';
-
-$GLOBALS["lang"]['The query that provides a list of devices for the integration. Links to <code>queries.id</code>.'] = '提供集成设备列表的查询. 链接到 <code>queries.id</code>。 。 。';
-
-$GLOBALS["lang"]['The rack asset number.'] = '架子资产号.';
-
-$GLOBALS["lang"]['The rack asset tag.'] = '机架资产标签。';
-
-$GLOBALS["lang"]['The rack bar code.'] = '架子条码.';
-
-$GLOBALS["lang"]['The rack model.'] = '车架模型.';
-
-$GLOBALS["lang"]['The rack serial.'] = '架子连载.';
-
-$GLOBALS["lang"]['The rack series.'] = '架子丛书.';
-
-$GLOBALS["lang"]['The rack this device is located in. Links to <code>racks.id</code>.'] = '此设备的架子位于其中. 链接到 <code>racks.id</code>。 。 。';
-
-$GLOBALS["lang"]['The recommended process of addressing and fixing identified security vulnerabilities. This typically involves applying patches, updates, or other measures to eliminate the risk posed by the vulnerabilities.'] = '处理和解决已查明的安全弱点的建议进程。 这通常涉及采用补丁、更新或其他措施,以消除脆弱性造成的风险。';
-
-$GLOBALS["lang"]['The regular domain notation of your directory. Eg - <code>open-audit.lan</code>.'] = '您目录的正则域名标记 。 爱格 - <code>open-audit.lan</code>。 。 。';
-
-$GLOBALS["lang"]['The requested properties should be in a comma-separated list. Properties should be fully qualified - ie, system.hostname (not just hostname).'] = '请求的属性应列在逗号分隔列表中 。 属性应完全合格 - ie, system.hostname(不仅仅是主机名).';
-
-$GLOBALS["lang"]['The result of the command.'] = '命令的结果。';
-
-$GLOBALS["lang"]['The room the rack is located in.'] = '车架所在的房间';
-
-$GLOBALS["lang"]['The row the rack is located in.'] = '架子所在的行.';
-
-$GLOBALS["lang"]['The search for group on the LDAP server failed. Check the LDAP server logs. Have you created these groups (for roles and orgs) on the LDAP server and assigned LDAP users to them?'] = '在 LDAP 服务器上搜索组失败 。 检查 LDAP 服务器日志 。 您是否在 LDAP 服务器上创建了这些组( 用于角色和类) , 并为它们指派了 LDAP 用户 ?';
-
-$GLOBALS["lang"]['The secret key used in conjunction with your AWS EC2 API key.'] = '与您的 AWS EC2 API 密钥结合使用的密钥 。';
-
-$GLOBALS["lang"]['The software end-of-life date.'] = '软件报废日期.';
-
-$GLOBALS["lang"]['The software end-of-service-life date.'] = '软件报废使用年限.';
-
-$GLOBALS["lang"]['The specific database column from the specified database table.'] = '指定数据库表格中的特定数据库列。';
-
-$GLOBALS["lang"]['The specific database table.'] = '具体数据库表.';
-
-$GLOBALS["lang"]['The standard Nmap timing options. Previously set at T4 (aggressive).'] = 'Nmap 标准计时选项 。 以前设定为T4(侵略性).';
-
-$GLOBALS["lang"]['The standard Nmap timing options. We usually use -T4 (Aggressive) as this is recommended for a decent broadband or ethernet connection.'] = 'Nmap 标准计时选项 。 我们通常使用 -T4(Agressive),因为这被推荐为像样的宽带或醚网连接.';
-
-$GLOBALS["lang"]['The status of this integration'] = '这种一体化的现状';
-
-$GLOBALS["lang"]['The status of this queued item.'] = '此队列项的状态 。';
-
-$GLOBALS["lang"]['The steps below outline the process.'] = '以下步骤概述了这一进程。';
-
-$GLOBALS["lang"]['The target IP this log entry referers to (if any).'] = '目标IP 此日志条目引用( 如果有) 。';
-
-$GLOBALS["lang"]['The target computer to audit. \".\" means localhost.'] = '目标计算机 审计。\\\\\"表示本地主机。';
-
-$GLOBALS["lang"]['The template for the link to be generated per result line.'] = '每个结果行生成的链接模板.';
-
-$GLOBALS["lang"]['The text for the bottom of the chart in a line chart (only).'] = '直线图中图底的文字(仅限).';
-
-$GLOBALS["lang"]['The text that is displayed.'] = '显示的文本 。';
-
-$GLOBALS["lang"]['The timestamp after which, this task should run. For example, run a task after the 1st June 2017 at 10am, set it to <code>2017-06-01 09:59:00</code>. This value should be zero padded (ie, 09, not 9). This value defaults to <code>2000-01-01 00:00:00</code> which means by default, a scheduled task will run at next scheduled execution time.'] = '时间戳之后,这项任务应该进行。 例如,在2017年6月1日早上10点后执行一个任务,设定为 <code>2017-06-01 09:59:00</code>。 。 。 此值应为零加法( e, 09, 不是 9) 。 此值默认为 <code>2000-01-01 00:00:00</code> 这意味着默认情况下,一个预定任务将在下一个预定执行时间运行.';
-
-$GLOBALS["lang"]['The top 10, 100 or 1000 (or none) TCP ports commonly in use according to Nmap.'] = '根据Nmap通常使用的前10,100或1000(或无)TCP端口.';
-
-$GLOBALS["lang"]['The top 10, 100 or 1000 (or none) UDP ports commonly in use according to Nmap.'] = '根据Nmap通常使用的前10,100或1000(或无)UDP端口.';
-
-$GLOBALS["lang"]['The total BTU output by this rack.'] = 'BTU的总输出通过这个架.';
-
-$GLOBALS["lang"]['The type of device.'] = '器类.';
-
-$GLOBALS["lang"]['The type of organisation.'] = '组织的类型。';
-
-$GLOBALS["lang"]['The type of rack (compute, power, network, etc).'] = '机架类型(计算,功率,网络等).';
-
-$GLOBALS["lang"]['The type of task to run. One of: baseline, benchmark, cloud discovery, discovery, integration, report, query.'] = '要执行的任务类型 。 其中:基线,基准,云发现,发现,整合,报告,查询.';
-
-$GLOBALS["lang"]['The type of the integration (usually named after the external system).'] = '集成类型(通常以外部系统命名).';
-
-$GLOBALS["lang"]['The unfiltered state means that a port is accessible, but Nmap is unable to determine whether it is open or closed. Only the ACK scan, which is used to map firewall rulesets, classifies ports into this state. Scanning unfiltered ports with other scan types such as Window scan, SYN scan, or FIN scan, may help resolve whether the port is open.'] = '未过滤状态意味着一个端口可以访问,但Nmap无法确定它是开放的还是关闭的. 只有用于映射防火墙规则的ACK扫描将端口归类为此状态. 以窗口扫描,SYN扫描,或FIN扫描等其他扫描类型扫描未过滤端口,可能有助于解决端口是否打开.';
-
-$GLOBALS["lang"]['The unique identifier of this server.'] = '此服务器的唯一标识符 。';
-
-$GLOBALS["lang"]['The user account this collector uses. Links to <code>users.id</code>.'] = '此收藏器使用的用户账户 。 链接到 <code>users.id</code>。 。 。';
-
-$GLOBALS["lang"]['The user in Active Directory / OpenLDAP must be a direct member of the required Open-AudIT groups for Roles and Orgs. A member of a group that is a member another group that is a member of the Open-AudIT group will not work.'] = 'Active Directory / OpenLDAP中的用户必须是要求的角色和兽类开放-AudIT组的直接成员. 一个属于另一个属于Open-AudIT集团的集团的成员将不会工作.';
-
-$GLOBALS["lang"]['The user is in LDAP and their credentials are valid, but is not in any of the Open-AudIT LDAP groups for Orgs.'] = '用户在LDAP中,他们的证书是有效的,但并不在Orgs的任何Open-AudIT LDAP组中.';
-
-$GLOBALS["lang"]['The user is in LDAP and their credentials are valid, but is not in any of the Open-AudIT LDAP groups for Roles.'] = '用户在LDAP中,其身份证明有效,但不属于任何Open-AudIT LDAP角色组合.';
-
-$GLOBALS["lang"]['The user is in LDAP and their credentials are valid, but is not in any of the required Open-AudIT LDAP groups.'] = '用户在LDAP中,其证书有效,但不属于任何需要的Open-AudIT LDAP组.';
-
-$GLOBALS["lang"]['The user is in the LDAP group that matches this Org.'] = '用户位于匹配此 Org 的 LDAP 组中.';
-
-$GLOBALS["lang"]['The user is in the LDAP group that matches this Role.'] = '用户位于匹配此角色的LDAP组中.';
-
-$GLOBALS["lang"]['The user is not in the LDAP group that matches this Org.'] = '用户不在匹配此 Org 的 LDAP 组中 。';
-
-$GLOBALS["lang"]['The user is not in the LDAP group that matches this Role.'] = '用户不在匹配此角色的 LDAP 组中 。';
-
-$GLOBALS["lang"]['The user that was specified exists in LDAP, but Open-AudIT is not configured to consume the LDAP groups for roles and that user does not exist within Open-AudIT. Either select <i>Use LDAP for Roles</i> on the Open-AudIT LDAP Server screen or create this user within Open-AudIT and assign roles and orgs.'] = '在LDAP中指定的用户存在,但Open-AudIT没有配置为角色消耗LDAP组,用户在Open-AudIT中并不存在. 选择 <i>对角色使用 LDAP</i> 在 Open-AudIT LDAP 上打开 服务器屏幕或在 Open-AudIT 内创建此用户,并指定角色和orgs.';
-
-$GLOBALS["lang"]['The username (if not using the user running the script).'] = '用户名(如果不使用运行脚本的用户).';
-
-$GLOBALS["lang"]['The username used to access the external system.'] = '用于访问外部系统的用户名.';
-
-$GLOBALS["lang"]['The users details were not retrieved from LDAP. Check the LDAP server logs.'] = '用户细节没有从 LDAP 中检索到. 检查 LDAP 服务器日志 。';
-
-$GLOBALS["lang"]['The users details were retrieved from LDAP.'] = '用户详情从LDAP中检索。';
-
-$GLOBALS["lang"]['The users email address.'] = '用户电子邮件地址 。';
-
-$GLOBALS["lang"]['The usual hours of operation at this site.'] = '这里正常的营业时间';
-
-$GLOBALS["lang"]['The value assigned to the item.'] = '分配给项目的值 。';
-
-$GLOBALS["lang"]['The value that is stored for this particular item.'] = '此特定项目的存储值 。';
-
-$GLOBALS["lang"]['The vendor name as per CPE entries.'] = 'CPE条目中的供应商名称。';
-
-$GLOBALS["lang"]['The vendor taken from the CPE.'] = '卖主从CPE中取走.';
-
-$GLOBALS["lang"]['The web directory on the host that Open-AudIT is installed (requires a trailing slash).'] = '安装 Open-AudIT 的主机上的网络目录( 需要后继斜线) 。';
-
-$GLOBALS["lang"]['The widget at position '] = '位置上的部件 ';
-
-$GLOBALS["lang"]['The width of this device.'] = '此设备的宽度 。';
-
-$GLOBALS["lang"]['Their OrgIDs and their descendants'] = '他们的骨髓和后代';
-
-$GLOBALS["lang"]['Their OrgIDs only'] = '仅限其 OrgID';
-
-$GLOBALS["lang"]['Their OrgIDs, ascendants and descendants'] = '他们的骨髓、长辈和后代';
-
-$GLOBALS["lang"]['Then'] = '礛';
-
-$GLOBALS["lang"]['Then create a new Auth method in Open-AudIT by going to menu -> Admin -> Auth Methods -> Create Auth. Provide a name and set the <i>type</i> to Entra.'] = '然后在 Open-AudIT 中通过菜单创建新的 Auth 方法 - > 管理员 - > 认证方法 - > 创建 Auth 。 提供名称并设置 <i>类型</i> 给Entra。';
-
-$GLOBALS["lang"]['Then you can use Open-AudIT (unsupported) to receive audit data directly from the clients. Discovery <strong>will fail</strong>, but if youre not using Discovery (the main feature Open-AudIT was designed around), you can still get device data. You would need to run the audit scripts directly on the clients using cron, or use the Windows Agent feature (Enterprise only).'] = '然后可以使用Open-AudIT(不支持)直接接收客户端的审计数据. 发现 <strong>将失败</strong>,但是如果你没有使用发现(Open-AudIT的主要功能是围绕设计的),仍然可以获得设备数据. 您需要使用 cron 直接运行客户端的审计脚本, 或使用 Windows Agent 特性( 只使用 Enterprise) 。';
-
-$GLOBALS["lang"]['There is a button to export to JSON. This will display only the device table of attributes. To export the device with all associated component tables, view the device details, then add'] = '有一个按钮要导出到 JSON 。 这将只显示属性的设备表 。 要将设备导出为所有相关组件表格,请查看设备细节,然后添加';
-
-$GLOBALS["lang"]['There is absolutely no need to manually edit each individual device.'] = '绝对不需要手动编辑每个单个设备.';
-
-$GLOBALS["lang"]['There is no need to do anything if you are running Open-AudIT on a Linux server.<br><br>Windows clients are just fine and require no special actions, however.... to enable this feature the audit script must be run locally on the target Windows system. It cannot be run remotely as we do with WMI calls when running the audit script on one Windows machine, while targeting a second Windows machine. To do this we need to copy the audit script to the target Windows machine and then run it. Unfortunately the service account that Apache runs under is the Local System account. This account has no access to remote (network based) resources. To work around this issue the service must be run under another account. It is easiest to just use the local Administrator account, but you can try any account you like as long as it has the required privileges. The Local System account has as much local access as the local Administrator account.'] = '如果您正在 Linux 服务器上运行 Open-AudIT , 则无需做任何事情 。<br/><br/>然而,Windows客户端很好,不需要特殊动作. . 要启用这个功能,审计脚本必须在目标Windows系统上本地运行. 它不能远程运行,因为我们在运行一个Windows机上的审计脚本时会和WMI通话一样,同时瞄准第二个Windows机. 要做到这一点,我们需要将审计脚本复制到目标Windows机器,然后运行. 不幸的是,Apache运行在下面的服务账户是本地系统账户。 该账户无法访问远程(基于网络)资源。 要解决这个问题,服务必须在另一个账户下进行。 仅使用本地管理员账户是很容易的, 但是只要您有所需的权限, 您就可以尝试您喜欢的任何账户 。 当地系统账户与当地署长账户一样有当地访问权。';
-
-$GLOBALS["lang"]['These are only examples. You may need to adjust these attributes to suit your particular LDAP.'] = '这些只是例子。 您可能需要调整这些属性以适应您特定的 LDAP 。';
-
-$GLOBALS["lang"]['These parameters enable you to audit only what is useful and relevant to you, saving processing time and allowing you to discover your network in an orderly manner.'] = '这些参数只允许您审计对您有用和相关的内容,节省处理时间,并允许您有序地发现您的网络.';
-
-$GLOBALS["lang"]['Thing'] = '东西';
-
-$GLOBALS["lang"]['Think of mail.domain1.com and mail.domain2.com - same hostname.'] = '想想mail.domain1.com和mail.domain2.com - 同名主机.';
-
-$GLOBALS["lang"]['Third'] = '第三届';
-
-$GLOBALS["lang"]['This CVE will be retrieved and overwrite the existing CVE if it exists.'] = '如果 CVE 存在, 它将被检索并覆盖它 。';
-
-$GLOBALS["lang"]['This Org has no AD group specified. Check the roles details within Open-AudIT.'] = '此 Org 没有指定 AD 组 。 检查Open-AudIT内部的角色细节.';
-
-$GLOBALS["lang"]['This Org has no AD group specified. Check the roles details within Open-AudIT. <span class=\"confluence-link\">Have you created these groups (for orgs) on the LDAP server and assigned LDAP users to them?'] = '此 Org 没有指定 AD 组 。 检查Open-AudIT内部的角色细节. <span class=\'\"confluence-link\"\'>您是否在 LDAP 服务器上创建了这些组( for orgs) , 并为它们指派了 LDAP 用户 ?</span>';
-
-$GLOBALS["lang"]['This Role has no AD group specified. Check the roles details within Open-AudIT.'] = '此角色没有指定 AD 组 。 检查Open-AudIT内部的角色细节.';
-
-$GLOBALS["lang"]['This attribute is stored as a JSON object. It is the list of all collections and contains the collection name along with <code>c</code>, <code>r</code>, <code>u</code> and,or <code>d</code> which represent create, read, update and delete. These are the actions a user can perform on items from that particular collection.'] = '此属性作为 JSON 对象存储 。 它是所有藏品的列表,包含藏品名称以及 <code>c</code>, (中文). <code>r</code>, (中文). <code>u</code> 和,或 <code>d</code> 表示创建、读取、更新和删除。 这些是用户可以对来自该特定收藏的物品采取的行动。';
-
-$GLOBALS["lang"]['This can be either a varchar (a text field), a list (a list of values that can be selected) or a date.'] = '这可以是 varchar(文本字段),列表(可以选择的数值列表)或日期.';
-
-$GLOBALS["lang"]['This code relys on the great work done by the'] = '这个代码依赖于... ...';
-
-$GLOBALS["lang"]['This collectors universally unique identifier.'] = '这个收藏家具有普遍独特的识别特征。';
-
-$GLOBALS["lang"]['This column is required by'] = '本栏由';
-
-$GLOBALS["lang"]['This column is required by '] = '本栏由 ';
-
-$GLOBALS["lang"]['This description is auto-populated and should ideally be left as-is.'] = '这种描述是自动流行的,最好还是保持原样。';
-
-$GLOBALS["lang"]['This endpoint enables you to add the connections that are part of your network infrastructure, it allows you to customize a variety of attributes, specify where this connection is located and the organization that it belongs.'] = '此端点允许您添加网络基础设施中的连接, 它允许您自定义各种属性, 指定此连接的位置和所属组织 。';
-
-$GLOBALS["lang"]['This error indicates that SMB1 has been disabled or removed from the target machine. This is normal for modern version of Windows and you will only see this message when the SMB2 connection attempt has failed. If the SMB2 connection fails, we attempt SMB1 to enable discovery on old versions of Windows. If the target Windows machine <i>is</i> running an old version of Windows, it is likely your credentials have failed. In that case, see'] = '此错误表明SMB1已被禁用或从目标机中移除. 这对现代版本的Windows来说是正常的,只有在SMB2连接尝试失败时才会看到这个消息. 如果 SMB2 连接失败,我们尝试 SMB1 以允许在旧版本的 Windows 上发现. 如果目标窗口机 <i>这是</i> 运行旧版本的 Windows, 您的证书可能已经失败 。 这样的话,你看';
-
-$GLOBALS["lang"]['This error indicates that not enough virtual memory or paging file quota is available to complete the specified operation. You should try again later.'] = '此错误表明没有足够的虚拟内存或 page 文件配额来完成指定的操作. 你以后再试一次';
-
-$GLOBALS["lang"]['This error indicates the credentials used either are incorrect, do not exist or do not have sufficient privileges to log on remotely to the target Windows machine. You should verify the credentials and check the below.'] = '这一错误表明所使用的证书要么不正确,要么不存在,要么没有足够的权限远程登录目标Windows机. 请检查date=中的日期值 (帮助)';
-
-$GLOBALS["lang"]['This example creates a list of all Modules marked as'] = '此示例创建了一个列表, 列出所有标记为';
-
-$GLOBALS["lang"]['This example creates a list of devices and the open Ports, Protocols, and Programs found by the NMAP scan.'] = '此示例创建了NMAP扫描所发现的设备和开放端口,协议以及程序列表.';
-
-$GLOBALS["lang"]['This example creates a list of devices where the Function or Description fields are blank OR the Purchase Date is the default.'] = '此示例创建了函数或描述字段为空白或购买日期为默认的设备列表 。';
-
-$GLOBALS["lang"]['This example query retrieves a list of devices OVER 3 years old. The query uses today'] = '此示例查询可获取3岁以上设备列表 。 查询今天使用';
-
-$GLOBALS["lang"]['This example uses'] = '此示例使用';
-
-$GLOBALS["lang"]['This feature requires a Professional or an Enterprise license.'] = '这一特点需要专业或企业许可证。';
-
-$GLOBALS["lang"]['This feature, because it has the ability to affect target devices more than usual must be manually enabled. To enable this feature, change the configuration item feature_executables to <i>yes</i>.'] = '这个特性,因为它比通常更有能力影响目标设备,因此必须手动启用. 为启用此特性, 将配置项目特性_ 可执行项更改为 <i>对</i>。 。 。';
-
-$GLOBALS["lang"]['This file tells Linux to poll the application to determine if there are any scheduled tasks that should be run.'] = '此文件告诉Linux对应用程序进行投票,以确定是否有任何应该运行的预定任务.';
-
-$GLOBALS["lang"]['This form provides a simple way to get started discovering the devices on your network. For more (much more) detailed options, you can individually create'] = '这个表单提供了一种简单的开始在您的网络上发现设备的方法. 对于更多(很多)详细选项,您可以单独创建';
-
-$GLOBALS["lang"]['This is also the way that PAExec works.'] = '这也是PAExec的工作方式.';
-
-$GLOBALS["lang"]['This is an optional configuration option, enabled by setting discovery_use_org_id_match in the global configuration.'] = '这是一个可选配置选项, 通过设置全局配置中的发现_ use_ org_ id_ match来启用 。';
-
-$GLOBALS["lang"]['This is generally the primary column, unless otherwise configured. NOTE: When type = traffic, this represents the secondary text.'] = '这一般是主列,除非另有配置. 注:当类型=流量时,这是次要文本。';
-
-$GLOBALS["lang"]['This is likely due to MySQL time being off. MySQL typically uses the host devices time. You can check this by'] = '这可能是由于 MySQL 时间关闭。 MySQL一般使用主机设备时间. 你可以看看这个';
-
-$GLOBALS["lang"]['This is settable by users and so even though it should be globally unique, there is certainly no guarantee of this.'] = '这是用户可以确定的,因此,尽管它应该具有全球的独特性,但肯定不能保证这一点。';
-
-$GLOBALS["lang"]['This is the directory where we store any attachments to devices.'] = '这是我们存储设备附件的目录 。';
-
-$GLOBALS["lang"]['This is to be used as the first point of call when troubleshooting Open-AudIT issues. You can click the Export button on the top right to retrieve this as a JSON file (to be added to the support ticket / email.'] = '这是在排除Open-AudIT问题时作为第一个调用点. 您可以点击右上角的导出按钮以获取此文件为JSON文件( 将添加到支持票/ 电子邮件中 ) 。';
-
-$GLOBALS["lang"]['This issue is under investigation.'] = '这个问题正在调查中。';
-
-$GLOBALS["lang"]['This item must match the value of the attribute selected or contains the ID of the query to be used.'] = '本项目必须匹配所选属性的值或包含要使用的查询的ID.';
-
-$GLOBALS["lang"]['This item must match the value of the attribute selected.'] = '此项目必须匹配所选属性的值 。';
-
-$GLOBALS["lang"]['This license expires on'] = '此许可证过期于';
-
-$GLOBALS["lang"]['This security permission can be modified using the Component Services administrative tool.'] = '这种安全许可可以使用构成部分服务行政工具修改。';
-
-$GLOBALS["lang"]['This should be commented out after troubleshooting as debug mode will generate a lot of logs on the disk for no benefit.'] = '由于调试模式会在磁盘上生成大量日志,因此在排除故障后应该对此进行评论,而没有任何好处.';
-
-$GLOBALS["lang"]['This should be globally unique, but I have seen instances where it is not.'] = '这应该具有全球的独特性,但我看到一些情况并非如此。';
-
-$GLOBALS["lang"]['This should be set to either 1 or the height of the rack.'] = '这应当设定为1或架高.';
-
-$GLOBALS["lang"]['This should be the fully qualified field name in the database. Currently columns from the system, fields and credentials tables are supported. EG: system.nmis_role.'] = '这应该是数据库中完全合格的字段名称。 目前该系统的栏、字段和证书表都得到支持。 EG: system.nmis_role. (英语).';
-
-$GLOBALS["lang"]['This state is used when Nmap is unable to determine whether a port is closed or filtered. It is only used for the IP ID idle scan.'] = '当Nmap无法确定一个端口是关闭还是过滤时使用此状态. 它仅用于IPID闲置扫描.';
-
-$GLOBALS["lang"]['This will auto-populate.'] = '这会自动流行。';
-
-$GLOBALS["lang"]['This will considerably slow the discovery scan.'] = '这将大大减缓发现扫描的速度。';
-
-$GLOBALS["lang"]['This will delete the current rows in the'] = '这将删除当前在';
-
-$GLOBALS["lang"]['This will permanently DELETE this license.'] = '这将会永久地解除这个执照。';
-
-$GLOBALS["lang"]['This will show you the Bulk Edit form. Any attributes you set on this form will be applied to all selected devices. You can set multiple attributes at once.'] = '这将显示批量编辑表 。 您在此表单上设置的任何属性都将适用于所有选定的设备。 可以同时设置多个属性.';
-
-$GLOBALS["lang"]['Thursday'] = '星期四';
-
-$GLOBALS["lang"]['time_caption'] = '时间说明';
-
-$GLOBALS["lang"]['Time Caption'] = '时间说明';
-
-$GLOBALS["lang"]['time_daylight'] = '时间日光';
-
-$GLOBALS["lang"]['Time Daylight'] = '时间日光';
-
-$GLOBALS["lang"]['Time to Execute'] = '执行时间';
-
-$GLOBALS["lang"]['timeout'] = '超时';
-
-$GLOBALS["lang"]['Timeout'] = '超时';
-
-$GLOBALS["lang"]['Timeout Per Target (Seconds)'] = '每个目标超时(秒)';
-
-$GLOBALS["lang"]['Timeout per Target. Wait for X seconds for a target response.'] = '暂停每个目标。 等待X秒 目标响应。';
-
-$GLOBALS["lang"]['Timesatamp'] = '时间标签';
-
-$GLOBALS["lang"]['Timestamp'] = '时间戳';
-
-$GLOBALS["lang"]['timing'] = '时间安排';
-
-$GLOBALS["lang"]['Timing'] = '时间安排';
-
-$GLOBALS["lang"]['Timor-Leste'] = '东帝汶';
-
-$GLOBALS["lang"]['Title'] = '标题';
-
-$GLOBALS["lang"]['To a new file named .env (in the same directory). Now edit that new file and uncomment (remove the #) the line below (line 17)'] = '到一个名为.env的新文件(在同一目录中). 现在编辑新文件,并取消对下面(第17行)行的评论(删除#)';
-
-$GLOBALS["lang"]['To actually execute the query, append a /execute, thus /open-audit/index.php/queries/{$id}/execute.'] = '要实际执行查询, 请附加一个/ 执行, 从而 / open- audit/ index.php/ queries/{$id}/ 执行 。';
-
-$GLOBALS["lang"]['To audit a machine, you must have credentials and administrator level access.'] = '要审计一台机器,必须具备证书和管理员级别访问权限.';
-
-$GLOBALS["lang"]['To audit a remote machine on an Active Directory domain, your supplied user (or if none provided, the user running the script) must be a member of the target machines Administrators group (or subgroup).'] = '要对活动目录域上的远程机器进行审计,您提供的用户(如果没有提供,则运行脚本的用户)必须是目标机器管理员组(或分组)的成员.';
-
-$GLOBALS["lang"]['To audit a remote machine that is not in a domain, you must use the Administrator account (not <i>an</i> admin account, <i>the</i> Administrator account) on the target PC. #1 and #2'] = '要审计一个不在域内的远程机器,您必须使用管理员账户(不是 <i>a 一个</i> 管理账户, <i>联合国</i> 在目标个人计算机上。 1号和2号';
-
-$GLOBALS["lang"]['To audit localhost, any supplied credentials are disregarded and the connection is made using the details of the user running the script.'] = '要审计本地主机,则不考虑所提供的任何证书,而使用运行脚本的用户的细节进行连接。';
-
-$GLOBALS["lang"]['To compare software we check the name and version. Because version numbers are not all standardised in format, when we receive an audit result we create a new attribute called software_padded which we store in the database along with the rest of the software details for each package. For this reason, baselines using software policies will not work when run against a device that has not been audited by 1.10 (at least). Software policies can test against the version being <i>equal to</i>, <i>greater than</i> or <i>equal to or greater than</i>.'] = '为了比较软件,我们检查名称和版本。 由于版本编号并非全部在格式上标准化,当我们收到审计结果时,我们创建了一个新的属性,称为软件_插件,与每个软件包的其他软件细节一起存储在数据库中. 因此,使用软件政策的基线在运行于一个未经1.10(至少)审计的设备时不会起作用。 软件政策可以测试: <i>等于</i>, (中文). <i>大于</i> 或者说 <i>等于或大于</i>。 。 。';
-
-$GLOBALS["lang"]['To create a new entry click the Create button in the upper right hand corner.'] = '要创建新条目,请单击右上角的“创建”按钮。';
-
-$GLOBALS["lang"]['To create a resource, you should POST the required data.'] = '要创建资源,您应该 POST 所需的数据 。';
-
-$GLOBALS["lang"]['To enable a remote machine (Vista or above) to be audited that is not on a domain, by an account in the Administrators group, other than the actual Administrator account see the below section on UAC.'] = '为使远程机器(Vista或以上)能够由管理员组中除实际管理员账户外的账户审计某个领域以外的远程机器,见下文关于UAC的一节。';
-
-$GLOBALS["lang"]['To enable this, create a new Auth item by going to menu -> Admin -> Auth -> Create Auth Method.'] = '要启用此选项, 请通过菜单创建新 Auth项 - > 管理员 - > Auth - > 创建 Auth 方法 。';
-
-$GLOBALS["lang"]['To execute the Windows powershell script, open a command prompt as Administrator and use the following command'] = '要执行 Windows Powershell 脚本,请作为管理员打开命令提示并使用以下命令';
-
-$GLOBALS["lang"]['To execute the audit script, open a terminal and use the following command'] = '执行审计脚本, 打开终端并使用以下命令';
-
-$GLOBALS["lang"]['To filter by a property value, use the property name. Operators that should precede the value are'] = '要通过属性值过滤,请使用属性名称. 在数值之前的运算符是';
-
-$GLOBALS["lang"]['To install Nmap on Windows, visit the Nmap page at'] = '要在 Windows 上安装 Nmap, 请访问 Nmap 页面 :';
-
-$GLOBALS["lang"]['To make the change, just follow the steps below.'] = '为了做出改变,只需遵循下面的步骤.';
-
-$GLOBALS["lang"]['To retrieve the Tenant ID. Open the Azure portal click on Azure Active Directory, Properties and the Tenant ID is displayed as your Directory ID - do not blame me for the name mismatch, that is how Microsoft roll.'] = '取回房客身份证 打开 Azure 门户网站点击 Azure Active Directory, 属性和租户ID 显示为您的 Directory ID - 不要怪我名字不匹配, 这就是微软如何滚动的.';
-
-$GLOBALS["lang"]['To retrieve your key, log in to the AWS Console and select your username, then My Security Credentials.'] = '要获取您的密钥, 请登录到 AWS 控制台, 然后选择您的用户名, 然后选择 My Security Census 。';
-
-$GLOBALS["lang"]['To return a specific component item.'] = '返回特定组件项目。';
-
-$GLOBALS["lang"]['To return all items for a compnent type for a specific device.'] = '返回特定设备的压缩类型的全部项目。';
-
-$GLOBALS["lang"]['To return all items for a component type. If you wanted all software you would use'] = '为组件类型返回所有项目。 如果你想要所有软件的话';
-
-$GLOBALS["lang"]['To reverse sort, insert a minus, thus'] = '要逆向排序,请插入负数,从而';
-
-$GLOBALS["lang"]['To run the test script on the target Windows PC'] = '在目标Windows PC上运行测试脚本';
-
-$GLOBALS["lang"]['To select devices to be integrated, we use nmis_manage = y, but you might like (for example) type = router. You can also use a Group or Query if you prefer something more complex.'] = '要选择要集成的设备,我们使用nmis_manage=y,但您可能喜欢(例如)类型=路由器. 如果您喜欢更复杂的东西,也可以使用组合或查询.';
-
-$GLOBALS["lang"]['To sort by a database column, use'] = '要按数据库列排序,请使用';
-
-$GLOBALS["lang"]['To use this Enterprise feature, you first need to create your user in Open-AudIT as per usual. Assigning a password is not necessary. You do have to assign Roles and Orgs. The username in Open-AudIT should match the Entra <i>preferred username</i> attribute. There is no need for a Full Name or Email - these will be populated from Entra. If you do not know your users <i>preferred username</i>, fear not. You can create the new Auth Method in Open-AudIT and the Enterprise Application in Entra and when a user attempts to sign-on to Open-AudIT without a pre-existing user, check the logs and you will see their <i>preferred username</i> logged for your convienence.'] = '要使用此 Entertainment 特性, 您首先需要像往常一样在 Open- AudIT 中创建您的用户 。 不需要指定密码 。 您必须指定角色和兽类 。 Open-AudIT 中的用户名应当与 Entra 匹配 <i>首选用户名</i> 属性。 不需要全名或电子邮件,这些地址将从恩特拉寄来。 如果你不认识你的用户 <i>首选用户名</i>别害怕 您可以在 Open-AudIT 中创建新的 Auth 方法, 在 Entra 中创建企业应用程序, 当用户尝试在 Open-AudIT 上签名时, 请检查日志, 您将会看到它们 <i>首选用户名</i> 登录你的节奏。';
-
-$GLOBALS["lang"]['To use this Enterprise feature, you first need to create your user in Open-AudIT as per usual. Assigning a password is not necessary. You do have to assign Roles and Orgs. The username in Open-AudIT should match the OKTA <i>name</i> attribute. There is no need for a Full Name or Email - these will be populated from OKTA. If you do not know your users <i>name<i>, fear not. You can create the new Auth Menthod in Open-AudIT and the Application in OKTA and when a user attempts to sign-on to Open-AudIT without a pre-existing user, check the logs and you will see their <i>name<i> logged for your convienence.<br></p><p>Then create a new Auth method in Open-AudIT by going to menu -> Admin -> Auth Methods -> Create Auth. Provide a name and set the <i>type</i> to Okta.'] = '要使用此 Entertainment 特性, 您首先需要像往常一样在 Open- AudIT 中创建您的用户 。 不需要指定密码 。 您必须指定角色和兽类 。 Open-AudIT 中的用户名应匹配 OKTA <i>名称</i> 属性。 不需要全名或电子邮件,这些地址将来自OKTA。 如果你不认识你的用户 <i>名称<i>别害怕 您可以在 Open-AudIT 中创建新的 Auth Menthod 和 在 OKTA 中创建应用程序, 当用户尝试在 Open-AudIT 上签名时, 请检查日志并查看其内容 <i>名称<i> 登录你的节奏。<br/><p>然后在 Open-AudIT 中通过菜单创建新的 Auth 方法 - > 管理员 - > 认证方法 - > 创建 Auth 。 提供名称并设置 <i>类型</i> 去奥克塔</p></i></i></i></i>';
-
-$GLOBALS["lang"]['To use this feature you must enable the configuration items match_mac (for AWS) and match_hostname (for Azure). This will be done automatically the first time a cloud discovery is executed. For more on Open-AudITs matching rules see HERE: Matching Devices'] = '要使用此特性, 您必须启用配置项目匹配_mac( 对于 AWS) 和匹配_ hostname( 对于 Azure) 。 首次执行云的发现时会自动完成此任务. 关于Open-AudITs匹配规则的更多信息请参见: 匹配设备';
-
-$GLOBALS["lang"]['To view the details of a query, the standard URL structure of /open-audit/index.php/queries/{$id} should be used.'] = '要查看查询的细节,请查看/open-audit/index的标准URL结构. 应使用php/queries/{$id}。';
-
-$GLOBALS["lang"]['Togo'] = '多哥';
-
-$GLOBALS["lang"]['Tokelau'] = '托克劳';
-
-$GLOBALS["lang"]['Tonga'] = '汤加';
-
-$GLOBALS["lang"]['toolbar_style'] = '工具栏样式';
-
-$GLOBALS["lang"]['Toolbar Style'] = '工具栏样式';
-
-$GLOBALS["lang"]['Top Nmap TCP Ports'] = '顶端 Nmap TCP 端口';
-
-$GLOBALS["lang"]['Top Nmap TCP Ports. The top 10, 100, 1000 ports to scan as per Nmaps &quot;top ports&quot; options.'] = 'Top Nmap TCP港口. 前10,100,1000个端口可以按照Nmaps"顶端口"选项扫描.';
-
-$GLOBALS["lang"]['Top Nmap UDP Ports'] = '顶端 Nmap UDP 端口';
-
-$GLOBALS["lang"]['Top Nmap UDP Ports. The top 10, 100, 1000 ports to scan as per Nmaps &quot;top ports&quot; options.'] = 'Top Nmap UDP 端口. 前10,100,1000个端口可以按照Nmaps"顶端口"选项扫描.';
-
-$GLOBALS["lang"]['Traditional Chinese'] = '传统汉语';
-
-$GLOBALS["lang"]['Traffic Light'] = '交通灯';
-
-$GLOBALS["lang"]['Trinidad and Tobago'] = '特立尼达和多巴哥';
-
-$GLOBALS["lang"]['Troubleshooting'] = '解决问题';
-
-$GLOBALS["lang"]['Troubleshooting LDAP Logins'] = '清除 LDAP 登录中的问题';
-
-$GLOBALS["lang"]['Try Open-AudIT Enterprise, on us without a time limit. All the features of Enterprise. Limited to 20 devices.'] = '尝试打开AudIT 企业号,我们没有时间限制。 企业号的所有特征. 仅限20个装置.';
-
-$GLOBALS["lang"]['Try all the latest features with a FREE 100 device license of Open-AudIT Enterprise. Please read the '] = '用Open-AudIT Entertainment的FREE 100设备许可证尝试所有最新的特性. 请阅读 ';
-
-$GLOBALS["lang"]['Try logging in using an LDAP user. We are assuming this will fail (otherwise, why are you still reading this?). Next, comment out the line from ther file above.'] = '尝试使用 LDAP 用户登录 。 我们假设这将会失败(不然,你为什么还读这个?) 接下来, 请从上面的 r 文件中评论此行 。';
-
-$GLOBALS["lang"]['Tuesday'] = '星期二';
-
-$GLOBALS["lang"]['Tunisia'] = '突尼斯';
-
-$GLOBALS["lang"]['Turkey'] = '土耳其';
-
-$GLOBALS["lang"]['Turkish'] = '土耳其语Name';
-
-$GLOBALS["lang"]['Turkmenistan'] = '土库曼斯坦';
-
-$GLOBALS["lang"]['Turks and Caicos Islands'] = '特克斯和凯科斯群岛';
-
-$GLOBALS["lang"]['Tuvalu'] = '图瓦卢';
-
-$GLOBALS["lang"]['tx_bitrate'] = 'Tx 比特率';
-
-$GLOBALS["lang"]['Tx Bitrate'] = 'Tx 比特率';
-
-$GLOBALS["lang"]['tx_freq'] = 'Tx 弗莱克语Name';
-
-$GLOBALS["lang"]['Tx Freq'] = 'Tx 弗莱克语Name';
-
-$GLOBALS["lang"]['tx_level'] = 'Tx 级别';
-
-$GLOBALS["lang"]['Tx Level'] = 'Tx 级别';
-
-$GLOBALS["lang"]['tx_power'] = 'Tx 电源';
-
-$GLOBALS["lang"]['Tx Power'] = 'Tx 电源';
-
-$GLOBALS["lang"]['tx_profile'] = 'Tx 简介';
-
-$GLOBALS["lang"]['Tx Profile'] = 'Tx 简介';
-
-$GLOBALS["lang"]['type'] = '类型';
-
-$GLOBALS["lang"]['Type'] = '类型';
-
-$GLOBALS["lang"]['Type: This can be either a varchar (a text field) or a List (a list of values that can be selected).'] = '类型: 可以是 varchar(一个文本字段) 也可以是列表(一个可以选择的数值列表).';
-
-$GLOBALS["lang"]['Types of Networks'] = '网络类型';
-
-$GLOBALS["lang"]['URL'] = '網址';
-
-$GLOBALS["lang"]['uuid'] = '用户';
-
-$GLOBALS["lang"]['UUID'] = '用户';
-
-$GLOBALS["lang"]['udp_ports'] = 'Udp 端口';
-
-$GLOBALS["lang"]['Udp Ports'] = 'Udp 端口';
-
-$GLOBALS["lang"]['Uganda'] = '乌干达';
-
-$GLOBALS["lang"]['Ukraine'] = '乌克兰';
-
-$GLOBALS["lang"]['Ukrainian'] = '乌克兰语Name';
-
-$GLOBALS["lang"]['Undergo Stage 1 audit (documentation review)'] = '第一阶段审计(文件审查)';
-
-$GLOBALS["lang"]['Undergo Stage 2 audit (implementation review)'] = '第二阶段审计(执行情况审查)';
-
-$GLOBALS["lang"]['Undergoing Analysis'] = '正在进行中的分析';
-
-$GLOBALS["lang"]['Unfiltered'] = '未过滤';
-
-$GLOBALS["lang"]['uninstall'] = '卸载';
-
-$GLOBALS["lang"]['Uninstall'] = '卸载';
-
-$GLOBALS["lang"]['Uninstall the Agent'] = '解开代理';
-
-$GLOBALS["lang"]['United Arab Emirates'] = '阿拉伯联合酋长国';
-
-$GLOBALS["lang"]['United Kingdom'] = '联合王国';
-
-$GLOBALS["lang"]['United States Minor Outlying Islands'] = '美国小外岛';
-
-$GLOBALS["lang"]['United States Virgin Islands'] = '美属维尔京群岛';
-
-$GLOBALS["lang"]['United States of America'] = '美利坚合众国';
-
-$GLOBALS["lang"]['Unknown'] = '未知';
-
-$GLOBALS["lang"]['unlock_pin'] = '解锁键';
-
-$GLOBALS["lang"]['Unlock Pin'] = '解锁键';
-
-$GLOBALS["lang"]['Unscheduled'] = '未排定';
-
-$GLOBALS["lang"]['Unused as at 5.2.0.'] = '未使用,为5.2.0。';
-
-$GLOBALS["lang"]['Unused.'] = '无用.';
-
-$GLOBALS["lang"]['Update'] = '更新';
-
-$GLOBALS["lang"]['update_external_count'] = '更新外部计数';
-
-$GLOBALS["lang"]['Update External Count'] = '更新外部计数';
-
-$GLOBALS["lang"]['update_external_from_internal'] = '从内部更新外部';
-
-$GLOBALS["lang"]['Update External From Internal'] = '从内部更新外部';
-
-$GLOBALS["lang"]['update_internal_count'] = '更新内部计数';
-
-$GLOBALS["lang"]['Update Internal Count'] = '更新内部计数';
-
-$GLOBALS["lang"]['update_internal_from_external'] = '从外部更新内部';
-
-$GLOBALS["lang"]['Update Internal From External'] = '从外部更新内部';
-
-$GLOBALS["lang"]['Update NMIS Devices from Open-AudIT'] = '从 Open-AudIT 更新 NSIS 设备';
-
-$GLOBALS["lang"]['Update Open-AudIT Devices from '] = '更新 Open-AudIT 设备从 ';
-
-$GLOBALS["lang"]['Update Open-AudIT Devices from NMIS'] = '更新 Open-AudIT NMIS 设备';
-
-$GLOBALS["lang"]['Update Vulnerabilities'] = '更新脆弱性';
-
-$GLOBALS["lang"]['Update an attribute of a {collection} entry.'] = '更新 {collection} 条目的属性 。';
-
-$GLOBALS["lang"]['Update attributes'] = '更新属性';
-
-$GLOBALS["lang"]['Updated each time discovery has been executed with IPs detected to be responding.'] = '每次发现被执行时都会更新,检测到IP响应.';
-
-$GLOBALS["lang"]['Updated each time discovery has been executed with IPs that have been scanned by Nmap.'] = '每次发现都用Nmap扫描过的IP执行更新.';
-
-$GLOBALS["lang"]['Updated each time discovery has been executed with devices we were able to audit.'] = '每次发现时都会更新 我们用能够审计的设备执行';
-
-$GLOBALS["lang"]['Updated each time discovery has been executed with devices we were able to query.'] = '每次发现被执行时都会更新, 设备我们能够查询 。';
-
-$GLOBALS["lang"]['Updated each time discovery has been executed.'] = '每次发现执行后都会更新.';
-
-$GLOBALS["lang"]['Updated each time the discovery has been executed.'] = '每次发现被执行时都会更新.';
-
-$GLOBALS["lang"]['Updated each time the discovery has completed execution.'] = '每次发现完成后都会更新';
-
-$GLOBALS["lang"]['Updating'] = '更新';
-
-$GLOBALS["lang"]['Upgrade'] = '升级';
-
-$GLOBALS["lang"]['Upload an audit result file'] = '上传审计结果文件';
-
-$GLOBALS["lang"]['Upper Case'] = '大写';
-
-$GLOBALS["lang"]['uptime'] = '时间';
-
-$GLOBALS["lang"]['Uptime'] = '时间';
-
-$GLOBALS["lang"]['Urdu'] = '乌尔都语';
-
-$GLOBALS["lang"]['url'] = '乌尔尔';
-
-$GLOBALS["lang"]['Url'] = '乌尔尔';
-
-$GLOBALS["lang"]['Uruguay, Eastern Republic of'] = '乌拉圭,东共和国';
-
-$GLOBALS["lang"]['usb'] = '用户b';
-
-$GLOBALS["lang"]['Usb'] = '用户b';
-
-$GLOBALS["lang"]['use'] = '使用';
-
-$GLOBALS["lang"]['Use'] = '使用';
-
-$GLOBALS["lang"]['use_authentication'] = '使用认证';
-
-$GLOBALS["lang"]['Use Authentication'] = '使用认证';
-
-$GLOBALS["lang"]['use_authorisation'] = '使用授权';
-
-$GLOBALS["lang"]['Use Authorisation'] = '使用授权';
-
-$GLOBALS["lang"]['Use Proxy'] = '使用代理服务器';
-
-$GLOBALS["lang"]['Use SNMP'] = '使用 SNMP';
-
-$GLOBALS["lang"]['Use SSH'] = '使用 SSH';
-
-$GLOBALS["lang"]['Use Secure (LDAPS)'] = '使用安全( LDAPS)';
-
-$GLOBALS["lang"]['Use Service Version Detection'] = '使用服务版本检测';
-
-$GLOBALS["lang"]['Use Service Version Detection. When a detected port is detected as open, if set to <i>y</i>, Nmap will query the target device in an attempt to determine the version of the service running on this port.<br>This can be useful when identifying unclassified devices. This was not previously used.'] = '使用服务版本检测. 当检测到一个端口为打开时, 如果设置为 <i>尔</i>,Nmap将查询目标设备,试图确定在这个端口运行的服务版本.<br/>这在识别非机密设备时可能有用. 这以前没有使用。';
-
-$GLOBALS["lang"]['Use WMI'] = '使用 WMI 软件';
-
-$GLOBALS["lang"]['Use a <i>Sign-in method</i> of OIDC - OpenID Connect and an <i>Application Type</i> of Web Application. Click <i>Next</i>.'] = '使用一个 <i>登录方法</i> OIDC - OpenID 连接和一个 <i>应用程序类型</i> 网络应用程序。 单击 <i>ưμ㼯A</i>。 。 。';
-
-$GLOBALS["lang"]['Use for Authentication'] = '用于认证';
-
-$GLOBALS["lang"]['Use for Roles'] = '用于角色';
-
-$GLOBALS["lang"]['Use the standard install options when displayed and click the <i>I Agree</i>, <i>Next</i> and <i>Install</i> buttons to install Nmap.'] = '显示时使用标准安装选项并单击 <i>我同意这一点。</i>, (中文). <i>ưμ㼯A</i> 和 <i>安装</i> 要安装 Nmap 按钮。';
-
-$GLOBALS["lang"]['used'] = '已使用';
-
-$GLOBALS["lang"]['Used'] = '已使用';
-
-$GLOBALS["lang"]['used_count'] = '已使用的计数';
-
-$GLOBALS["lang"]['Used Count'] = '已使用的计数';
-
-$GLOBALS["lang"]['Used by OpenLDAP only.'] = '仅由OpenLDAP使用.';
-
-$GLOBALS["lang"]['Used internally when discovering a single device.'] = '发现单个设备时内部使用.';
-
-$GLOBALS["lang"]['Used internally when discovering a single device. Links to <code>devices.id</code>.'] = '发现单个设备时内部使用. 链接到 <code>devices.id</code>。 。 。';
-
-$GLOBALS["lang"]['Used when LDAP servers have been configured to populate a users details - this includes the Orgs to which they have access. If a user is in this LDAP group, they are assigned this org.'] = '当 LDAP 服务器被配置以填充用户细节时使用 - 这包括他们可以访问的 Orgs 。 如果用户属于此 LDAP 组, 它们会被指定为此 org 。';
-
-$GLOBALS["lang"]['Used when LDAP servers have been configured to populate a users details - this includes the Roles which they are assigned. If a user is in this LDAP group, they are assigned this role.'] = '当 LDAP 服务器被配置以添加用户细节时使用 - 这包括他们被指派的角色 。 如果一个用户在这个LDAP组中,他们就被分配这个角色.';
-
-$GLOBALS["lang"]['Used when searching OpenLDAP to match a users uid to a groups members. Default of <code>memberUid</code>. Used by OpenLDAP only.'] = '搜索 OpenLDAP 时用于匹配用户 uid 组成员 。 默认 <code>memberUid</code>。 。 。 仅由OpenLDAP使用.';
-
-$GLOBALS["lang"]['Used with Integrations and FirstWave monitoring applications.'] = '用于整合和第一Wave监测应用程序。';
-
-$GLOBALS["lang"]['Used with Integrations and FirstWave monitoring applications. Set to y if working SNMP detected by discovery.'] = '用于整合和第一Wave监测应用程序。 如果通过发现检测到工作 SNMP 则设定为 Y 。';
-
-$GLOBALS["lang"]['user'] = '用户';
-
-$GLOBALS["lang"]['User'] = '用户';
-
-$GLOBALS["lang"]['User DN'] = '用户 DN';
-
-$GLOBALS["lang"]['user_group'] = '用户组';
-
-$GLOBALS["lang"]['User Group'] = '用户组';
-
-$GLOBALS["lang"]['user_id'] = '用户代号';
-
-$GLOBALS["lang"]['User ID'] = '用户代号';
-
-$GLOBALS["lang"]['user_interaction'] = '用户交互';
-
-$GLOBALS["lang"]['User Interaction'] = '用户交互';
-
-$GLOBALS["lang"]['User Membership Attribute'] = '用户成员属性';
-
-$GLOBALS["lang"]['user_name'] = '用户名';
-
-$GLOBALS["lang"]['User Name'] = '用户名';
-
-$GLOBALS["lang"]['User Policies'] = '用户政策';
-
-$GLOBALS["lang"]['Username'] = '用户名';
-
-$GLOBALS["lang"]['username'] = '用户名';
-
-$GLOBALS["lang"]['users'] = '用户';
-
-$GLOBALS["lang"]['Users'] = '用户';
-
-$GLOBALS["lang"]['Users work similar to Netstat Ports. If a user exists with a matching name, status and password details (changeable, expires, required) then the policy passes.'] = '用户的工作类似于Netstat Ports. 如果用户有匹配的名称,状态和密码细节(可更改,到期,需要),则政策通过.';
-
-$GLOBALS["lang"]['Users, Roles and Orgs'] = '用户、角色和类';
-
-$GLOBALS["lang"]['Uses the CodeIgniter PHP Framework.'] = '使用代码Igniter PHP框架.';
-
-$GLOBALS["lang"]['Using'] = '使用';
-
-$GLOBALS["lang"]['Using Entra for Auth'] = '为 Auth 使用 Entra';
-
-$GLOBALS["lang"]['Using LDAPS'] = '使用 LDAPS';
-
-$GLOBALS["lang"]['Using OKTA for Auth'] = '对 Auth 使用 OKTA';
-
-$GLOBALS["lang"]['Using the format option is useful when using a web browser but you wish to see the result in JSON format. Adding format=json achieves this. Normally a web browser will set its accept header to HTML, so in that case, we return the rendered page. Using an API to retrieve JSON you should set the accept header to'] = '在使用网页浏览器时使用格式选项是有用的,但您希望看到JSON格式的结果. 添加格式=json实现此目标. 通常一个网页浏览器会将其接受页眉设置到HTML,因此在这种情况下,我们返回已提供的页面. 使用 API 检索 JSON 您应该设置接收信头到';
-
-$GLOBALS["lang"]['Usually Mbs, from Location A.'] = '通常为Mbs,来自地点A.';
-
-$GLOBALS["lang"]['Usually Mbs, from Location B.'] = '通常为Mbs,来自B位置.';
-
-$GLOBALS["lang"]['Usually Mbs, to Location A.'] = '通常为Mbs,到位置A.';
-
-$GLOBALS["lang"]['Usually Mbs, to Location B.'] = '通常为Mbs,到位置B.';
-
-$GLOBALS["lang"]['Usually should be set to 3.'] = '通常应该设置为3.';
-
-$GLOBALS["lang"]['Uzbekistan'] = '乌兹别克斯坦';
-
-$GLOBALS["lang"]['VLAN'] = '维也纳';
-
-$GLOBALS["lang"]['VLAN ID'] = '维兰身份证';
-
-$GLOBALS["lang"]['valid_from'] = '有效来源';
-
-$GLOBALS["lang"]['Valid From'] = '有效来源';
-
-$GLOBALS["lang"]['valid_from_raw'] = '从 Raw 校验';
-
-$GLOBALS["lang"]['Valid From Raw'] = '从 Raw 校验';
-
-$GLOBALS["lang"]['valid_to'] = '有效为';
-
-$GLOBALS["lang"]['Valid To'] = '有效为';
-
-$GLOBALS["lang"]['valid_to_raw'] = '有效改为 Raw';
-
-$GLOBALS["lang"]['Valid To Raw'] = '有效改为 Raw';
-
-$GLOBALS["lang"]['Valid Values'] = '有效值';
-
-$GLOBALS["lang"]['value'] = '数值';
-
-$GLOBALS["lang"]['Value'] = '数值';
-
-$GLOBALS["lang"]['Value Types'] = '值类型';
-
-$GLOBALS["lang"]['values'] = '数值';
-
-$GLOBALS["lang"]['Values'] = '数值';
-
-$GLOBALS["lang"]['Values: In the case of a <i>list</i> field, this should be a comma separated list of valid values.'] = '数值 : 涉及 <i>列表</i> 字段中,应该是一个逗号分隔的有效值列表。';
-
-$GLOBALS["lang"]['Vanuatu'] = '瓦努阿图';
-
-$GLOBALS["lang"]['VarChar'] = '瓦尔察';
-
-$GLOBALS["lang"]['Varchar'] = '瓦尔查尔';
-
-$GLOBALS["lang"]['variable'] = '变量';
-
-$GLOBALS["lang"]['Variable'] = '变量';
-
-$GLOBALS["lang"]['Various'] = '各种';
-
-$GLOBALS["lang"]['vendor'] = '供应商';
-
-$GLOBALS["lang"]['Vendor'] = '供应商';
-
-$GLOBALS["lang"]['Vendor Report'] = '供应商报告';
-
-$GLOBALS["lang"]['vendors'] = '供应商';
-
-$GLOBALS["lang"]['Vendors'] = '供应商';
-
-$GLOBALS["lang"]['Venezuela'] = '委内瑞拉';
-
-$GLOBALS["lang"]['Version'] = '版本';
-
-$GLOBALS["lang"]['version_padded'] = '版本添加';
-
-$GLOBALS["lang"]['Version Padded'] = '版本添加';
-
-$GLOBALS["lang"]['version_raw'] = '版本 Raw';
-
-$GLOBALS["lang"]['Version Raw'] = '版本 Raw';
-
-$GLOBALS["lang"]['version_string'] = '版本字符串';
-
-$GLOBALS["lang"]['Version String'] = '版本字符串';
-
-$GLOBALS["lang"]['video'] = '视频';
-
-$GLOBALS["lang"]['Video'] = '视频';
-
-$GLOBALS["lang"]['Vietnam'] = '越南';
-
-$GLOBALS["lang"]['Vietnamese'] = '越南语Name';
-
-$GLOBALS["lang"]['View'] = '视图';
-
-$GLOBALS["lang"]['View All'] = '全部查看';
-
-$GLOBALS["lang"]['View Details'] = '查看细节';
-
-$GLOBALS["lang"]['View Device'] = '查看设备';
-
-$GLOBALS["lang"]['View Discovery'] = '查看发现';
-
-$GLOBALS["lang"]['View Policy'] = '查看策略';
-
-$GLOBALS["lang"]['View Racks'] = '查看 Racks';
-
-$GLOBALS["lang"]['View the'] = '查看';
-
-$GLOBALS["lang"]['View the discovery in question, then click the Support button in the top right toolbar. This will provide the discovery settings, config items, the discovery device list as well as the logs for this particular discovery.'] = '查看相关发现,然后单击右上方工具栏中的支持按钮。 这将提供发现设置,配置项目,发现设备列表以及这一特定发现的日志.';
-
-$GLOBALS["lang"]['View the release notes on the'] = '在';
-
-$GLOBALS["lang"]['Virtual Private Network'] = '虚拟私人网络';
-
-$GLOBALS["lang"]['Virtual private network'] = '虚拟私人网络';
-
-$GLOBALS["lang"]['Virtualisation'] = '虚拟化';
-
-$GLOBALS["lang"]['Visit our YouTube channel for instructional videos.'] = '访问我们的YouTube频道 教学视频。';
-
-$GLOBALS["lang"]['vlan'] = '瓦兰';
-
-$GLOBALS["lang"]['Vlan'] = '瓦兰';
-
-$GLOBALS["lang"]['vlan_id'] = 'Vlan 身份证';
-
-$GLOBALS["lang"]['Vlan ID'] = 'Vlan 身份证';
-
-$GLOBALS["lang"]['vm'] = '声波';
-
-$GLOBALS["lang"]['Vm'] = '声波';
-
-$GLOBALS["lang"]['vm_device_id'] = 'Vm 设备标识';
-
-$GLOBALS["lang"]['Vm Device ID'] = 'Vm 设备标识';
-
-$GLOBALS["lang"]['vm_group'] = 'Vm 组';
-
-$GLOBALS["lang"]['Vm Group'] = 'Vm 组';
-
-$GLOBALS["lang"]['vm_ident'] = 'Vm 标识';
-
-$GLOBALS["lang"]['Vm Ident'] = 'Vm 标识';
-
-$GLOBALS["lang"]['vm_server_name'] = 'Vm 服务器名称';
-
-$GLOBALS["lang"]['Vm Server Name'] = 'Vm 服务器名称';
-
-$GLOBALS["lang"]['vm_vendor'] = 'Vm 供应商';
-
-$GLOBALS["lang"]['Vm Vendor'] = 'Vm 供应商';
-
-$GLOBALS["lang"]['vuln_status'] = 'Vuln 状态';
-
-$GLOBALS["lang"]['Vuln Status'] = 'Vuln 状态';
-
-$GLOBALS["lang"]['vulnerabilities'] = ' 安全漏洞';
-
-$GLOBALS["lang"]['Vulnerabilities'] = ' 安全漏洞';
-
-$GLOBALS["lang"]['vulnerabilities_cache'] = '脆弱缓存';
-
-$GLOBALS["lang"]['Vulnerabilities Cache'] = '脆弱缓存';
-
-$GLOBALS["lang"]['Vulnerabilities and Results'] = '脆弱性和结果';
-
-$GLOBALS["lang"]['Vulnerabilities initially published before 1st January, 2025 (by default). We see no sense in returning vulnerabilities from years prior. This can be changed in the configuration.'] = '脆弱性最初在2025年1月1日前公布(默认). 我们认为,从前几年返回脆弱点毫无意义。 这可以在配置中更改.';
-
-$GLOBALS["lang"]['vulnerability_id'] = '脆弱性识别';
-
-$GLOBALS["lang"]['Vulnerability ID'] = '脆弱性识别';
-
-$GLOBALS["lang"]['Vulnerability Status'] = '状况';
-
-$GLOBALS["lang"]['WARNING - When creating a baseline using software policies, at present Centos and RedHat package the kernel using the names <i>kernel</i> and <i>kernel-devel</i>. There can be multiple packages with this name and different versions concurrently installed. Debian based distributions use names like <i>linux-image-3.13.0-24-generic</i>, note the version number is included in the package name. Because RedHat based operating systems use this format and subsequently have multiple identical package names with different versions we currently exclude <i>kernel</i> and <i>kernel-devel</i> from software policies. This may be addressed in a future update.'] = '警告 - 在使用软件策略创建基线时, 目前在 Centos 和 RedHat 包中使用名称的内核 <i>内核</i> 和 <i>内核解析</i>。 。 。 可同时安装此名称和不同版本的多个软件包. 基于 Debian 的分布使用诸如 <i>linux-image-3.13.0-24-generic(英语:Linux-image-3.</i>,注意版本编号包含在软件包名称中。 因为基于 RedHat 的操作系统使用这种格式, 并随后有多个相同的软件包名称, 不同的版本, 目前我们排除 <i>内核</i> 和 <i>内核解析</i> 从软件政策。 这一点可在今后的更新中加以解决。';
-
-$GLOBALS["lang"]['WHERE'] = '何处';
-
-$GLOBALS["lang"]['WMI Credentials Requirements'] = 'WMI 全权证书要求';
-
-$GLOBALS["lang"]['Wait for it to complete, then paste in this next line to install the Agent.'] = '等待它完成,然后粘贴在这个下行安装代理.';
-
-$GLOBALS["lang"]['wall_port'] = '墙壁端口';
-
-$GLOBALS["lang"]['Wall Port'] = '墙壁端口';
-
-$GLOBALS["lang"]['Wallis and Futuna'] = '瓦利斯和富图纳';
-
-$GLOBALS["lang"]['Want to know more?'] = '想知道更多吗?';
-
-$GLOBALS["lang"]['Warning'] = '3⁄4 ̧漯B';
-
-$GLOBALS["lang"]['warranty'] = '担保';
-
-$GLOBALS["lang"]['Warranty'] = '担保';
-
-$GLOBALS["lang"]['warranty_duration'] = '保证期限';
-
-$GLOBALS["lang"]['Warranty Duration'] = '保证期限';
-
-$GLOBALS["lang"]['warranty_expires'] = '保证期限';
-
-$GLOBALS["lang"]['Warranty Expires'] = '保证期限';
-
-$GLOBALS["lang"]['warranty_status'] = '保证状态';
-
-$GLOBALS["lang"]['Warranty Status'] = '保证状态';
-
-$GLOBALS["lang"]['warranty_type'] = '保证类型';
-
-$GLOBALS["lang"]['Warranty Type'] = '保证类型';
-
-$GLOBALS["lang"]['We also have an option to Ping Before Scan (important for routers with long lived ARP caches). This is usually a good idea.'] = '我们还可以选择Scan前的Ping(对于长寿的ARP缓存的路由器很重要). 这通常是一个好主意。';
-
-$GLOBALS["lang"]['We also have our action items (which are executed in the order below):'] = '我们还有行动项目(按以下顺序执行):';
-
-$GLOBALS["lang"]['We are often asked this question and the answer most definitely is <i>it depends</i>. It depends on the number of IPs to be scanned, the network connection speed, the speed of the devices being scanned, the type of devices being scanned, the number of different credentials being tested and the speed of the Open-AudIT server. We do not have a calculator that would allow us to input those variables and return a value. It is simply too complex. Generally I limit my discoveries to 256 IP addresses - ie, a /24 subnet. We have had customers scan /16 subnets (65k addresses) and it does work - but it can take a long time. You are much better off scanning in /24 blocks. If you simply do not know what your address ranges are, then this is a good case for a Seed discovery.'] = '我们常常被问到这个问题,最肯定的答案是: <i>看情况</i>。 。 。 这取决于要扫描的IP数量,网络连接速度,被扫描设备的速度,被扫描设备的类型,测试的不同证书数量以及Open-AudIT服务器的速度. 我们没有计算器可以输入这些变量并返回一个值。 这太复杂了。 一般来说,我的发现仅限于256个IP地址——ie,一个24子网. 我们让顾客扫描16个子网(65k地址), 在24区扫描更好 如果你只是不知道你的地址范围, 那么这是种子发现的好例子。';
-
-$GLOBALS["lang"]['We have more detailed instructions on'] = '我们有更详细的指示';
-
-$GLOBALS["lang"]['We have tests for:'] = '我们有测试:';
-
-$GLOBALS["lang"]['We hope you find Open-AudIT as useful as we do.'] = '我们希望你们能像我们一样 找到开放的AudIT';
-
-$GLOBALS["lang"]['We initially setup the default list of scripts with the default options. The list of script is viewable at /scripts. These default scripts cannot be deleted. You can create additional scripts for use by you as required. Your script will be based on one of the existing scripts and have custom options applied. The scripts can then be downloaded from the list page at menu: Discover -> Audit Scripts -> List Audit Scripts.'] = '我们最初设置带有默认选项的默认脚本列表. 脚本列表可在/scripts查看. 这些默认脚本无法删除 。 您可以根据需要创建额外的脚本供您使用. 您的脚本将基于现有的脚本之一, 并应用自定义选项 。 然后可以在菜单列表页面下载脚本: 发现 - > 审计脚本 - > 列表 审计脚本.';
-
-$GLOBALS["lang"]['We need some credentials to be able to effectively talk to the devices on your network.'] = '我们需要一些资质 才能和你的网络上的设备有效交谈';
-
-$GLOBALS["lang"]['We only send the minimum amount of data and nothing of a sensitive nature. We send our license data (name, type, etc), our application data (name, version, platform, timezone, etc), any logged errors, a count of device types and a count of the features used. <i>Any</i> environment has devices and that is the only piece of your data we send. And only the type of device and a count. Not the manufacturer, not the model. We send nothing special. No networks. No IP addresses. No OS versions. No software names. The UUID and Server fields are sha256 encoded (so we do not know the value). We send just the data we need to improve the product. We hope you see the benefit to all of us with this information. It will provide us guided direction on where to focus improvements and new features in the product.'] = '我们只发送最低数量的数据,没有任何敏感性质的数据。 我们发送我们的许可证数据(名称,类型等),我们的应用数据(名称,版本,平台,时区等),任何记录的错误,设备类型的数和所使用的特性的数. <i>任意</i> 环境有设备,这是你唯一的数据 我们发送。 只有装置类型和计数 不是制造商 不是模特儿 我们发的不是特别的。 无网. 没有IP地址 。 没有OS版本. 无软件名称. UUID 和 Server 字段被 sha256 编码(所以我们不知道值) 。 我们发送我们改进产品所需要的数据。 我们希望你们看到这些信息对我们所有人都有好处。 它将指导我们如何集中改进和产品的新特点。';
-
-$GLOBALS["lang"]['We tend to use the Google Chrome extension called Postman for testing actual restful queries. You might like to install and test with that.'] = '我们倾向于使用Google Chrome扩展名为Postman来测试实际的休息查询. 你可能想安装和测试这个。';
-
-$GLOBALS["lang"]['Web'] = '网页';
-
-$GLOBALS["lang"]['Web Application Routes'] = 'Web 应用程序路由';
-
-$GLOBALS["lang"]['Web Server Discovery'] = 'Web 服务器发现';
-
-$GLOBALS["lang"]['Webserver'] = 'Web 服务器';
-
-$GLOBALS["lang"]['Website'] = '网站';
-
-$GLOBALS["lang"]['Wednesday'] = '星期三';
-
-$GLOBALS["lang"]['weight'] = '重量';
-
-$GLOBALS["lang"]['Weight'] = '重量';
-
-$GLOBALS["lang"]['weight_current'] = '重量当前';
-
-$GLOBALS["lang"]['Weight Current'] = '重量当前';
-
-$GLOBALS["lang"]['weight_empty'] = '重量空';
-
-$GLOBALS["lang"]['Weight Empty'] = '重量空';
-
-$GLOBALS["lang"]['weight_max'] = '重量最大值';
-
-$GLOBALS["lang"]['Weight Max'] = '重量最大值';
-
-$GLOBALS["lang"]['Welcome'] = '欢迎光临';
-
-$GLOBALS["lang"]['Welcome Dashboard'] = '欢迎板';
-
-$GLOBALS["lang"]['Welcome to'] = '欢迎光临';
-
-$GLOBALS["lang"]['Western Sahara'] = '西撒哈拉';
-
-$GLOBALS["lang"]['What Can I Expect if I Have no Credentials'] = '如果我没有证书,我能期望什么?';
-
-$GLOBALS["lang"]['What about fields that I want from NMIS that are not in Open-AudIT? We have got you covered. Any fields in the external system (NMIS) that do not exist in Open-AudIT will be automatically created as Open-AudIT Custom fields.'] = '那我想从NMIS得到的不在Open-AudIT的田园呢? 我们掩护你 在Open-AudIT中不存在的外部系统(NMIS)中的任何字段都将自动创建为Open-AudIT Custom字段.';
-
-$GLOBALS["lang"]['What about other network devices? Think switches, routers, printers, etc. Obviously, it is best if you can provide some SNMP credentials for these devices. They only need <i>read-only</i> access. But if you do not want to do even that, there is nothing stopping you from running discovery, finding the devices, and making a rule or two to identify them (maybe use MAC Address prefix in combination with open ports, for example). You wont have much information, but you will know they are on the network, what they are, and when the last time they were seen was. You will also see if anything new appears on the network.'] = '其他网络设备呢? 思维开关,路由器,打印机等. 显然,你最好能为这些设备提供一些SNMP证书. 他们只需要 <i>只读</i> 进入。 但是,如果你不想这样做,没有什么可以阻止你运行发现,找到设备,并作出一条或两条规则来识别它们(例如可能与开放端口结合使用MAC地址前缀). 你没有太多信息, 但你会知道他们在网络上, 他们是什么, 当他们最后一次被看到。 您也会看到网络上是否有新的信息 。';
-
-$GLOBALS["lang"]['What do we send?'] = '我们发送什么?';
-
-$GLOBALS["lang"]['What does this actually mean to you?'] = '这对你意味着什么?';
-
-$GLOBALS["lang"]['What is the purpose of this rack.'] = '这个架子的目的是什么?';
-
-$GLOBALS["lang"]['What is the type of this location. Allowable types held in <code>attributes</code> table.'] = '这个位置是什么类型 。 持有的允许类型 <code>attributes</code> 表单。';
-
-$GLOBALS["lang"]['When Open-AudIT on Linux discovers a Windows machine, in order to execute a remote command we use'] = '当 Linux 上的 Open-AudIT 发现 Windows 机器时, 为了执行远程命令, 我们使用';
-
-$GLOBALS["lang"]['When Open-AudIT on Windows discovers a Windows machine, in order to execute a remote command we use'] = '当Windows上的 Open-AudIT 发现 Windows 机器时,为了执行远程命令,我们使用';
-
-$GLOBALS["lang"]['When Open-AudIT receives data about a device, either by discovering the device during an audit run or by the user importing the device, it must determine if this discovered device matches a device that already exists within its database, or if it is a new device that should be added. Open-AudIT uses a series of twelve property matches to determine this. The Match Rules work as OR comparisons, not AND. This means the first rule that matches a field in the discovered device to one in the dB resolves as an existing device. All Matching Rules have to fail in order for a device to be new and result in a new record being created.'] = '当打开时 IT接收到有关设备的数据,无论是通过在审计运行中发现设备还是由设备导入的用户来获取,它必须确定这个发现的设备是否与其数据库中已经存在的设备相匹配,或者是应该添加的新设备. Open-AudIT使用一系列12个属性匹配来决定这一点. 匹配规则是作为OR比较,而不是和. 这意味着将已发现设备中的字段与dB解析中作为现有设备的字段匹配的第一个规则. 所有匹配规则都必须失败,这样一个设备才能成为新设备,并导致新记录的创建.';
-
-$GLOBALS["lang"]['When POSTing data, you must include an access token. An access token is generated with every request type, so make a GET (for example) and Accept: application/json, parse the response for meta→access_token, and include that with your request. This should be placed in the field data[access_token], IE, the top level.'] = '当 Posting 数据时, 您必须包含访问符 。 使用每个请求类型生成访问令牌, 因此生成一个 GET( 例如) 并接受: 应用程序/json, 解析 meta_ access_token 的响应, 并随请求包含该响应 。 这应当放置在字段数据[access_token],IE,顶级.';
-
-$GLOBALS["lang"]['When a device is Discovered the audit script will be injected with the file (or directory) details. Both audit_linux.sh and audit_windows.vbs will be populated, regardless of the file path. If you are thinking <i>but putting a Linux path into a Windows machine will break things!</i>, it wont break, you just wont receive any data from that file or directory entry.<br>Retrieved details will be stored in the <i>file</i> database table and are stored like any other attribute. File details will be stored as any other attribute and generate alerts if any of the following attributes change - <i>full_name</i>, <i>hash</i>, <i>inode</i>, <i>last_changed</i>. The table contain a system_id, first_seen, last_seen and current columns as well as the file details.<br>Attributes recorded are:<br><ul><li>Windows - name, size, directory, SHA1 hash (of the file contents), last changed, permissions, owner, version (file permitting).</li><br><li>Linux - name, size, directory, SHA1 hash (of the file contents), last changed, meta data last changed, permissions, owner, group, inode.</li></ul>You will see a section in both the Windows and Linux audit scripts as below'] = '当一个设备被发现时,审计脚本会被注入文件(或目录)的细节. 审计_linux.sh 和审计_windows.vbs 都会有人居住,无论文件路径如何. 如果你还在想 <i>但把Linux路径放进Windows机器会打破东西!</i>,它不会破裂,你只是不会收到 从该文件或目录条目的任何数据。<br/>获取的细节将存储在 <i>文件</i> 数据库表格,并与其他属性一样存储。 文件细节将作为任何其他属性存储,如果以下属性发生变化,则生成提醒 - <i>完整名称</i>, (中文). <i>散装</i>, (中文). <i>阴极</i>, (中文). <i>上次更改(_C)</i>。 。 。 表格包含一个系统_id,先看,最后看和当前列以及文件细节.<br/>记录的属性如下:<br/><ul><li>Windows - 名称,大小,目录,SHA1散列(文件内容),最后更改,权限,所有者,版本(文件允许).</li><br/><li>Linux - 名称,大小,目录,SHA1散列(文件内容),最后更改,元数据最后更改,权限,所有者,组,inode.</li></ul>您可以在 Windows 和 Linux 审计脚本中看到下面的一节';
-
-$GLOBALS["lang"]['When a discovery is run, the relevant discovery scan option is chosen and those settings are used by Nmap to scan the target devices.  The scan options determine which ports nmap scans, how fast they scan and whether or not nmap ping is first used to determine if the IP is live or not.'] = '当一个发现运行时,选择了相关的发现扫描选项,这些设置被Nmap用于扫描目标设备. 扫描选项决定了哪些端口nmap扫描,扫描速度以及nmap ping是否首先用于确定IP是否有效.';
-
-$GLOBALS["lang"]['When a discovery is run, the relevant discovery scan option is chosen and those settings used by Nmap to scan the target devices. If no option set is chosen, the default configuration item (discovery_default_scan_option) is selected and used. Open-AudIT Community will use the default options as per the configuration for all discoveries.'] = '当一个发现运行时,会选择相关的发现扫描选项以及Nmap用于扫描目标设备的设置. 如果没有选择选项,则选择和使用默认配置项目(发现_默认_scan_option). Open-AudIT Community会按照配置对所有发现使用默认选项.';
-
-$GLOBALS["lang"]['When a subnet discovery is executed it first runs, if selected, an Nmap ping scan on the range or IP addresses. Any device responding will be port scanned. If an Nmap ping scan is not requested, each IP is individually port scanned. Which ports? That is determined by the'] = '当子网的发现被执行时,它首先运行,如果选中的话,对范围或IP地址进行Nmap ping扫描. 任何设备响应都会通过端口扫描. 如果不要求Nmap ping扫描,每个IP都会单独扫描. 哪个港口? 这是由';
-
-$GLOBALS["lang"]['When auditing a Linux device via SSH, some Linux distributions do not allow sudo commands to be passed without a TTY (which we are doing). To completely audit one of these linux distributions it is best to supply the root user credentials. If no root is supplied and sudo without a TTY is not possible, the audit script will be run but will not contain the amount of data as would otherwise. Subsequent audits using root (or run locally using sudo) will therefore provide extra details about the system and generate several <i>changes</i>.'] = '当通过 SSH 审计 Linux 设备时,一些 Linux 分布不允许在没有 TTY (我们正在做) 的情况下通过 sudo 命令 。 要完全审计其中的一款Linux发行,最好提供根用户证书. 如果不提供根,没有TTY的sudo是不可能的,审计脚本将会运行,但不会像其他方式包含数据的数量. 因此,随后使用root(或使用sudo在本地运行)的审计将提供关于该系统的额外细节,并生成若干 <i>变动</i>。 。 。';
-
-$GLOBALS["lang"]['When combining devices, which system is the authoritative source for information.'] = '在组合设备时,哪个系统是权威信息来源.';
-
-$GLOBALS["lang"]['When complete, close the command window and you are done!'] = '完成后, 关闭命令窗口即可完成 !';
-
-$GLOBALS["lang"]['When creating a widget, if you select the <i>Advanced</i> button you will have the ability to upload your own custom SQL.'] = '创建部件时,如果选择 <i>高级</i> 按钮将具有上传自定义 SQL 的能力。';
-
-$GLOBALS["lang"]['When integrating devices from the external system, if the device doesnt exist in Open-AudIT should we create it?'] = '在从外部系统整合设备时,如果设备在Open-AudIT中不存在,我们应该创建它吗?';
-
-$GLOBALS["lang"]['When integrating devices from the external system, if the device has been updated in the external system should we update it in Open-AudIT?'] = '在从外部系统集成设备时,如果设备在外部系统中已经更新,我们是否应该在Open-AudIT中更新?';
-
-$GLOBALS["lang"]['When investigating a Discovery, support will request the Exported Discovery Logs. To retrieve these, go to menu -> Discoveries ->'] = '在调查发现时,支持会请求输出发现日志. 要获取这些, 请到菜单 - > 发现 - >';
-
-$GLOBALS["lang"]['When matching a Linux based device, we prefer to use the Dbus id concatenated with the hostname. We can also use other options as per the below table, but we can retrieve the Dbus ID without root. To retrieve the UUID (from the motherboard), we need to run dmidecode, which does require root. Unfortunately, when you clone an ESXi guest, the Dbus ID does not get recreated - hence our concatenating this with the hostname. There is a good article linked here that details the <i>why</i> of hardware IDs.'] = '在匹配基于 Linux 的设备时,我们更喜欢使用与主机名连接的 Dbus id 。 我们还可以按照下表使用其他选项,但是我们可以不带根就检索Dbus ID. 要获取UUID( 从母板), 我们需要运行 dmidecode, 这需要root 。 不幸的是,当你克隆一个ESXi客人时,Dbus ID不会被重新创建,因此我们用主机名来装饰它。 这里有篇好文章 详细介绍 <i>为什么</i> 硬件标识。';
-
-$GLOBALS["lang"]['When requesting JSON, by default no limit is set. When requesting screen display, the limit is set to 1000 by default. This can be changed in the configuration. See the <i>page_size</i> item'] = '在请求 JSON 时, 默认情况下没有设定限制 。 请求屏幕显示时,默认限制为1000. 这可以在配置中更改. 见 <i>页面大小(_S)</i> 项目';
-
-$GLOBALS["lang"]['When retrieve an external device, should we run discovery upon it?'] = '在取回一个外部设备时,我们是否应该进行发现?';
-
-$GLOBALS["lang"]['When running Open-AudIT on Windows the Apache service account must be that of a <i>regular</i> user (or the Administrator). This is because the <i>Local System</i> account normally used to run Apache has no access to any network resources. IE - We cannot use Apache when running as the Local System account account to copy the audit script to Windows PCs.'] = '在 Windows 上运行 Open-AudIT 时, Apache 服务账户必须是 a <i>常设经常</i> 用户(或管理员)。 这是因为 <i>本地系统</i> 通常用于运行 Apache 的账户无法访问任何网络资源。 IE - 我们不能在作为本地系统账户运行时使用Apache来将审计脚本复制到Windows PC.';
-
-$GLOBALS["lang"]['When the configuration option is set, we take this into account for devices for a certain defined subset of match rules where the configuration item has been enabled. These rules are:'] = '当设定配置选项时,我们对已启用配置项的某个定义匹配规则子集的设备加以考虑。 这些规则是:';
-
-$GLOBALS["lang"]['When the rules run in discovery, any matching rules will appear in the discovery log. See below for an example.'] = '当发现规则运行时,任何匹配规则都会出现在发现日志中. 例子见下文。';
-
-$GLOBALS["lang"]['When this benchmark is scheduled to be executed. Derived from the associated <code>tasks.type</code> and <code>tasks.sub_resource_id</code>.'] = '计划执行此基准时 。 衍生自关联 <code>tasks.type</code> 和 <code>tasks.sub_resource_id</code>。 。 。';
-
-$GLOBALS["lang"]['When this log was created.'] = '此日志创建时 。';
-
-$GLOBALS["lang"]['When this queue item started processing.'] = '当此队列项目开始处理时 。';
-
-$GLOBALS["lang"]['When using Open-AudIT Professional or Enterprise, widgets are available and customisable to be displayed on Dashboards.'] = '在使用 Open-AudIT 专业或企业时, 部件是可用的, 可以自定义在 Dashboards 上显示 。';
-
-$GLOBALS["lang"]['When we are converting an internally selected device to an object for the external system, what should the external data be. EG: integer, string, etc.'] = '当我们将一个内部选定的设备转换成外部系统的对象时,外部数据应该是什么. EG:整数,字符串等.';
-
-$GLOBALS["lang"]['When we execute this baseline, should we check for items on devices that are not in a policy for this baseline.'] = '当我们执行这一基线时,我们是否应当检查该基线政策中没有的装置上的项目。';
-
-$GLOBALS["lang"]['When we receive an open port, should we attempt to test for the version of the service currently running upon it? This assists in confirming actual running services.'] = '当我们收到一个开放的端口时,我们是否应该尝试测试目前运行在端口上的服务版本? 这有助于确认实际运行的服务。';
-
-$GLOBALS["lang"]['When you are using Clouds to discover your Amazon AWS instances, you will need two credential items - key and secret key. Your key should already be known to you and your secret key as well. Of note is that you cannot retrieve your secret key using the AWS Console provided by Amazon. If you have misplaced it, you will need to generate a new one.'] = '当您使用 Clouds 来发现您的 Amazon AWS 实例时, 您需要两个证书项 - 密钥和密钥 。 你的钥匙应该已经知道 你和你的秘密钥匙。 值得注意的是,你不能使用亚马逊提供的AWS控制台来获取您的密钥. 如果你弄错了,你需要生成一个新的。';
-
-$GLOBALS["lang"]['When you are using Clouds to discover your Microsoft Azure instances, you will need four credential items - subscription id, tenant id, client id and client secret.'] = '当您使用 Clouds 来发现您的微软 Azure 实例时, 您需要四个认证项目 : 订阅 ID 、 租户 ID 、 客户 ID 和 客户 秘密 。';
-
-$GLOBALS["lang"]['When you create a discovery you have an option to devices_assigned_to_org. This means that any devices discovered for this discovery will be assigned (have <code>devices.org_id</code> set to) your chosen Organisation.'] = '当创建发现时, 您可以选择设备_ assigned_to_org 。 这意味着为这一发现而发现的任何装置都将被指定(有: <code>devices.org_id</code> 设置为)您所选择的组织。';
-
-$GLOBALS["lang"]['When you create a new discovery if you click the Advanced button, you have many more options to change, one of them being the type of discovery.Types have always been Subnet (encompassing the above range, subnet, ip options) and Active Directory. As at v4.1, Open-AudIT has a new discovery type called Seed.'] = '当您点击“高级”按钮创建新的发现时,您还有更多的选项需要更改,其中之一是发现的类型。 类型一直是Subnet(包含上述范围,子网,ip options)和Active Directory. 至v4.1时,Open-AudIT有一种新的发现类型,称为种子.';
-
-$GLOBALS["lang"]['When you enable a Query to be run on a schedule, the query is emailed to your chosen address. You must have set up email via menu -> Admin -> Enterprise -> Email Config. We also have a <i>test email<i> button on that page. Input your details, save it and then test it. You should have a modal box that informs you if it successful or not and obviously a test email should arrive if it is successful. Once you have email configured, your scheduled query can be configured.<br><br>Provide a name, optional description, choose <i>Query</i> type, select the desired query, provide an email address, choose a format and set the schedule.<br><br>Provide an hour (hour only, no minutes as yet), give the task a name (this is not the name of the actual scheduled query itself), select which days you would like the query run, choose which query you would like run, supply an email address and choose a query format and you are done.<br>Queries will be sent with an email body of the query (in html format) and the query attached in the requested format.'] = '当您允许在时间表上运行查询时, 查询会被电子邮件到您选择的地址 。 您必须通过菜单设置电子邮件 - > 管理员 - > 企业 - > 电子邮件配置。 我们还有一个 <i>测试电子邮件<i> 按钮。 输入细节,保存然后测试. 您应该有一个模式框, 通知您是否成功, 并且如果成功, 显然应该有一个测试电子邮件 。 一旦您配置了电子邮件, 可以配置您的预定查询 。<br/><br/>提供名称、可选描述、 选择 <i>查询</i> 键入、选择想要的查询、提供电子邮件地址、选择格式和设定时间表。<br/><br/>提供一小时( 小时, 还没有时间) , 给任务一个名称( 这不是实际预定查询本身的名称) , 选择您想要查询运行的天数 , 选择您想要运行的查询, 提供电子邮件地址和选择查询格式并完成 。<br/>查询将使用查询的电子邮件正文(以html格式)和所请求的格式所附查询发送。</i></i>';
-
-$GLOBALS["lang"]['When you enter text into one of the column headings, you can simply use a normal word. For example, when you enter <code>computer</code> into the search box above the <i>Type</i> column, the search will return all devices with the type of Computer. Essentially, Open-AudIT requests data using a URL like <code>devices?devices.type=computer</code>. Now there is one significant difference when using the dataTables search, versus the standard'] = '当将文本输入列标题时,可以简单地使用普通的单词。 例如,输入时 <code>computer</code> 输入上方的搜索框 <i>类型</i> 中,查找将返回所有设备的计算机类型。 基本上,开放的奥德 IT 请求使用类似 URL 的数据 <code>devices?devices.type=computer</code>。 。 。 现在使用数据表搜索与标准有一个显著的区别';
-
-$GLOBALS["lang"]['where'] = '何处';
-
-$GLOBALS["lang"]['Where'] = '何处';
-
-$GLOBALS["lang"]['Where $x is a number. This many LDAP entries are in the DB and have been retrieved.'] = '$x是一个数字。 这么多 LDAP 条目都在 DB 中并已检索到 。';
-
-$GLOBALS["lang"]['Where on the Device Details screen you would like to see this field appear.'] = '在设备细节屏幕上您想要看到此字段的出现 。';
-
-$GLOBALS["lang"]['Where the rack is in the row.'] = '架在行处.';
-
-$GLOBALS["lang"]['Whether the vulnerability affects components beyond its own using Impact, Availability and Confidentiality.'] = '脆弱性是否利用影响、可得性和保密性影响其自身以外的组成部分。';
-
-$GLOBALS["lang"]['Whether user interaction is required (None, Passive, Active).'] = '是否需要用户交互(无,被动,主动).';
-
-$GLOBALS["lang"]['Which OS this benchmark applies to.'] = '此基准适用于哪一个 OS 。';
-
-$GLOBALS["lang"]['Which devices should Open-AudIT create from the external system (if any). Using All, None or a given Attribute.'] = '哪些设备应从外部系统创建 Open-AudIT( 如果有的话) 。 使用全部, 无或给定属性 。';
-
-$GLOBALS["lang"]['Which network should we discover. This should be in the format of'] = '我们该发现哪个网络 这应采用以下形式:';
-
-$GLOBALS["lang"]['Which sub-menu should we display this query in.'] = '我们应该在哪个子菜单中显示此查询 。';
-
-$GLOBALS["lang"]['Who made this rack.'] = '谁做的这个架子。';
-
-$GLOBALS["lang"]['Why Windows Server Only?'] = '为什么只有Windows服务器?';
-
-$GLOBALS["lang"]['Why do we exclude this policy?'] = '为什么我们排斥这一政策?';
-
-$GLOBALS["lang"]['Wide Area Network'] = '广域网';
-
-$GLOBALS["lang"]['Wide area network'] = '广域网';
-
-$GLOBALS["lang"]['Widget'] = '部件';
-
-$GLOBALS["lang"]['Widget #'] = '部件 #';
-
-$GLOBALS["lang"]['Widget # '] = '部件 # ';
-
-$GLOBALS["lang"]['Widget Type'] = '部件类型';
-
-$GLOBALS["lang"]['widgets'] = '控件';
-
-$GLOBALS["lang"]['Widgets'] = '控件';
-
-$GLOBALS["lang"]['Widgets are designed to be used on Dashboards. Enterprise users have complete freedom to create, update and delete widgets as required.'] = '部件被设计成用于Dashboards. 企业用户有完全的自由根据需要创建,更新和删除部件.';
-
-$GLOBALS["lang"]['width'] = '宽度';
-
-$GLOBALS["lang"]['Width'] = '宽度';
-
-$GLOBALS["lang"]['windows'] = '窗口';
-
-$GLOBALS["lang"]['Windows'] = '窗口';
-
-$GLOBALS["lang"]['Windows Packages'] = '窗口软件包';
-
-$GLOBALS["lang"]['Windows Test Script'] = '窗口测试脚本';
-
-$GLOBALS["lang"]['Windows User Work Unit #1'] = 'Windows 用户工作单位 # 1';
-
-$GLOBALS["lang"]['Windows User Work Unit #2'] = '窗口用户工作单位 # 2';
-
-$GLOBALS["lang"]['Windows may also have blocked the service from starting. On the target start the Windows Security applet and ensure the WinExeSvc executable is allowed to run (click Allow on Device and then Start Actions).'] = 'Windows也可能从一开始就封锁了服务. 在目标上启动Windows安全小程序,并确保允许WinExeSvc可执行文件运行(点击设备允许,然后启动动作).';
-
-$GLOBALS["lang"]['Winexe page on Samba'] = '桑巴的Winexe页面';
-
-$GLOBALS["lang"]['Winexe requires the following Windows services to be started and running: netlogon and rpc services to be running.<br><br>Please log on to the target Windows machine and check the services for netlogon and rpc are running.'] = 'Winexe需要启动并运行以下Windows服务: Netlogon和rpc服务需要运行.<br/><br/>请登录到目标Windows机,并检查Netlogon和rpc正在运行的服务.';
-
-$GLOBALS["lang"]['Winexe uses the admin$ and RPC (net service start) to install and start a remote service (winexesvc). This service initializes a named pipe that is used to transport commands from the Open-AudIT server to the target and the output in the reverse way. When finished, the named pipe closes and the winexesvc waits for more connections or uninstalls (depending of the options given).'] = 'Winexe使用admin$和RPC(网络服务启动)安装并启动远程服务(winexesvc). 此服务初始化了一个命名的管道,用于将命令从Open-AudIT服务器传输到目标及输出的反向方式. 完成后,命名的管道关闭,winexesvc等待更多的连接或未安装(取决于给出的选项).';
-
-$GLOBALS["lang"]['Wireless Local Area Network'] = '无线局域网';
-
-$GLOBALS["lang"]['With the 3.3.0 release of Open-AudIT we have introduced the concept of a Cluster. This intuitively maps to the idea of a web cluster, database cluster or file cluster (or one of several other purposes) into a given type (high availability, redundancy, scaling, etc).<br><br>Depending on the purpose of cluster chosen, the reporting will be slightly different.<br><br>For example, if you create a Cluster with a purpose of virtualisation, when you have added devices to it you will also see the virtual machines on those devices.'] = '随着Open-AudIT的3.3.0发布,我们引入了集群的概念. 这种直观地将一个网络集群,数据库集群或文件集群(或几个其他目的之一)的想法映射到某个特定类型(高可用性,冗余,缩放等).<br/><br/>根据所选分组的目的,报告略有不同。<br/><br/>例如,如果你创建了一个以虚拟化为目的的集群,当你在其中添加了设备时,也会看到这些设备上的虚拟机器.';
-
-$GLOBALS["lang"]['With the introduction of the Clouds feature, you can supply details of your cloud, Amazon AWS or Microsoft Azure, and Open-AudIT will use the relevant API to retrieve a list of locations, networks, and instances, then discover each of these instances.'] = '随着Clouds功能的引入,您可以提供您的云,Amazon AWS或Microsoft Azure的细节,Open-AudIT将使用相关的API来检索一个位置,网络,和实例的列表,然后发现其中的每一个实例.';
-
-$GLOBALS["lang"]['wmi_fails'] = 'Wmi 失败';
-
-$GLOBALS["lang"]['Wmi Fails'] = 'Wmi 失败';
-
-$GLOBALS["lang"]['wmi_timeout'] = 'Wmi 超时';
-
-$GLOBALS["lang"]['Wmi Timeout'] = 'Wmi 超时';
-
-$GLOBALS["lang"]['workgroup'] = '工作组';
-
-$GLOBALS["lang"]['Workgroup'] = '工作组';
-
-$GLOBALS["lang"]['Working Credentials'] = '工作全权证书';
-
-$GLOBALS["lang"]['Wrap Up'] = '包装';
-
-$GLOBALS["lang"]['Written in the PHP scripting language.'] = '用 PHP 脚本语言编写 。';
-
-$GLOBALS["lang"]['XML'] = 'XML 数据';
-
-$GLOBALS["lang"]['Yellow Query'] = '黄问';
-
-$GLOBALS["lang"]['Yemen'] = '也门';
-
-$GLOBALS["lang"]['Yes'] = '对';
-
-$GLOBALS["lang"]['You are able to define extra directories to be scanned as entries in the Executables collection. When defined, the directory and all sub-directories are scanned for files that are executable. You can also define directories and files to be excluded. When activated, these are injected into the linux audit script and performed whenever it is run (usually as part of a discovery). If you want these in a script you can manually copy to the target, use menu -> Discover -> Scripts -> List Scripts and download the script from there.'] = '您可以定义要扫描的额外目录为执行文件收藏中的条目 。 当定义时,目录和所有子目录会被扫描,用于可执行的文件. 也可以定义要排除的目录和文件. 启动时,这些被注入linux审计脚本,并在运行时执行(通常是作为发现的一部分). 如果您想要这些脚本, 您可以手动复制到目标, 使用菜单 - > 发现 - > 脚本 - > 列表脚本,从那里下载脚本.';
-
-$GLOBALS["lang"]['You are always free to modify the audit scripts themselves to suit your specific requirements. You will need to (re)incorporate those changes whenever you upgrade as they will be overwritten by the default scripts. I would suggest saving a master copy of your modified script, upgrading Open-AudIT, then running a diff between the new default script and your modified script and applying the differences. The audit scripts are native scripts (Windows is VBScript, all others are Bash). Simple and easy to modify - just make sure to have a copy of your changes before you upgrade.'] = '你总是可以自行修改审计脚本以适应你的具体要求. 您需要( 重新) 加入这些更改, 因为这些更改将被默认脚本覆盖 。 我建议保存您修改过的脚本的主拷贝, 更新 Open-AudIT, 然后在新的默认脚本和您修改过的脚本之间运行 diff, 并应用差异 。 审计脚本是本土脚本(Windows为VBScript,其他所有为Bash). 简单易变 - 在升级前确保有您更改的副本 。';
-
-$GLOBALS["lang"]['You are running version'] = '您正在运行版本';
-
-$GLOBALS["lang"]['You can access the collection using the normal Open-AudIT JSON based API. Just like any other collection. Please see'] = '您可以使用基于 Open-AudIT JSON 的 API 访问收藏 。 就像其他收藏一样 请看';
-
-$GLOBALS["lang"]['You can also'] = '你也可以这样';
-
-$GLOBALS["lang"]['You can also see at the bottom of the page a table showing the devices the changes will be applied to.'] = '您也可以在页面底部看到一个表格,显示将应用这些更改的设备。';
-
-$GLOBALS["lang"]['You can also specify properties using the below format.'] = '也可以使用以下格式指定属性。';
-
-$GLOBALS["lang"]['You can always run the Firstwave VM on your virtual infrastructure (ESX, Azure, et al). The Firstwave VM runs Debian linux and is free from OS licensing concerns and limitations. Or install on your own Linux distro of choice. We support Redhat 9, Ubuntu 20.04, 22.04 and 24.04 as well as Debian 11 and 12.'] = '您可以在虚拟基础设施(ESX, Azure, et al)上运行第一波VM。 Firstwave VM运行Debian linux,不受OS许可的担忧和限制. 或自选安装Linux distro. 我们支持Redhat 9、Ubuntu 20.04、22.04和24.04以及Debian 11和12。';
-
-$GLOBALS["lang"]['You can assign devices to a location automatically using'] = '您可以自动使用';
-
-$GLOBALS["lang"]['You can assign devices using custom'] = '您可以使用自定义指定设备';
-
-$GLOBALS["lang"]['You can audit a remote machine without the using the actual Administrator account by creating a registry key. Create the below key on every machine to be audited and make sure the user credentials used is a member of the Administrators group.'] = '您可以创建注册密钥来审计远程机器, 而无需使用实际的管理员账户 。 在每台被审核的机器上创建下面的密钥,并确保所使用的用户证书是管理员组的成员.';
-
-$GLOBALS["lang"]['You can certainly run a discovery without any valid credentials on the devices within the network, however, the information retrieved will be a very small subset of what Open-AudIT has the ability to retrieve <i>with</i> credentials.'] = '您当然可以运行一个在网络内设备上没有任何有效证书的发现, 但是,所获取的信息将是Open-AudIT能够获取的非常小的子集 <i>与</i> 证书。';
-
-$GLOBALS["lang"]['You can create a baseline, run it against a group of devices and view the results, add scheduled execution, add more tables for comparison (currently only software, netstat ports and users are enabled), in place baseline editing, archiving of results and more.'] = '您可以创建一个基线,对照一组设备运行,并查看结果,添加计划执行,添加更多的表格进行比较(目前只启用软件,netstat端口和用户),设置基线编辑,结果存档等等.';
-
-$GLOBALS["lang"]['You can create a script with all the options for any of the existing audit scripts - not just Windows. AIX, ESX, Linux, OSX and Windows are all covered.'] = '您可以为任何现有的审计脚本创建包含所有选项的脚本 - 不仅仅是Windows. AIX,ESX,Linux,OSX和Windows全部覆盖.';
-
-$GLOBALS["lang"]['You can customize the entire integration down to which system (NMIS or Open-AudIT) is the authority on a per field basis. There are options to create and/or update devices in Open-AudIT or NMIS. Should we run a discovery on a created or updated device and so much more. There are explanations for each item on the right side of the page.'] = '您可以自定义整个集成到哪个系统(NMIS或Open-AudIT)是每个字段的权威. 在 Open-AudIT 或 NMIS 中存在创建和/或更新设备的选项. 我们是否应该运行一个发现 一个创建或更新的设备 以及更多。 页面右侧的每个项目都有解释.';
-
-$GLOBALS["lang"]['You can define an application and associate a device to this application. A device may be associated to more than one application. An application may be associated to more than one device.'] = '您可以定义一个应用程序,并将一个设备与这个应用程序关联起来。 一个设备可能与一个以上的应用程序相关联. 申请可能与一个以上的设备有关。';
-
-$GLOBALS["lang"]['You can edit the value of the Additional Field for each individual device on the device details page. View the device details screen, open the section containing the field and (if you have'] = '您可以编辑设备细节页面上每个设备的附加字段值。 查看设备细节屏幕,打开包含字段的段落和(如果有的话)';
-
-$GLOBALS["lang"]['You can limit the Device Seed Discovery to fall within a strict set of parameters, including: <i>Restrict to Subnet</i> and <i>Restrict to Private</i>'] = '您可以将设备种子发现限制在严格的一组参数范围内,包括: <i>限于子网</i> 和 <i>限于私人</i>';
-
-$GLOBALS["lang"]['You can manually assign devices using'] = '您可以使用';
-
-$GLOBALS["lang"]['You can override this by providing the format option in the URL.'] = '您可以通过在 URL 中提供格式选项来覆盖此选项 。';
-
-$GLOBALS["lang"]['You can select individual devices by clicking their check-boxes on the right side or selecting all devices clicking the checkbox on the top right of the table (underneath the Edit button that looks like a pencil).'] = '您可以通过点击右侧的复选框来选择单个设备,或者选择所有点击表格右上角的复选框的设备(下面是看上去像铅笔的编辑按钮).';
-
-$GLOBALS["lang"]['You can select the devices to be integrated by choosing any attribute in the system (device) table and matching (see menu → Admin → Database → List Tables → system for a list of fields). An attribute match can only match a single value.'] = '您可以通过选择系统(device)表格中的任何属性和匹配(参见菜单 → 管理 → 数据库 → List Tables → system for a letters)来选择要集成的设备. 属性匹配只能匹配单个值.';
-
-$GLOBALS["lang"]['You can turn any server into a collector by going to menu -> Admin -> Collectors -> Make this install a Collector. You will need credentials to log on to the server this install will report in to.'] = '您可以通过菜单将任何服务器变成收藏器 - > 管理员 - > 收集器 - > 让这个安装一个收集器 。 您需要证书才能登录到服务器上 此安装将报告给它 。';
-
-$GLOBALS["lang"]['You can view by clicking on the blue view icon. You can also edit or delete if you have permissions.'] = '您可以点击蓝色视图图标查看 。 如果您有权限,也可以编辑或删除.';
-
-$GLOBALS["lang"]['You do not have the PHP MBString extension installed. This extension is required.'] = '您没有安装 PHP MBString 扩展 。 需要延期。';
-
-$GLOBALS["lang"]['You do not have the PHP SNMP extension installed. This extension is highly recommended.'] = '您没有安装 PHP SNMP 扩展 。 强烈建议延长任期。';
-
-$GLOBALS["lang"]['You may want to copy and paste this URL in an email to your staff.'] = '您可能想要在电子邮件中复制并粘贴此 URL 。';
-
-$GLOBALS["lang"]['You may wish to have Active Directory or OpenLDAP authenticate your users, but not provide authorization. To do this, make sure <i>Use for Authentication</i> is set to Y and <i>Use for Roles</i> is set to N. The credentials will be validated by LDAP, but you will need to have the user already created and assigned Roles in Open-AudIT. This also <i>automatically</i> applies to'] = '您可能希望有活动目录或 OpenLDAP 认证您的用户, 但不会提供授权 。 要做到这一点,确保 <i>用于认证</i> 设置为 Y 和 <i>用于角色</i> 设置为 N。 证书将由 LDAP 验证, 但您需要让用户在 Open-AudIT 中已经创建并指定角色 。 这个也是 <i>自动</i> 适用于';
-
-$GLOBALS["lang"]['You might have noticed these match rules are for items that might not be globally unique. Some examples:'] = '你可能已经注意到这些匹配规则 对于可能不是全球独有的项目。 一些例子:';
-
-$GLOBALS["lang"]['You must delete your existing license before adding a new license.'] = '您必须先删除您已有的许可证, 然后再添加新的许可证 。';
-
-$GLOBALS["lang"]['You must have working SSH credentials to execute a benchmark. The following Operating Systems are currently supported: Centos 7, Debian 12, Redhat 7, Redhat 8, Redhat 9, SLES 15, Ubuntu 20.04, Ubuntu 22.04. We plan to expand on these with further releases.'] = '您必须有工作 SSH 证书来执行基准 。 目前支持的操作系统有:Centos 7,Debian 12,Redhat 7,Redhat 8,Redhat 9,SLES 15,Ubuntu 20.04,Ubuntu 22.04. 我们计划进一步扩充这些内容。';
-
-$GLOBALS["lang"]['You should copy and paste the entire file into the textbox. In the case below, copy ALL the text.'] = '您应该复制并粘贴整个文件到文本框中 。 在下文中,复制所有文本。';
-
-$GLOBALS["lang"]['You should not include the edited_by and edited_date fields. These will be automatically set.'] = '您不应包含编辑的_by和编辑的_date字段。 这些将自动设定 。';
-
-$GLOBALS["lang"]['You should only change the second sentence of text, the'] = '你只应该修改 文本的第二句,';
-
-$GLOBALS["lang"]['You should substitute the required column (eg, org_id) for ATTRIBUTE_NAME.'] = '您应该替换 ATTRIBUTE_NAME 所需的列( 如, org_id) 。';
-
-$GLOBALS["lang"]['You should use a header line containing the names of the columns you wish to populate, then your data lines below that.'] = '您应该使用包含您想要填充的列名的页眉行, 然后使用下面的数据行 。';
-
-$GLOBALS["lang"]['You should use only those tables that contain attributes you need. I usually use a left join. For example'] = '您只应该使用包含您需要的属性的表格 。 我通常用左联 比如说';
-
-$GLOBALS["lang"]['You will need a'] = '你需要一个';
-
-$GLOBALS["lang"]['You will need the ports for WMI on the Windows firewall opened on each target Windows computer. For Windows Core servers, ensure you allow the firewall connections as per'] = '您需要每个目标Windows计算机上打开的Windows防火墙上的WMI端口 。 对于窗口 核心服务器,确保您按照';
-
-$GLOBALS["lang"]['You will see a list of'] = '你会看到一个列表';
-
-$GLOBALS["lang"]['YouTube Tutorials'] = 'YouTube 教习';
-
-$GLOBALS["lang"]['Your AWS EC2 API key.'] = '您的 AWS EC2 API 密钥 。';
-
-$GLOBALS["lang"]['Your Google Compute credentials as JSON.'] = '您的谷歌计算证书为 JSON 。';
-
-$GLOBALS["lang"]['Your Host is'] = '你们 主机为';
-
-$GLOBALS["lang"]['Your Licenses'] = '您的驾照';
-
-$GLOBALS["lang"]['Your Microsoft Azure Client ID.'] = '你的微软Azure客户端ID.';
-
-$GLOBALS["lang"]['Your Microsoft Azure Client Secret.'] = '您的微软 Azure 客户端机密 。';
-
-$GLOBALS["lang"]['Your Microsoft Azure Subscription ID.'] = '您的微软 Azure 订阅 ID 。';
-
-$GLOBALS["lang"]['Your Microsoft Azure Tennant ID.'] = '你的微软Azure Tennant ID。';
-
-$GLOBALS["lang"]['Your PHP version is'] = '您的 PHP 版本为';
-
-$GLOBALS["lang"]['Your SQL to select attributes that will populate this query.'] = '您的 SQL 选择将包含此查询的属性 。';
-
-$GLOBALS["lang"]['Your SQL to select devices that will populate this group.'] = '您的 SQL 要选择将包含此组的设备 。';
-
-$GLOBALS["lang"]['Your SSH key.'] = '你的SSH钥匙';
-
-$GLOBALS["lang"]['Your access credentials, as per that clouds native API.'] = '您的访问权限, 根据云的本地API。';
-
-$GLOBALS["lang"]['Your data is your data. You can extract it any time you like. We even helpfully provide exports to CSV, JSON and XML. And we have a JSON API. And you can write custom reports and have those output in CSV, XML, and JSON! Again, it is your data - not anyone else. You can be confident that the security of your data is in your hands.'] = '你的数据是你的数据。 随时可以取出来 我们甚至向CSV、JSON和XML提供出口。 我们有JSON API。 你可以写自定义报告 并在CSV,XML,和JSON中拥有这些输出! 再说一遍,这是你的数据,不是其他人 你可以相信数据的安全掌握在你手中';
-
-$GLOBALS["lang"]['Your database platform is'] = '您的数据库平台是';
-
-$GLOBALS["lang"]['Your description of the status of this connection (provisioned, retired, etc).'] = '您描述此连接的状况( 已提供、 已退休等) 。';
-
-$GLOBALS["lang"]['Your description of this item.'] = '你对这个项目的描述。';
-
-$GLOBALS["lang"]['Your generic name for this piece of software'] = '此软件的通用名称';
-
-$GLOBALS["lang"]['Your generic version for this piece of software'] = '您的软件通用版本';
-
-$GLOBALS["lang"]['Your user should now be able to logon by clicking the <i>Logon with Entra</i> button on the Open-AudIT logon page. As mentioned above, if the logon fails, please check the logfile and verify the users <i>preferred username</i>.<br><br>And that should be all there is too it. Now your users should have one less set of credentials to remember!<br><br>As always, if you have troubles with this feature, please email'] = '您的用户现在应该能够点击 <i>用 Entra 登录</i> 按钮。 如上所述,如果登录失败, 请检查日志文件并验证用户 <i>首选用户名</i>。 。 。<br/><br/>这应该是所有的东西了。 现在,你的用户应该少 一套证书来记住!<br/><br/>和往常一样,如果你对这个功能有问题,请通过电子邮件';
-
-$GLOBALS["lang"]['Your user should now be able to logon by clicking the <i>Logon with OKTA</i> button on the Open-AudIT logon page. As mentioned above, if the logon fails, please check the logfile and verify the users <i>name</i>.<br><br>And that should be all there is too it. Now your users should have one less set of credentials to remember!<br><br>As always, if you have troubles with this feature, please email'] = '您的用户现在应该能够点击 <i>用 OKTA 登录</i> 按钮。 如上所述,如果登录失败, 请检查日志文件并验证用户 <i>名称</i>。 。 。<br/><br/>这应该是所有的东西了。 现在,你的用户应该少 一套证书来记住!<br/><br/>和往常一样,如果你对这个功能有问题,请通过电子邮件';
-
-$GLOBALS["lang"]['Your web server is'] = '您的网络服务器是';
-
-$GLOBALS["lang"]['Zambia'] = '赞比亚';
-
-$GLOBALS["lang"]['Zimbabwe'] = '津巴布韦';
-
-$GLOBALS["lang"]['a String'] = 'a 字符串';
-
-$GLOBALS["lang"]['active'] = '活动';
-
-$GLOBALS["lang"]['active directory'] = '活动目录';
-
-$GLOBALS["lang"]['active/active'] = '活动/活动';
-
-$GLOBALS["lang"]['active/passive'] = '活动/被动';
-
-$GLOBALS["lang"]['advertisement'] = '广告';
-
-$GLOBALS["lang"]['alert'] = '警报';
-
-$GLOBALS["lang"]['all'] = '全部';
-
-$GLOBALS["lang"]['allocated'] = '拨款';
-
-$GLOBALS["lang"]['amazon'] = '亚马逊';
-
-$GLOBALS["lang"]['an Integer'] = '整数';
-
-$GLOBALS["lang"]['and'] = '和';
-
-$GLOBALS["lang"]['and / or'] = '和/或(或)';
-
-$GLOBALS["lang"]['and a support ticket will be created and actioned.'] = '并制作一张支持票并采取行动。';
-
-$GLOBALS["lang"]['and another'] = '和另一个';
-
-$GLOBALS["lang"]['and download the Latest Release self-installer. You may need to scroll down the page to find it.'] = '并下载最新版的自我安装器。 您可能需要滚动下页才能找到它 。';
-
-$GLOBALS["lang"]['and go to Applications -> Enterprise Applications (far left menu), then click <i>New application</i>.'] = ',然后单击 <i>新应用程序</i>。 。 。';
-
-$GLOBALS["lang"]['and its current time is'] = '其当前时间是';
-
-$GLOBALS["lang"]['and looks for a warranty expiration date prior to today.'] = '并寻找今天之前的保修期';
-
-$GLOBALS["lang"]['and review what is possible.'] = '并审查可能的情况。';
-
-$GLOBALS["lang"]['and the Sign-out redirect URI being'] = '和 签名重定向 URI 是';
-
-$GLOBALS["lang"]['and the final lines will likely be of most interest. These lines should give you the exact point at which the login failed.'] = '最后几行很可能是最有意义的。 这些行应该给出登录失败的确切点 。';
-
-$GLOBALS["lang"]['antivirus'] = '抗病毒药';
-
-$GLOBALS["lang"]['application'] = '应用程序';
-
-$GLOBALS["lang"]['approved'] = '核定数';
-
-$GLOBALS["lang"]['are required.'] = '需要这样做。';
-
-$GLOBALS["lang"]['are used.'] = '被使用。';
-
-$GLOBALS["lang"]['as a device responding on this port.<br>This has caused some customers issues where firewalls respond on behalf of a non-existing device, and hence cause false positive device detection. We now have this attribute available to set per scan.'] = '作为这个端口上的响应设备.<br/>这引起了一些顾客的问题,防火墙代表一个不存在的设备进行响应,从而导致假阳性设备检测. 我们现在有这个属性可以设定每次扫描。';
-
-$GLOBALS["lang"]['as the reference point and filters out all virtual machines via a check of the system.serial field for VM.'] = '作为参考点,并通过系统检查过滤出所有虚拟机。 VM 的序列字段。';
-
-$GLOBALS["lang"]['assuming working and client populated DNS'] = '假设有工作和客户的DNS';
-
-$GLOBALS["lang"]['attribute'] = '属性';
-
-$GLOBALS["lang"]['auto'] = '自动';
-
-$GLOBALS["lang"]['backup'] = '备份';
-
-$GLOBALS["lang"]['banned'] = '被禁止';
-
-$GLOBALS["lang"]['blog'] = '博客';
-
-$GLOBALS["lang"]['blue'] = '蓝色';
-
-$GLOBALS["lang"]['bottom'] = '下边';
-
-$GLOBALS["lang"]['building'] = '大楼';
-
-$GLOBALS["lang"]['can be used for user authentication (is the users name and password correct) as well as user authorization (what roles and orgs does a user have).<br><br>If a user is not in the configured LDAP but is in Open-AudIT (eg: the <i>admin</i> user), Open-AudIT will fallback to using itself for both authentication and authorization.<br><br>Open-AudIT uses specific LDAP groups for roles and orgs. A user must be a direct member of these group(s) in order for Open-AudIT to determine that users access.<br><br>When configured correctly, LDAP use can completely remove the need to create users in Open-AudIT. Simply configure Open-AudIT to use LDAP for both authentication and authorization. If the user does not exist in Open-AudIT but does exist in LDAP and their credentials are correct and they are a member of the required groups Open-AudIT will create the user account automatically.'] = '可用于用户认证(是用户名称和密码正确)以及用户授权(用户的角色和类群有哪些).<br/><br/>如果用户不在配置的 LDAP 中,而是在 Open-AudIT(例如: <i>管理员</i> ),Open-AudIT将回落到将自身用于认证和授权.<br/><br/>打开Aud 它使用特定的 LDAP 组来扮演角色和类群. 用户必须是这些组(s)的直接成员,以便Open-AudIT确定用户访问.<br/><br/>在正确配置时,LDAP的使用可以完全消除在Open-AudIT中创建用户的需要. 简单配置 Open-AudIT 用于认证和授权的 LDAP 。 如果用户在Open-AudIT中并不存在,但在LDAP中确实存在,且他们的资质正确,并且他们是需要的组Open-AudIT的成员,则会自动创建用户账户.';
-
-$GLOBALS["lang"]['can now retrieve details about a file or directory of files and monitor these files for changes as per other attributes in the Open-AudIT database. This feature works out of the box for Linux Open-AudIT servers, but needs a change to the service account name under a Windows Open-AudIT server. Supported clients are Windows and Linux.'] = '现在可以检索文件或文件目录的细节,并根据Open-AudIT数据库中的其他属性来监测这些文件的更改. 这个功能在Linux Open-AudIT服务器的框外工作,但需要在Windows Open-AudIT服务器下更改服务账户名称. 支持的客户端是Windows和Linux.';
-
-$GLOBALS["lang"]['changed'] = '已更改';
-
-$GLOBALS["lang"]['chosen. From there if a port for WMI, SSH or SNMP is detected responding the device is further queried using '] = '选择。 如果检测到WMI、 SSH 或 SNMP 的端口, 将使用此设备进行进一步查询 ';
-
-$GLOBALS["lang"]['cloud'] = '阴云';
-
-$GLOBALS["lang"]['code'] = '代码';
-
-$GLOBALS["lang"]['collections and details pages is an icon to execute.'] = '收藏和细节页面是需要执行的图标.';
-
-$GLOBALS["lang"]['collector'] = '收藏家';
-
-$GLOBALS["lang"]['collectors'] = '收藏家';
-
-$GLOBALS["lang"]['column'] = '栏';
-
-$GLOBALS["lang"]['column will contain either <i>y</i> or <i>n</i>. This indicates if this row is currently present on the device. For example software may be installed (which would result in <i>software.current = y</i>), but on a subsequent audit it may not be detected. Open-AudIT will then change this rows current attribute to <i>n</i>.'] = '列将包含 <i>尔</i> 或者说 <i>无</i>。 。 。 这表示此行目前是否出现在设备上 。 例如,可以安装软件(这将导致 <i>软件。当前=y</i>),但在随后的审计中可能无法发现. Open-AudIT 然后将本行当前属性更改为 <i>无</i>。 。 。';
-
-$GLOBALS["lang"]['column. The'] = '栏。 那个';
-
-$GLOBALS["lang"]['compute'] = '计算';
-
-$GLOBALS["lang"]['config'] = '配置';
-
-$GLOBALS["lang"]['console'] = '控制台';
-
-$GLOBALS["lang"]['contains'] = '包含';
-
-$GLOBALS["lang"]['create'] = '创建';
-
-$GLOBALS["lang"]['created'] = '创建';
-
-$GLOBALS["lang"]['credentials'] = '全权证书';
-
-$GLOBALS["lang"]['critical'] = '关键';
-
-$GLOBALS["lang"]['cve'] = '简历';
-
-$GLOBALS["lang"]['database'] = '数据库';
-
-$GLOBALS["lang"]['debug'] = '调试';
-
-$GLOBALS["lang"]['delegated'] = '授权';
-
-$GLOBALS["lang"]['delete'] = '删除';
-
-$GLOBALS["lang"]['deleted'] = '删除';
-
-$GLOBALS["lang"]['denied'] = '拒绝';
-
-$GLOBALS["lang"]['details'] = '细节';
-
-$GLOBALS["lang"]['devices'] = '设备';
-
-$GLOBALS["lang"]['digitalocean'] = '数字海洋';
-
-$GLOBALS["lang"]['discoveries'] = '发现';
-
-$GLOBALS["lang"]['documentation for further details.'] = '详细文件。';
-
-$GLOBALS["lang"]['does <strong>not</strong> provide vulnerability reports for the following'] = '已经 <strong>没有</strong> 提供以下方面的脆弱性报告:';
-
-$GLOBALS["lang"]['does not equal'] = '不等于';
-
-$GLOBALS["lang"]['emergency'] = '紧急';
-
-$GLOBALS["lang"]['entra'] = '内';
-
-$GLOBALS["lang"]['equals'] = '等于';
-
-$GLOBALS["lang"]['error'] = '错误';
-
-$GLOBALS["lang"]['established'] = '已设立';
-
-$GLOBALS["lang"]['excluded'] = '不包括';
-
-$GLOBALS["lang"]['expired'] = '过期';
-
-$GLOBALS["lang"]['extreme - Without which, the organisation would fail.
-
-very high - Functions that are essential for the organisations survival and must be restored immediately.
-
-high - Important functions that should be restored quickly but may have a slightly longer recovery time.
-
-medium - Functions that are necessary but can tolerate longer downtime.
-
-low - Non-essential functions that can be delayed without significant impact.
-
-unassigned - The default until set.'] = '极端 - 否则,本组织将失败。
-
-非常崇高 -- -- 对各组织生存至关重要,必须立即恢复的职能。
+return array (
+  '0a3e27b8ca818264d75c8d816c12922c0e6d1c919204e329c580fbc9429ab4f9' => '产品',
+  '0a4c483fc08cb17b906357b4c029f16e0a4ff0862d4d7dfefdff640d93604a0c' => '许可证   过期',
+  '0a6a15345ad0c7e36ed9dc3ec9c8ce843af4bc765d1019eb6d563e0836b962f3' => 'ưμ㼯A',
+  '0a6bb8b01de1015655303abd99d3e33a2eeb857b9db1979a9414074b6750c8f8' => '邮箱',
+  '0a9dae3aa671abc04d9833b7cf4ed8367d37eaef6defa3431350c7bcb43e5df8' => ' 默认, 目前 ',
+  '0a43ae16ae2fa75c335ea464f1a8ea6e2848d472c04a3c684cd759a619d3839a' => '获取全权证书清单',
+  '0a48ba903c960f2a22394dd00b6883ef41bf780b8eea8bcf95a0fe2597b0b7b1' => '只有持有Open-AudIT Enterprise许可证,才能创建和编辑角色. 对于大多数用户来说,默认的一组角色应该是所需要的全部.',
+  '0a54e4a28950225674bcc0d49f2167d669b4d35513749e76189b91049b7242c6' => '此属性作为JSON对象存储. 它是所有收藏品的列表,包含收藏名称连同 <code>c</code>, (中文). <code>r</code>, (中文). <code>u</code> 和,或 <code>d</code> 表示创建、读取、更新和删除。 这些是用户可以对该特定收藏中的项目采取的行动。',
+  '0a4387d25c62e78b711eec63eb89f71ce0b8e122fbffcc4927e95ef5530ac65c' => '邮政编码',
+  '0aba0acb51dadde00a320819f29bd306e386b75e8a0d86340d89b5e0fc540d99' => '下面是所需的csv格式的例子.',
+  '0ac2c3ae07c250d7e731e67ced2d63b4908e15e0c1019007d519c53ae380372c' => '资料',
+  '0adb6b459fc0990c386c1f22f6fa5a025324013be37698fbb4421ca869b75fc7' => '创建发现扫描选项条目',
+  '0ae8bf2b9f7e8f8c10144fb8a57bc608716422aff95b14cd80df89cd40b04b63' => '因此,我们 <strong>必须</strong> 拥有提供给发现证书用户的管理费份额。 请检查 Windows 机提供的目标 <i>写入</i> 用于发现证书用户的访问。',
+  '0aede7c2feabce2d614fceab1f7ef6910f06c492f28687a5db8a8f06c46514bd' => '他们的骨髓和后代',
+  '0afe30021cc3d323e9b9661711db2f444e3bf338993806dc0570ef202d4ac4a2' => '一些例子在本页底部. 所有终点也都有一个要求的字段的最小列表. 现列于下文。',
+  '0b0c96f253458f30344ffc17957788caac366a8b2b261499ebbfc4517452739b' => '用户不在匹配此 Org 的 LDAP 组中 。',
+  '0b048ca87d1ca668403676bba19c894f524dc4e63a59e0f1e6720a9aa1b31468' => '上次完成',
+  '0b1f35750f06402357ca58cb257758d5d35ee4344ada3893c22d9aba50d2df24' => '服务 类型',
+  '0b2eb58f125efc8235c2eccfaa25cb8816cd71141cecfb92a0d61bc4f699db0c' => '发布日期',
+  '0b3d5faa522f8202a66127ffd612c85fd42d58af489f0242b8eba1b990e2e38e' => '任何你想要补充的笔记。',
+  '0b4dc149f521c81249116ce2158aee269572bd6239ac74f7fd5d6a3f6c4b62c8' => '单击要编辑的字段右侧的图标。 更改字段并单击绿色图标提交。',
+  '0b6e276f2d4fd2a64f131ea4e737471e9cc518419fe5830a6616d541484aba0b' => '法属波利尼西亚',
+  '0b7ff8215ee06364a9f007e9f2d3b246efee47683824b13bb3c2cc6c79969984' => '一个 <code>3x2</code>, (中文). <code>4x2</code>, (中文). <code>4x3</code> 或 <code>4x4</code>。 。 。 。',
+  '0b8e9e995d8d77f1e4770f0f79665aee6f3f70247b3735422daba73df4c3096f' => '调试',
+  '0b9a850b6e15cb6efde5d43c200a39c94daad704dfeb5077bb02a7cf04d44b3d' => '已启用',
+  '0b21aaddae93d0233f598f4d15c6bdc695206094e89cba27044e721a83c79219' => '标准',
+  '00b109cf1123a591253cc534b17e5268eb8fc2fbb7d6772de7a55c135ef1282f' => '队列',
+  '0b5260e1b4054f460e03fb30d34b3c18bc8ffd8eeee7a068bec5da0d4f850385' => '更新',
+  '0b23955d57eccc95947f9b2e0c71d16ce528b3a2135e2e32ffebdefa7ac8d9a9' => '调查一下发现 <b>什麽?</b>',
+  '0b96017c531696170ea7a67c0fbd9e25e1c6bcb9701efa65beac28364b2d16e5' => '为了种子的发现,我应该先打开子网,然后再进行发现。',
+  '0b572558c8c7b10ea7b2ef07dc92085fb853801d64e50378e892bad7e3ad081b' => '使用电线板',
+  '0ba993b39efb02f1505045d3817f64edaf72945816bc8740073cbd220e1b86a5' => '过滤',
+  '0bbba2c53e7376d506eddf54debb8763b9f483a0c5f445f899764cf3a3ccb51d' => 'dhcp 租赁 过期',
+  '0bbeddc95849078ef8336cfe0f9199b6c7b4f6b22f398908fc18dc3a7a3b7c2d' => '生命产品标识',
+  '0bbfeb155e2239ce4acdc5026f16d07d9eecbec2105fa6a140847b385f3ff99b' => '刚果',
+  '0bd4003e0c2c792c5cd30464b9fe5b80b8ca0c2532c19bbf3f05b4f219d18184' => 'Open-AudIT服务器代码在此功能内执行.',
+  '0c0177b537471c75386b6330df2df63905cdaff2bc03e12e6e322d2d0622cf15' => '特立尼达和多巴哥',
+  '0c2cb01a2da1815539c81a7b1cee8f8c471db628928444d8149964a43b2a28f1' => '柬埔寨',
+  '0c8f863831ddfb9d7c6452ffd16b54ec10ca65cb37ed3188d4944c475f2dd9c1' => '添加设备',
+  '0c26c90f71e81206e19acb1d8837e6c9c06eb4e1a5845dc8584883fd37216657' => '当请求 JSON 时,默认不会设定限制 。 当请求屏幕显示时,默认限制为1000. 这可以在配置中更改. 见 <i>页面大小( S)</i> 项目',
+  '0c45bb4bc48eb1abf7ce8e4aaca3ea34f84273d994e0f82d850be4a8de6dc5f2' => '脚本超时',
+  '0c47ddaf993c2f1f01125c43c4a15e0b8be913b9061f6d70193bf5f36ca27576' => '英属维尔京群岛',
+  '0c79a9c222840ed026390ac8cecdc3c07b692aa92a6d94f0d0c6b099a7cc9b87' => '应用',
+  '0ca098e2022c5054b1ec77c08df3f3b1d5ccecfbf78f232071f644eb71161e8d' => '大于或等于数',
+  '0ca970b6d6be58c473ec58f28628984b65e61f4508ef41eb2d894af89ad88626' => '组织的类型。',
+  '0cab1c9617404faf2b24e221e189ca5945813e14d3f766345b09ca13bbe28ffc' => '视频',
+  '0cbccebd423bfd46ece8dd4be704b5e6434dd271d1c2c79c9d18e1675bed2d1f' => '15分钟',
+  '0cf3dbfa30f11e0891b27c8ffbf5bf4691147961c81e62dfa8aaacd1930525f6' => '<p>Open-AudIT带来许多内置的查询. 如果您需要特定查询, 且预装的查询都不符合您的需要, 很容易创建新的查询并加载到 Open-AudIT 中进行运行 。<br/> <br/></p>',
+  '0d0b4e41022259f081e7ed941aabf8f4ed12fac2ee44d560fec1aeb564f6c9e6' => '古巴',
+  '0d1d7171e2ab2264a480c93314b53eb8d6075d8f839f39ebe3632736bbf9768c' => '一系列JSON值来测试这种脆弱性.',
+  '0d4fc4a78d3706edccafb665a8b2fdd9309e82c78625bb0f2b8e7bb9e1c4d21c' => '页:1',
+  '00d7cbfb20aca7be6cd11404256a41fb0030bd19e05cd2bc8d3df88ebb2162e2' => '圣马丁',
+  '0d7ea61e3cce0efef06d696e69d8b38664f106a7d4070c5680884d16ea7622d8' => '圣皮埃尔和密克隆',
+  '0d8e188c0937120569dfa4f713f938ccb177e5a71378054b73e0a9f9ba6afac5' => '缩写( O)',
+  '0d9ae2dd461bb2304c0b974de0119f0e30480f152b10bfb468069db8ae76fea6' => '审计软件',
+  '0d39d9b61fc7c6debf111de6096130ea9a13150a10261f0e49c8812864a91fba' => '主文本',
+  '0d52de1f8275338a388f1416303e30eb6d9f52b379447fb41cf34db1a117bc19' => '关于调试的更多信息可以在有用的 Stack Overflow 线条中找到',
+  '00ddfbef3015582467c15ffe6170fd6cd2cce2558708e0f977ab389af0ab2261' => '实例保留标识符',
+  '0de0ed6e194167ffba9cbc7945e6ac146306c87ad6c40226319475fb6e5a01a5' => '使用第一波产品不需要高图许可证。 许可证',
+  '0de1acd2a3341d1d17f1d237e4c6f9a48c4c1d0b2d10fac9018efd713f0bae2f' => '模范家庭组织',
+  '0dfae1e9e61236deb252461492b86b73e359c68e52b179f3c241a98f954ddc3c' => 'tx 配置',
+  '0e3e31051c834a89e4bfbc1146d6339115e348083ec80494bf4c97dd5f0cbaaf' => '可自动调试的度量衡抓住了问题的答案 <strong>攻击者能否将针对这种脆弱性的剥削事件自动化到多个目标?</strong> 根据杀戮链的1 -4步骤 这些步骤是侦察、武器化、交付和剥削(未界定,否,是)。',
+  '0e6b8e5c53791cab6e108c303790bddd695c098ef0f7d676d49367aaa153a2fe' => '欢迎光临',
+  '0e35f6e9742e074dfd62e874de3c242c6d9b64c21bf9afbaf3d11f05579b4495' => '基础',
+  '00e37c10d8313664922c43df585d797bd5fc625d1f590d5990de7f83c62adb37' => '系统组件',
+  '0e48e1da6c91c729aa6af5e9f69e7cd52f17b76417e586683297046ad6fcea35' => '我们有测试:',
+  '00e63ad89ba1881d1cb8822b2dabf873373cb1c127eae2d84f81e74360e41eba' => 'NMIS 客户',
+  '00e71a0a33e7177af3a555820ace62aeeaebe021dd88b329b8f44af16af89cd7' => '我们的框架在这里上传文件进行处理,然后删除它们. 考虑提交审计结果等。',
+  '0e80bf3058ac3cb56e3e8e30cbcb0dfb36ce1fbe53ff3a11eb4e7e2f13eb3c53' => '然后点击表格的细节按钮。',
+  '0e570ca6fabe24f94e52c1833f3ffd25567022beb826fa16891f3322051bc221' => '来源',
+  '0e659b62cd6539a6f0606f132b009a4795a4b9310da8d1fb9d17bdd26205659f' => '初级  内部  id  a',
+  '0e2226b5235f0ff94a276eb4d07a3bfea74b7e3b8b85e9efca6c18430f041bf8' => '欢迎光临',
+  '0e87632cd46bd4907c516317eb6d81fe0f921a23c7643018f21292894b470681' => '日期',
+  '0e89123f46fcba83a5cb3df78bc7d4f8c25b743fdcac72c0f7a1674db8d75da5' => '圣基茨和尼维斯',
+  '0e856338cd9c1eaccee9335fe83ed59768e88a1d4688814652746e0a91db5c97' => 'IP 地址',
+  '0ea781cd42b6d5480bb32fd75227f7e3545eafb3cf50fd37a773864508983a81' => '萨摩亚',
+  '0eaeeba8aca5149630663965e23b3a57dc382bdcb1ad59c439fa35d283381cef' => '加速 B',
+  '0eb618ed2bebd7c4647a289a8a3e4671c09b88ed4faeb31b32c1c92b592aa79f' => '开始日期',
+  '0ebb429fa86d481c2630fac53db1c91cffed5d4d41d1021c179444eb67e7ee0b' => '任务',
+  '0ec29e9b183ffaadeeb82211015fd0f039c37fad4b1abb2b4b2ad709b4daf35f' => '标准( D)',
+  '0ecbb45c4cafd02bacdbbeb4444b1836ee6532420f1db1260ab76f73c5056a4e' => '来源于类型或OS.',
+  '0eead916f11a7584b54e94dd5d8fb5cbef54887d35a10a2f05e0b6b53f235e80' => '机器默认权限设置不给 COM 服务器应用程序以本地激活权限',
+  '0ef73f2d3ebb6535d6c5f25d2b042ac072459987d500c28de74dcf8404ef4442' => '要启用此选项, 请通过菜单创建新 Auth 项 - > 管理员 - > Auth - > 创建 Auth 方法 。',
+  '0f098bb2a62cd30bb8be7df273e48829cd356011bfbb5a042bcd1a4ee7253ef0' => '更新  外部( C)',
+  '0f3e0f4a954a649af24429b165e8f5bfb718e14512f157b68c16ef8f2808e969' => '补丁( panel port',
+  '0f3e2c2267530990363aa58825b1020c2cb4612c147d247f570ed54c39e5b868' => '提供一个名字 - 我们谦卑地推荐 Open-AudIT 😀, 但你可以命名它任何你想要的。<br/>从 Open-AudIT 表格复制 <i>重定向 URI</i> 字段并粘贴到 <i>登录重定向 URI</i> 数据库中。<br/>Sign-out transfer URI是可选的,但是如果您想要的话,您可以使用 Open-AudIT 服务器 http 地址来使用 open-audit/index.php/logout 。<br/>通常您的 Open-AudIT URL 会看起来像',
+  '00f5b8ac46d7a465972540f69353a17f739fa0224b3d871f71327eccae6e14dd' => '您的 SQL 选择将包含此查询的属性 。',
+  '0f9bea0c947fea80bd89ed4f9a7dc11b2dec8604372f2e1b76c8b198372dfe47' => '显示版本',
+  '0f12a2bc0d27775e95b9596cabffaf6f05425ecf49354e797365b09f8e1a3d84' => '对象',
+  '0f40af70b8c0d62b53983d558f67cb2128456b847a40582e0cd799b154258aea' => '管理许可证',
+  '0f55bfb7bbc50e97d7896bd13cd0dac1a58aa05ef8709ea1e8222144559828f9' => '设备种子发现如何找到已知的IP?.',
+  '0f63f8895f5173e77d50e7d6931e7edeafa816aee0142efdba252ad36e9976da' => '限于子网',
+  '0f87d19daeafe44292788f8c92713d9baa1e11e0f483e8f622d5a7c48f46040d' => 'Open-AudIT使用证书访问您的设备. 这些是加密和存储的 就像你预期的',
+  '0f83930bbf3053f8af52a8efad1557e887bc6f3af02aeccf5fb33772831aaf76' => '数据库中的标识符列(整数)(只读).',
+  '0f4723529d25ad9d266d7903f29e1f7e5e61760f1057a863bd9682e910124f1a' => 'ip 对应 计数',
+  '0fa8606d37baba3d7ed80c2e2596685f80ac5c3913916fc243dcd514f4ca7f2d' => 'SCAP是标准化表达和操纵安全数据的规格. SCAP统一使用若干个别规格,使持续监测、脆弱性管理和安全政策遵守情况评价报告自动化',
+  '0fb3c79b8b33e7f12622b432a74a14473ebd6ba3fac19e3d5f08b23271e3ac4b' => '过期( D)',
+  '0fb43a3fc01e83779f11a8fc59aec1ef37231bac780eeebafdcdc097e760ac7c' => '如果您是支持的客户, 请随FirstWave一同打开支持票, 请附上这些文件 。',
+  '0fcb46976554ccf5f9e5f7ba8f837a5da211329f64a17baf2e9781e8c71c8538' => '外部服务',
+  '1a0a6a36ca0a3953b997ddaeb722cb31e9e421b038f6a67ef55593f21dcf92b1' => '别名',
+  '1a0a7c321b16fff9e2f0a868562222aa9fc4dd8476c0618a0206c89905cb6167' => '由管理( B)',
+  '1a03bd2fd107c453f3183e30b9716f82200671e8270fbbefbe602f5a48705527' => '调试',
+  '1a0486c974ee671bad3bf78d64e85e706d1f32c48253040cf6d47fabdda13776' => '在取回外部设备时,我们是否应该对它进行发现?',
+  '1a0519b87468f2e551c2c24bd2f447ed50db0085161809e16010742506f6b1fe' => '模块 索引',
+  '1a3a636d89b12af1420eb6f1fd63eb7617310d4d512112e1af1b63ee996d0a1c' => '检查这些端口的 SSH',
+  '1a3a5173b2a14e0eae1d342a2f30a75d8099c37e2530929f0c5a09cd19309207' => '可报告',
+  '1a3cc66dd5caa24649237f1159741e48333d3f2a29fddc60148200966e05dcb1' => '<p>如果您添加了设备类型, 要显示相关的图标, 您必须手动将 . svg 格式化文件复制到目录 :<br/><em>链接</em>:/usr/当地/开放式审计/公共/设备 图像<br/><em>窗口</em>: c:\\ xampp\\htdocs\\ open- audit\\ device images<br/> <br/>如果您添加了位置类型, 要显示相关的图标, 您必须手动将 32x32px 图标复制到目录中 :<br/><em>链接</em>:/usr/当地/公开审计/公共/图像/地图 图片<br/><em>窗口</em>: c:\\ xampp\\htdocs\\ open- audit\\ images\\ map icons</p><p>当 <i>资源</i> 是一个 <code>device</code>无效 <i>类型</i> 它们是: <code>class</code>, (中文). <code>environment</code>, (中文). <code>status</code> 和 <code>type</code>如果 <i>资源</i> 这是 <code>locations</code> 或 <code>org</code> 唯一有效的数据 <i>类型</i> 这是 <code>type</code>如果 <i>资源</i> 是一个 <code>query</code> 唯一有效的数据 <i>类型</i> 这是 <code>menu_category</code>。 。 。 。</p>',
+  '1a4ce4885253cec607b29ae8f864b6905ea17ac3e7e65426cb8a0c9c3cd0176a' => '基线',
+  '1a6d08fa7dbb71c97024fa2e7012d40aab8364e5d1e6a705672c28414a2b5824' => 'SNMP v3 隐私协议.',
+  '1a61da3935c4183d2dfd82269cd69dcdfbc438e6fef88355880b0b47b776c70d' => '如果您需要配置活动目录访问,通常可以使用 <code>cn=Users,dc=your,dc=domain,dc=com</code> 送给你的 <code>base_dn</code>。无需设置 <code>user_dn</code>。 。 。 。',
+  '1a83bc715ddce78267b2a6c22a5871c5537267540f79ae2cd12d36741195a0cd' => '可在菜单上查阅 - > 帮助 - >',
+  '1a493c62ea1b1cbf3a235512a7641167fe64b5323260a94132686482f1f222f5' => '这一特点需要专业或企业许可证。',
+  '1a6129af6274ae54a13a79f83edfb7eb9456b045b1760335f401d7dc0fea58c8' => '更加安全',
+  '1a7436c5c7a565d97ffdbce61d4be7b41021b46e08f72c17b65329e4c5928198' => '高可用性',
+  '1a96060f9125599d0ae4afbdc9dfd23e6ba3343e88fc58fa2d058daaf2fa7232' => '选择性代理审计',
+  '1a110017b2d7ed00b79fd669efac5c45c2ac661e86c31a0d4533348b77128d00' => 'btu 最大值',
+  '1a407188a96e9317cd33e041bbb960fbd60b919b801475df17521473c00f152f' => '当您正在使用 Clouds 来发现您的微软 Azure 实例时, 您需要四个认证项目 - 订阅 ID, 租户 ID, 客户 ID 和客户端 秘密 。',
+  '1aa4cb0bcca76e92e30677e809bb3d4b5c066715ef4d558184e319496bcc5125' => '图像',
+  '1aa70929e14d27e365dfc3608e4450e31479f902e831db9a5209ceaf190af455' => '要使用此 Entertainment 特性, 您首先需要像往常一样在 Open- AudIT 中创建您的用户 。 不需要指定密码 。 您必须指定角色和兽类 。 Open-AudIT 中的用户名应匹配 Entra <i>首选用户名</i> 属性。 不需要全名或电子邮件,这些邮件将从恩特拉寄来。 如果你不认识你的用户 <i>首选用户名</i>别害怕 您可以在 Open-AudIT 中创建新的 Auth 方法,并在 Entra 中创建 Entertainment 应用程序, 当用户尝试在 Open-AudIT 上签名时, 请检查日志, 您将会看到它们的 <i>首选用户名</i> 登录为方便.',
+  '1add3c4f5cc4c5fc3a5d438d82ff91307cd5e8585214ae922cb7a55b1bb21795' => 'B号线',
+  '1af00b874ff3183021ca5c541e6f3e8d1bbb2b412bdb87f44cb07ae930dad646' => '阿尔巴尼亚',
+  '1af384c577f294d4164a7ea49f3021259e2b92802eac577722d14066b2bbd5ce' => '制造商',
+  '1af851907331c0ed99e7c63b4e55df808bc5fc4c990a1cf80ca8c0f76daf1f3b' => '大小',
+  '1b01f2b08d926978481869e8cd2659bd7ba5f499595b1d3c669ae39bcedb0a74' => '位置( R)',
+  '1b067a6354441a05665ef451d3aa006aa69f361059365a1fad72a5c8d554393f' => '用于默认路由或发现时检测到的IP的IP充值.',
+  '1b1c2608128dc4af66b4f066702b958fd7c191eb707ba587d5ef56d5eb583125' => '我们是否应该根据其序列和类型来匹配一个设备.',
+  '1b5c314123c7d77f5ceec6680654653055e1db386f1f38be99d263925ef475c6' => '需要权限( R)',
+  '1b86e5bca32c7d386241f4c6406e9b3ae3bd1d8f7899303b90cf7bce8d35fc5e' => '重量( E)',
+  '1b362bb9f53eb3bf086b778ec33381a67a272381a6d08b2b561d25f9246d2e6d' => '减速  b',
+  '1b840f868152bad2feab44fe5d9faa127f0a361031ddcf178aafeb82dbde7ec2' => '<p>该网络的格式应为192.168.1.0/24。<br/> <br/></p>',
+  '1ba1419fbf19bb859115f78793764798f5e997f26422d27793b13197ba875dce' => '改为:',
+  '01bc4009390083a75d0215a4847774db711b39a30e04e4d5d297416b2fb3a9de' => '厄立特里亚',
+  '1bced1d0ce55892e92065ce28610a61efc9b9a4d7b73d8d2beaf7088ad0d6592' => '安全',
+  '1bd8b03d4c2ab83981e593eaf76d2de144c43d6fed1857fd316d724791eed0b8' => '端口数量',
+  '1bddf1b186762a45d6ae5abac91e9342fee3f482b831410e3ba7a28e46122ab1' => 'SM 版本',
+  '1bfd696a9312792e2aa9060b81ff05c9ae364c93d0b33740b46c4181e2b4a444' => 'Vm 供应商',
+  '1c1a45adbfb0b48e2f372210f0a435f9b0a4136193183fb1dd6e743ad88af957' => '如果您希望在外部提供的设备上运行一个发现器,请选择选项和创建集成器时,所以选择发现器.',
+  '1c2b68b26e905a4052252be34378daa4b2120eedfc8bec1f75fac7d146ad4152' => '一定要回复到平. 如果设定, Nmap 将尝试发送并聆听 ICMP 响应 。 如果设备不响应,将不再进行扫描.<br/>以前一个设备不需要响应一个ping来继续扫描 Open-AudIT.',
+  '1c3f6044efbd444160c3523248e3c94ccf11c53763df6695bb3d0777cca9439d' => '更新属性',
+  '01c4d3c21642b21743ccae2d702002687dd4fdba6746caedf29b19a755f97533' => 'SSH 服务器',
+  '1c8a8855b358a97c7fe7cab1dde3aa245283b79e27665697c72c13a64ca90787' => 'TX 位速率',
+  '1c8f124f17cde701ea8e7f09283be9dcf77255008113a15abf6a68d3bb7c8cb2' => '集团',
+  '1c9a97aa1b7ece48dad77439086259a354e2edeb073fdba36fbd0c7159c6c3e4' => '拥有此品之云. 链接到 <code>clouds.id</code>。 。 。 。',
+  '1c679b6a9fad454dc9f3fa122e33a0fa3f75c8fae250859a8596b3a51256dd13' => '来自NVD的JSON唱片.',
+  '1c769ecb9e80202f43b5dfa8c2e8a76f1136f688292489308b07c22a66763376' => '捷克共和国',
+  '01c878b5187328d663d4bc29a9f401197fb00ad6c5636db767c72318532f9833' => '匹配设备',
+  '1c1855e3c7f211b4950b85f32250c2692ed587ba0f450669c7753782151cf2a7' => '也可以使用以下格式指定属性。',
+  '1cc77e60fcee8c4392cc52a2fdd1d9129beed4e6af97aca1b78ea61362c85247' => 'API 文档',
+  '1cdd12db649dc901ee2b5e70c5fd0666d8cf248eed3d67cdb26ad840cd759c3a' => '<p>快速查看您网络上设备的状态 。<br/> <br/></p>',
+  '1cff7713912f5d538506c1ba82db75b7caabcd0ee2dc4abee6bbd4db5878233e' => '执行情况',
+  '1d095499d1e27eed64eb8999a319bb7d0287eb144241ea048edcfd9c1eaf35d8' => '在这些行下面是将变量注入脚本的地方. 从我们先前的例子来看, Linux 审计脚本中包含着我们的目录',
+  '1d1c637886979a84bc45ceabfa10a36ab7328d531b842cf357643e23e8958a09' => '内存计数',
+  '1d1db19ffa9e818cd71859a09f1f1272c5a8da3836f997b8f9bcce9f0161101a' => '获取或创建',
+  '1d4d3e5249d8c60efb45b23d3bbdb2089b8a6650eecc39377d15fc9b0dcd3947' => '环境脆弱性概况',
+  '1d8bc6d8fd98294b4cd91a214230abb793fab06f5eaab1097fe44ee0ca3a0749' => '客户端网站名称',
+  '1d76e88676319015612be5cad38abf26f3bdd1b4f482c2cdb0604190f681c50a' => '编辑日期',
+  '1d260db8191dc62cef72c20bbe561a07a37cbd4b7fcb27ebcd7dc6262b02d91e' => 'Tx 弗莱克语Name',
+  '1d289028b79437ae34b23d1191aded02f2c2ce0cb0a0cc7a6b368e3ba357fe68' => '属性',
+  '1d19604574f831213df91627b5fc8c6888afeff190ea726267ac63659cb7afc7' => '如果设备联系到服务器后这多或多分钟已经过去,请执行动作.',
+  '1d703477530ebbea9348d3adb9379cbef070d7c2ac079e2735e3a5d9aab37e71' => '上下文名称',
+  '1daaa38f33cd860e9710c74ef1ebbb00af9f348ad0e991b94bba044a61ece936' => '何处',
+  '1dbce1c09302230b1e8ddee857804d13d531690de3b14695bb9a8f67a3609536' => '共享名称',
+  '1de999851b5bac8f1ef64905d07fc3951366263b7f4e4c47903bbc4d5536b354' => '过期分钟',
+  '1ded4550513e19e1c29cad55a3e9450438ba7da27b7d7d5890ddf9a57ca4b7ea' => 'VMware工作站倾向于使用并非全球独有的MAC地址. IE - 两个不同的工作站可能正在运行VMware工作站,并有两个不同的虚拟机,其MAC地址相同. 这些机器将不需要使用这个MAC地址在主机外进行联网,但Open-AudIT会在审计时发现MAC地址. 我们是否应该根据这些mac地址来确定独有性? 这些MAC地址一般以以下之一开头: 00:0c:29, 00:50:56, 00:05:69, 00:1c:14.',
+  '1df8058a6ee05a9cad0d886500b2add3c691d5a38a5381ad33a41bb47098de25' => '从 URL 下载文件',
+  '1dfaa68def4a7ed9154dba5887be4dbd12baa53d65b74e2a7b3e5d67d84db499' => '位置纬度。',
+  '01dfe3427abdad7aa6fbdd95a15ce2826409ee346c51d2023911937f8230c53a' => '立体基础 Dn',
+  '1e3abf61a37e3cad36b11b459b1cc39e76feb6a0c369fe5270957468288dcc5c' => '若为',
+  '1e4c6c44f3e958b08853abe693e4f7ebb83b0a428417b05dd13cec211491bb8e' => '可执行文件功能扫描设备的磁盘,作为审计的一部分,并检查每个可执行文件是否为软件包管理器所知. 由于它使用软件包管理器,该特性仅适用于Linux目标设备,并且更进一步,只有rpm或deb基于分布. 任何Redhat或Debian基地应该有用',
+  '1e5cacc6e5587b1440697b822d2264b14d04ebd0174a9d95c4640c0239631dc0' => '状态链接查询 ID',
+  '1e5fac867454a4fec29be85eea63d308abd770e42b169632817b0643b508877d' => '连接',
+  '1e7a3c13769b737b4a60f91528a06a2056a517ad8e7ce9c0c5879716e727b907' => '要下载的文件的 URL 。',
+  '1e7d9254d91258f648e59caeea5fe657f71bcdee822948b90b2d9547c4d36bca' => '月数日',
+  '1e7e8abca28f1bc36ce59a72e534b76dc0caeae568b1cf07f77b757782cd00d6' => '括号( D)',
+  '1e67e4646d991aea85cf2999e0dd27debb4143a4260597253d279ad30b31155a' => '查询( D)',
+  '1e85cf81f32c3098b21c50a00a255bf704be264ae9d905992eb17d2cd2d9a177' => '下载文件',
+  '1e142e6277b12b7e1110478a24caee8f006a9349e86970c890203d6266209463' => '安装',
+  '01e434c43f67c31076adf353d5b176f248c16c05516da83daf84d86632a377b0' => '奥姆克·乌伊德',
+  '1e919ea04769b8dc080085afe35451099f697a19bad646c5698ec38f8ed9a50b' => '方向调整 uri',
+  '1e4153aa4717107462402c7f4de7880419ccd4798c9161915b1c3adae3464310' => '开放AudIT舰载数艘预装Dashboard. 如果您是专业用户, 您可以在其中两个中选择, 并在登录时设置为默认页面 。 如果您是企业号用户,您不仅可以在5个预配置的Dashboard中进行选择,还拥有自己创建的能力.',
+  '1e5215e346fc2b83ee704ab9e66f6552e9523bc0ffa1b8b6488a5fcc91060767' => '斯洛伐克(斯洛伐克共和国)',
+  '1e71081aaf3f50fed7150707b9753654566a200697af2dc71319f351adf90d96' => '日志行',
+  '1ea4c1183e6bcc2f4cf35bbf6fe273c375a8a21af01c3f5feefb675600a52224' => '实例国',
+  '1ea442a134b2a184bd5d40104401f2a37fbc09ccf3f4bc9da161c6099be3691d' => '没有',
+  '1eaa93b209671134a515b6900a8e7426cdac193e7fec2020406c28b54705ba5f' => '服务包',
+  '1eb48c03805a936ff45a7b6a1d56d5981c1eda48ded3f19a3dabfca7f4ffe633' => '美属萨摩亚',
+  '1ece83e53ed899187dfac577424dbfbbcc325fbd4b7ff671c06157bd24013263' => '标准政策',
+  '1ed8c7e56c947bebc0cfcf88c4ea0f02c944568f71df893a99970e4f0c78cddc' => '香港',
+  '1ee92f7fa897f8817334074dcc5fb2d089c16ace5f7cd071090ff03b6989123e' => '一个新的用户登录到Open-AudIT,并经过LDAP断开认证和授权. 该用户随后在Open-AudIT中创建并登录. 师成功.',
+  '1f0b1664107cee1c4db590bf8794e442d7a8188f48817023d8e949d7a23c51d6' => '这是一个可选配置选项, 通过设置全局配置中的发现  use  org  id  match来启用 。',
+  '1f0e61e8528b01ebe9b399bdfbbd62566cb09d20fb030125bced5a813d1732de' => '鲁纳斯',
+  '1f1c5b2fad778434024f1537986346927917f4755a6e7d3fd91f22653b7c3132' => '房间',
+  '01f9c79a7e7cc86856d8fb94a74eb0dd09ca4f29b8115fac19adab53d7c531fe' => '地点( RO)',
+  '1f9d39ed0784eaf9735e117cac8d131fb37234e47d844439a63d604111be6145' => 'Open-AudIT服务器的地址提交页面.',
+  '1f58b9145b24d108d7ac38887338b3ea3229833b9c1e418250343f907bfd1047' => '请求',
+  '1f4728f67f025c551b4e16272eb20d827273d4f3ffef084c3f3df6156cc4062f' => '次要颜色',
+  '1f3193484aa705b72f4b0072dc94acb35e2bd7544e096bb2eeab8d860309934c' => '在 Open-AudIT 中删除 NMIS 设备',
+  '1f70524500ac89775c71037275267a572fd0c115cae2d0fcec0344fa94adf666' => '版本 Raw',
+  '1fa08f081dda13757bf872eb438b85c2b369de74d8e0ebf7be8c4e00eaf91f29' => '建议的处理和解决已查明的安全弱点的进程。 这通常涉及采用补丁、更新或其他措施,以消除脆弱性造成的风险。',
+  '1fa330e271ba9b77e05c07ed9b7aacfceed8593aa76b21d9bc4640cf3c9ac483' => '基准',
+  '1fab3446134dfa0e8e8a5d9ec1a0078909f34585a2023cc3de5b03500acea5a6' => '按主机名命令获取运行 Windows 的前10个设备',
+  '1fae9e04ff602f3a8ffe630ac2a7c05d165a3359792c1ffaa7af1006cfc782a4' => '收集器基本上是在Open-AudIT中安装的。 <i>收藏家</i> 模式。 这种模式将减少可见的功能,以努力简化和集中应用. 它旨在收集本地网络和设备的信息,其中防火墙和/或网络转盘是服务器的问题.',
+  '1fc4d2e60ca80e29e9ac8f51f41bcb7380978e98d7fc035d4bdfe4ff44a4ed02' => '推迟',
+  '1fd30780d2d7367b07fb1969eafad269c860e1ff075a6049c32f46e6a5418492' => '顶端 Nmap TCP 港口',
+  '1fda79ffb65973572d06d113cb166a10754223f2c0f232b29c79508497e49bdb' => '部件',
+  '1fdbbfbed7250b4a0aec8cc740e19f25cfcce45fefaf37f9c5dfe95bbf35d4c7' => '服务提供者',
+  '1fea93db77d564593f5ea44061647b82d40e82ddd861e94157f6c2b127e5a65f' => '主要说明',
+  '1ff3d5d384d8f1496ba048e4fc582fe0ad6f9441f54f08a39749dddd370529e1' => '电离层',
+  '1ff4d4db35951fd68fdf0100206c3718d6f4bb5b00830df0fa8a1c7e4587d6bb' => '电子网 mac',
+  '1ff9fe33415fa7c60e35660a63c8e21c361c5118769fdaca0245a1963c728627' => '数字',
+  '1ffb3a875a91b7036be6da614dba5356b054eb87c3b73bc10312bf9cfedc823e' => '指导',
+  '1ffb4425159a32524382853f02afc8727c9a5b7e0a2113d4dc272b12af519891' => '主要外部提供者',
+  '2a3cca15facb00b1788a94753dfaf665aa7420b52299f9e0f5ed115029a8a0fa' => '由于调试模式会在磁盘上生成大量的日志,因此在排除故障后应该对此进行评论,而没有任何好处.',
+  '2a8adc842be4c52eb2a8e45b035b7df694ed974b907ad00d7d2d975a417706bd' => '在LDAP中指定的用户存在,但Open-AudIT没有配置为角色消耗LDAP组,用户在Open-AudIT中并不存在. 选择 <i>对角色使用 LDAP</i> 在 Open-AudIT LDAP 服务器屏幕上或者在 Open-AudIT 内创建此用户,并指定角色和类。',
+  '2a17d3a297609fa397c17795e6ea1166e06f4d5ee05744d0fe3d3822f7f1e734' => '结果函数',
+  '2a75b6cd021f689d44bd530e9fa62974fcc772af83d5e43ae25ea92a397a8ef3' => '启动设备( D)',
+  '2a898bc98aaf6c96f2054bb1eadc9848eb77633039e9e9ffd833184ce553fe9b' => '用户',
+  '2a1073a6e67f0e5f09a5957c659503c690efe7272be8313df872556a9a684d8c' => '标签',
+  '2a2121cfd0e9fbcbd14fef4250123fe5b516dc872f8fd03b2b54691352781680' => '这个问题正在调查中。',
+  '2a7566cea6293ad4a3bd2c663761b347c79a56d0072845f285ced08cf40668f6' => '攻击要求',
+  '2a78025de6aae5e7ff88e5a951bb3a78ddd67388913529cf9e2dd9653e62b02d' => '选择',
+  '2ab3d5515ab01ec466591693bdb3efcac52952c75d59e6c50626697d9cfbc7a9' => '如果设置了值, 则会使用时间戳值 。',
+  '2ab9ce154bbca699065e98e7ca8fa8433dc1acff4864187675ce99289e73bf72' => '购买许可证的数量。',
+  '2abe6ce3689dddb31a75faaafb1a7293649d60f93bff0e48a87e7d5ddd7f2530' => '不等于',
+  '2aca0c68ff3e17b4c0345d01d8e81683c969b9e9b791d714ba6b1ac6768c2a1f' => '侧边栏',
+  '2ae440521e90078366a311ff4a99cc6f2e0cd8ea493f835b628592766b49e5d4' => '学习关于',
+  '02af239b79433e6ab42c1722766746f6ab185006b590714b128aa7b7d89ceb51' => '您已经注册了收集器, 请选择在哪里执行此发现 。',
+  '2b0cd6b55267c25eca2db35db51194c4eacb57d83c728dcab872d7e9a9e02a66' => '创建  外部  从  内部',
+  '2b0dcdd40016096b852d9d5b79de2ad570249dc8e4d4ebe4fa4ab81e2aa9af35' => '动作',
+  '2b09e8f93b369ddae8c8d5e7de17414920279d8cfbc77e04e16f8a86b44c1e61' => '创建集成后, 当您查看集成的细节时, 您会注意到一个名为调试的字段 。 此设定为默认无效 。 更改为是, 执行集成时会提供额外记录 。 调试不应留为是. 这是因为调试输出将包含从外部系统中检索到的所有内容——包括WMI和SNMP证书等项目. 调试选项只应在问题发生时使用, 您希望更深入地挖掘, 看看您是否能确定原因 。',
+  '2b3eaec21e74f49a2d318767276b70ce252713380fdae863b98fa7bff128d87d' => '键',
+  '2b5c3d26721ae9c350cf3009318b626f0fc8a90b4a2ac0ca8099c05aa849282e' => '联系人',
+  '02b7cae9cccc2c4720fcbf1a46ed320dc6c42835ea08f3166fdf9d58edbc9e51' => '保证   过期',
+  '2b43e42cae14efc6cb29082f721b67eec0d68f46fdb0dc9ac53d3b463bee06d9' => '每次您登录时都会进行新闻检查以获取更新的查询和软件包,配置建议,发布公告,博客帖等.',
+  '2b214ddf3326016519afcb268f63623b80b91a65265277668e4d020d87dd9078' => '订正',
+  '2b427ed4de99bfad8ef72db35ba61f68c6aa2a5120d8c30f6d17972ee74b36e3' => '更低的号码表示它将在其他规则之前应用.',
+  '2b457cd87edb37580fd9e9749c6246a6f61f0290b3130fd6d1c4de4bae5aad55' => '法属圭亚那',
+  '2b602c8a8e5bd4b287aca48d64dc0b84229b0dc606866ae6996e09bf6802c665' => '选择   外部属性',
+  '2b4244fb2663714ee7241914de64ede5288e4cb2921611e2a41193f11de11922' => '评论',
+  '2b47325b0264b98d4ef6364957e85aa7c9f5571a6d918e7f3791446330fb102c' => '法律要求',
+  '2bd3f7aabccc7140211b68ac6007f8b7a3c2674b8fbf5d22393c5746ccdaf13a' => '交通二级查询',
+  '2be91a2a681fd6b0b92c78ec357b54f297a7e6d77fa164509f0ac313cf89b65a' => '打印机双面体( D)',
+  '02bf1dfa9a0365a86223f0e4ac9eaa0517b06b2e9273790f719feda656a247ae' => '爱尔兰',
+  '2c079c1d6bc0ea53c983fbd6cb4408cf1a9d5f540691ba5fd348255bcdfac044' => '这个 <i>刚刚工作</i> 与 NMIS 连接',
+  '2c09f143cf45242321e88972ef31dff176aab0a8e7f1e245b383103c72f63163' => '最后结果( R)',
+  '2c4ec4f8d4e65fa9693fd2ea540bd017f2c172a652bdef3f8c94082d3a52f924' => 'Oae 管理系统',
+  '2c7b63f75d18c97b7877c9f1cf4e8700830c957dea7a6e2d939a8c0efac7bade' => '连接选项',
+  '2c11db8f3a2868a9fcd206ec71b2cc97d3bd1d662372143d2e866fa1c1c60b8d' => '所有常规的发现选项也可用于设备种子发现.',
+  '02c19f92b82ea49406c5df236a021dee6601523ddb6483268d09f47a49dcaa70' => '摘要提供钻井报告能力。 简单、直观、强大',
+  '2c48bb32dc89ce94388e2d4f6609474c1c486bc43dd8564e8222f2cdacd578de' => '<p>Collectors 特性使您可以轻松地管理许多进行网络发现的"collector"计算机. 所有收集器均由服务器集中控制. 收集器和服务器之间唯一需要的网络端口是80和/或443.<br/> <br/>它使管理不同的网络变得迅速、简单和简单。 打开AudIT 企业许可证持有者获得单一的集邮许可证,并可根据需要选择购买更多。<br/> <br/></p>',
+  '2c61a00541d5bae14ae9931d46ed7bfec914fe7f35ce887b60338119d32a857d' => '用户不在匹配此角色的 LDAP 组中 。',
+  '2c80e3a23455d5cb022924307f5e2d2370269c887d34374364ac2eafc2b86f5e' => '指定到位置的设备',
+  '2c1246a8dae4e2de2c365a4dfe6dcc1bb942f3d38c86d327b7f16e6e7c39fc22' => 'nmis 管理',
+  '2c731815d7b3bd6c2f8d008ed69248539f693db1facd01b1f4fa126c949a0083' => '高调',
+  '2c906915bd44b7bb9c366b35d2053df40a508396dd02bf26e2ece5ec8cb7fdcd' => '是谁制作的这个应用程序。',
+  '2ca26c60fe0238a76ad5765f7e0d47b4b179007944a8da6b52931325b6993cbd' => '厄瓜多尔',
+  '2cb84ee7ec70b3a6203b6e3f6d5b1310ec5bcb7e3f0c0e2d6941f9a814f8044e' => '此服务器的唯一标识符 。',
+  '002cbd89c2cedaa5bd78fb70439cc0779e0317a367d9a5f8b01a0ef2c2f163d4' => '将设备指定为集群',
+  '2cbebc541f98c7a72472194f1987a1541fa278d9e27a97013c1c889bd26d5d1f' => '尼日尔',
+  '2cd09fea5ec47288c93416839daf1dd66d226c8fdaf104dacfb0b73092d24d3c' => '窗口下的服务',
+  '2cd413f0fb4733864b8877dc5ddb99147973fe2581c3d473f8366042fd47a562' => '运算符',
+  '2cea274d0bedc39ec4ab6ba9e59ec889e3ed6fb56a1cf088a64d9b383378dc97' => '图片',
+  '2cedd5c9abfcdaee1a36c57b67e4ab175b2506250ef9bed5d679f0a79321520e' => '基准( G)',
+  '2cf0a0aa3053e1ea6a4f85def1e9978b047350f45d856f1e9e593ac623d4b7df' => '打开LDAP',
+  '2cff9baabf56ca002610e113bc94deb6ededddfc3c130365b6e88ed5195bf774' => '导入',
+  '2d080fc45b1740a9fcf76742b9f74dffea086b3ab5c5871c4459b9c830e6da16' => '用于此信息。',
+  '2d9e28289facab94b41f9592b7f55bc4fc10fed54e789669468e8da31c9a5caf' => '请求',
+  '2d68dc73d9b209e0efb6b1dc3180020a17b9a1dd196dbe5941b254448f9bb4d8' => '基准 结果',
+  '2d72b431500517a04be2b049b6eed2e5115d950e34b27aa2a031f8d4fbfdb8ec' => '布尔y/n',
+  '2d134fda040e56ebc52087da471a8285047c9b39f16dcf8d6eec9568bcc0aea3' => '如果',
+  '2d275a74912cca2e02e6d41f9cae3a75ceef3ed0ef734eff3710e10eb7112228' => '度量衡',
+  '2d45626fa5534f19549817c4be0f01730af20656870cfc296158a111809e516e' => '核心数',
+  '2d79413e6aae7fbf16497f462530582b7e861d8443fa0cc73172b0c4a9458858' => '通常为Mbs,到位置B.',
+  '2d8084836607b42e304b951b1943bd8325f318eeee79f17decccad3bea82f236' => '二级拥有者',
+  '2db074b0aebb08b65d3fe14dbd1418b276bb42534cbf39ef3fe0443309221d4a' => '服务结束( O)',
+  '2db533557011ec539fc4c6604367e99cbb77c0a49b8b73b655841d3ee08f4f3e' => '主机名',
+  '2dc1ddcbfd5b14ed1005e2d08911a6a689458e8810588890c308c67f97f8c448' => '锡德',
+  '2dc3dcad5aabe051aac84faa005da4583a408e009606974fc85c15face22be06' => '极端 - 否则,组织将失败。
+
+非常高 -- -- 对各组织生存至关重要,必须立即恢复的职能。
 
 高度 - 应迅速恢复但恢复时间可能稍长的重要功能。
 
 中 - 必要但可容忍较长停机时间的函数。
 
-低 - 可以延迟而无重大影响的非基本功能.
-
-未指定 - 直到设定默认值 。';
-
-$GLOBALS["lang"]['fail'] = '失败';
-
-$GLOBALS["lang"]['false'] = '虚假';
-
-$GLOBALS["lang"]['file'] = '文件';
-
-$GLOBALS["lang"]['firewall'] = '防火墙';
-
-$GLOBALS["lang"]['first'] = '第一个';
-
-$GLOBALS["lang"]['fixed'] = '固定';
-
-$GLOBALS["lang"]['floor'] = '楼层';
-
-$GLOBALS["lang"]['for'] = '(单位:千美元)';
-
-$GLOBALS["lang"]['for authentication'] = '认证';
-
-$GLOBALS["lang"]['for this information.'] = '用于此信息。';
-
-$GLOBALS["lang"]['from Audit Script Result'] = '来自审计脚本结果';
-
-$GLOBALS["lang"]['from NMIS'] = '国家监测信息系统';
-
-$GLOBALS["lang"]['from address LocalHost (Using LRPC) running in the application container'] = '从地址 LocalHost( Using LRPC) 在应用程序容器中运行';
-
-$GLOBALS["lang"]['front'] = '前面';
-
-$GLOBALS["lang"]['front-left'] = '前左侧';
-
-$GLOBALS["lang"]['front-right'] = '右前边';
-
-$GLOBALS["lang"]['github'] = ' gi';
-
-$GLOBALS["lang"]['google'] = '谷歌';
-
-$GLOBALS["lang"]['greater or equals'] = '大于或等于';
-
-$GLOBALS["lang"]['greater than'] = '大于';
-
-$GLOBALS["lang"]['group'] = '组';
-
-$GLOBALS["lang"]['has not been set'] = '尚未设定';
-
-$GLOBALS["lang"]['have a working reverse DNS resolvable IP to the target Windows PC.'] = '在目标Windows PC上有一个工作逆向 DNS 可解析的IP.';
-
-$GLOBALS["lang"]['have the ability to be executed. On the'] = '有被执行的能力。 打开';
-
-$GLOBALS["lang"]['head'] = '头';
-
-$GLOBALS["lang"]['here'] = '这里';
-
-$GLOBALS["lang"]['high availability'] = '高可用性';
-
-$GLOBALS["lang"]['howto'] = '怎样';
-
-$GLOBALS["lang"]['if you clone a Linux virtual machine, unless you manually regenerate this (and in my experience, people do not) it will remain the same.'] = '如果你克隆了一个Linux虚拟机,除非你手动再生成这个(而根据我的经验,人们不会),它将保持不变.';
-
-$GLOBALS["lang"]['ignored'] = '忽略';
-
-$GLOBALS["lang"]['import the example device data'] = '导入示例设备数据';
-
-$GLOBALS["lang"]['in'] = '内';
-
-$GLOBALS["lang"]['in Enterprise.'] = '在企业号。';
-
-$GLOBALS["lang"]['in Inputs can have the following values.'] = '在输入中,可以有下列值。';
-
-$GLOBALS["lang"]['in Outputs can have the following values.'] = '在产出中可以有以下数值。';
-
-$GLOBALS["lang"]['inactive'] = '不活动';
-
-$GLOBALS["lang"]['incomplete'] = '不完整';
-
-$GLOBALS["lang"]['info'] = '信息';
-
-$GLOBALS["lang"]['installer will test for the presence of Nmap in its standard install locations of'] = '安装器将测试Nmap在其标准安装位置中的存在:';
-
-$GLOBALS["lang"]['int, text, bool (y/n), etc'] = '内置、文本、布尔(y/n)等';
-
-$GLOBALS["lang"]['is U.S. standard maintained by National Institute of Standards and Technology'] = '美国标准由国家标准和技术研究所维持';
-
-$GLOBALS["lang"]['is an international standard for managing information security. It provides a framework for establishing, implementing, maintaining, and continually improving an Information Security Management System (ISMS).'] = '是管理信息安全的国际标准。 它为建立、实施、维持和不断改进信息安全管理系统提供了一个框架。';
-
-$GLOBALS["lang"]['is based upon'] = '数据基于';
-
-$GLOBALS["lang"]['is licensed to'] = '被许可使用';
-
-$GLOBALS["lang"]['is next on the list and Open-AudIT can use password and key authentication. Open-AudIT can also use a sudo enabled user as opposed to the root use directly (although it can also use root). For best results, the root user or a sudo enabled user should be used (see Auditing Linux without root and Target Client Configuration on the wiki). Windows devices can also run ssh, however if Open-AudIT detects this it will stop the SSH queries and instead use WMI (assuming working WMI credentials).'] = 'Open-AudIT可以使用密码和密钥认证。 Open-AudIT也可以使用一个已启用的sudo用户而不是直接使用root(虽然它也可以使用root). 为了取得最佳结果,应该使用root用户或一个已启用的sudo用户(见Wiki上没有root的Linux审计和目标客户端配置). Windows设备也可以运行ssh,然而,如果Open-AudIT检测到这一点,它会停止SSH查询,而是使用WMI(假设正在工作的WMI证书).';
-
-$GLOBALS["lang"]['is the link to the'] = '是链接到';
-
-$GLOBALS["lang"]['item to view the specific tables and their columns. This will enable you to find exactly what you need, rather than trawling through the MySQL console of the schema creation script.'] = '选项,以查看具体的表格及其列。 这将使你能够找到你需要的,而不是通过计划创建脚本的MySQL控制台拖网。';
-
-$GLOBALS["lang"]['key required to retrieve lat/long and display map. See'] = '键以获取 lat/ 长和显示地图。 见';
-
-$GLOBALS["lang"]['left'] = '左边';
-
-$GLOBALS["lang"]['less or equals'] = '小数或等于';
-
-$GLOBALS["lang"]['less than'] = '小于';
-
-$GLOBALS["lang"]['license'] = '许可证';
-
-$GLOBALS["lang"]['licenses'] = '许可证';
-
-$GLOBALS["lang"]['like'] = '喜欢';
-
-$GLOBALS["lang"]['line'] = '线条';
-
-$GLOBALS["lang"]['list'] = '列表';
-
-$GLOBALS["lang"]['list View, using the Create button'] = '列表视图,使用创建按钮';
-
-$GLOBALS["lang"]['load balancing'] = '负载平衡';
-
-$GLOBALS["lang"]['location'] = '地点';
-
-$GLOBALS["lang"]['locations'] = '地点';
-
-$GLOBALS["lang"]['managed'] = '管理';
-
-$GLOBALS["lang"]['methods'] = '方法';
-
-$GLOBALS["lang"]['microsoft'] = '微软';
-
-$GLOBALS["lang"]['mount point'] = '挂载点';
-
-$GLOBALS["lang"]['must'] = '必须';
-
-$GLOBALS["lang"]['network'] = '网络';
-
-$GLOBALS["lang"]['news'] = '新闻';
-
-$GLOBALS["lang"]['no'] = '无';
-
-$GLOBALS["lang"]['node'] = '节点';
-
-$GLOBALS["lang"]['none'] = '无';
-
-$GLOBALS["lang"]['normal'] = '常规';
-
-$GLOBALS["lang"]['not applicable'] = '不适用';
-
-$GLOBALS["lang"]['not in'] = '没有在';
-
-$GLOBALS["lang"]['not like'] = '不喜欢';
-
-$GLOBALS["lang"]['notice'] = '通知';
-
-$GLOBALS["lang"]['notification'] = '通知';
-
-$GLOBALS["lang"]['okta'] = '罢';
-
-$GLOBALS["lang"]['on devices where'] = '在设备上';
-
-$GLOBALS["lang"]['openldap'] = '打开';
-
-$GLOBALS["lang"]['optimized'] = '优化';
-
-$GLOBALS["lang"]['optionally '] = '可选 ';
-
-$GLOBALS["lang"]['or'] = '或者说';
-
-$GLOBALS["lang"]['or the GitHub page at'] = '或 GitHub 页面';
-
-$GLOBALS["lang"]['other'] = '其他项目';
-
-$GLOBALS["lang"]['package'] = '软件包';
-
-$GLOBALS["lang"]['page. Export your LDAP server from menu -> Admin -> LDAP Servers -> Details to JSON and save and include this data as well.'] = '页面。 从菜单导出您的 LDAP 服务器 - > 管理员 - > LDAP 服务器 - > 详细信息给JSON,并保存和包含此数据.';
-
-$GLOBALS["lang"]['partition'] = '分区';
-
-$GLOBALS["lang"]['pass'] = '通过';
-
-$GLOBALS["lang"]['pending'] = '待处理';
-
-$GLOBALS["lang"]['performance'] = '业绩';
-
-$GLOBALS["lang"]['performed'] = '执行';
-
-$GLOBALS["lang"]['permission'] = '权限';
-
-$GLOBALS["lang"]['permissions required per endpoint'] = '每个终点所需的权限';
-
-$GLOBALS["lang"]['pie'] = '馅饼';
-
-$GLOBALS["lang"]['planning'] = '规划';
-
-$GLOBALS["lang"]['predictable'] = '可预见';
-
-$GLOBALS["lang"]['query'] = '查询';
-
-$GLOBALS["lang"]['rear'] = '后边';
-
-$GLOBALS["lang"]['rear-left'] = '后左边';
-
-$GLOBALS["lang"]['rear-right'] = '后侧';
-
-$GLOBALS["lang"]['regex'] = '缩写';
-
-$GLOBALS["lang"]['release'] = '释放';
-
-$GLOBALS["lang"]['removed from display, but has been set'] = '从显示中删除, 但已设定';
-
-$GLOBALS["lang"]['reserved'] = '保留';
-
-$GLOBALS["lang"]['right'] = '对';
-
-$GLOBALS["lang"]['rights) you can click on the field value to edit it.'] = ')可以单击字段值来编辑它。';
-
-$GLOBALS["lang"]['role'] = '角色';
-
-$GLOBALS["lang"]['room'] = '房间';
-
-$GLOBALS["lang"]['row'] = '线条';
-
-$GLOBALS["lang"]['service failed to start due to the following error'] = '由于以下错误, 服务启动失败';
-
-$GLOBALS["lang"]['so Open-AudIT knows to restrict your query to the appropriate Orgs.'] = '所以Open-AudIT知道将您的查询限制在相应的Orgs.';
-
-$GLOBALS["lang"]['stand-alone'] = '独立';
-
-$GLOBALS["lang"]['standard'] = '标准';
-
-$GLOBALS["lang"]['starts with'] = '开始于';
-
-$GLOBALS["lang"]['storage'] = '存储';
-
-$GLOBALS["lang"]['subnet'] = '子网络';
-
-$GLOBALS["lang"]['table'] = '图表';
-
-$GLOBALS["lang"]['table and insert the original rows.'] = '表格并插入原行。';
-
-$GLOBALS["lang"]['team'] = '团队';
-
-$GLOBALS["lang"]['text. The first is the array index and should be left as-is. The index is used in the templates to lookup the translated text.'] = '语句。 第一个是数组索引,应留为正数。 该索引用于模板中查找翻译文本。';
-
-$GLOBALS["lang"]['then clicking on the details button for the table.'] = '然后点击表格的细节按钮。';
-
-$GLOBALS["lang"]['then clicking on the details button for the table. Device details are stored in the'] = '然后点击表格的细节按钮。 设备细节存储于';
-
-$GLOBALS["lang"]['timestamp'] = '时间戳';
-
-$GLOBALS["lang"]['to'] = '改为:';
-
-$GLOBALS["lang"]['to create an item of this type'] = '创建此类型项目';
-
-$GLOBALS["lang"]['to the URL, you will get the full database entry, including all component tables, of a given device.'] = '到 URL,您将获得一个设备的全部数据库条目,包括所有组件表格。';
-
-$GLOBALS["lang"]['to the user'] = '发送给用户';
-
-$GLOBALS["lang"]['top'] = '顶端';
-
-$GLOBALS["lang"]['top secret - Military / Government classification. Disclosure would cause exceptionally grave danger to national security.
-
-secret - Military / Government classification. Disclosure would cause serious damage to national security.
-
-confidential - Military / Government and Private Sector classification. Data that is confidential includes trade secrets, intellectual data, application programming code, and other data that could seriously affect the organization if unauthorized disclosure occurred. Data at this level would be available only to personnel in the organization whose work needs, or is directly related to, the accessed data. Access to confidential data usually requires authorization for each access.
-
-private - Private Sector classification. Data that is private includes any information related to personnel, including human resources records, medical records, and salary information, that is used only within the organization.
-
-sensitive - Military / Government and Private Sector classification. Data that is sensitive includes organizational financial information and requires extra measures to ensure its CIA and accuracy. Disclosure might harm national security.
-
-public - Private Sector classification. Public data is data that is generally shared with the public and would not cause a negative impact on the organization. Examples of public data include how many people work in the organization and what products an organization manufactures or sells.
-
-unclassified - Military / Government classification. Any information that can generally be distributed to the public without any threat to national interest.
-
-unassigned - The default until set.'] = '绝密 - 军事/政府分类. 披露会对国家安全造成特别严重的危险。
+低 - 非必要功能,可以延迟而无重大影响.
+
+未指定 - 设定前的默认值 。',
+  '2dd63e15a57a7a1dcbb91b196087caf9cc8bf38a782e3e7d4afe16271dbfc69b' => '并寻找今天之前的保修期',
+  '2ddc5634ff5e06c551736395174b5a62f10864ab2878f03d079836b253994869' => '亚美尼亚',
+  '2df962d37ee229c547fb4ebef038a1eaecd0cd6f1c109746f4a9c1fa80329254' => '分区',
+  '2df6753e0a598f101b31d3b69c59a0ec70e888b2cd5c814be514626d756c3aca' => '有访问的示例 Org 图表',
+  '2dfe9551b4a27f33423ac3049c457c82fada475ea4dc26c5cc44bea1d7a0fda0' => '您可以自动使用',
+  '2e0d0e00d49ec4d37717e57ffc61e09d4ec8ee4a273905d373f7a782dd2554f1' => '用户名( N)',
+  '2e4eef5757ab34083517d0c1aaad214976791185080f534ef7245b60d61709ff' => '并下载最新版的自我安装器。 您可能需要滚动下页才能找到它 。',
+  '2e5a0498eb85afda751153d29f5f7af5386fbca730c5a0eb65c068460a01bb08' => '由于以下错误, 服务启动失败',
+  '2e5bdc9774dd9ce26fbc02f384c1bd4c8d73e77bf5dd34cf98461373bb11b7a3' => '编辑( B)',
+  '2e5e14d1e68fa04e3362c526e72aa7b098add8f53c98c29b3a55a3c2aa02bbf1' => '设置本地和远程访问权限。',
+  '2e5e81066a29cd66b1d941286656b7b28db1b542ec3de23eabde2c45f38a1248' => '越南',
+  '2e6a6424bdbc74838ff1a6b2c49dd050d8b8f88d2a00eaa9f0926484ca1819c1' => '云发现者现状.',
+  '2e62db3ade20e40a1de26bdea2cf5bdd89a9b53195bf56dd07374177027cbd6b' => '第二阶段:执行情况和成效审查',
+  '2e65ffbea24659876c6c3ae178edee83826e116f1543c6007e3e5eda61f5bd23' => '下一个运行',
+  '2e516d68f42f3e351f273a6127f89f4d323a606a3656e34e52b14b746ed27404' => '订正',
+  '2e951fd7ee82fed62bac81e21ddf4086d2765dd370e6016fa3a653e7dbd7ab28' => '附加项目',
+  '2e1247b913aa393c0d0961dcedfc9786c14e7212380e3cfb75d5e210eb9559c4' => '这个收藏家的IP地址曾经与服务器通信.',
+  '2e34521b746de91187cd5e13b1b1bb7c47ed2a5130c91113786f974f979032bf' => '二级拥有者',
+  '2e150926296132d7a03fba3c59dceaec9027cfd42f29e35f9e3c0e965fe02f56' => '测试 分钟',
+  '2ea88c7a30351b12a4dcfc06cdce2af6eab18416176466c2500cb6ef74f745bf' => '协议',
+  '2ea1842b445b0c813cc619b6d4740a41c2127a66b306a363d761ed4258862cc0' => '内部',
+  '2eaf4c3a73896a4610fe7144f264d34a18d97f6ae389586ef098ffe286fa0d08' => '资产标签( T)',
+  '2eb5eecbf6f606e13bddf05175694fd1d9d723964e81eef7664c165293c7ad76' => 'Collector / Server 为您设计了远程或 <i>收藏家</i> 例如Open-AudIT在远程机器上运行。 收集器的例子可能位于另一个安全区、子网、云宿或客户点。 然后远程采集器在当地对设备进行所有发现和审计,以避免联网和防火墙的复杂性。 收集器一旦注册,就完全由 <i>服务器</i>。这意味着您只需要从收集器到服务器的 HTTP 或 HTTPS 连接。',
+  '2ec5039a6e8665776e569477e93988a2f444ba776ed50d497854e4d934972ae2' => '在 Open-AudIT 中创建的设备',
+  '2ee70e21c2d2c42c36fe93c12ec642f0978bef63ff1b98ff219e7e51a497a462' => '线条( A)',
+  '2ee371a2056dce0065509e8a3c7192f1decdb0dd4c640bbeb11337972a3dc6ac' => '我们是否应该检索所有 DNS 名称',
+  '2ef42ec21d9300dd21ae3c7ca3711806cce3003fa4edafd22ee744fe86599799' => '已出版',
+  '2ef99a51d5c9eb3eacdb779c46695ea17f96e7fc0e904116d79f9d2d4d9c1d64' => '奥斯名称',
+  '2f1d47eb679bb05e6d8fe039af1563549588cd44b40be6b1013ea8ca2268845f' => '孟加拉国',
+  '02f6c8d5df05e61bd731b23d072ad67e049d125cdc80c5e18963a737bc55bd0d' => '扭曲',
+  '2f8f9bf6da501e101580ee81cb20705e3efb1a19526907de2d0f7e7b5deaae45' => '切换到用户',
+  '2f58e8957eb0440d543e36a383bb892d47bc39396347b265d564e21c2892df3d' => '将此安装为收藏器',
+  '2f238f5de642e1d13820ddfd0d4678c155e8a235af50ad05141c0ebbfe0d46db' => '启用此计算机上的分布式COM - 选中选项',
+  '2f295cd9630851684e2f04fbda336c527f09c3cbff4f0863952f6786a101e2bc' => '排队 IP 扫描',
+  '2f860a603b4ecdb0928cb58d14d3c27218e037dbf6a16c8fa607a47a7b6dcf58' => '证书名称',
+  '2f77668a9dfbf8d5848b9eeb4a7145ca94c6ed9236e4a773f6dcafa5132b2f91' => '消息',
+  '2f343666aaa88c44430b12e6ab8a29591a069de76541125e83ff1b5acc367bf2' => '格式',
+  '2fa09daa721d0c459c7d079731a1d1da70b3b4b99e99415708a4ea0928471ab0' => '云名称',
+  '2fa7e538107d06c7afdfc95af2a2d7a7ebd6bc360b970aa3bb0e0aeb30baf1e3' => '接口 类型',
+  '2fbf07d87262babe114efc74d8f2511dba83bfae38f53cd5577f8d7ce5edcf3e' => '活动/ 活动',
+  '2fe451113761a991e0a6dc1291c3649883522f2b8c1bd56ca0b8960a0e0b05e7' => '电路计数',
+  '2feab4bb1fa182f2b7294e7db9b4cd7477eb0c3b1cc3b59067e08d21dae53b04' => '审计',
+  '2fec6cc2d12b6014b060c58a7f237a06197c00b35a92df7a4cd203a892a828b6' => '任务可以是几种不同类型之一:基线、发现、报告、查询、摘要或收集器。',
+  '2ffa682f4cb0d225d56e972fcee868387a4322f340af5b9bddab3e661391ab63' => '在组合设备时,哪个系统是权威信息来源.',
+  '2ffe84d5444b17868cf635b64d8f995d192768c52a8010a1ec1c22858a58bb18' => '使用服务版本检测',
+  '3a7fd7b5fd9b13397b3010c5a68f82377f7e2aa2cad1ad6d9fcff5e26094a16d' => 'ip 地址 外部 b',
+  '3a9d1b3ab13b67df0009ccd9d58160ec79f4b02a7e762aeb05ce4470591ad3f3' => '如果发现管理软件,我们是否应该审计一个 SAN 。',
+  '3a9e337b334e6c721432fa87016d558075763e0e40c4486af5bd2fbbc64709b9' => '仪表板 ID',
+  '3a15b341758180a9ab6dca4d888f3550c404e0b828eed3f83a4f5f1e7631cf8c' => '切换端口( P)',
+  '3a53f907e56608ab2a3b6ec9c06e56a778dc1153e2dde413d16597b0b5377835' => '编组( D)',
+  '3a78695388b38b5cceefaf6796b0137877514593543b91af2752d5a17e3d736c' => '页 次',
+  '3ac694edf07c1b3ad8a1f0b6ad9c465bef3c32575fdb861eecce586e1ffbe435' => '标记 1',
+  '3adab67275f34338f55b0ff76ccb5ba38e7fec1ae8610c56a6294a8ca078b02a' => 'SNMP 版本',
+  '3aeefbd95a2a783e3dcd358c1beebda208046e78ecee07c1814791e7c46a06ee' => 'NMIS 设备选择',
+  '3b6ab4ec1dc118a7fded2c42ede604b7e08aca69a9795a09ff06cd85a0f0e3ff' => '设备( A)',
+  '3b9c358f36f0a31b6ad3e14f309c7cf198ac9246e8316f9ce543d5b19ac02b80' => '文件',
+  '3b10a207e2bbddeeaa964719cbc6258986c315af758184b5efaaa4dbafe9a8b2' => '创建发现',
+  '3b44f23520cdccafc378b79af9e55316cc678e8d06cb382a6203ef34acda095b' => '选择内部( V)',
+  '3b61be2af941a684839f61388cc30bf34ffd62ed7d248a28ae81912bab68d1f5' => '最后一个标记( L)',
+  '3b67d081245d179e84d51424a987bc63a1413ca9c6a213b8de84687516f69ce1' => '买更多',
+  '3b312a078a08db19b750864bcdd46b1543782ab63b53218af3684e863cb37fdc' => 'HW 修订',
+  '3b951ebd7c9647a19ad78b3e6e0aa4c747396eb2c4b02a235edae2db1166c873' => '创建',
+  '3b325109deb02ebf8150c4cc76e908d55f977082fe74bfd455e298770351b77d' => '变量',
+  '3b1181105f032605e590dbb2536051235d1152b58d20ff5c750f37489b8fc7d5' => '发现扫描类型',
+  '3bb25973af8255644b49e91f84b517a5001334820598121deca15f86e97efc8c' => '后骨网络',
+  '3bd0ee385b2b06370260c12760510279d30db8f9240e1d6a227b60c4c8f8c648' => 'A站点小时',
+  '3bd4a22fe34b61efed4f1ab7645f0dc6ae06adc71b2b256f838a1f895b03646b' => '每次发现完成后都会更新',
+  '3bdfe4062baadbe144cfa7fddecd4e2186408c9039f02b4954ad7d60e5389b99' => '这个错误表明SMB1已被禁用或从目标机中移除. 这对现代版本的Windows来说是正常的,只有在SMB2连接尝试失败时才会看到这个消息. 如果SMB2连接失败,我们尝试SMB1在旧版本的Windows上进行发现. 如果目标视窗机 <i>这是</i> 运行旧版本的 Windows, 您的证书可能已经失败 。 这样的话,你看',
+  '3be0183f5fca67a6319ed057e635cf15053328e34cc326cd8448f172c3304901' => '如果当前登录的用户的角色包含',
+  '3bf7053492c0b5ba63393a6965b99ca9e67081747fa0b59e827d7e2c89285fdc' => '可选的地理代码',
+  '3c0a2932fc2d574fc2f6deaddc33f23e3fb5e9a199865990806c35fd2eb133ba' => '本地端口',
+  '03c0e806becb14255a81ae988518aad54d7464b58802b60817b1aed1eb20cfbd' => '匹配',
+  '3c080e1d077d8c903d62d62b5de7b06e4014b630e737f6a82135534ec6345591' => '您的 SQL 要选择将包含此组的设备 。',
+  '3c1cd05a9cfbb14946eb8c6716ac876699084aa69d30384151b214bb02f9ed01' => '文件名称',
+  '3c3de0c91c5fd542af4f81c7806e68162de2e8773883c8d4a7182450b8203c56' => 'IP 地址',
+  '3c3f5c70954f7ada0cf70190f584d61ac8cd61c21927882050266ab7abdb3779' => '通过设备导出',
+  '3c24f14134d72a6f8788bdba064fe37cbb3112b7d9444d71636262d17ed6ea37' => '最大文件大小',
+  '3c42e495a7723ed92710f1a34152000431af64d41ce38c16f1ea5df1c003eb6c' => '显示的文本 。',
+  '3c58ceb73c40829232ddc3b324ebe1c24002226091d612b4efefedc5d37ca636' => '浏览器  lang',
+  '3c800c06ed453de0b01eb98bef78a66b5ee7317dfa0e44713462a130a4dfc99b' => '严重性从 <code>base_score</code> 也可以是:无,低,中,高,临界之一.',
+  '3c1234e131d9c93c93758e73b308aa61d88d13b82c7688d69ad8a3610a9ff584' => '我们的一些模板支持新移动到数据表,使用服务器侧处理. 这大大改善了载重时间。',
+  '3c8869e1a892294864cf28bab0a9f8e1946cde73d5f89dc11cf8baee87cfd4f1' => 'ADSL、氢氟碳化合物、ISDN等',
+  '3c75438c7caec78e645d5f15dc53b5f7bc661463e9fce78cc648d12d86760177' => '二进制',
+  '03cd7ad32b61fc6bcacaa79766ecbbe91eaf876898ce5c5e003a1282d8600a9f' => '附件( T)',
+  '3cd998ce041d13c4ccd470f09a9db6649f8c7f59e3e6b34703ca425a0213a825' => '二级内部身份证B',
+  '3d5d2f7593c08d26bbaf56230c2454727fc0ee7dcea3dacc5bd572d3800ff8aa' => '简历',
+  '3d7d1bb41ec8abf7b608e8b2d03b58949be9300d2739a5df29b02bfbb81cb76b' => '部件 # ',
+  '3d7db37d08f9140fd09f12b9621cd0954b6d56a9d2f357fb2c7f5d62636d2fd1' => '文件',
+  '03d66dd08835c1ca3f128cceacd1f31ac94163096b20f445ae84285bc0832d72' => '证书',
+  '3d255e8310391670a04e3c5769074a7500c9b9592b83af1d4d0ed6204894a28d' => '选择 外部 值',
+  '3d682d8c32a3d5393414be19a800a71e9a451908c07dc8138f60134d01c91845' => '审计 ESXI',
+  '3d98327bcf15bf7d512111eb7342494a62c4799468f8db382c23c2c75e175a55' => '更新  外部  从  内部',
+  '3de3616f012a6ad146c636b31164caf791242838fce3ff17fbe9955cbe58ac42' => '初级业主',
+  '3df04418868aa595469621085c6e304bdeea198dc39b92a9d131f82c8b4af463' => '使用主菜单项。',
+  '3df5df52f53e67fa5711803bdc1b24ab20370ec61c1e4ec626bfa512ed9eda6c' => '维兰身份证',
+  '3df9726c68ba76d6c8bb02b65e572df8dca251481bb6cb3c99c808b3f5087c13' => '终点',
+  '3e049d78d958038ac6bd5dcf038075cc73362b4956aaf7308c3a69c8eca76297' => '南非',
+  '3e098fd750d2767914aa9aea9f75af3af1c7233a03e28c968a96bb0d4a9f04f7' => 'nmis  poller (正数)',
+  '3e7d904af2b38c0fb0fea738510d006c0f9baff9ad91b8263701e673c175e37b' => 'SQL查询基本上分为三部分.',
+  '3e78f2e032aa72ef992d35620109b561a95c934045abca0b9fcfb72a357613d5' => '奥斯组',
+  '3e93d8ffe7187ccdd53be3c67ca73cdb9f727fde8039395ad0232d750d934414' => 'CVE出版日期和时间.',
+  '3e340be4de18e6f6df4404109ac61d3329ab3b73b8745b3d3cac74c41919cd20' => '安道尔',
+  '3e726bd430576f94c27a7f70d9bfe1df76c3094119d8c569b8a473df14860a93' => '群集名称',
+  '3e18194d244aea2be38f9b85f3d9d116291513f975c9ebc32b6cf8a835a64b2d' => '时间安排 - 发现、报告和更多',
+  '3e850413dc99ad649e6650099668414793d8551d1a019c1d413e433a42151ea2' => '仅基于 Linux 的设备 。 DBUS id应该是在每个Linux设备上独有的. 它默认被设定为NO,因为ESX在克隆一个宾客虚拟机时,没有告诉操作系统重现这个标识符. 我们收到关于发现的装置 互相覆盖的报告 这是罪犯',
+  '3e51018136e00d2f8a0ef408bae42fdd0be246e5d5910d87cd3da54918b8fb8e' => '删除例外',
+  '03ec3249634b1fa435c002bab3c344ed2e8b94a6868b13e1a3f60e93f66ec8f1' => '缩写 Oid',
+  '3ed850b2cc649c0b6017292646b719533b450e0d4c615df4d1b4bd5dc0d3f611' => '审计设备',
+  '3ee865de53c5eb2ff8d71b4c903b1cf2a9515279f1bc1fb79983ca30af291afa' => '此项目必须匹配所选属性的值或包含要使用的查询的ID.',
+  '003f9d8dcc82bbd82db1ce5914ff6b4ccc3df3b10846510d7564cb7e48793ff1' => '如果登录到 Open-AudIT 的用户没有搜索 OpenLDAP 的权限, 您可以使用另一个有此权限的账户 。 使用 dn count 和 dn  password 来配置此选项 。',
+  '3f53fe0710b0a87873d489617aa5cbed923532d93a1824435c95d0bf974ba39a' => '每次发现被执行时都会更新, 设备我们能够查询 。',
+  '3f89ed1ebe7c0119294f6e52c1638ea84d9d09be2036076e08f81d9b362b9177' => '本次发现发现的装置数量.',
+  '3f68957bd8a28295846a22c037577d84bd476aadb0efa2d7218facd0c1116acd' => '处理器 类型',
+  '3f75496e03f91bde077f64d1128e3abd4f06ca7803125802e1ce26079ffad609' => '点击',
+  '3f3867313a9dbfd5be4028e351d67cc7ef77f4b2e3d685104cda3352a602e9cc' => '方法',
+  '3fa8e513fa67825ef542c862ee6af6c3e8eaaba44ba520f4e472d0c7cc954749' => '从设备中获取 - Windows:Win32 ComputerSystemProduction,Linux:dmidecode,MacOS:system productioner,ESXi:vim-cmd hostsvc/hostsumary,HP-UX:machinfo,Solaris:smbios,AIX:uname.',
+  '03fa648c3e6613d83e0ded7a9403f9c1de4e938273693a89cba1861874b7c181' => '别牵我的手,我知道我在干嘛 没有过滤器和加入自定义表格的能力 。',
+  '3fb45623cb3075a8af9a2f81ef3beaa4038541cd71f08e4bf6c79c088f7a4026' => '节次',
+  '3fbd155e7c0aa813fb746c9e4142cf7313b893f5ca2606513e514c0c9c6095fb' => '<p>部件可以很容易地被创造出来,在仪表板上显示任何与你的环境特别相关的内容.<br/> <br/></p>',
+  '3fbe5ed156f149939d9396e729af009070ccc54984b5bd8e088d86a72f8ac879' => '企业',
+  '3fc0e5c4c484797a0035141c53252fba96ec5923ec719b5c73d2b9078b31bf08' => '能力',
+  '3fdc9a587693f9e63574b30ec55c2b947a7fb4ba5fd11f0cf213072f53d91bdd' => '栏',
+  '3fe8daa75a9e9e9c94d00f68f62b3f60ba48daf53812cbc2eb970a8ee1cde341' => 'scsi 公共汽车',
+  '3ff2379f7c84cdb5e21649c9ff252f190c2e885baabdadeb33cd038c47a18385' => 'MAC电台',
+  '4a02d5349ad944d84d2ec31e8f2a7d39b808b098b14c692a27a9e7969b498d76' => '处理器 slot 计数',
+  '4a6f6b3ad14d03399b3c9a765120fb0e4a75a13a60255a383265c38ecba2b215' => '我在Open-AudIT休息时间',
+  '04a7c563259f3a3d9c7c1af048df1b18e17fcc5ec9224d4e13375c5cc8f79739' => '调整 Uri 方向',
+  '4a13e678473eddaa38956c52a185d6389dfcdf60338957dbd4a3c27b4862fa0b' => '测试 3',
+  '4a91ee5f0106c2b35c11c168352f0abfbf4fc86165c62d6fb51b5232dfc692e6' => '区域',
+  '4a694330d6c4f477cee681164c5007a45ccc26f1f62af38b1da78e347f4f0ddf' => '需要这样做。',
+  '4a823118b9ba8baa2f47489c0716f52755368e3e3c2c26d60736ccfa1bb21b5e' => '东道主',
+  '4a36222891cd8c9884d211db847ddfc93b09f6ad8d014dcd459524e0d4be8a6b' => '所有简历',
+  '4ad0cc8ec0084946ade150954a43f214c3647a20fd4fa57aa8e1b6b2c35fc23c' => '侵略性',
+  '4adb20374372bfdbac002d584aee8eb29a870e7f31cb92bb422286ede65c9d24' => '用户位于匹配此角色的 LDAP 组中.',
+  '4afa2acb2880cb18116db04c293fd1bd9205b3a0e7326fbc0d5868157a2146ed' => '创建 Open-AudIT 设备 ',
+  '4afe6ea150d532c17693519cac32da104f47073d500d2507272d294d8590d3f8' => '4月(半天会议)',
+  '4b0ed88f7d99420fb3ba2c68e20992280f6dcac4afaf32da17bee89c656c2ccf' => '属性',
+  '4b084c694c11fee1d5bd0124315514f4d1baf056fbceac281a79201a359e0678' => '分组和报告',
+  '4b088d43e3745ad599056167a8080f42b43714fcd4fa8d41fcc136d3bf68acee' => '基准标识',
+  '4b1b8aa3608a26da451ae0630d75b60ab1bc2dd229c41a80838fc7993e835c46' => '拥有者',
+  '4b2c61cd37f81412259f8851e4040db2ae73090c8a4b40f6e05046f6115199f0' => '软件修订版',
+  '4b8bdb9a894c28fbe717f4eb0dab8595feb14909fb4288d5dd7f4b9ea1b2d017' => '每次发现一个设备或处理审计结果时,都会从数据库中检索到所有规则,并与特定设备的属性相对应运行. 规则一次对一个设备运行 - 没有设施说 <i>对所有设备运行规则<i> 或 <i>运行这些设备的规则<i>。单个规则将测试设备的一个或多个属性,如果这些属性与规则相符,则结果将被应用。 有几个属性可以测试. 可以设置若干属性. 把这当作是Open-AudIT的系统</i></i></i></i>',
+  '4b8c6cafeed43289d63211d7b718e90576b94db93ec665794f1491a283f41e3f' => '如果您在Google Maps API 键上有问题, 或者您的公司无法创建 Google Maps API 键, 请联系FirstWave 支援团队 。',
+  '4b168d88dc872a7753c2bc35b36a2d4249487af55baf78f247f38cae2fe962da' => '角色',
+  '04b271c182745a689990665cb62aba837358118b9ab382da4b0c117bace63570' => '基于',
+  '4b565f53a6d8d395e073616f5ab41e3610b618f7c386def2f25ffeef28dded0e' => '盖德',
+  '4b32741d4fc8f9b99ce1420a2f8aba55785e10d1ecb71f1829f1dc88ad69bac6' => '基于( O)',
+  '4b78665bec78390a0feb7a1ec09c92f21b0322772778cc5ad025be97d9554ce8' => '分钟',
+  '04b961957b4302de0ec524dd4d50749faea13f0d189721daf44dc67e0c88490d' => '单位b',
+  '4b721747570ac440a1053cff6dcdaf083ac96e994358c3706441062cfc487535' => '担保',
+  '4ba5121d4d1be174a80a063a823df8b496c83ed05ee60af962a9f65d686533bc' => '设备',
+  '4ba69735ca53765ed6a709edb56c6ea236b7193a3b29a6b390c346f0f4340e4e' => '状态',
+  '4bb12560b0f4f6d3efe63e9ba76c4f4bd911032a0e06cb1a56a4a1ad8222b0c2' => '已编辑( D)',
+  '4bb73872f9df3e98b1a4951265421938244789716a0f7949bf9184b6989f5ded' => '标准( E)',
+  '4bc2f1c23b3d2f7e44aba9f39e105c3c4b741ccabb2cc189df37f9ec8f5ae115' => '乌兹别克斯坦',
+  '4bc74b21357c6cf5cca8f66b4d4ee948be64d0396feb434c9645e168ad61ceaf' => '任务',
+  '4bca6ae1b748eba4102b938d9c87244ea23b8cc93edf76716ddf20bda3a0cbf2' => '状态( P)',
+  '04bd77921f470fd9ccea1fce0f8b7d65eb3c96af332141fd45fa3131fe0ddd27' => '审计( L)',
+  '4bef16df1755bca99ff5f132ef91c6777ca4ceda51605626abff54c8adfd9026' => '白俄罗斯',
+  '4c4e495271e4255a744e5c13a267b33e0d4ce7599fddce34dc9fba02395e975b' => '缩写为 omk uuid',
+  '4c35d0a727b8896d237db3e41570d87fcd194c6a3ee9aa38ad4f7ae511445465' => '文件输入',
+  '4c52faad5dc6e248b23dcb6441d4f1bc3858c1008852b10246d739c3b6454cbc' => '开始日期',
+  '4c663f22be09a35a2bfce6e150e3ac64aab6400023b3681c6d2676c4a82d47f7' => '此许可证过期于',
+  '4c8865da134e8dd7b9bd05c2b260240028d9d2726dbbc96ba02a46dcd795ba9e' => '设备可以设定基准 。',
+  '04c51652b6a7f295c7cdb66bcf82e99ffb03e3abe3da33eebd7652989cba3535' => '设置外部文本为内部数据资本化版本。',
+  '4c77988f43037c236d231fe86486e4832174270ff125725cafc59bf44a195d7f' => '奥斯版本',
+  '4c99392ee3c4c7a31708b25af87ab7c35eefef7cf38aa5935c0f009fbb73aa21' => '详细文件。',
+  '4c1029697ee358715d3a14a2add817c4b01651440de808371f78165ac90dc581' => '拥有者',
+  '4ca303a3bf7ddf7be8652031ff027f351973a205cddafbffa580750f61bc93ce' => '结构',
+  '4cd214c013ce1280f5e70ee8868fe7d62628a134970c96f7991a787ccefa5158' => '排除这些IP地址进行Nmap扫描.',
+  '4cd265c2b8c65fa69764f9ec0fe3fb4223906a064331bfb3fb0745a5255a7b7b' => '马克',
+  '4cdbbe6187dffa92d996b5184f8127de126769a5c44238b386fe148269f47feb' => '制造日期',
+  '4ce98ab51e47e0d9431487732d787ede34a30002580cd181cbcb723ee13565bb' => '如果我们匹配一个仅基于其发现的MAC地址的设备. 在3.3.0之前设定为无。 3.3.0员额将定为是。 一个MAC地址在网络上应该是独一无二的. 规则的例外见下文。',
+  '4cf0529fca2bbbbe079424057b4e8aec7b439d7a5a7cbbb360f07f20040749b5' => 'Open-AudIT可以用几种语言之一显示. 你怎么能改进这个?',
+  '4cf6a96e3c695700ba2f9b9452cf97b9cfdfb1e18454fbb839ec445d96a2e69c' => '审计脚本都接受调试参数. 你可以用这个来运行剧本,并更详细地看到问题是什么. 如果你无法解开 那就是我们来这里的目的 打开一个支持箱,我们会得到 事情运行很快。',
+  '4d0dfb877f2e0c9fd351933ce14ca7bc39bd02bf16dbcc87d95ea8a85eeefade' => '诺福克岛',
+  '4d0e59abef9a6c0fd4e3355a6bf9029d4bd339fb92adf3ec543664e30f203c1b' => '域部分',
+  '4d0faae1fe1abd65303026f00c58e637f84615e0ef32c1f7a16cd96b9bba09fe' => '目前不需要数据库升级.',
+  '04d2b8895105252a678d8162ad74c4a9f3bb4c465de447e433a9c9ac9e4ba68c' => '处理审计结果和纠正行动',
+  '4d3eb1ae379d0cd170690707ad2c99932091a1ebc06e6f13a1b245edb5a85430' => '标签  3',
+  '4d4c7eee2e28d03cb2dbf3df639c3290ade66e18755e83caade2d8f37bd8c044' => '当前',
+  '4d5f26d359128a0814553bf8650f7cf3d0ab3a63403ed0cfce1c28cde2e2f484' => '过期分钟( M)',
+  '4d237f72fc120423fd5099111307af5ac9eebe352f670ad57c00fc26ede8fa66' => '远程发现采集器',
+  '04d588d7a3d637bdcee623e9e594cbfc447ca6a7585e81032e3e9425ef1f28f3' => '默认认证级别 - 设定连接',
+  '4d942b6beb8faf69d62388ecba6c1e7170541ac51963734e588996081dd65cab' => '墙壁端口',
+  '4d24220a05ee8792cc14b58ee8556609cee9e9eb921cba05443db79c89c13021' => '第一次见到',
+  '4da50044524220dcbb2696c76956442330c5223c5818b7c61ff4feac4723456a' => '初级缩略语',
+  '4dd1daa21e90e995f31ca0dbe8fbf442ad5bbff416fd4c3f8e128edef5a6fb00' => '部件的颜色 。 如果查询未触发结果,则使用此选项 。 由状态部件使用 。',
+  '4de6f16a1fbcd86e333159df766772a2cf7d87e085ae10e6cb3518297b559ffa' => 'Nmap Tcp 端口',
+  '4df0010630c74276e12416c69b7af3a75443dce5d1e9da0bb1ca398d8acc0f45' => 'Open-AudIT专业和企业包括强化报告功能,包括基于时间、历史和基于哑弹的多种格式报告功能。',
+  '4df9939944a7b324991dfbe49dcfc0813f1f474311eee2e207b53442495887e8' => '职位安排',
+  '4dfe611e3695e6e7b0da8a32f4f71023d800038e8cccad3d38727a295fb1530b' => 'CVE已经发布到CVE列表,并被纳入NVD数据集. 初摄入而已.',
+  '4e0bc348c6846cb8cad8733397f0c620dcd0846753a2562e0d042086b9b411a1' => '仅限其 OrgID',
+  '4e0190a510fa83dcc38eefbd48d0c8777679ac045df657fa7d0d66778e2c4a10' => '设备状态',
+  '4e1ef8b9524f0f5f5f076681f5d6a8957e39b99f4a31ce820d1384f6f387dba1' => '关联',
+  '4e1f49a9c8ae8a158434e647c0c410352d718984a4fcd144d26cca3c394caa02' => '活动',
+  '4e3a23490c93d165bafb0666ab57e05802e4dc9f91b7144b6cd3ec7d4cf8f1ef' => '开放AudIT企业. 大型网络的大规模灵活发现和审计解决方案。 专业+的所有特征:基线,文件审计,云发现,Rack管理,配置角色基础访问控制,包括Active Directory和LDAP.',
+  '4e20fa596389d23f0e5dc11be4628510390b591ec24372c69698a8af5b368601' => '产品名称',
+  '4e55e47367d9d7a34267e5be536265540c594098b7bc6db5f912b8d587560c75' => '这也是PAExec的工作方式.',
+  '4ea3d29cafd8e2990c871dd888d5cb0a0dcd858f3a0d2eb0081af4ab892f1202' => '用于。',
+  '4ea5ee68fea05586106890ded5733820bb77d919cda27bc4b8139b7cd33b8889' => '网关',
+  '4ea140588150773ce3aace786aeef7f4049ce100fa649c94fbbddb960f1da942' => 'ưμ㼯A',
+  '4ec3af01a8df139c7d5212bb000592af6ed4ac8e0e8fc162be45e8a7fe8cb61b' => '安装日期',
+  '4ec7c53222c8a758c722e2111541035ce700d5ae7bd0898c5f1b1a743e6450fd' => '坐标',
+  '4ed379d418bb86290a01117e9ceb0debffc4d1b7087db6c04882fbc4e50132f4' => '组',
+  '4edc8bfafc6bd936b849f38c009454eac0febc8982f990e734724156584d56f9' => '产品',
+  '4ee49805b376852d399ef7f596e3b7235b59be375a88289807bfe746c1e4039d' => '背景引擎标识',
+  '4eeb220536b0dc120ab30fa8a1288eddb9b4e5d87f8088b29493addb77ffc176' => '添加字段',
+  '4ef95c7293ca8cba97625fb3e4aedc7e44faf99179861e56af108351fc15b9b9' => 'Open-AudIT需要特定的目录权限才能创建文件,上传结果等. 请如下。',
+  '4efca0d10c5feb8e9b35eb1d994f2905bb71714e6a271f511d713b539ea5faa1' => '关于',
+  '4f03a060b7eb032972dcb327f2c989b14d5e73c35b3d5928a6f875ca39c159ba' => '出版社',
+  '4f3a9bd003974a5ed8c9ad65d4aeda3b8a0db6fd903e36e83a3a950624b09bbd' => '类',
+  '4f4c769d9121248754010d819c1adb019570eeb5828b481810f0006085ab014e' => ',但无需记住单独的一套登录证书。',
+  '4f5b8bde50bc8e1ccb8ccc54543bab4921826e598abb413fa00f188a80c56c4d' => '完整名称',
+  '4f6cf750058aa5eb52d110c002d30e5978e6153c42f97fb78521d0f140ee4a42' => '使用 OpenSCAP 工具和政策为您的计算机提供安全建议基准。<p><i>OpenSCAP主页:</i> 在日益变化的计算机安全世界中,每天都在发现和补上新的弱点,因此,强制遵守安全规定必须是一个持续的过程。 它还需要包括调整政策的方法以及定期评估和风险监测。 OpenSCAP生态系统为快速、成本效益高和灵活地实施这些进程提供了工具和定制政策。</p>',
+  '4f81e882d12617445111bdb713d5a916a8dc0e9302af6e69e56589e3c070bd61' => 'SAN 审计',
+  '4f529a664ba14852ba7ff6c3ffbb9ebda0e2d4091fd4db0df88727d5b9a0dfb6' => '在从外部系统集成设备时,如果设备不存在Open-AudIT,我们应该创建它吗?',
+  '4f846a84e7fc9ef6e68468c270c9153c20204641bd7b839ad4b8e5233e1c86d0' => '分钟',
+  '04f8996da763b7a969b1028ee3007569eaf3a635486ddab211d512c85b9df8fb' => '用户',
+  '4f881927166283d12d951567123f119da1e39cd6914bf22ac8f5843a3184d3af' => '从主机名命令复制 。',
+  '4fa3af0d9c57386f51e89408bd366a732bb7bef528a4f6c017053ac3dfd8101b' => '补丁面板',
+  '4fa11f283152d54bc85bb7b62cbfe6d50416b4de1a96e07e148ab1f2f66e77f7' => '窗口测试脚本',
+  '04faf1bb9f04cf230e8fbd1eac8971b5107deb06a25ba5b61d12b54274198234' => '采购日期',
+  '4fc52a3c4c558b517c463b22d86d0e3b9cfd4255c98fe3510f9075b37ab419c9' => '会期',
+  '4fd1e4c7b11f1f9531e61defe6478f0b9efcd32adf5035d5f85a077b6e43c44c' => '补救',
+  '4fe3cdd404ea0290bad96d3e1ccd92979d33ac63c4c18ad80e94d0452ce43391' => '权限',
+  '5a0ee3452091b09414ea86a8738ccecc52b75ddb37acdcc9e8a183caa813a27b' => '补救',
+  '5a0fb327c38b0096bbebf66607154689274bcc75d38d9003f220c2bdabc8ee69' => '保证状态',
+  '5a09d256fbc75af4eb5fb3c8778febf8c243b96be5cf3cd10605b70d0dbd8862' => 'LDAP 服务器配置后用于填充用户细节 - 这包括他们可以访问的 Orgs 。 如果用户属于此 LDAP 组, 它们会被指定为此 org 。',
+  '5a3c44da855ba37430e7a0af4a2c678c2987303702e80700e4fcfdb402c894da' => '<p>集成使您可以设置设备选择和调度Open-AudIT与外部系统交谈.<br/> <br/></p>',
+  '5a3fd4dd62c3fe3c2c1d6b10cf9fae4e8dee530ec4861e26781afbaa0187165f' => '执行这项任务的当天时间(*每个小时)。',
+  '5a8d903ece1d3895c8d430074858998fa82e3e6d529bcc2c3e57edfb285552e8' => '次要类型',
+  '5a9cf672c8be6b5ab9546a2fb49b06dd81a4e364c86ed023898c49d9bb0605dc' => '意大利',
+  '5a9eaeb7edc0438110dff11155354596f302dc7431a827ce91ce0f5f284c97ae' => '可能会 <code>line</code>, (中文). <code>pie</code>, (中文). <code>status</code> 或 <code>traffic</code>。 。 。 。',
+  '5a54a81c7dc8e35825e0cb3a7e9044f72387df6b6d02b0471476f8631b19e7de' => '可报告',
+  '5a60d755ef00e6633c3f0cb78ffe5f50b8b44134531f220206b0fd6501ba1c2c' => '您的 SQL 所在区域 <em>必须</em> 包含',
+  '05a61c005c1c0e01c93fb593e1bcfddd32a121b9fe462a8be5f19f57c6dfd6b5' => 'A站点',
+  '5a219a288b70f00f85fe580528523c92f11920c898fcde06efdbc8eda3c6192a' => 'os cpe (中文(简体) ).',
+  '5a922e4466ff6e63a25f6507d0f56e74ea24c66e6736e0c0442b28981aaaa914' => '目标IP 此日志条目引用者为( 如果有) 。',
+  '5a44148ff1a35e0cdd57a5a59fef449c88dd490270a8d13fcfb8d06f5fe957c2' => '子资源  id',
+  '5a70981da7b81125d43c3b803d698ae8851e79536f410c45ad3e2051aaf4b9c8' => '运行发现',
+  '5a8938991b71fb6775639b9956e511311944a0ab9785ed6a7c3e78771374bc07' => '分区( C)',
+  '5a23444828db654a0eaef5f81aabe79432871f43f73ea888279b3ee212f98a7b' => '管理',
+  '5a36318748e202b0d7dd498850d4ad3d485e644d8d896246f79201cbf642811d' => '在目标Windows PC上有一个工作逆向 DNS 可解析的IP.',
+  '5a452459503be70d2ed2fca46dd91e05e820a957f175686a77d03fff80f664fe' => '职位',
+  '5aa0555409717c504617fa014f91827ff10c97a746d187854dafcb856903ec7b' => '在窗口上安装',
+  '05abe907096f3892df3e46d6eedc9e506b8e978b4a0cf028728e298278807f85' => 'B站点时数',
+  '5acdc1912f0e962f5e3922639f617fbc2c0c07c5b214580d3b89305124f93f15' => '一旦剧本运行在目标上,剧本就应当自行删除.',
+  '5adafe4d4c15b8154588df16fcd9d37b1ec0e43a660e4c9a61bff836bdccbc0b' => '查询的 SELECT 部分应使用全点标记,并同时请求字段的全点名称. IE-SELECT设备.id as ‘devices.id\'. 每个字段都应以这种方式选择,以便GUI侧属性过滤.',
+  '5addff13a6fc309a866a5b76ad2a51737382fbef352314a786af7c11e17a0a5d' => '购货发票',
+  '5aee3212dbf893adb0edda8b0c800e0cbbcbb47fc55aa8291cdcb03504ccfd40' => '发行者 名称',
+  '5b0346248af449183b4300074d43391ef49c6207f1cb4cab6d15d79548266065' => '用户端点允许您管理Open-AudIT内的用户账户.',
+  '5b3d2462639b46f369235ef3bc3dc44715cc825a9308e1e5546d22634c9ddf86' => '命令是否成功完成并返回预期数据 。',
+  '5b5e9c65b400565c2cd80615d8c56ebdc45b769dd18b950344428dbcf67b5069' => '购买',
+  '5b6a5c9ce0c27b8537388282cb90710e1c6fc7ba7e2bf4958142f73765363fe9' => '流量  中学  奎里  id',
+  '5b6ad78e42ac941e2ac26aa31669f435bb868612a7efe67afa5ec1327ef731a7' => 'vlan id (日语)',
+  '5b6f10098acc74f50487a2fc67db25dba574e72b0206f0b9972f58d646b35695' => '衍生自设备类型和OS.',
+  '5b9ce0eeeac6a64c52212bab6394a25dd2bccd32a6da88a249bbf992f1bb92b7' => '排除理由',
+  '5b76f62e1ba0401f8f18752e4bfd03c076de0a21eefcf26422725ffa28f6b4cd' => '不包括',
+  '5b464d015c1a84a80e7af91f42f84a8288af64c4a64edeed0da8e695414e2bbc' => '部件被设计用于Dashboards. 企业用户有完全的自由根据需要创建,更新和删除部件.',
+  '5b81859db4471789451b3c59490ae6521a39c6c811e176c39250bc06340d1ef4' => '此云中已停止状态的设备数量 。 链接到 <code>devices.cloud_id</code> 和 <code>devices.instance_state</code>。 。 。 。',
+  '5b4396930aed3ebf5a1b9a014eb8ad794e9083297f11745a72db63bebec2b783' => '许可证密钥中没有数据',
+  '5b7545493db60f60a50723c7e67c6203ac3d465ef675e6c869fa21162b2da66d' => '重量( M)',
+  '5baebba3c171c8b19f6ffc8a0f4259dca2ab0441d74308f30d0e90b15a5aa02f' => 'API使用饼干. 您可以通过向以下 URL 发送 POST 请求 cookie, 包含用户名及密码属性和值 :',
+  '5bc0db97a6c3584ba0c0fc9f53759557074d43eb252af27aace6fdbd40dd7fbc' => '端口名称',
+  '5bcd47e3dd51f4cf018371506d9543780c87100ac07800bc6dd28c9d95e97bb1' => '首先查询此活动目录属性以确定用户的工作单位 。',
+  '5bcdbbb6d14faec6af42d60afcd2160cffa837313d85e658777d8d9b163aeeaf' => '批量编辑表单',
+  '5bce98f73f3ed0c837f2729ed9509b38ea66a156db7f653356cb6fe37b366e85' => '数字',
+  '5be1e327bd532754e8b65374060242225c5ef2da47f76c5348e48b7c74489b2f' => '设备( A)',
+  '5c05d6923b48023d29878daead9fe428f9d88ad635ea02debc240ed3e650769d' => '开发所需的特权水平(无,低,高).',
+  '5c1c061cd7204a9b44e2f7287df0d8cd004fcb501867741de986d68c9d9bbb27' => '提供这种链接的ISP或Telco.',
+  '5c2e4745c608d719cab6de3f2c11f3d972e212334f794dea783b7dc16c7b31f2' => '莱索托',
+  '5c2eaab57c534c546fb21d580de03e3c0dbd6464e5d10f10eccb067801f24e4c' => '组',
+  '5c3d99c74fd885103d13e2808879e3aa5f6fe7e5751e6c3a92fdecef2531d97f' => '净统计',
+  '5c4b321ecb42cd23b843ea654692cf301f0771f37ea4e47239367438f1a89fc2' => '关岛',
+  '5c4c1964340aca5b65393bbe9d3249cdd71be26665b3320ad694f034f2743283' => '提供者',
+  '5c6e8be8895c931b622d9ee45881af4b0099cf71f6c3521e90ca391bf7b3388d' => '使用校正( A)',
+  '5c7e1d096377fa5999bfc6ebebadcd1cdcbac8ada6c7239f7566d56abb3f08df' => '例如, 您可以从运行 Redhat 9 的设备中创建基线, 该设备在集群中充当您的 Apache 服务器之一 。 您知道这个特定的服务器是按您想要的方式配置的, 但是您不确定集群中的其他服务器是否配置完全相同 。 基线可以让你确定这一点。',
+  '5c8c4305a6ecde7ed8acad69f7a849944f09c7968f3b2d4b01613b55ebc9ff31' => '需要的端口( P)',
+  '05c35d5b5b0d24dd85bdf40cd89850ff759f66d6e7637a63750c88c6d3e79656' => '边( ratio)',
+  '5c81f0814d160f9bd43578a617c4c34c3af3633f859ba97fc15e2013b62c7240' => '点击您刚刚创建的应用程序 。 显示的应用程序ID是客户端ID.<br/><br/>要创建客户端秘密,请点击设置,然后点击密钥 。 提供密钥名称并选择适当的过期日期,然后单击 Save。<br/><br/>您的值将会被包含 - 这是客户端的秘密 。',
+  '5c82fce0f8beeb28f92638025a75fab044a1b0c29e871bb7202d8b32f0d83d27' => '包装',
+  '5c83a631bce2bffe885e5c3e62ebb7dcec455fc6cd99be22101d3f0fcb158c8a' => '立陶宛',
+  '5c935b6f41daa207e90d8f6f3cfc6487974d8c285e8ce0d217fc7dab13ae25ec' => '英属印度洋领土(查戈斯群岛)',
+  '5c1540d4ee755e6439bc292398c89e4033d34e24cabf0140078b8d96395407bd' => '发现( R)',
+  '5c2780b9cbdee503ecd0c11ff7f79110af30cc4b66ac50b9fa6325c13f0dc547' => '分区 磁盘 索引',
+  '5c9950d3ff5f7b503b7f7b9b8fc90d5e019f4a64d07aa72de73b23b2576a8d28' => '如果您添加了位置类型,请将这些图标添加到',
+  '5c16250fd4bb6980cadb715b9a3b6ce7e677a7852cac5d0ea0c16de1f0a02fb0' => '敏感性',
+  '5ca4f3850ccc331aaf8a257d6086e526a3b42a63e18cb11d020847985b31d188' => '版本',
+  '5cad9585434538828e074664674b66a90ef4f88b472db9a18b17f6b083c54b5b' => '叶地址内部 A',
+  '5cf0877421bca52c10b5025e9590927a063f080691901c35c169ce1f9d04f0df' => '发现队列限制',
+  '5cf7d7ec1cb5c221981f277051f7f82a82e155b53c76ab9b6f75fde9641f6fa0' => '朗语',
+  '5d0b0b57460096a9cabf47b73987fe39cab1def0cb1a7758b08da8b8d05756e1' => '将设备指定为位置',
+  '5d2a0e63c3cf1b8e381c1318573e276c4eab9c4622429bd4343c6aa5617e27dc' => '制造日期( D)',
+  '5d8ba73cbafa9af247da620f4de872a9c98fb5944cdbd8033d52f1be3d1b1cab' => '所需特权',
+  '5d9afbfe4fe87f0c8fb98fbf24575cab2e49742455dd86abfb121c07404ad2c9' => '远程端口',
+  '5d9d295eb505b9ca1d7a784d3c21c26d15a896f006cb95e107ad550ed9b1ad99' => 'Cron上的初级读物请参见此维基百科页面',
+  '5d347fd948b66308f502c3f65c8f7e12ff1c5cf8c760bcdfb188ae1ec7b8b618' => '命令',
+  '5d462b9103be4688284936b46c1e07f13cdd8b99c0d1b51969550397451d7d26' => '上次更新( O)',
+  '5d639c794ff4089c03e695b5330018f66a657f8666b8e8c3c5dd1b1c4c52920c' => '日志旋转',
+  '5d93947e6ffcb7da7edea542e92de7bc9a6942ba7dd29eda4a4b345d38763fb4' => '向下浏览树到控制台根 - > 构成部分事务 - > 计算机 - > 我的电脑<br/><br/>右键点击 <i>我的电脑</i> 选择属性<br/><br/>选择 <i>默认属性</i> 选项卡',
+  '5da4dc46db0291a8dd20325181a994802b60ae852e152a55ec9ac756c2d314f2' => '执行时应该隐藏审计脚本窗口.',
+  '5da37365def4882d8b47cf9efe43038bc85518eca9413eac1c5c5cf4ba155c85' => '我们该发现哪个网络 这应采用以下形式:',
+  '5db1a07599e78de07212c8952f9b0b91a0404eb8e4aa5e2a0c4395aa3ec532d9' => '包含在',
+  '5dbddf911f9e565299428e948a92ea5d1943c4099db883cc4491cb32cc757de8' => '阿富汗',
+  '5dc9ee9930437b239b522e39e21a6bb989ca1962b203d08cf80135f1595300f3' => '可自动调试',
+  '5dcb46a5f65dc5755c751ff47e84da29b3893bdd56be54125bc92cffef20758c' => '一个逗号分隔的数值列表,其中之一可以选择.',
+  '5dd6f8b537b8484c190e7db77d9059c71f0b38a6a841cff29331231556f8bc7f' => '退役',
+  '5de95319f17467ed6dc58e4e0b16c1193a13b35d60dc48bcf06bf6b7beebbe6c' => '资源',
+  '5e04a775be0b8303fa745005fb7105c0ccc53d8fb978b1d9a5b24a311b89bf25' => '客户身份和秘密',
+  '5e2c614c23f02239bc03c6c04fcb681950f9e72bf8fdff6be79c79841cbb10c0' => '型号',
+  '5e2ea59d3cca0f6b324c4a22df44705fc45c1200ff1863445d4dabc8be720bda' => '如果设置值为:',
+  '5e5a71081367e3a2e4e3780a1d42982d5457a5d4d2bbbbaa73e10e78b593e7d9' => '主要外部服务',
+  '5e6b99324d4909dae25bdd3b935b744525f0cce7ac9936c5a1548ae8ff0ac5ec' => '奥尔格标识',
+  '5e8c03a94c7835b87dd82c690f9f85c08592ef7433aa141ceaacb36a9f4da434' => '实例',
+  '5e9f98120dbe568255ee059f39671686982b113d4e917b6d6faf149918c81709' => '严重性',
+  '5e26ebf5473a0668578f7174218fccae20b1346f7034c6dbf2fd26eb7bd54212' => '全部执行',
+  '5e88e4f56882e894a731822a58c16ff539a871f6adc456ac5f9e9cceedcfe92f' => '部分数量',
+  '5e298b9432702559fbb30b57d24d0ad8287689734253f0304b15a9e009e5c260' => '有被执行的能力。 打开',
+  '5e327de53880671a488b43f5b7f0edb8600dbebd1ec6324acf0dfb66eb3c7707' => '自定义 UDP 端口 。 除了UDP顶端口岸之外,我们想扫描任何特定的端口。 逗号分离,没有空格.',
+  '5e1953a7ab56fce7c777e5ed4db35da5cf25f685639a0c8f7ae365d9f8d15918' => '如果我们使用这个值来匹配外部和内部设备. 我们的默认集成在这里使用IP和UUID. 如果这些内外设备中的任何一个匹配,我们认为它们是同一个设备.',
+  '5e7425d72f32c5c80a5f7a131585657b80723ae22e01fd69776828feb19e3bd5' => '第三届',
+  '5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8' => '密码',
+  '5ead8ca91201abbed48056a3e87179b525158a34544b19159c6e5c5575c79a10' => '高级用户查询',
+  '5eb75d321e823a7cf3cb62ed9e17f03fef7ec11a35d6d899c588ab766164e7d6' => '您只应该修改文本的第二句,',
+  '05eb210744d1ac5a0c285e8ea472ededbe223a67bd12900db669e6f3d71b663d' => '被禁绝',
+  '5ebc72c4ddcb57634d98e02cfb443a1bbe032eeed034428b0fe0885ee3c75f84' => '所有政策',
+  '5ec0f246277796e2c6a4824d766968f67f824bb416e7f7a2ff0d06412255226b' => '全面云审计,包含定期Open-AudIT审计的所有细节以及机器类型和大小等细节.',
+  '05eddc5bccdee203f4d3504a365bd5c810b38ca1a0c4f5b7bbaea08b4cb8dd14' => 'Rx 比特率',
+  '5efa0faf93df5f1d1b49d3f10ee0dd2e7ecd143bb516200f980e2bfdae986478' => '这种安全许可可以使用组件服务行政工具修改。',
+  '5efb40d29d354ffa373b2a7864b97508dc4c2bca672d83f2ee647371b8ced339' => '这些属性存储在 Open-AudITs 配置中; 要访问它们选择的 Admin - > 配置 - > 从 Open-AudITs 菜单中列出配置,然后使用左边的搜索框来搜索匹配  或去菜单 发现 发现 发现 发现匹配选项. 默认值为 <strong>区域</strong> 和 <strong>无</strong> 仅仅意味着是和否。 我们将在描述中使用 " 是 " 和 " 否 " ,而不是 <strong>区域</strong> 和 <strong>无</strong>。存储的值应当始终是小写y或n。',
+  '5f1c9620a0431dc5ee7d2ce1861f066317f43f854bf605da111fa40b18daf0fb' => '端口编号',
+  '5f1f6fe16b746157d53ebcd06436da7c881b6f2170461c4adf83f0f3585f3422' => '电路',
+  '5f4fbec0149c22aae8dad510684097e13887fb26a759f8ba2ae64ba0a29c26b1' => '排队设备审计',
+  '5f51df9f41db2b02dba3cb49567da45c7050d27f45f2981f6ca0343e41efdafb' => '这里正常的营业时间',
+  '5f79bd393766f3f49b8ebfe1878fc8defa1f6147c607c0bde939595b877fb8d9' => '客户端 site name',
+  '5f81f52483300d1795b799b28e296aa001fb11b478882d02fdaa435cff816ca1' => '第一个运行',
+  '5f83cd67ec1ce8468e792a01af28d3088f3257ddf1b45e48ab2beb88e2c746ee' => '您需要每个目标Windows计算机上打开的Windows防火墙上的WMI端口 。 对于 Windows 核心服务器,确保您允许防火墙连接',
+  '5f161c9149882e0e10124bc5dd5c11f0fbe8ec452edd52bcec76b01e9252cb33' => '范围',
+  '5f968c940424a8d9e8c0806cecec81b1c2eba9b931a619748e8e77fdb682f656' => '以下列出属性及其默认值.',
+  '5f1162c57ecf998190d473ff238b6e311d7c52f5f81ca7ac3fca9267832b585c' => '塞浦路斯',
+  '5f7953f7c9b6ba16602898e540795140db39847cf03fd10d32ef636cded0360e' => '家长',
+  '5f54322f9b0edca7209c6a4cb55c0276aacbe5437c45a2306af68f4fe7487534' => '大写',
+  '5f72005e81c4ecbd5aa3588e80e3daf0df068ce0cf5638944508a0165fea609a' => '时间表',
+  '5f323939c5a6ba868dae10ec0df3d2bc93abe410414aa1d979346accdb9ea599' => '提高监管合规性',
+  '5fcff20afcf85d26c6f554fcf117fa8a1e0cfbe5a710d1c1e85e896ddd2fb45d' => '社区字符串',
+  '5fdcc59e45af95dd69d6ce44e25e69f41ef560f45f16330ce6a1137769856d98' => '共享名称',
+  '5fec3f9b682612fce19b8a60b1213fdb86555944c0313cfe9fbed7d898242c9f' => '防火墙 规则',
+  '5ffc9c96a18a6a52e35052ef1e9d25913e3f7c2afaffe8a93e01128095d28807' => '安全状况',
+  '6a00dfc1dc867e8454c2c8856e1512d9bf02a76710e3411c0972aec886c76c61' => '星期一',
+  '6a3be761036549131b35f41209a76f395f0e49370ca37e2f27b32770c6c30d8e' => '版本',
+  '6a4c3a4483b0448883299321ec2677f99a20afbf6a60bc5447bf2243d23b7152' => 'ing',
+  '6a5a209b3f6792c633582fa34ef9b8f109e664ec4f938ec33451541eca232d33' => '目前我们可以使用netstat ports,软件和用户.',
+  '6a6dbe3c2629ca1596a8b0d5ae4d8022a5b3830e83ebf3c9446662aae3e374c6' => '外表为参考. 应该是设备、地点、兽群或查询之一。',
+  '6a28cb94100b6c0901904a7b9a0df19dbbeda1752da2c14f6f318bf3cad38246' => '字段( D)',
+  '6a588bde5807a2897b6462d2268691da6040bc7c0d7a4b6f3c0db1f0ebd45fbc' => '<p>在日益变化的计算机安全世界中,每天都在发现和补上新的弱点,因此,强制遵守安全规定必须是一个持续的过程。 它还需要包括调整政策的方法以及定期评估和风险监测。 OpenSCAP生态系统为快速、成本效益高和灵活地实施这些进程提供了工具和定制政策。</p>',
+  '6a934b45144e3758911efa29ed68fb2d420fa7bd568739cdcda9251fa9609b1e' => '安全',
+  '6a53024ddd1a041a71e44f5cc93da5525d21548c51c4765f68c996cb7db6692d' => '要实际执行查询, 请附加一个/ 执行, 从而 / open- audit/ index.php/ queries/{$id}/ 执行 。',
+  '6a74746a48e8510234692e9d620a9ac7d3998b53bee05c5fd062b5aa0700a842' => '一个实例部件 SQL 显示每个地点计数的设备 。',
+  '6aa584558eeed79910674532c04637684e1b68e67ea1e4201f245b450b949851' => 'POD 密码',
+  '6ab08322969c701e864572096b51f0bfa0351ced22b37a36c08f2a467df644f1' => '加密的 JSON 文档,其中根据 <code>credentials.type</code>。 。 。 。',
+  '6abfd9db30a87aeb653cc4c7788b5b2503321fa201459bd9cac9f16a20bfc43d' => 'ssh 超时',
+  '6ae4db21b9a32e46e794009ddc5119f74e0b648f2429aa44aed0e55cc9e778e0' => '时节',
+  '6afccfa1d95ae7276dc6917b246ef8da2f70fef179652360683861cbe630e86f' => '由用户手动设定,默认为Production.',
+  '6b0cc904d081a8c11cfdaec667f05132cbfa8a57f5040d27d5fc0f2fc50d0dc6' => '用户',
+  '6b5ee07519a4b1095aa9f25d4899e1ef6d5b19f2824e8ccd4b9cde129f7d34f4' => '为您提供新闻',
+  '6b8c107465db9740f2abb04ea5992768f495c05ca74e8d2f001e2ab2b7f78b08' => '获取名称',
+  '6b8cb2182ad871641d1fb0990c1303f634c03aba54708711e27486540b4d3913' => '不要扫描这些 UDP 端口 。',
+  '6b9cd7872ae634539ea1a99e1c4c16b41c9314c99192560ecf9c4bb846647655' => '圣贤',
+  '6b615adb1300c1161bcb58c11141164e9b762987607e7cccdcd0178f3bb13d0b' => '哥伦比亚',
+  '6b973baf32d07bafa364b0b5eb7851a2de57a1a6d9ce1c1f97da49b596e84a0f' => '安全级别',
+  '06b5085c5728b79aa1b96b736654897cac5d457bc0535abfb745b0a415f9016d' => '服务标识符',
+  '6b73191a0a4b67420e61d51c9f207c35277eaf18fbbf5beb52a320a23fe09653' => '颜色',
+  '6ba0bdeccb426d7b2ccb601c4e07015f50b6b427ec52c93a3b95f2245b67bdd4' => '设备',
+  '6ba80aff9cb8eabf861dfaa2af99a675ae6c04ea23189ae160c922e8f65064fe' => '来自审计脚本结果',
+  '6bb927e1b3bd586314d440668dae10c13b19148ee1936e159be31715afae7e01' => '不适用',
+  '6bc35b9e0fc89c6e81db5a3d38049835f4bed9f0e6f7edbe17cf487bbedbabd6' => '不包含此条件的 SQL 将会导致部件无法执行 。',
+  '6bdcb8a62ff8d1d8f6da2bdf2d393c13757335ae541b843c4dcaac3480749dac' => '使用 SNMP',
+  '6bdd98c48a3374db6bf4e7d611b2fb106e73bef7e0b5d3f6a7bdd5b8df0fb986' => '您当然可以运行一个在网络内设备上没有任何有效证书的发现, 但是,所检索到的信息将是Open-AudIT能够检索的非常小的子集 <i>与</i> 证书。',
+  '6bf6c26e4287ab29dd2bf07d00d62f696a736494014d3c8d5e342b059a86e97d' => '帮助和常问问题',
+  '6bff5ae28765b6749ec8154bba4b77b55b8dbd1e42b7009046ecc1607615eb4f' => 'SW 修订',
+  '6c1ff09db3a73dc4a854f695d20d174a848d55f2d743bab2ee1f8fc75be454f3' => '低级',
+  '6c5a4be839b4874bb1dfe878c75ea979efa82cacbb1414842dc3ff9591198838' => '数据保留',
+  '6c5bf4aa87db04501b4ff8e45e59442d9c272f01910b4f87bd06d8243ce3f102' => '交通初级查询 ID',
+  '6c6c5080d42c5cedb290e1b39af5b24646cf7959a0ebd4cfbc1268b329b38a3c' => '您可以创建注册密钥来审计远程机器, 而无需使用实际的管理员账户 。 在将要审计的每台机器上创建以下密钥,并确保所使用的用户证书是管理员组的成员.',
+  '6c41e30131f10a1f005fdd1f55557920f21ce33155d041e3f127f7eeee9f0381' => '文件共享发现',
+  '6c232f8d43356a05085593798d0cd829298286bd187804f109442813ac362b25' => '他们怎么工作的?',
+  '6c276ce0692eae57d636996ff8fad82a5ad1cc76c341662cd23d640bc60b4ad9' => '域名',
+  '6c621d1a05138a7888d37d9269a9da8e2e11e4aced2f6cfd24b05ab1b9e61bb0' => '规则',
+  '6c35493a2b937829c9815c39e23af964bc84e5430a7dc104c700bbc0de2b59e3' => '计数',
+  '6c114846fc8f64fe3ba79a59d8b770201d5b56fbfc4ef23d266c2b886dcea477' => '应用程序在此创建临时审计脚本,将其复制到目标机器上,然后删除.',
+  '6cc5d7c5d757a794b6659c1cf1315c5cf51af5279767385ebe5d91e6467401cf' => '执行时间',
+  '6ccaa6415b5ee449e3c5c716f57b4608ebe3b780f5aa6b077bc5d8eee5d961f9' => '体质',
+  '6cf6b83b02dff37e13dcef755933724100c5e117ce821e7204ca48f879824f70' => '外部链接',
+  '6cfde7d5b7b7a86b6d56a547e1efa1385680e996207450594abc2b30a4083315' => '发票身份证',
+  '6cff5d7ad11d3e3fd50722d86c1da5f050fd04b97327c1f69a0f17dada7db4fa' => '企业设备匹配',
+  '6d0b35596eec22b1c63195ad0936ba4b71985f7e2ccc75abfe522295cc95e306' => '制造日期',
+  '6d031af10da7a25e554bb21247f28f0e6cef77f1471175199e7fcc571964dc3d' => '立场',
+  '6d3f0a0726c9e8cb815b65c5d41840e4fad8a90b723d891fd437a07dcb4059cb' => '测试 Os',
+  '6d3feee2242427833b5ed85880b28f618aa0bdcdfd5d205325492fd1e81795db' => '以太网麦克',
+  '6d5d9004797377e10c60545a23392bfe0330ebfbd037972d50f21d6bc588aad4' => '许可证',
+  '6d7a3a2c651d685cf05c84bcac7694b3976782caf48e3d931fd71e4d9753278d' => '外部接口的IP.',
+  '6d9d72aaa6ec3777581cb680d2286c6c1f8882f70fc0844a9b11fd18ae9eb082' => '系统更新时间',
+  '6d459e3a66023c33be840fd73449db74cef8501c30213a08187b25b6675d759b' => 'snmp 超时',
+  '6d780fd5f523277d245fd0509af3fc1f46f68306c7e30e64fb5a560df4636d1a' => '为组创建 SQL 语句',
+  '06d1372a19b2bf0d0b1cc6bced711af879838c717a81ba295658b23f01ad09f4' => '密码过期',
+  '6d2138c6f2f6536973fe383fbefd88a0b22831156a6627f6249379cc6a09475d' => '老挝',
+  '6d4216e4b709af793b5694f4d2732afe85f9d573ec9b4f5defb4545acf594b42' => '构建  数  完整',
+  '6d5726b6e028f3f1b59e9e5f78c1d334e37eefd87293958b73dc8d30a23626e7' => '最后修改',
+  '6d80458fd17d33fcc40825346bbdf2a8deb4b53a825839c21bc0e2c2c9f401b8' => '经度',
+  '6d87696e4a8c53b7209c50d845c3d6ef0f794709440e47f5408d733892b86f7e' => '类( T)',
+  '6d514554d62a2616bb63f9219c5fea0d8ed7e19cbf44be738afd15e4211c13df' => '位置名称',
+  '6da83b6ddf17662216b1e0f956eee2a516930d1c0009b5a4f675b1a19eabb3dc' => 'rx 级别',
+  '6dd8089729ce9e5ed95adebdcdb9060c1b5d9601beb44891fdc07b0bea77dae7' => '设备找到最后7天',
+  '6defafa2caa65304173956e3fbc26b6947c50bc769c08c3da32c1032fa6519d4' => '配置',
+  '6e0a0b9d8c5ee4d9fb14be1c846a402634b77030c53b3f328007cd1c9cd43ece' => '设备标识',
+  '6e0447c9a5875a0604ca76f7fc944c0bdf58eb9b5c4699bf089de21d26ca4ee1' => '福克兰群岛(马尔维纳斯)',
+  '6e2c2bd5bf463ea2e0bf14f6f1120685ff56f34cadd10302e3bdb1c72d87d4a9' => '外部标识',
+  '6e7d50e84f4731ef74187cf8cfa2672184eed8866b0b0074a772f4a64e0f4ba2' => '结果',
+  '6e30e70211f1e28d624a5535b0204cb7baa014a1c87341adc4a773164e66039f' => '对设备的特性和类型进行有教养的猜测',
+  '6e39a0a1a3d3a0f67fda0d15a184d6da938bae9af8d3be372fcdbfb79ebe63c6' => '从 Open-AudIT 选中的设备',
+  '6e49e65081b2bcb5a54e6a6a74086f42949ddf388d516ce7eb0dad7d95e80ceb' => '泰国',
+  '006e238ebb417774355b24dfd987cfbead30329c95cf0b9b8d60ab9e31f1aa14' => '实例提供者',
+  '6e317e61e71f9e43dc36d11556f176017ade9971a993d629ab6227177acefc25' => '这对你意味着什么?',
+  '6e516fca2d867ef2bb91971cd329a3542b4a5be0d79ecc3f82ca4360acdbc281' => '操作系统',
+  '6e6804ca37a3d60b63b7b2c182debb85ab9f993c141921afa3c712e2c18ba529' => '设备旧于 X',
+  '6e26716d17026925c3b8d4c55c7e2fc3093ba3a2844a081285a7cd4f2b463f28' => 'Open-AudIT有一个颗粒权限系统,用于确定Open-AudIT内部的用户可以做什么,以及他可以做的项目. Open-AudIT可以完全自成一体,也可以使用Active Directory或OpenLDAP进行认证和/或授权.<br/><br/>完全由Open-AudIT的管理员来决定他们希望如何使用基于角色的接入控制。',
+  '6e177920adc8cfab4029a398a3975e2f592b5e14156058080e878958872b7399' => '除此限制外, 您可以根据需要自由选择属性 。 使用菜单是个好主意',
+  '6e4261695ad1aa36aac75303151674266d135fc12c26f8dc64bba0546d4238f2' => '自我检查',
+  '06ea8d6b47e583f1172c91780c430f33e911f95e9192bf34095ad91a61940d41' => 'ip 扫描 count',
+  '06ea8d158c00563aa2ee1cf9776e392d45137e5214b813292a2a937c86f630b7' => '开始日期( D)',
+  '6ea98d2f2739a72704ab59ff92bfdc95e756a85595d979b9671f055c54e1f33a' => '完成后, 关闭命令窗口即可完成 !',
+  '6ebdd2021ebfe914d69b639a4c62314bed1c0a7022fef6bb97768cb7e7d55bbf' => '您只应该使用包含您需要的属性的表格 。 我通常用左联 比如说',
+  '6ebfcee12e533f1254d8012028a31d2da7f449fc2ec0adab0dfd4265d26ddee6' => '安装( D)',
+  '6ef7c9b15ecdd69083724b84cfdc2100351963488b51b4ea2fcbddf493fbec94' => '高级',
+  '6eff95423590a9652f09bbeeec059e4bf6cbc7243e28de7974d5be3ccc6e72ce' => '包含在内',
+  '6f5b8479242aea4e6610c5ab3a00a0cc0f194cbd8fde1ae8fb9e9f52d1c73379' => '命令输出',
+  '6f7d948ca9c2ec14c56e88a8f221a8102b4975a8d492f2c4f0867c8768c1c718' => '用户电子邮件地址 。',
+  '6f38aa51d57ed1cc7938ace1c4a7cf805a8cb455bb126ac9e008a1a5460a8cb9' => '电子邮件配置',
+  '6f56a37bc6fd3448231558d335d6d9814e7c6ac14f26a0a8bd486ff0abcbe8a9' => '键以获取 lat/ 长和显示地图。 见',
+  '6f58cdc539b13fe511e0ac384afa387de39e277dc42d7ed25d463af2330d462d' => '默认假冒级别 - 要识别的设定',
+  '6f65cac70cf18fa0d865259b096608048fc18a483ccab569b0678c6cee030ccb' => '目标计算机 审计。 ""意味着本地主机。',
+  '6f89d06fca114b7ab87f730faf2f6c29a4cdaa6d888fea4937627e02664af659' => '此项目必须匹配所选属性的值 。',
+  '6f93a3335ddcee37e3cbf530f4791dfda70b2d30dcc370f1326551001d18b7c0' => '由SNMP发现而来',
+  '6f202f54a7b2d8fe42aa804eabe48ef900cdf73a74c570a47fd1b1a4920a051d' => '列表',
+  '6f846a2af19895dec0fa5df68e233d2182efd18f7eb094b1920c5959360d44ca' => '衡量脆弱性受到攻击的可能性,其依据是开发技术的现状、可利用的开发密码或活跃的“无所不在”开发。',
+  '6f3979ee75bcfb62cc8b8b41034bb8ca3fffae378f64242be4a1a6940028ba58' => 'os 家庭',
+  '6f6557d67661d4592b272d80b60ad8d46fbae9f1e52ea92cceb0d61c48266e49' => '二级内部身份证A',
+  '6fc656b17a3b7e5414b8442e967942659ab24b6c5676f04818f00abab16a7841' => '奥兰群岛',
+  '6fcd6eb381e8ed96b52bf58cbda39750b1c88120ca8678226a31f474573f8ccc' => '域名小写',
+  '6fd69bf32e376e10df4e20a492367fce7eb7e18362ab653904b6f740c7b8071b' => '序列 Imei',
+  '6fd553132e7785dc2a550429ab9820f39fcefe2b5a735a739be658f9b7f6c419' => '更改日志',
+  '6fe1e73c66aa141d8153f3d6895a8c8e6c964f5051471e628e5fb2351427e701' => '您没有安装 PHP SNMP 扩展 。 强烈建议延长任期。',
+  '6fe5adeab8ced2149a738f884ec5538cd3aca41701aaa2d976805ae4b1710838' => 'os 安装 日期',
+  '6ff080c07894909d194898c8b63acf6e17ea76ca064d151f9cf15d4999f149ce' => '列支敦士登',
+  '07a0b0962107485c3c1375cffa0f2ed9254efe640801713a6c4a358af3d8aa00' => '参考文献',
+  '7a1a3b4d7ce1864333e769ed0c0a5851697fd79ed870b64b8841741f01096794' => '当子网发现被执行时,它首先运行,如果选中的话,对范围或IP地址进行Nmap ping扫描. 任何设备响应都会通过端口扫描. 如果不要求Nmap ping扫描,每个IP都会单独扫描. 哪个港口? 这是由',
+  '7a7af84017043f06a7a9dfc27d897619f19274bbda4039c358aa6834e7cd96f3' => '用于发现扫描选项的属性如下.',
+  '7a17d2a7b886ae52a29b4cecce1825149db8096f3d3af42b02154e169abbda06' => '顶端 Nmap UDP 端口',
+  '7a60adf0d5f67b7e733d1defee971d2e9abb0fa607f463d782d9c4138ea482fd' => 'Open-AudIT专业. 这个世界',
+  '7a89fe84d5f14031c91ace9905a93463548fe8a4f611500e87085f53d6af9ec2' => '一个位置是一个物理地址,可以拥有与之相关的设备. 您可以指定它坐标, 如果指定了设备, 当您有 Open-AudIT Enterprise 许可证时, 位置会出现在地图上 。',
+  '7a96aabbd57bd0c4efd0d2c6e85853905fb85899c8bd241374e26b7b8435300d' => '不包括 Udp 端口',
+  '7a96c1e67fa3e32370a2bc9b3c8bec94c33484aa61043fb1104758bc1760eddb' => 'Open-AudIT是由一位说英语的澳大利亚人写的. 申请中的所有内容都使用英语措辞. 然而,Open-AudIT一直支持多种语言进行显示. 这些翻译并不总是正确的,因为开发者不会在本土上说每个提供翻译的语言.<br/><br/>如果翻译中有些不对劲,你能做什么?',
+  '7a157e853240ecef1383ee4d3ddcccca09101d91997f383ca19eef8c13ba4309' => 'IP 最后一个视图',
+  '7a254fee78810fc46904bdbb5d8904ab64abcfb11860f52ceca07fd597e8e561' => '保证( T)',
+  '7a308dd4b6107c2e4902d7d41de37c6f7fdd28dd92c60cd1e99ca78e1c567194' => '窗体因子',
+  '7a3863b832e11228544d460d7e750aaf37e8e469eacc74ca8f339aa27bd073fb' => '规则( G)',
+  '7a6432ecf103d8bafff795d5ee312065273c9159c6c8afdc6619206cbc364efd' => '地点国家。',
+  '7a552636e3317c1d116f1c562c91b3ecff5ffcbb4dc5d1b6b77af7a2b9bef711' => '说明',
+  '7aa1b00a4496fe340894dea8565ff1cc43655b9bd81396af4513d96a91253451' => '自定义 TCP 端口 。 除了顶级TCP港口之外,我们想扫描任何特定的港口。 逗号分离,没有空格.',
+  '7aa3d84bf41da05b9d951dc9b5565dfd5fc468ae8fdb22595474164a73b02c9e' => '法国、法兰西共和国',
+  '7ab597e1b5cc23df9c19293f489c4e3ae5a8233b071cf277524c37d405fa3ed7' => '黑山',
+  '7abc49dfa87bc183179762b87f9914ceadc46c29a5621493a4a91e54d401c1ed' => '输入',
+  '7abff3fd481f6f8ddac91ea5d6d11e6c71763a19840b4fc3f329663e7c9d257c' => '包含此网络的位置 。 链接到 <code>locations.id</code>。 。 。 。',
+  '7ae923a8bcec061a8c8ff03f2aed9c65f2cf4b3fd88a21733acb35ccb19f0d2c' => 'SNMP v3 安全名称.',
+  '7ae8143753511488edf128a769f2ecfa3e7f64a502dfcc643bd531465d9d2b67' => '初选文本',
+  '7af139ca7fde3f0a2828b6479e8166cc936aa56bf67f256985405a28cc0d5dad' => '电路状态( S)',
+  '7afea3aee0db05f586c0f14c4e74938230c4bf160d8d416dabdec20ec406e474' => 'Ios 版本',
+  '7b1dcf437c7b9c786109820dbbdddf135c88c788308b615bf6c02822ed9ade56' => '可能会 <code>auto</code>, (中文). <code>fixed</code>, (中文). <code>other</code> 或空白。',
+  '7b4c1a8b3e550bc631adfe0c73a2419d948ef3856550c1ad04dfb9e608deccc2' => '主图标',
+  '7b8c56be0a5f71be141f0cfaa9195e2ff8d1ef89e380560b579a82fd841429c1' => '产出',
+  '7b31e52e0a8ae6cb6a8798beb851aa45399900d2c0e134c5019835c6973f540f' => '端口( Stop after)',
+  '7b85fbe8e106e0989bf91a48b9e4f8149fe82b80d87f903258ec76f97c1ff9d7' => '软件版.',
+  '7b4865da4e83a0c3946735457c89c63b825264428f162970dbb666808ca024e4' => '接口类型',
+  '7b54484faea3c7c47807c57a1adc4561d91e89a2594593858efb26977f70be40' => '父目录( D)',
+  '7b790708ff1b171315a152018f3712e8c71c82f4f9000635f77a1336c34f1893' => '收藏',
+  '7bb45e0c26d734046ffa5e044a1b9d6b03e2d5599d8048ada258040538cf0f7f' => '必须回复到小平',
+  '7bbc22c0fc29e519ee6b11b739e98a3f3a4c2b6d03fc25a31f999f8f88d3f2b1' => '无效的  from raw',
+  '7bd148ce5cf810ce41b68c56ec50cc2546d070aa371507345a4e5498dad553c5' => 'CVE正在积极丰富CVSS的分数,CWE分类,参考标记,以及CPE的适用性.',
+  '7bff6181add2231b3c0f092fa826243267781cbeaef4fb83e292604e1319dcc0' => '核心',
+  '7c4e27513904ce34cc850443a45c54c9c5d8bd209930a7ddd93125ae731906f6' => '当我们运行发现和收集设备结果时,我们便大量出现网络清单。 Blessed Subnets的特性使用这个网络列表只接受这些网络上设备的数据.',
+  '7c9df30c9d437e8c9cbd2b11a93c50658323266d424b2b2411c01827b5233f15' => '我们是否应该匹配基于其主机名和序列的设备 。',
+  '7c44c98c4299f16ddf7425062228e39f196f8eeacb7d010d4bace710146c427b' => '排除 IP 地址',
+  '07c67d76ef92ac9853588e098983fefba4ba5965f8fec95f42ab0d04c27865ba' => '土耳其',
+  '07c87cddae282cfcb14cb2da48d4588648cc7738e0060d5ffd8db3738a1dd5bc' => 'dhcp 服务器',
+  '7c517bf8747651fbbb2dd53608c4977c69a60916dadf9febb45ec7f4349e4a31' => '语句。 第一个是数组索引,应留为正数。 该索引在模板中用于查找翻译文本.',
+  '7c816c2b4bf93203194365b217bbbd1466944d59217b5bbe7a0728e922dc5b90' => '攻击矢量',
+  '7c3523e506eeb2b325957e2c38d15a319763e1177a06135c23dee33f2d47e65d' => '发现扫描选项只是另一个项目收藏. 企业用户可以根据需要创建,阅读,更新和删除条目. 专业用户可以阅读所有条目,但不创建新条目,更新现有条目或删除条目. 社区用户没有允许访问此收藏的GUI.',
+  '7c4483cece55839512ff59ae2c600d8deef24e91b31d76b11b2daf1fdaec87c2' => '地区',
+  '7ca9efd81ee6e590016f942fe45ae11170aee4ab956727d9e2cda70a9aed20ab' => '二级外部提供者',
+  '7caa6d4f525de7f4ca1a71c44083d054f5b4678add881936d41daa684edda41c' => '绝密 - 军事/政府分类. 披露会对国家安全造成特别严重的危险。
 
 机密 - 军事/政府分类。 披露会对国家安全造成严重损害。
 
-机密-军事/政府和私营部门分类。 保密数据包括商业秘密,知识数据,应用编程代码,以及如果发生未经授权的披露可能严重影响组织的其他数据. 这一级别的数据只提供给其工作需要或与所获取数据直接相关的组织人员。 访问机密数据通常需要每次访问的授权.
+机密-军事/政府和私营部门分类。 保密数据包括商业秘密,知识数据,应用编程代码,以及如果发生未经授权的披露可能严重影响组织的其他数据. 这一级别的数据只提供给其工作需要或直接涉及所获取数据的组织人员。 获取机密数据通常需要每次访问的授权.
 
-私营部门分类。 私人数据包括与人员有关的任何信息,包括人力资源记录、医疗记录和薪金信息,仅在组织内使用。
+私营部门分类。 私人数据包括与人员有关的任何资料,包括人力资源记录、医疗记录和薪金资料,这些资料只在组织内使用。
 
-军事/政府和私营部门分类。 敏感数据包括组织财务信息,需要额外措施以确保其中央情报局和准确性。 披露可能会损害国家安全。
+敏感-军事/政府和私营部门分类。 敏感数据包括组织财务信息,需要额外措施以确保其中央情报局和准确性。 披露可能会损害国家安全。
 
 公共-私营部门分类。 公共数据是一般与公众共享的数据,不会对组织产生负面影响. 公共数据的例子包括有多少人在该组织工作,以及一个组织制造或销售什么产品。
 
-未分类----军事/政府分类。 通常可以向公众散发的任何信息,而不会对国家利益造成任何威胁。
-
-未指定 - 直到设定默认值 。';
-
-$GLOBALS["lang"]['traffic'] = '运输';
-
-$GLOBALS["lang"]['true'] = '真实';
-
-$GLOBALS["lang"]['true or false (in JSON context)'] = '真假( 在 JSON 上下文中)';
-
-$GLOBALS["lang"]['unallocated'] = '未分配';
-
-$GLOBALS["lang"]['unauthorised'] = '未授权';
-
-$GLOBALS["lang"]['unchanged'] = '不变';
-
-$GLOBALS["lang"]['unknown'] = '不详';
-
-$GLOBALS["lang"]['unmanaged'] = '未管理';
-
-$GLOBALS["lang"]['unused'] = '未使用';
-
-$GLOBALS["lang"]['update'] = '更新';
-
-$GLOBALS["lang"]['uses the data collected from your devices and matches the software installed with the value provided, it counts the matches calculates how many licenses have been used and how many are left. It allows the use of wildcards on the <i>match string</i> field which matches the software.name attribute.'] = '使用从设备中收集的数据,并将安装的软件与所提供的值匹配,它计算出使用过多少许可证和剩下多少许可证。 它允许在 <i>匹配字符串</i> 匹配软件的字段。 名称属性。';
-
-$GLOBALS["lang"]['using the main menu items.'] = '使用主菜单项。';
-
-$GLOBALS["lang"]['valid'] = '无效';
-
-$GLOBALS["lang"]['version'] = '版本';
-
-$GLOBALS["lang"]['virtualisation'] = '虚拟化';
-
-$GLOBALS["lang"]['warning'] = '警告';
-
-$GLOBALS["lang"]['web'] = '网页';
-
-$GLOBALS["lang"]['with Local and Remote access permissions set.'] = '设置本地和远程访问权限。';
-
-$GLOBALS["lang"]['with devices::update permission.'] = '有设备: 更新权限。';
-
-$GLOBALS["lang"]['with the Sign-On Redirect URI being'] = '重定向 URI 为';
-
-$GLOBALS["lang"]['with the intention of providing simple and intuitive access in a manner familiar to developers. In addition to this API, the web interface will use the same request format and supply some additional actions (eg: HTML forms for creating items).'] = '意图以开发者熟悉的方式提供简单和直观的访问. 除了这个API,网页界面将使用相同的请求格式,并提供一些附加动作(如:HTML格式用于创建项目).';
-
-$GLOBALS["lang"]['yes'] = '对';
-
-$GLOBALS["lang"]['you do not require a HighCharts license to use Firstwave products. License'] = '您无需持有高图许可证即可使用第一波产品。 许可证';
-
-$GLOBALS["lang"]['you will assign any found devices to that Org or Location.'] = '您将指定任何发现的设备到该 Org 或 位置 。';
-
-$GLOBALS["lang"]['AF'] = 'AF';
-
-$GLOBALS["lang"]['AX'] = 'AX';
-
-$GLOBALS["lang"]['AL'] = 'AL';
-
-$GLOBALS["lang"]['DZ'] = 'DZ';
-
-$GLOBALS["lang"]['AS'] = 'AS';
-
-$GLOBALS["lang"]['AD'] = 'AD';
-
-$GLOBALS["lang"]['AO'] = 'AO';
-
-$GLOBALS["lang"]['AI'] = 'AI';
-
-$GLOBALS["lang"]['AQ'] = 'AQ';
-
-$GLOBALS["lang"]['AG'] = 'AG';
-
-$GLOBALS["lang"]['AR'] = 'AR';
-
-$GLOBALS["lang"]['AM'] = 'AM';
-
-$GLOBALS["lang"]['AW'] = 'AW';
-
-$GLOBALS["lang"]['AU'] = 'AU';
-
-$GLOBALS["lang"]['AT'] = 'AT';
-
-$GLOBALS["lang"]['AZ'] = 'AZ';
-
-$GLOBALS["lang"]['BS'] = 'BS';
-
-$GLOBALS["lang"]['BH'] = 'BH';
-
-$GLOBALS["lang"]['BD'] = 'BD';
-
-$GLOBALS["lang"]['BB'] = 'BB';
-
-$GLOBALS["lang"]['BY'] = 'BY';
-
-$GLOBALS["lang"]['BE'] = 'BE';
-
-$GLOBALS["lang"]['BZ'] = 'BZ';
-
-$GLOBALS["lang"]['BJ'] = 'BJ';
-
-$GLOBALS["lang"]['BM'] = 'BM';
-
-$GLOBALS["lang"]['BT'] = 'BT';
-
-$GLOBALS["lang"]['BO'] = 'BO';
-
-$GLOBALS["lang"]['BA'] = 'BA';
-
-$GLOBALS["lang"]['BW'] = 'BW';
-
-$GLOBALS["lang"]['BV'] = 'BV';
-
-$GLOBALS["lang"]['BR'] = 'BR';
-
-$GLOBALS["lang"]['IO'] = 'IO';
-
-$GLOBALS["lang"]['VG'] = 'VG';
-
-$GLOBALS["lang"]['BN'] = 'BN';
-
-$GLOBALS["lang"]['BG'] = 'BG';
-
-$GLOBALS["lang"]['BF'] = 'BF';
-
-$GLOBALS["lang"]['BI'] = 'BI';
-
-$GLOBALS["lang"]['KH'] = 'KH';
-
-$GLOBALS["lang"]['CM'] = 'CM';
-
-$GLOBALS["lang"]['CA'] = 'CA';
-
-$GLOBALS["lang"]['CV'] = 'CV';
-
-$GLOBALS["lang"]['KY'] = 'KY';
-
-$GLOBALS["lang"]['CF'] = 'CF';
-
-$GLOBALS["lang"]['TD'] = 'TD';
-
-$GLOBALS["lang"]['CL'] = 'CL';
-
-$GLOBALS["lang"]['CN'] = 'CN';
-
-$GLOBALS["lang"]['CX'] = 'CX';
-
-$GLOBALS["lang"]['CC'] = 'CC';
-
-$GLOBALS["lang"]['CO'] = 'CO';
-
-$GLOBALS["lang"]['KM'] = 'KM';
-
-$GLOBALS["lang"]['CD'] = 'CD';
-
-$GLOBALS["lang"]['CG'] = 'CG';
-
-$GLOBALS["lang"]['CK'] = 'CK';
-
-$GLOBALS["lang"]['CR'] = 'CR';
-
-$GLOBALS["lang"]['CI'] = 'CI';
-
-$GLOBALS["lang"]['HR'] = 'HR';
-
-$GLOBALS["lang"]['CU'] = 'CU';
-
-$GLOBALS["lang"]['CY'] = 'CY';
-
-$GLOBALS["lang"]['CZ'] = 'CZ';
-
-$GLOBALS["lang"]['DK'] = 'DK';
-
-$GLOBALS["lang"]['DJ'] = 'DJ';
-
-$GLOBALS["lang"]['DM'] = 'DM';
-
-$GLOBALS["lang"]['DO'] = 'DO';
-
-$GLOBALS["lang"]['EC'] = 'EC';
-
-$GLOBALS["lang"]['EG'] = 'EG';
-
-$GLOBALS["lang"]['SV'] = 'SV';
-
-$GLOBALS["lang"]['GQ'] = 'GQ';
-
-$GLOBALS["lang"]['ER'] = 'ER';
-
-$GLOBALS["lang"]['EE'] = 'EE';
-
-$GLOBALS["lang"]['ET'] = 'ET';
-
-$GLOBALS["lang"]['FO'] = 'FO';
-
-$GLOBALS["lang"]['FK'] = 'FK';
-
-$GLOBALS["lang"]['FJ'] = 'FJ';
-
-$GLOBALS["lang"]['FI'] = 'FI';
-
-$GLOBALS["lang"]['FR'] = 'FR';
-
-$GLOBALS["lang"]['GF'] = 'GF';
-
-$GLOBALS["lang"]['PF'] = 'PF';
-
-$GLOBALS["lang"]['TF'] = 'TF';
-
-$GLOBALS["lang"]['GA'] = 'GA';
-
-$GLOBALS["lang"]['GM'] = 'GM';
-
-$GLOBALS["lang"]['GE'] = 'GE';
-
-$GLOBALS["lang"]['DE'] = 'DE';
-
-$GLOBALS["lang"]['GH'] = 'GH';
-
-$GLOBALS["lang"]['GI'] = 'GI';
-
-$GLOBALS["lang"]['GR'] = 'GR';
-
-$GLOBALS["lang"]['GL'] = 'GL';
-
-$GLOBALS["lang"]['GD'] = 'GD';
-
-$GLOBALS["lang"]['GP'] = 'GP';
-
-$GLOBALS["lang"]['GU'] = 'GU';
-
-$GLOBALS["lang"]['GT'] = 'GT';
-
-$GLOBALS["lang"]['GG'] = 'GG';
-
-$GLOBALS["lang"]['GN'] = 'GN';
-
-$GLOBALS["lang"]['GW'] = 'GW';
-
-$GLOBALS["lang"]['GY'] = 'GY';
-
-$GLOBALS["lang"]['HT'] = 'HT';
-
-$GLOBALS["lang"]['HM'] = 'HM';
-
-$GLOBALS["lang"]['VA'] = 'VA';
-
-$GLOBALS["lang"]['HN'] = 'HN';
-
-$GLOBALS["lang"]['HK'] = 'HK';
-
-$GLOBALS["lang"]['HU'] = 'HU';
-
-$GLOBALS["lang"]['IS'] = 'IS';
-
-$GLOBALS["lang"]['IN'] = 'IN';
-
-$GLOBALS["lang"]['IR'] = 'IR';
-
-$GLOBALS["lang"]['IQ'] = 'IQ';
-
-$GLOBALS["lang"]['IE'] = 'IE';
-
-$GLOBALS["lang"]['IM'] = 'IM';
-
-$GLOBALS["lang"]['IL'] = 'IL';
-
-$GLOBALS["lang"]['IT'] = 'IT';
-
-$GLOBALS["lang"]['JM'] = 'JM';
-
-$GLOBALS["lang"]['JP'] = 'JP';
-
-$GLOBALS["lang"]['JE'] = 'JE';
-
-$GLOBALS["lang"]['JO'] = 'JO';
-
-$GLOBALS["lang"]['KZ'] = 'KZ';
-
-$GLOBALS["lang"]['KE'] = 'KE';
-
-$GLOBALS["lang"]['KI'] = 'KI';
-
-$GLOBALS["lang"]['KP'] = 'KP';
-
-$GLOBALS["lang"]['KR'] = 'KR';
-
-$GLOBALS["lang"]['KW'] = 'KW';
-
-$GLOBALS["lang"]['KG'] = 'KG';
-
-$GLOBALS["lang"]['LA'] = 'LA';
-
-$GLOBALS["lang"]['LV'] = 'LV';
-
-$GLOBALS["lang"]['LB'] = 'LB';
-
-$GLOBALS["lang"]['LS'] = 'LS';
-
-$GLOBALS["lang"]['LR'] = 'LR';
-
-$GLOBALS["lang"]['LY'] = 'LY';
-
-$GLOBALS["lang"]['LI'] = 'LI';
-
-$GLOBALS["lang"]['LT'] = 'LT';
-
-$GLOBALS["lang"]['LU'] = 'LU';
-
-$GLOBALS["lang"]['MO'] = 'MO';
-
-$GLOBALS["lang"]['MK'] = 'MK';
-
-$GLOBALS["lang"]['MG'] = 'MG';
-
-$GLOBALS["lang"]['MW'] = 'MW';
-
-$GLOBALS["lang"]['MY'] = 'MY';
-
-$GLOBALS["lang"]['MV'] = 'MV';
-
-$GLOBALS["lang"]['ML'] = 'ML';
-
-$GLOBALS["lang"]['MT'] = 'MT';
-
-$GLOBALS["lang"]['MH'] = 'MH';
-
-$GLOBALS["lang"]['MQ'] = 'MQ';
-
-$GLOBALS["lang"]['MR'] = 'MR';
-
-$GLOBALS["lang"]['MU'] = 'MU';
-
-$GLOBALS["lang"]['YT'] = 'YT';
-
-$GLOBALS["lang"]['MX'] = 'MX';
-
-$GLOBALS["lang"]['FM'] = 'FM';
-
-$GLOBALS["lang"]['MD'] = 'MD';
-
-$GLOBALS["lang"]['MC'] = 'MC';
-
-$GLOBALS["lang"]['MN'] = 'MN';
-
-$GLOBALS["lang"]['ME'] = 'ME';
-
-$GLOBALS["lang"]['MS'] = 'MS';
-
-$GLOBALS["lang"]['MA'] = 'MA';
-
-$GLOBALS["lang"]['MZ'] = 'MZ';
-
-$GLOBALS["lang"]['MM'] = 'MM';
-
-$GLOBALS["lang"]['NA'] = 'NA';
-
-$GLOBALS["lang"]['NR'] = 'NR';
-
-$GLOBALS["lang"]['NP'] = 'NP';
-
-$GLOBALS["lang"]['AN'] = 'AN';
-
-$GLOBALS["lang"]['NL'] = 'NL';
-
-$GLOBALS["lang"]['NC'] = 'NC';
-
-$GLOBALS["lang"]['NZ'] = 'NZ';
-
-$GLOBALS["lang"]['NI'] = 'NI';
-
-$GLOBALS["lang"]['NE'] = 'NE';
-
-$GLOBALS["lang"]['NG'] = 'NG';
-
-$GLOBALS["lang"]['NU'] = 'NU';
-
-$GLOBALS["lang"]['NF'] = 'NF';
-
-$GLOBALS["lang"]['MP'] = 'MP';
-
-$GLOBALS["lang"]['NO'] = 'NO';
-
-$GLOBALS["lang"]['OM'] = 'OM';
-
-$GLOBALS["lang"]['PK'] = 'PK';
-
-$GLOBALS["lang"]['PW'] = 'PW';
-
-$GLOBALS["lang"]['PS'] = 'PS';
-
-$GLOBALS["lang"]['PA'] = 'PA';
-
-$GLOBALS["lang"]['PG'] = 'PG';
-
-$GLOBALS["lang"]['PY'] = 'PY';
-
-$GLOBALS["lang"]['PE'] = 'PE';
-
-$GLOBALS["lang"]['PH'] = 'PH';
-
-$GLOBALS["lang"]['PN'] = 'PN';
-
-$GLOBALS["lang"]['PL'] = 'PL';
-
-$GLOBALS["lang"]['PT'] = 'PT';
-
-$GLOBALS["lang"]['PR'] = 'PR';
-
-$GLOBALS["lang"]['QA'] = 'QA';
-
-$GLOBALS["lang"]['RE'] = 'RE';
-
-$GLOBALS["lang"]['RO'] = 'RO';
-
-$GLOBALS["lang"]['RU'] = 'RU';
-
-$GLOBALS["lang"]['RW'] = 'RW';
-
-$GLOBALS["lang"]['BL'] = 'BL';
-
-$GLOBALS["lang"]['SH'] = 'SH';
-
-$GLOBALS["lang"]['KN'] = 'KN';
-
-$GLOBALS["lang"]['LC'] = 'LC';
-
-$GLOBALS["lang"]['MF'] = 'MF';
-
-$GLOBALS["lang"]['PM'] = 'PM';
-
-$GLOBALS["lang"]['VC'] = 'VC';
-
-$GLOBALS["lang"]['WS'] = 'WS';
-
-$GLOBALS["lang"]['SM'] = 'SM';
-
-$GLOBALS["lang"]['ST'] = 'ST';
-
-$GLOBALS["lang"]['SA'] = 'SA';
-
-$GLOBALS["lang"]['SN'] = 'SN';
-
-$GLOBALS["lang"]['RS'] = 'RS';
-
-$GLOBALS["lang"]['SC'] = 'SC';
-
-$GLOBALS["lang"]['SL'] = 'SL';
-
-$GLOBALS["lang"]['SG'] = 'SG';
-
-$GLOBALS["lang"]['SK'] = 'SK';
-
-$GLOBALS["lang"]['SI'] = 'SI';
-
-$GLOBALS["lang"]['SB'] = 'SB';
-
-$GLOBALS["lang"]['SO'] = 'SO';
-
-$GLOBALS["lang"]['ZA'] = 'ZA';
-
-$GLOBALS["lang"]['GS'] = 'GS';
-
-$GLOBALS["lang"]['ES'] = 'ES';
-
-$GLOBALS["lang"]['LK'] = 'LK';
-
-$GLOBALS["lang"]['SD'] = 'SD';
-
-$GLOBALS["lang"]['SR'] = 'SR';
-
-$GLOBALS["lang"]['SJ'] = 'SJ';
-
-$GLOBALS["lang"]['SZ'] = 'SZ';
-
-$GLOBALS["lang"]['SE'] = 'SE';
-
-$GLOBALS["lang"]['CH'] = 'CH';
-
-$GLOBALS["lang"]['SY'] = 'SY';
-
-$GLOBALS["lang"]['TW'] = 'TW';
-
-$GLOBALS["lang"]['TJ'] = 'TJ';
-
-$GLOBALS["lang"]['TZ'] = 'TZ';
-
-$GLOBALS["lang"]['TH'] = 'TH';
-
-$GLOBALS["lang"]['TL'] = 'TL';
-
-$GLOBALS["lang"]['TG'] = 'TG';
-
-$GLOBALS["lang"]['TK'] = 'TK';
-
-$GLOBALS["lang"]['TO'] = 'TO';
-
-$GLOBALS["lang"]['TT'] = 'TT';
-
-$GLOBALS["lang"]['TN'] = 'TN';
-
-$GLOBALS["lang"]['TR'] = 'TR';
-
-$GLOBALS["lang"]['TM'] = 'TM';
-
-$GLOBALS["lang"]['TC'] = 'TC';
-
-$GLOBALS["lang"]['TV'] = 'TV';
-
-$GLOBALS["lang"]['UG'] = 'UG';
-
-$GLOBALS["lang"]['UA'] = 'UA';
-
-$GLOBALS["lang"]['AE'] = 'AE';
-
-$GLOBALS["lang"]['GB'] = 'GB';
-
-$GLOBALS["lang"]['US'] = 'US';
-
-$GLOBALS["lang"]['UM'] = 'UM';
-
-$GLOBALS["lang"]['VI'] = 'VI';
-
-$GLOBALS["lang"]['UY'] = 'UY';
-
-$GLOBALS["lang"]['UZ'] = 'UZ';
-
-$GLOBALS["lang"]['VU'] = 'VU';
-
-$GLOBALS["lang"]['VE'] = 'VE';
-
-$GLOBALS["lang"]['VN'] = 'VN';
-
-$GLOBALS["lang"]['WF'] = 'WF';
-
-$GLOBALS["lang"]['EH'] = 'EH';
-
-$GLOBALS["lang"]['YE'] = 'YE';
-
-$GLOBALS["lang"]['ZM'] = 'ZM';
-
-$GLOBALS["lang"]['ZW'] = 'ZW';
-
+未分类 -- -- 军事/政府分类。 通常可以向公众传播的任何信息,而不会对国家利益造成任何威胁。
+
+未指定 - 设定前的默认值 。',
+  '7caacc20a9ec6f3ed091011787727650be235387e48bbd1184a98d0f61c88c7a' => '选项 1 - 更改数据',
+  '7cd86204f9dc62d500e3819fc8f12ffb98112fedd7ea7dce240a37339552d5e9' => '用于原始 SQL 查询的高级条目 。 根据查询,您必须包含 <code>WHERE @filter AND</code> 在您的 SQL 中。 对于状态部件,必须使用 <code>count</code> 名称。 由线条,派和状态部件使用.',
+  '7cfe3ff18c1d200ddc4cf211336448bdf91f5d294695cc34855e7aa78e4c021c' => '接下来点击“确定”,然后右键点击“Apache 2.4”服务,然后点击“重新启动”。 结束了!',
+  '7d1e428abd3476d7b06d4c83d5f41fe828d4477198e04ec06597718f91caf17b' => '加密方法( M)',
+  '7d2c4bbe1a2080a1a3dd7f9cee72c4c2318cc751ded4ec436e8ef32c2949ad0d' => '行位置( P)',
+  '7d8af1de1262f150187d5938bf649d6c35726970685f916d1ec6392a801b9762' => '星期二',
+  '7d9eb7acb13e24625c404401d8e88b2350e32162455885f18276cf802f7701ed' => '关闭',
+  '7d67e7a9b517b54d20f156af526ad0af6f7513cf308faa670bcd8dc0a0b32d3f' => '选择所有设备',
+  '7d648f5b47f34afb32946011a07e32176ad966f44ad9efff8380c73dfc5c5b87' => '已忽略',
+  '7d94977e033dee6304f7d11d4b3b1cc17df77ba3a5dea84ce7e482a8d7af5a08' => '埃塞俄比亚',
+  '07d551932677e8ab8fb258cf73a9a05987d75c09c264322363292808c3e3913b' => '因此,我们 <strong>必须</strong> 拥有提供给发现证书用户的管理费份额。 请检查 Windows 机提供的目标 <i>写入</i> 用于发现证书用户的访问。<br/>',
+  '7daba813cd196e546b7264ca3ffd0650206da844c5e67d3eef66d58ea3d0eef8' => '主描述',
+  '7dcd5c0dc77bb3c2b4081e03381c308d05049a9259701e0723481267c6a89599' => '网易格式192.168.1.0/24.',
+  '7dd0c85c947c5e8fe3be14698bc3322cca6d6a0371fb3ed077ed7dd057383056' => '经度',
+  '7ddc53f62b2f35b1291f127acb7f91be490ec4b21a49c70b5df1e31799da38b1' => '为 Auth 使用 Entra',
+  '7de206c052e43291fa6bd9c73e2218a7f8f826a689050612ec85d8fd69513421' => '密码( C)',
+  '7de97367c9cdc3c6db31aa114057b65cea1a7bafc71cf0595a2931011526a0a3' => '显示器',
+  '7dfb4cf67742cb0660305e56ef816c53fcec892cae7f6ee39b75f34e659d672c' => '用户',
+  '7e3e8a308fe7960a7187a41a58d6161f66fe1f600f1eea5df12b6bb0d7f79990' => 'B站点',
+  '7e8e8c53528fe4c1596954ceeccd37f03bed483db228b1d00d22a0d37467613b' => '叶子全数',
+  '7e35ef2ce35dc26afc5eea32da0a0028bbc80dd8776bdcdaf78099a25379cc7b' => '社区问题',
+  '7e41a576aad849cc26a40018fb66e08331e224e4c68dda32a236868b91cd2962' => '设备 ID B',
+  '7e59ecf584c1ca36869ef6d81856a6e3fb923e4bcc7c63c5819c704096e9964d' => '检测到的简历',
+  '07e73f3636fc8f275412a00382135b751e78dd28bebbb60b20d8f1482aaf75d4' => '查询身份',
+  '7e222a78e771f1b9b5692f4df889961e98152756af6391b1340366632e57b6ae' => '加蓬',
+  '7e682bf60f968cc491fdc5c1f86902e8b1908ed20676c96d5e0e476ed7d1b082' => '我们是否应该匹配一个基于其mac地址的设备.',
+  '7e142223eb75dfd5c10aeae6176dbd88361600d6a00391af9aace2185f83c33f' => 'B级服务',
+  '7e848840e30c5911dfa7f72bca15882411e6730fa7105d423a1825f78a9aff09' => '影响完整性的脆弱性可能允许攻击者修改数据,注入恶意代码,或者改变系统配置(None,Low,High).',
+  '07ebf9c1f505ff2d3990fb57999d2d92dedc05079c0293922ff7abbd504909da' => '服务终了',
+  '7ec0261b8e8aa3e0b1affde5f18ca1930ae73d81a5303d667aae9ffd2803cbc7' => '升级',
+  '7ed7479443cd4d0fbdd963d812327adbe9a49e165cba3290e37b2a386cac3645' => '更新  内部( C)',
+  '7ee4c957754a4a6af4e9f8818379e62ecef1728bc904de5f940b6adc09ca3eb4' => '您不应包含编辑的 by和编辑的 date字段。 这些将自动设置 。',
+  '07ee8b9fa81313847178a2220d4945a9e9eadb403710b89b392e6c5755ecb18a' => '外部创建的设备计算数量 。',
+  '7ef2b213940831b11f3c70a0f35843bb9b74e9ccc9099febb6dce3f977aec380' => '如果您包括“ id” 字段 <strong>和</strong> 设置一个编号,该项目将更新而不是创建。',
+  '7ef198239f66d825477711a84dbeed403fb93e101bd09cad60c8d4e84da30082' => '自动更新',
+  '7efb62b5c3b677fc07f28cbda0f723f157c6b9cf06535282ce0c15eb3b7b7040' => 'dhcp 租赁 已获取',
+  '7eff2e5a0880bf44d70df575708bda6afc359dcb1efaef48a4074dea43b21468' => '如果用户有数据库:通过菜单读取权限: Admin - > ,则可以在应用程序中找到数据库计划。 数据库 - >',
+  '7f037a515adc9695e72b6f038b33d77d345f242148436fc47a0feb77e02d6c30' => '打开AudIT',
+  '7f0865e63cde2ba4ba4ac1157d7fc9615ed98064919ac11c301fbb7bd00b6501' => '页面文件',
+  '7f4e1c97c5f0a6d1002cb7168515bffc1a484133fedb4528be1586233164fe30' => '作为这个端口上响应的设备.<br/>这引起了一些顾客的问题,防火墙代表一个不存在的设备进行响应,从而导致假阳性设备检测. 我们现在有这个属性可以设定每次扫描。',
+  '07f8d1144a39d45664231d8f129214d7ba99ce146240e154f4c893e8e4e1c0d6' => '斯里兰卡',
+  '7f14ce089e9a7275109aa5d7a9d66fc6fe75b0d27dedc496c0f15222a08d41df' => '父名称',
+  '7f31ff6787685601fd5c212b53fc1594f221e514d28c9e322cfc52661d4dc00e' => '上传审计结果文件',
+  '07f62b021771d3cf67e2e1faf18769cc5e5c119ad7d4d1847a11e11d6d5a7ecb' => '联合国',
+  '7f84bdcfd113158816eb753c18dcb32c99e865831ba12403da3c9b5b59db0e5b' => '挂载点',
+  '7f95ff9b2d2dac9f49430b08f8ee3b76378c7c0fb05bb745fc8cbfb1bb4bf68d' => '审计 DNS',
+  '7f8266e2c2d13057ab714b66ae167196ede2ad749d1db132336d204894a094bc' => '软件政策',
+  '7f69649ad70496d441a62f0f196b1c3283572f2c64f7b1b9cbc3939dac388958' => '波兰',
+  '7fa64773dcd67bd040ba4d369ecb33a8e8d698c93e698597017c73474840f10d' => '帕劳',
+  '7fb4d179ec62f241171a3981b842891b4487227ef381b0b61434d58bd4b26201' => '巴拉圭',
+  '7fc343ca39af6816a7fc78dfc387713e0a3628f9441c91798e2de3ccbb40a5e4' => '是否需要用户交互( 无, 被动, 活动) 。',
+  '7fd096909f43ed3e8bc3955d4436de384a4cfebf8d06e84691386380daeeb446' => '日志路径',
+  '7fe661eda113c00f818cb829a9324e3ca62f7d2667d2c944df1c03df75f3d351' => '当前发现进程',
+  '7ff87f6b41ccc0c3936c560e0501a5b3b8664278d931ca74bb08e507cfb52af3' => '纬度',
+  '7ffd7d5283b6ee51fd0b390a413e9fe6b2135c9f3585343fb07448cec2afa24d' => '不包括 TCP 港口',
+  '8a84e406c08ac9594f47222406598f7598e15c55f8044b04813e28c9dee70976' => '路径',
+  '8a1550b14fe45c8db4d83825c8a9182cf0f9af60059dff4b5f1221c61bf9c79b' => '从 Raw 校正',
+  '8a7525b1492fb84833f5c4a69b30f4bfbb134f9b666b61a2c1872d63d234c085' => '页:1',
+  '8a18514f3cc5b5d327560138ede049a016d68f0ea95b1777f4b3008022d88a19' => '导出设备',
+  '08aaa1b9784f99245c683377df0e8e65391407e7d4b6395bebeb6815d622c2f5' => '攻击  复杂度',
+  '8aaeb26a424664e851e992b92a13b7c948dfcd117f4e6c6b3724ed7b68935a39' => '电路状态',
+  '8abbed2d980a2a69dac6981d3aa5e2a65869acc14d485aad91118c028764d37e' => '保护信息的保密性、完整性和可得性',
+  '8ac501944b9a2ce2d522192d18c2196590b4ef1acddddac9fe7564611b68aad6' => '现在可以检索文件或文件目录的细节,并根据Open-AudIT数据库中的其他属性来监测这些文件的更改. 这个功能在Linux Open-AudIT服务器的框外工作,但需要在Windows Open-AudIT服务器下更改服务账户名称. 支持的客户端是Windows和Linux.',
+  '8ad89738c61b31cee6fefb620e7aa611caa4b3ff83524d2782fc2edb96323299' => '次要文本',
+  '8afeb13f9647c3e22488a597556c049e26e09e52e620daed05512c632ecb4151' => '叶地址 外部 B',
+  '8b0332ea1a4c402940406db6b157a285d41a15c686ba72afb9a1610265e8eb50' => '客户端ID是Azure Active Directory应用程序的ID. 客户秘密是你给申请的钥匙',
+  '8b3c3863aefacb3dd16b1b8c7f39b90a6de25c3cabf4d928207bc4f07b996e99' => '选择开始菜单和类型 <i>服务 <.i>。单击服务图标。</i>',
+  '8b3f1358e14b93750be66c086f9b63ea7aefd7cf11491c6ae5110e4f8ff6dae1' => '条码',
+  '8b5d78a6ddc530a48fc90b77395cced8eda3614bdf0f101db2b5667d44e73f2e' => '<p>需要管理您网络上的设备 。 但你的档案怎么更新? 电子表格 - 绝对不是。 数小时后,如果不是几天,就会过时。 为什么手动尝试跟上。 使用Open-AudIT自动扫描您的网络并记录您的设备——制造商,型号,串行和超过100个其他属性. 软件,服务,磁盘,开放端口,用户等的完整清单. 自动查看属性是否已被添加、删除或更改 。<br/> <br/>一旦Open-AudIT成立,你可以坐下来放松. 例如,我们这周发现了哪些新设备? 这周安装了什么样的新软件? 上个月有没有硬件变化?<br/> <br/>以自定义属性在存储的字段上轻松扩展 。<br/> <br/>甚至添加无法连接到您的网络的设备, 或是无法访问的 Open-AudIT 服务器的设备 。<br/> <br/>计算机、开关、路由器、打印机或网络上的任何其他设备 - Open-AudIT可以全部审计。<br/> <br/></p>',
+  '8b6b57b5ad1d17e61be5ac7a96fb8a6ccb76f3f2050a74582fc419cca6929029' => '物理 - 深度',
+  '8b8f3b5f8dcb77ffff82641bfc8ad801651643cd31d706c3df145321b13add25' => '匹配 <code>software.name</code> 属性。 您可以使用% 的标准 SQL 通配符来匹配一个或多个字符 。',
+  '8b39a110a5f29a47e260841da57494922df2d623966cf267d08760bce391a877' => '如果设备的状态设定为"删除",则无法匹配. 任何其他状态都允许出现匹配.',
+  '08b77a39a63ff7bc8c5cd9fc51b308e616dc36d9b15a69ec0bcfc56842798b9c' => '任何需要的额外文件。',
+  '8b88a85089561b7978c4e52c3150112912125f3d34ec59b6ff1450fc1079979c' => '第二届',
+  '8b143b9b1ffac73efecf2391a97f2c5d9ecb204a60747f84a53b73fbfe5a61b4' => '证书用户名.',
+  '8b3795aa25390811064d8e7276e56384b720d78e3ab2780e415c7dc9d4e9522b' => '麦克',
+  '8ba8496a2525ae171ffd104d632dede6ef418d9b95962a9d88e2fcdbc8d48d24' => '基线',
+  '8bacfaeeb76b16c94f591bf86f89e0b31769a624c63968b55def9752b2bccada' => '鲁高',
+  '8bb0a5f41d2b4a874d3a0e8911dee288663a9a7851939144bcd6329eacf0dd99' => '美国标准由国家标准和技术研究所维持',
+  '8bc088ac85955cc959d724b5ef926460c3ef5b76965fb04197d13a118bae3783' => '时间( 日光)',
+  '8bc1d53cc57c24b79bf7c260b1f3b29973caab7b8f501c33016b321ebfc274f1' => '内',
+  '08be89b9b1366ceac108ccb7fbb84f8ac742d46123f181d5696dd8214e8d1859' => '匹配属性',
+  '8bf23e9da7acb73c9b1d5fa081ec6081768a37e3a103fd6959a4b7108c7ad16b' => '人能读到的关于脆弱性的解释.',
+  '8bf8580bbcca3ee182bca7ecff581638fb6017f65ad932356ef4005fee5fa1e3' => '设备、软件和硬件审计',
+  '8c0d5fb14dc83c3c68c21c2ba5cd98d5422abaedb2dc060f23f73660de45ed54' => '你需要一个',
+  '08c07051187ca5d47aa75782fc2060a206e136d85cb398778a9f54e3db2caa47' => '部件',
+  '8c3c4342634de60cfbeee646f4f93774002d475ead5d1e5f41cf49b625cd0e74' => '内容',
+  '8c3f3b998d819bb49bcae060c4caad199b148674a58d1b37f2c5da68b6107043' => '打印机双面',
+  '8c31e6e7223097e2e4847773c47a4efab6aaf79deeecc92a7759891c74976dde' => '当地',
+  '8c32cf59af1fdb410df8704f20bf07c9be8011df8f654e820f37069fc3dc2140' => '此 Orgs 父 Org 的标识 。 链接到 <code>orgs.id</code>',
+  '8c41a073c64d73c5ab21653d046445f64ba58cbd5bc132f0478a42bb585f9f8d' => '央视"开放AudIT维基"在线文档.',
+  '8c70b25cbbbe8e7935bbc70516181551934ae5e917b40d25c4a72bbbd865f2e4' => '代理人',
+  '8c78fe5b9936488c111733d36f3da4b246a4d206159efe5cd64cdb229c38f069' => '5月(半天会议)',
+  '8c84ca80f6b56656540d6c3c7135248c9d8abb74b586c14d5b0a4a90786560e1' => '纳米斯·波勒',
+  '8c5967fd8486f34493710cc39b240aad46536cf4ee421ffd0479e6542db03e36' => '脚本',
+  '8c8723f60638f4ab2ce95a7df1756ff37b71f4fbc8358b24fd07ecfb31904565' => '地点( S)',
+  '8c166824c19b7a954d16fec2124f1ddc24d53983ca88695308977471dd3350e6' => '只要您有正确的证明 设备种子发现工作如下',
+  '8ca732b02ef585d9ec2b2ece018b5770d72acc52aff06a104186938887ada361' => '我们是否应该将主机名转换为小写 。',
+  '8caf4e5a118d6abc633d9b998c6d2d94c41e65d025b5ff4f9104324de5723331' => '分区数',
+  '8cc695f25be6e3163d189332a1e886d03ebba3bcd6886b60c81a3b2977cca7bb' => '您的微软 Azure 客户端 ID 。',
+  '8cd353ff93915f72a481fb798d4ae474ad2bc9f8e79eda91511a1b98a24211a6' => '国家代码',
+  '8ce82765c517e3dd11cad13e3263bde49cbc8d087bb3560eed034e52e0c15786' => '数据库列',
+  '8cef06ec51035cde9262020b387e4033acfb162d8599a3fe59633ebb0ae61773' => '特克斯和凯科斯群岛',
+  '8cf0ac0f467b57b3536962105717c88099d4a0b8451d84c2315f7eda67d48fb7' => '收藏和细节页面是需要执行的图标.',
+  '8cf72fd3ca81eefe97b74f8bdd1223983feeb34bd53336088a88751393589f16' => 'Cloud Discovery 中使用的 Amazon AWS 证书',
+  '8cfde6e3a6c524f4096e01c4df379c13af1a837df591de2a30ad7cd81a775dbd' => '如果最后更改',
+  '8cfe9bcad9c38b6ae52eb927e6fa6c9d30e0209c685e6a0b2fe048611165b906' => 'ip 所有( C)',
+  '8cfe20dcdbf5837af3580f4b1d2ee57d07ed301abd8f9b031a990254e8b2e2ad' => '需要密码',
+  '8d0e4ee62a252633a785309c18faa566e3d8c9c30983b3fbd78290d7535a4adb' => '制定政策、程序和控制措施',
+  '8d0e6b4ab60543cfb39c28fc2f8bc370ec1291fd6fc9ee2ab089c460b50710b5' => '脚本',
+  '8d4c1bfe1c6975b8a8013ce842fa7e4fb416a86b44540cb12da65537fb18a77b' => '<p>应用程序由您,用户定义,并为 Open-AudIT 存储,以便使用和连接设备.<br/> <br/></p>',
+  '8d5e83414c23cd88e9c2a2333f650a10120670e841f5608fcf9e676cc41c4214' => '存储( C)',
+  '8d5eabd3b5a14f4035a132b32866a0fef17cdcb73d5bdf32832ccf4e5ab54521' => '您 SQL 中的 SELECT 部分必须包含完全合格的列并指定某些列 。',
+  '8d8cd546b58d91c300d3149ef40b8d98d3061dc38f15ea937d2ed785a3f25771' => '学习更多',
+  '8d23a6e37e0a6431a8f1b43a91026dcff51170a89a6512ff098eaa56a4d5fb19' => '联合王国',
+  '8d86e35a7395924dbccb38a8f2cb48b3ca286aa4c2909e26edbb72f6735fe2e5' => '另存为默认',
+  '8d1796f698be3436963e883735ad3d02c0d9b82b53c88b294a4ede34478697d4' => '在 Linux 上安装',
+  '8d4677bdac541c5cae0d7b56df9210cac08b58cc0eb91496b9fd963018f14613' => '仅服务器',
+  '8d8460221bf4eb295f964884b40a9ba6302a9c2af2f9b1997cbed42fda139de8' => '类型',
+  '8da5f0c4469046c928a00a463dc1276de06742d6e3196cd3e7a7175260b9426c' => '集群名称',
+  '8da80ea1c7a2aa4e16dbef7596892f981e951eff21f199b79db488b74635ecdf' => '添加您的证书',
+  '8db549cea72859b94dbae56d501aca216b7c1b43eaddf8aaf635796757cf6f03' => 'BTU 共计',
+  '8dd4efee1be50895856cd7d7673b5a45a9dc83b313d66288dbb32abec6d48872' => '地点邮编码。',
+  '08de0be7e98ea3311e2584f5b8d85a1e7b85da305f964389d5013d0f06a68d39' => '地点级别',
+  '8e0d112fe3a8a7eb88606a36f8c7a4d85bfccda6e2fef68e297d4554e829d88b' => '地点 Rack 大小',
+  '8e00cdf71fa7cc76882846b180305bb5bc1d658057630d4f87bb12c07754c30b' => '完整名称',
+  '8e00db3cfa4b5381c6735a7fbb5fd4d05642d4abc0acec640aa3f8b9b2598c88' => '要通过属性值过滤,请使用属性名称. 值前的运算符是:',
+  '8e2b9e5feba813c4fe45d090e99bd068f0ea1a57554c9251f0b04f3a28c12c77' => '未输入',
+  '8e7d6bc930058ed9243b0f1513931ff91244ec0b447093779cc0c6f42af168fc' => '在发现时执行的目标设备或Open-AudIT服务器代码上执行的命令.',
+  '8e8dfae9b75212091282fd58d57e7cd8ba4715468bf10ee05cd62298b83bbc23' => '巴巴多斯',
+  '8e8fcda42f082e6f6715740b10d71f81b43a5ad6ca51006e2a885142d0936010' => '最后更改',
+  '8e10c68b06b6a52e69c7fee903af851e42cc4ceb3e026668782d9a6a6d9b7348' => 'os license 模式',
+  '8e76a94ac8320d515375e625bef1829238b097ecbd33611b59eeefd4ffefebfb' => '目 录',
+  '8e360fc1e54fb1f5865c6fbbbf2d9bbfffd0af33974a70d2d5b2d129ed0d6e84' => '* 标记 ',
+  '8e588cd187741f1cd76f5fab77b7208782a8c21d764ce7d7a4cf3ac4e0968873' => '中型',
+  '8e990a9bd12b521efe63430e75ea503d581085f08a617a94687de3106424e047' => 'Nmis 客户',
+  '8e4434ad2789c14aa2a798074e43c8948981df3bbf8375ee89ffb640110e1714' => '关联设备的ID( 如果有的话) 。 链接到 <code>devices.id</code>。 。 。 。',
+  '8e37953d23daca5ff01b8282c33f4e0a2152f1d1885f94c06418617e3ee1d24e' => '数值',
+  '8ea0949377f7f900998153c6e100bbc34cf34809b930c8d0797a21343d82315e' => '序列',
+  '8eaa102e10dc76e90835383312e29ec3c90e44aad4ab2fb166a7b21088bf50c5' => '将外部文本设置为小写。',
+  '8eb054a43d8a7167d7017c3ba92d58b5d6bbc22ffa33d896a86523269648de49' => '提供给代理服务器的 URL 将下载文件并存储在本地磁盘上 。',
+  '8eb3ea9bbde631592dfac3150044fabe4678c820a107c026035c13bf0c8ba9d7' => '自动',
+  '8ec7751059492bc554c35089ac0577ac8a5620ddc423595306fde00a6a21bef7' => '此查询是否仅限于有执照的客户 。',
+  '8ecb2c1f0c904b0352c02c944191ffd36cd3443a384d17b4609e6156e3f0d716' => 'LDAP被搜索到这个用户,他们的账户被找到.',
+  '8ed30c80ed8ba680cfc302b5237ef223c839b5f4938b3d9aea484e9a44ff62b3' => '要运行的命令。 当代理基于Windows时,这个命令会从动力壳代理内部运行.',
+  '8ed856bcb7374bef45251113f78fe557b4f0583baaa92945498d118bffbe7ada' => '指定到位置的动作设备',
+  '8ef41e6f4b07432a0cb4eb7a8774e7a3878fd3e385f49aa09b406768467db228' => '页:1',
+  '8ef93e66ac75d3b27bd45c6051b21ae696df8dafe44ba0af4a9b3d95f257e06c' => '选择   外部( C)',
+  '8f0d1af04bb7b2cc79ba06529192a576076fbf0db1ee98ded29d491eaaf1af24' => '我们最初的集成发布目标 具体是NMIS到Open-AudIT集成到 <i>刚刚工作</i>。如果您正在 Linux 上使用程序,您可以单击单个按钮来执行集成。 不需要更多的钱。 说到这一点,融合本身是极其可塑的,因此,如果某件事不适应你的喜好,就很容易改变。',
+  '8f2de600bf940a26c63a7ac23984a12ca8970fcf1a85947aa5566c34e23eea07' => '管理',
+  '8f2deabb4b920a2727e438ea1be412bf1a96738b180471bfa969b97fe02f1da1' => '确定主要利益攸关方并分配角色',
+  '8f27af7cf869ca67a4d6801d57a83205fffafbc2ede76775b8ae6012ec55fc7d' => '安全区是网络域内的一个行政域或政策域.',
+  '8f60fc8e2126ebc8ad06354be0ac3d5f4e286ca1aa7ae4c9d4158c45b4cbaf17' => '如果我们检测到San管理软件,我们应该在查询之前运行一个自动发现器.',
+  '8f80f500e4d36a25b0a0e00ce66709f113f33ace93eadc4fcfa5c26528fa094c' => 'Scsi 逻辑股',
+  '08f199b79174df2da01052ff9ebacc9a6ae01830c027c5d2c1202ee3de368d4b' => '有效为',
+  '8f340cecb36c81f36ffe5491fc6eab3f10039b8e7e07c5c1dd204e710c468f4a' => '仪表板由三列和两列组成 我们称之为 <i>部件</i>。一个部件与一个摘要非常相似,只有我们把摘要概念更进一步。 部件是用几个下拉框简单创建的 - 或者可以选择使用自己的SQL来完成自定义.',
+  '8f9856966496a0e587a752b8950a99fe14c47632ea5d21e57db863ad845082eb' => '选择内部值',
+  '8fa44d7393c49395b604081bf9e52c0e77194dc150fcfeb7c07e40f4db279f44' => '成熟程度',
+  '8fb204ca460968479407fe3f09b85a7500b2f4a20ca644e5f7822f53161f331a' => '12月(半天)',
+  '8fb54471a4b8bc78ddc7ef0871d1cad84cc428a41a4326e876871689cbf426f8' => '马尔代夫',
+  '8fe52370e9483bac7e01014c5eef04a82d341e735f0ddfe3c3b31b23a321d2ac' => '导入示例数据',
+  '9a1c54f55e7cfb1cc2cdad2991525037bc475a509fa37262e123c44e958d2d36' => '图片',
+  '9a6a1c1e63d3867cd151c6c75fe42828909c2981b3ce10ca8012abc0164e1f28' => '根据OpenSCAP基准, <i>不先在非操作环境中测试,不要试图执行本基准中的任何设置。 这一基准的制定者不承担其他当事方使用该基准的任何责任,也不对其质量、可靠性或任何其他特征作出明示或暗示的保证。</i><br/><br/>说真的,不要盲目开始 <i>修复</i> 在一个非生产、完全相同的环境中,在没有进行彻底测试的情况下,在运行基准后发现问题。',
+  '9a6dbec2a50259538c33f2de2ef5708d6458420747b5e4f25db1368919e145a6' => '是链接到',
+  '9a6e4e492ac13e2392b71da70040fcbf3c72d5da4b3eaff54973d3498b13efc9' => '内部字段名称',
+  '9a8a55484a89f3f6a6e68bfc9639356c8fd08f906a4fdea6a5b1fcbe328d17f6' => '脚本的直接链接是',
+  '9a8c369fc9a79d4bcec0a21cca171840c9fc820004cd9a2b19402f576b6de41b' => '并审查可能的情况。',
+  '9a9fbdc52c7c83eaaf7427cfc2c2c98929238d11345375a362d2757b70f42b9e' => 'snmp 企业 名称',
+  '9a42d40a3f319da59ce05d08f77f348f7a4ae965ff3e8251334adf67432b011d' => '一体化',
+  '09a70a0fbf9117f06ab2f9b8d2376cfffa06e775da895a5ca911c297171a04ed' => '编辑',
+  '009a705d64f548e87d3719b955523ee0bd784182ba53a118da087c7d9c23310c' => '当集成运行时计算,并包含在Open-AudIT中更新的设备数量.',
+  '9a990e354cd9648e4a6371a05999dbd45da5831e866917f41b0f966f07bfea86' => '净值',
+  '9a1110c01f83f3a41be8a576a5d344ec3e12e295167e7c798de01e8903443859' => '发现匹配选项',
+  '9a91716ae2fd0696f4c25f1d89b55ab4285bfc318361e0f378f517de6388bae6' => '好极了,你可以帮忙了! 发送 GUI 中显示的文本和显示的内容 。 我们会在语言文档中包括这样向前发展,翻译得到改进,你不必担心每次发布都要更新它!',
+  '9aa8f4f4659224cf15cc80036fd504ed31b05dfc5c268df41c1cf6254842b723' => '组合链接',
+  '9ac0add475dd38e6ab3a3fb5ab4579c886eb654f57764210a352fd62e9dd9706' => '小时',
+  '9acc7607fbcd021277a16e0e04ba9d8e10f8be3ca420f3511f587f026b54a6cc' => '全球发现选项',
+  '9acee76d5a32d2b11b444cfc50c4a56a4b0ff7e00fc3fc579f3ae491dce9f297' => '认证后',
+  '9af83c97a5d08a8fb2de4269ac21360987b3f5e8c7b9fb48c050ae17dbee5d6a' => '检查分钟',
+  '9af94224dacf0a84721ab3dedbd1888c9b3d5fd5dca7f241c8f7b6743832ec41' => 'a 字符串',
+  '9b6a8b18d882cc08e0cbb096338f1cb7d6fbb8f0a8b3b2cc30fcd7e449e34ea7' => '日志条目简介.',
+  '9b9a8d05a7ec353bda84f9c1bb3178c299de3001b5e970508ddc889c487f92ca' => '读取',
+  '9b10b133a4f9a4a5ca22b67aeccd936013eac57c6e104e01fe058afed0d8fbe0' => '内部审计',
+  '9b97ac5e767e5393cd0eed09a8e51b6f3775eba38f792593ea016e8ba9e996b0' => '企业',
+  '9b3289a385a5301eea0c04a06fde98bc542113ab4ed24c47c9b9771984869a31' => '软件',
+  '9b6953b18356339023fdbe7fa97aeb0e28dc843acb3c9dce154e0b3ade7739a3' => '我们是否应该匹配基于设备的 mac 地址, 即使它可能从 VMware 复制 。',
+  '9b8617fdfbba933d9a0f87450dfd77b7c34fcb08ae284029523e0ca20e0811c9' => '每个',
+  '09b9242c86bed7a0d8023b4fb38817331e1ceffdb8ba0b9510c07667d0b2413d' => '合同义务',
+  '9b41428a22d5bb74dc9bcd1803367f9dce30f42010f106f7ad9b97d331644d43' => '菜单( D)',
+  '9b861523a90676a99ecde180bf8c7fa5641b0577aa42dc5a0696218141c0a7e3' => '如果不设定值,则使用当前时间戳。',
+  '9b3628208c5de91c0adf155845b494281a739d430348f7e5e4d34abd0294f375' => '切换设备标识',
+  '9ba5d957f2837308c84622384f0bcf6d66b8f48a3278dc87474a641fd6957bd5' => '保证',
+  '9bb0aacc6d51f1408ed983b84c42e941fca204de70ff5595a4d1b7cff8b22815' => '头',
+  '9bb9df02738d5fcbd52872757b2bc47c065063aa45f733e5f50af282151273a4' => '减少数据被破坏和网络威胁的风险',
+  '9bbcf515029a7bb6eb8777b8076d1bfed455145a61c5a9aff5f31c965745be9d' => '为用户翻译网页界面的语言.',
+  '9bc76c35b66fe430f1b12152714d1b8bc0021f02c62cc16d2be5bb45d3925e51' => '净索引',
+  '9bd6fc4ffe897bc0e1f374b1c7822345879cd922db276fc1ae699fe01fc1f68b' => '摘要旨在按特定匹配列组合项目,然后提供单个设备的链接. 在以前的Open-AudIT版本中,这将是两个不同的项目:报告和子报告。 我们现在将这些内容整理成我们所说的摘要。',
+  '9bf8cfeb6d76e6802270fae0d77134ec1b040ce709699bf62b2b434ed1d9fc09' => '位置( R)',
+  '09bf25ef308336338ea33f83d6e4f4a0e5345e5d43d397864a8f5d0e6b9b923c' => '电子邮件地址',
+  '9bfa0dd62d0a92e6dde2c3d29fffb8d10978ac3a5841423165d9a9427e65077c' => '窗口',
+  '9bfb8dcb6c6311607c3adfe65649fb6b96158c2c645b94edc92335e1b619a8ac' => '默认角色组',
+  '9c0211c51d04574fdaee6d51f53f41952570b0bf68a7219aaae01ce00fa6b8dd' => '细节',
+  '9c05e80faaf8a6c1a45b9918258af002f882bd0d49a012bfd04e94b36c78c7be' => '上次运行',
+  '9c6db93b9f7ba0d5afdd2359c7eb185860d4f41b9cf88c193fee575b3675fff1' => '基线可以比较净统计端口、用户和软件。',
+  '9c8a9579abe55bdc8a7b97031705e2738d912de38a35262863d8f47e05d3d641' => '方向',
+  '9c8d1b9609a28e5bbf80584491215d7ec515adc7457cf26b23026cc8c7baa1e3' => '安装于',
+  '9c9ac1e1684c9333044562cb2cfb3e6cd9e498ba15afeae29f37a99ba4ea07ed' => '查询此活动目录属性的第二位以确定用户的工作单位 。',
+  '9c20fb047fe3d25cd0cfe56dd4c9016ffde296486d5325d471d0c7b72120e7cf' => '列表视图,使用创建按钮',
+  '9c72b8791ad309506f08f14590534fd06bc7848813cf7a718f72827b268b5176' => '维也纳',
+  '9c93ad439373b4ee35e70ba1318055a14d2ed222f69f9e2d069689e83829833d' => '希腊',
+  '9c848c95d41e5b9bd776a6c57990473046dd7e99e1e69025e981f37533a02ee8' => '收藏家',
+  '9c21005014a9eea844541d4c798046faef3683b286eb18bed956b5c6bb41f4a3' => '套间',
+  '9c71254611519f01052f896bf60a146804754080cb5ce79806cf33f95c06135c' => '窗体( F)',
+  '9cab9cd555ba18cec6fff07030759252dd59b4416a4ce2ba381e327f27456590' => '减速 B',
+  '9cad01c563007b7190dfbed85d42974388e072f37f25f09068cca2db34f2707a' => '采购费用中心',
+  '9cda38ea3a2bd78cbaecd4b8bbd646abc14cee8d99c59860ac2a301f722b8be0' => '序列',
+  '9cdafaad27279fb4032c471b20235b3677e8328631fd4b52196761d02b21b950' => '像对等',
+  '9ceaf5baed4d47e066425d0d66ee05339141502464a76c46898333eec88d591c' => '字段名称',
+  '9cf5000598a439f171652fed1a7b2e01a2315de0bd7b693420f54a0cd024ce87' => '巴勒斯坦领土',
+  '9d0081a4f3d631b3cff603f69b3619ae1103b522cd908f64a07e5b702f68b1e0' => '收集器',
+  '9d74b842cef57388f224b18625427edd7cf91fc4fb80dd3c3c486607af11505d' => '执行发现的网络子网 。',
+  '9d76a08e070756f079cb06ac3b4bbcac79cc0402781f6c86f4130324aca19307' => '考虑过滤的端口打开',
+  '9d95a2cf0d7180b5089691163b188a7203b0cde179346b8cfaa8ab6c2c3e6414' => '3月(半天会议)',
+  '9db1a8a9cb7caa00a4df4852affc98472c68e0af45090bb7e55cd1d9e1e9e351' => '父母身份证',
+  '9dbaaa23386b13611fad6de3e9922d471fc7eda830272809ea0dab883a0d1f01' => '收集器可以操作两种模式之一:收集器和StandAlone. 在Collector模式下,Open-AudIT实例由主服务器管理. 在Stand Oleone模式下,实例被本地管理,并将任何发现的设备转发到主服务器.',
+  '9dcf87eb5a1882fd0318008b133f564be5b2daf4e7dee64a01d35bd197b3c395' => '用于扫描的自定义 UDP 端口列表 (161 是 SNMP).',
+  '9de6fe1d72659daec67e919b0c473a24da5f03d3d096dc44ead1687240975f7c' => '11月(半天会议)',
+  '09ded4cbd0505576c8ef2793b784b6429386ea01679a58f8d8226a097c129a12' => 'os 名称',
+  '9df6b026a8c6c26e3c3acd2370a16e93fffdc0015ff5bd879218788025db0280' => '服务',
+  '9e0815f6ea7eadbcee8a0a4d190cbf21eb9e7966343582c70e84b01a5581b178' => '点击“确定”并关闭 DCOMCNFG 窗口。<br/><br/>上述变化需要重启才能生效。',
+  '9e3b14b947485eaeb80c64af598c6fd1e7090d53ed6b7c9810b6a7a611b6dc5a' => '布图最大',
+  '9e79f12027f3c3c355647fac9f76fd43fcb6331ffd96960179967653684758eb' => '吉尔吉斯共和国',
+  '09e782b32e1f439ceb91662892f55979ca6796054f25b2a306c6d3465fcb86e2' => '运行此命令',
+  '9e843db53797cbcd74a694b3ed91ac15703ca012682a0f2dd21c016f1f0ba7c7' => '郊区',
+  '9e8804d5569f19405669fc2df1a1066b7866a4234ecab922eda46e76593d564e' => '规则组',
+  '9e471951a1b4106e54be128a21112b02914fe98cc79b2c92b49ee80c5464487c' => '环境',
+  '9e2483586dbe563a960fcfa1fda52730f69a38d0ab8a83e34d12d89cd8167d7f' => '桑巴的Winexe页面',
+  '9e4635769f0aaf0d333e7f85b30bae0e16ae96fd3c0ce0efeca2db5ee527219e' => '网关',
+  '9e35685620be51e038507141acdf67e529e14efb3b7a0ab71c42e33fdf30baf8' => '综合编号',
+  '9ec462296b20ba4b518a9d793411283fae22096ae451289a7279ba04707930bb' => 'Vm 标识',
+  '9f0e915449fc9e635a30dd2a6bb227826e3a22a38a9f69f75ec5725f0afd5c1e' => '如果我们把外部系统从本地设备中充斥出来',
+  '9f088dbebd6c3c70a5ddbc2c943b11e4ca9acea5757b0b4f2b32479f0dbb747e' => '高级',
+  '9f2e7732a6956e5b4fde5b5b46048b4e2fdefaa13539a3e64b5d5dee878f6ae7' => '基准',
+  '9f3ed1f0bb70228090e12ebd69b259f244a2466a1fe1ac73d58ee97a8d8a2631' => '如何和为什么',
+  '9f4c5dfab27dc15b77bb704bff7abe0c21d998e5e15044f99bdeec37e3830c3a' => '线条文字',
+  '9f7b16bb7bd0e616efb8722340187488e7723ca6e5d4a0097329ab5cc77f5d59' => '上次运行',
+  '9f8cd49ad14fbc25b259c8ea37e58e827f1bfd8640e3755654231ed9b4d465fe' => '<p>您可以为任何现有的审计脚本创建包含所有选项的脚本—— 而不仅仅是Windows. AIX,ESX,Linux,OSX和Windows全部覆盖.<br/> <br/></p>',
+  '9f9feade761d22f340a4de9c586f222aa74658351faadc8365335bc3c548ba71' => '收款',
+  '9f36ab842309bf6f5bc5cb4f96f899a8706bfdb0c13510ace5aa1cabc9d2ad5b' => '已检索( N)',
+  '9f46eff4942d00b58f8d95425750cbb25f38cf25920daf02932a94fcb61e9a19' => '查询是Open-AudIT的重要组成部分. 它们能让你从你发现的所有设备数据中获得有意义的信息。 它们与摘要和小组一道,为获取关键信息提供了强有力的机制。',
+  '9f57d100830f2b20e7ee689ef29649cdb78e7eaadef77a27b77b38d94905ac7f' => '创建证书',
+  '9fa6f2daa56776af22c82a8190d3abb9287aaaa7918b8a5679c40d7a298fbde3' => '佛得角',
+  '9fd88f5698a64cbc57a8eeddec15a830e003f8d671f631da8b3c45e98aa0ff2a' => '栏。 这个',
+  '9fd728c66c9a256b121472dabf32a34317aed01d8427d70ec830289cf23a7cc8' => '添加',
+  '9fe3e82c3bf18e3bb664d1f204341d163f8bad7998a611cd4080eb33031fa347' => '设备结果',
+  '9fe4c68ec20dda7c6b1d3f760e5e6af6b9802897cd59f084b99c68b2ac01574c' => '驱动程序',
+  '9fe5c0daf25e6cf462b70adb204c5791af49821597d6e82d07c9d01efa347711' => '随着Clouds特性的引入,您可以提供您的云的细节,亚马逊AWS或微软Azure,Open-AudIT将使用相关的API来检索一个位置,网络和实例列表,然后发现其中的每一个实例.',
+  '9fe5770d03865d42904a242789204b64598e19ac1c5ccdb0989f51eb201ea16d' => '要创建资源, 您应该 POST 所需的数据 。',
+  '9ff64a0c7e21eb6b15b3376c0c6caa571afbaf296b22d940b145e8ad00ad1622' => '附加设备标识',
+  '10adea564ec065113dfb00d49bb1d5061433026cc8e6ee319ffb202d866a72c2' => '被许可的用户可以随意添加或修改您认为合适的规则. 如果您有一个设备带有一个SNMP OID, 它不匹配已经存在于文件中的模型 - 现在可以轻松添加它 。 别再等待我们提供补丁 并添加到你的代码基础。<br/><br/>创建规则条目时,需要提供名称和输入及输出列表。 投入和产出作为JSON阵列储存在数据库中.<br/><br/>输入有表格和属性,操作符和值. 因此,在执行条件时,可以: 如果使用$表. $属性$operator $值,则应用产出。<br/><br/>匹配 SNMP OID 并设置模型的示例规则如下.<br/>',
+  '10aeba697f6ba830e1252df6f9a9051eb4317954ff933bff25458f28fb069c6b' => '爱沙尼亚',
+  '10c3c2e2edc1f1f0696bf6f30af2fc80b4e1759ab4614b0d1331799b4ce35cca' => '科威特',
+  '10c5acc5d627637aa6940ed10a24aa64d87a51d69851daa75d742b62c7fa8e35' => '内部值,按此格式重新编排 。',
+  '10c22bcf4c768b515be4e94bcafc71bf3e8fb5f70b2584bcc8c7533217f2e7f9' => '(单位:千美元)',
+  '10c65d82f009949d16660230a90d047cea50fa47bc83178d2a534ea5bd70e56c' => 'CIDR 数据交换中心',
+  '10c578c2abec34b17ec16f63a1494c03e5b4975f3bcfb42344c99f3bd81d11d4' => 'ldap dn 账户',
+  '10cfcba9c60fa8e05161f79281e5b6f795ead46f03129adb4455cba166a45b5f' => '当集成运行时计算,并包含外部系统中要更新的设备数量.',
+  '10d025c203be43081b55b6580c42a2fbebf45864c15ab40b7090278d188bcec7' => '圣诞岛',
+  '11a5bf191b94767efb38a8baf9e70315fe02cf76f8204bbaf930dec50f2bb6e0' => '实地标识',
+  '11a62c23412b77477a71481aa2dc7323bcc61d076c8449076c4c58a8356c1bb1' => '城市',
+  '11c9caccba89b1a853ed9a014bdb2d0b95b670ef821a3b3fb96df670ad78f92e' => '警告 - 在使用软件策略创建基线时, 目前在 Centos 和 RedHat 包中使用名称的内核 <i>内核</i> 和 <i>内核解析</i>。可以同时安装多个包含此名称和不同版本的软件包。 基于 Debian 的分布方式使用诸如 <i>linux-image-3.13.0-24-generic (英语).</i>,注意版本编号包含在软件包名称中。 因为基于 RedHat 的操作系统使用这种格式,后来有多个相同的软件包名称,不同的版本,我们目前排除了 <i>内核</i> 和 <i>内核解析</i> 从软件政策。 这一点可以在将来的更新中述及。',
+  '11cb8803c9a2ce4b0e46d1e95936595a9256af6008b9fa66988c41bd3be1337a' => 'RX 位速率',
+  '11e1fba0d4260e273efa47f9c404ba0c95b2e179c8b3dabe83ac6e5a3902efa2' => '在目标Windows PC上运行测试脚本',
+  '11e2e15751f74dad46f68c207ccaa33b99abc08dc0cca9d986675c90a09fc4f1' => '初始大小',
+  '11f65c4ecd1a358336db045edca2272d349a28b2839a7c9f76fdf607108e11d2' => '浏览',
+  '12b29a3641add63c323fa9356e5a587d5848b60d577076989f4b7710eee4dd59' => '使用 sudo 的可选密码 。',
+  '12c8f8f4912cbdb3946196e4b7e8457c703967a9bfaff0f785979f4bc6d30a18' => '卢旺达',
+  '12e40d000599beaa4a3b908ac6bc7f98c32ab55a1cfb25ed3b555b803ce6f60c' => '这个位置是什么类型 。 持有的允许类型 <code>attributes</code> 表单。',
+  '12e808c6bf4948194a0935a2ee6068133de54137a517f75977f9a37faf8df386' => '以后再问我',
+  '12f67f8539c46701e62d1c50254cf025c22a992b06fea6d4c0e19705f21f4cac' => '可用性',
+  '13a41b806eab1916959bdfb0eb0f66fa23a8b928ad2bbd1c8d993d96df387050' => '收集器内部IP在运行一个发现时使用.',
+  '13a73a325cc1fb40f5f2be351930826ac04b616e64ef17ba9d440ed41d85ea63' => '来自设备审计。',
+  '13a30363eb940c6c473c642531153b12d80078449bee3a8648db0575fb7de52d' => '过滤',
+  '13a688498793fb8d55a3d718cc378bd1ff71e4dec31eb762cf1404ff24aa546e' => '显示提交 POST /{collection}/ import 的标准网络表格。',
+  '13d3f3e5a52d66e1b9d3dff0d155b8bff2f23046b05638982f09eb7ab801ac2e' => '已检索( D)',
+  '13ea2b33263570473049499faa72e844967ca27ae2f88a1e9b0cbf39625873f3' => '资产标识',
+  '14ab9c5166b35384c548fbfd70aa13d196d15034c6ee6297026b2cd19d1f19c6' => '日期 D-M-Y',
+  '14ad63a1c63f01d72a38faeb055ef73eef341cf154126ec59bd6d0c1509d4f89' => '摩尔多瓦',
+  '014baf32530457dd399ab03cdbfadc78f464b4dc8761689c435b33c8aabe502f' => '影响可用性的脆弱性可能使攻击者破坏服务、崩溃系统或造成拒绝服务(DoS)(无、低、高)。',
+  '14e1540143c7fb492c044af1cf08a434d5aa797e457b73e5828c2f70d9ff774e' => '云发现',
+  '14ec48b0883e4d6b6019eda33a542d8fac0219e97c80d304476aa30a42299e81' => '动作  devices  asservated to org',
+  '15a385a3583fd4bea2f36e958ddb6d27367f49c72e3f0f37601e7cf9fb6bf101' => '这将会永久地解除这个执照。',
+  '15b61974b2707a7b3d4201385e0f01f4ff5eb1f17c5639d98788ee5add2025cd' => '地点',
+  '015cc8d7cb5dd1163f5da73f1d8e1f38a642a5c5326a25668e255697abf32dc6' => '限于私人',
+  '15f94a9e82e796d2eef09c3eeb53ad961f51d62e3344b744e0dcbd9e29e44b4c' => '使用 LDAPS',
+  '15f481a2d50018888b74c1de2b1f1896b8b6f1e41827a027e812d8e078de4a71' => '妄想症',
+  '15fa6a87398978360b651152111fbff7c3943580d0f3badda34c88f5112ab6f7' => '未见设备 7 天',
+  '15fa97b5a488542761982797f17fd16206a9c1481fb141db5cfe08a38b8f1243' => '云层',
+  '16a54288bcaf7f826716e227120d196008b162324d11c1bfe7b5b48acedde231' => '发票( ID)',
+  '16b876e9438ce4c4f1240e1e8b68007f3bfdc2bb1e8e99ed668895926b6c6522' => '匹配设备 - 包括 OrgID',
+  '16bad88cfb87293af479d781abb23de2d6449baa0995d8fffccb10b7a105f2b4' => '创建设备',
+  '16c97663dced456dfd61581b7c423536eceff4c309948f8e2aa426a2debdcc4e' => '正在进行中的分析',
+  '16ccf899a26641eff821460a4c1b80ad8c26f142c411741a9b1a3f34222a71df' => '可编辑',
+  '16d1c9050a0b32e83764a81d801a880773abedfd7f8b0b08a1cd87ca0e404f12' => '图表',
+  '16f78a7d6317f102bbd95fc9a4f3ff2e3249287690b8bdad6b7810f82b34ace3' => '用户名',
+  '16f431630b99e7dd84c7c20cb202cc8ad7fd90e3139edb0cf382c746c1b24882' => '此功能需要 Google Maps API 密钥 。',
+  '16f637921eba69b04b80b33acfce138c0f48121ce6b33eda1a10aaf7c5216b23' => '证书',
+  '17a2bfe78e03b1c13c01e0784feb75332b964d0ea79209c4842a541e88a54423' => '韩国',
+  '17cb38cacbee80150640b3079f79812648e5520692335ee771eebfad1ecd0788' => 'JSON 文档,其中包含所需的属性,取决于 <code>scripts.type</code>。 。 。 。',
+  '17e506412e453d3d0544ab2de01e3cd375144d506ddad99884f09a05b4f00505' => '上次更改( C)',
+  '17eb3c0168d0d7b21ede5481150f17233427d89833ec121b4dbc4fb96cfab71e' => '已禁用',
+  '18bf63f3fdbc23b069dafbfc5e667648887aa967ad812c11416ab2fad83e34bf' => '应用程序列表页面上有一个搜索框. 用于搜索所有应用程序组件的给定组件值 。 一个服务器名称,一个数据库名称,一个AWS服务名称 - 随便你需要什么. 结果显示哪些应用程序使用此组件 。 这可以用于变革管理,服务退出通知等.',
+  '18c6fb8acea6f33f28cc102c2e240c4132bf73a7637fd85a07e5aa3dd5b0e3c3' => '安装器将测试Nmap在其标准安装位置中的存在:',
+  '18c85f05348465fffb9b1b38e8a76994994806ba7df0aa7fa8d2ece06a0776f3' => '安全内容自动化协议',
+  '18c928a3135b7e5992fe36ed80a4b4a70a579638cbd763554f3dafa8774f9909' => '所有实施伙伴',
+  '18d4e170765cc48842d847de1d0545a2e379e9c87b2af2a6f761681309939ce5' => '伊朗伊斯兰共和国',
+  '18f3f088355ad1dbba084309d055dfca35f4e4f286684fee2016a4af7d9c9690' => '增列项目',
+  '19a835978f3e8d7c80fe09ac665aad0316149e62e21f6b9d9e6891e49e3ac5fb' => '活动目录和 OpenLDAP',
+  '19c73a5cdf346d967e544a2838600bcc16a9fd39a52a4ba39f7351fcc6a65d4e' => '专业人员',
+  '19df8772081447b869b8976e72eab073d91ed04a981b6d383546edc822bb5b53' => '配置文件',
+  '19f8877c6985d4a7f91198d5c0563d98fb68820a136bc19acffb5d900c22a4b9' => '授权( K)',
+  '19fba0e995b9794fc2c26217bf3b725c2f0d9eeda16719fe75e3ba23ca73bfc4' => '新闻',
+  '20a3b746ae06c27fcf95be8dced2ef71cd007430d80d77018567cd09295406c2' => '自上次审计以来',
+  '20a8610ca80b3b0a3be896fbaaf6d02981c7095678951130114b59ec78ef071e' => '从设备添加策略',
+  '20be36de2a2e4a637812c3d5e566df05179a093f59085ecaaaa9e2f0ddf7e09c' => '指定已发现的设备',
+  '20c418a2a88b25da65236e85276710a0a4976fa543dc590e76a67980b558a8df' => '隐私议定书',
+  '20e35e818b8f67f7ed8bb074e1dcdff08f3e959a88fed6cf5d0a20d3ef6bf166' => '最大文件大小',
+  '020e438bafc3a7861aea8d79117d2c05b80f2cba2ae5aeb740b3a0f71379ba36' => '委内瑞拉',
+  '20e20200dc67cb0e2199ed029a99fb785c8b9d93fe02c7b8f72ca8b5f03622bd' => '当您正在使用 Clouds 来发现您的 Amazon AWS 实例时, 您需要两个证书项 - 密钥和密钥 。 你的钥匙应该已经知道 你和你的秘密钥匙。 值得注意的是,你不能使用亚马逊提供的AWS控制台来获取您的密钥. 如果你弄错了,你需要生成一个新的。',
+  '20f83cb898f4acbe2bbabdf181f21da9db1bd2a900177b6320510c60099aa681' => '由经认可的机构分两个阶段进行',
+  '21b2e2095fd38f7dd27090e71353d9cbc12391c8a8f50bc2d050727d8f7d057d' => '仪表板',
+  '21b3acb54efdc255f0765e01240a1d1cdec79ec2dfd4cc3e1202fd75e4a65fd1' => '代理服务器',
+  '21b111cbfe6e8fca2d181c43f53ad548b22e38aca955b9824706a504b0a07a2d' => '默认',
+  '21c1903af25470c6fab3693bc200502cf47be42a969dfbf45c94bd5fa61d6fc4' => '也门',
+  '21eeed77a0ed51f177266184992973ea9e18fb389a83c4cc9c290e7d72f359d4' => '每个目标暂停。 等待X秒 目标响应。',
+  '21f1595b614ffc31c2693545a5ccb27559edf20c53cdd21099bc83b743313fd8' => '修补',
+  '21f239495a9205935e7329f81cbd8fde01a02950af3c1f84bd3ce2bb4e8f8015' => '你会看到一个列表',
+  '22b9653281793ae7a688c75fe7ec20375484d583a062f32918ba23a86be0c079' => '安哥拉',
+  '22bd85aa45a7307c383e0e937c42fea7cb0d46f67d9a9b7a904fcb060ad86759' => '在任务列表页面上,单击 <i>添加新内容</i> 按钮来配置任务。',
+  '22c2bf0a4673e598b4db06fc4b7f91f2ae3835e7bb7d5ffa720454c4ca440397' => '防火墙包',
+  '22c5d279a19bb992482149f7205325a157a482b744c146af2698eb4f1dbe52af' => '安全区',
+  '22d16aa800ee1d915141ed519086ef2d4d1c14f9ddedae10b8b95635b0033b86' => '对 Auth 使用 OKTA',
+  '22d37dbd5f1461fc2d5b610239a63f739e848ba899e64ab3c1adeb7d6de00076' => '恢复我的驾照',
+  '22d45e2b7fc931ca8cacaaba3a2b8d53cface3871bf58c3ebc719d6823653db5' => '30分钟',
+  '22d150c72a38f50f8863665f03842e015d20b9c2819a4833bab2063e8701b050' => '此收藏器使用的用户账户 。 链接到 <code>users.id</code>。 。 。 。',
+  '22f97dea796cdb1822eae45916c2d433554a945426eff053e587560b1d0ea2e5' => '开展提高认识和培训方案',
+  '23c03802c852dd8bb6be4e47e6125a35bc32c06e0f61c2932ca02e22f6aadb10' => '您可能希望有活动目录或 OpenLDAP 认证您的用户, 但不能提供授权 。 要做到这一点,确保 <i>用于认证</i> 设置为 Y 和 <i>用于角色</i> 设置为 N。 证书将由LDAP验证,但您需要在 Open-AudIT 中已经创建并指定了用户角色. 还有这个 <i>自动</i> 适用于',
+  '23dbdf72884a37b5235129c00363524baf5fe297c239750b8da615596c5c57b1' => '第二头.',
+  '23e83318fc5448411f2f6fda6c78ff4729c1d5a73988cbb46fc4b988944f899c' => 'MAC 地址',
+  '24a077d3db72d562af51f9acce02cdfd6629075b764d44ebc29a8af924398853' => '麦克身份证',
+  '24a9dfc571c61afc3b8668fd5b8e5f05105db98fe157a7cbc45699db00320bcb' => '脆弱性是否利用影响、可得性和保密性影响自身以外的组成部分。',
+  '24a37a71f247f3de491015bc4a65160257a9e26fc5859f194a5b3229c3f54531' => '轨道',
+  '024dc204d7ba77a8ff9ba36a886c96335a5b4a0d2f9af2130d04bc5b39a1a764' => '区域',
+  '24e9cb18b4585c93c827968b15c21b4c6cf392d0a5fd5ecb06434e21e033ff6f' => '给此用户的名称( 用于登录) 。 理想的情况应该是独一无二的。',
+  '24fc4ea92881f6b229cb931f808259dd343c3503140edffbaa9352f1602dedd2' => '重量空',
+  '25a5ec6804cef90bb78fe4e653eceb3580e97180dbdf81a8327793ad7fb1ec89' => '检查此端口以获取任何 SSH 服务 。',
+  '25a17c35adc7c34a4eeef422a7d0ca74d5975aa728a48be64aaf8ae78e7f1bc3' => 'NMis 管理器',
+  '25b889106ce552feeb6a1ef2bbffc85f44f9324583ac9ad028210235ddb57fca' => '被禁软件包',
+  '25cfaa2a07710e2efb0b7612c1db4c47d94d68c24b003831b6d5343f2a8f2c8d' => '而签名重定向 URI 是',
+  '25f96039138ead01f559595ad59279efe7bcf4640c6e8acf8069a476750e13f8' => '菜单显示',
+  '26b47b2057058e65fee2dd28e97a86a4eb6cecd57b3bebbfa4a61d126ec14b97' => '租赁到期日期',
+  '26d582eb1bef2609b1f5ba2608768f3b74d696af12899a6b0d6825939a33f047' => '从 NMIS 更新 Open- AudIT 设备',
+  '26e9215aaa8798c4b7501d3d437e081e0d23acffa4598fcb9013e768f063dfd0' => '复制 <i>应用程序标识</i> 字段并粘贴到 Open-AudIT 中 <i>客户身份</i> 字段中的字段。',
+  '26ea0ae294881f1260ecafec008426894e80bc4d7dc1cd6557ab9169e1a803ee' => '测试 1',
+  '27dd7346160c50500a4156e32f2b4c8fcc180ad85db8d6bfc338395b18f0cd05' => '工作组',
+  '27dee234f0c43b5565fccfc573c5e7c38b1377999dff8e79ba0b803968971dac' => 'Os 显示版本',
+  '28a2b030bd00dc9711cf9fb4f72ba54c582c9e80ef44e867e86d4fef9658df91' => '软件许可证报告',
+  '28b96cfa638fd95a0f9b38e8608cafdca3d13bd7431ed3d5558e93c4502a2239' => '从第一个下移选择任务的类型 。 这将根据任务的类型配置需要的额外字段 。',
+  '28c0e24a74b188ce70fc661087de0f644e077c38e207cc147616363377d6b770' => '集成  id',
+  '28cdd20eaf134a05f18369414cb2df5e36c6a4e4f551b8c9cff8548029c41d6c' => '分钟',
+  '28cee8be2325228a03fbaa6df0af0630a52e756183fe5fde8b41afb7271de82e' => '提供集成设备列表的组. 链接到 <code>groups.id</code>。 。 。 。',
+  '28d2f42a39e4c9255896539c116f63916b8e3d77a372e1f0f9bd55bd279b2348' => '通过日志文件读取 。',
+  '28d9e0246114c238b43605478dcabcc76af100fe86951f5099e5ecb2d419c2be' => '政策有例外。',
+  '28d9e7bbbf81137ec80d8e02241329c02d7f629960e3afd7379d4e3855d7d662' => '关系',
+  '28e5ebabd9d8f6e237df63da2b503785093f0229241bc7021198f63c43b93269' => 'URL 服务器',
+  '28e690d8622449b80710899bb1540a0758be487a41f1008ec34f6ce04209f3f8' => '减速 A',
+  '28fa62acc3d4254df0c26987dd3f81c1b700ec7bab80516a7686fa86095535f2' => '物理宽度',
+  '29a6d2224b2d3053f439b98148e6b8cc5fde5e1271d3c7ea2945748b97139bf9' => '一个包是安装的软件的一块. 一个软件包有一个类型——抗病毒,批准,备份,禁用,云,防火墙,忽略,许可证或其他.',
+  '29ab992654c0fd860abe1b015ccc0c9bd441a51e2683f326ca92c4d93a48d64a' => '动作( devices  accident to location)',
+  '29b09e5c39423987e3fdafbc0fba2c629b4d064d8e17eb532da6f967a0771274' => 'Dhcp 租赁',
+  '29df7a9d19394e45801f4015d29e34f782833f1b9473ce1345ba5f77da9eaee1' => '要使用此特性, 我们启用配置项目',
+  '30a646eea61e05cd7c8a3caeef8daaef1fab0a416dfae244762f3ec7df042231' => '巴哈马',
+  '30af5284f004699e34220a40e53762b4657a55396586295cb439865ba0378bf5' => '在 RU 中的高度',
+  '30b1ff9aeeeba16abd664c7622650fdebba7dd8db241d4dd2941956164a6ab39' => '图瓦卢',
+  '30cab8ecc0ece73c4a62c9f054dde786d9ee8a538951849a9251aa8364b43d2d' => '编 号',
+  '30dd2386a9f0c24575804fe1f8427625d500185f300492d82c3e1c66f673f818' => '我们有更详细的指示',
+  '30e230229746a0c64818c9bc8f2c86e31bbb500f0a8db33c4b02adf9cded18f8' => '阿尔及利亚',
+  '031a8f0f659df890dfd53c92e45295b0f14c997185bae46e168831e403b273f7' => '失败',
+  '31c247d8ed4f3c460b79c436085ecc11e0ced8123fc3ea463eb3109eee249282' => '批量编辑',
+  '31dad7ddeeec259fb5d0da0a0c62c8ae436f644be3e5b3397a2b1787d24ad95f' => '窗口( P)',
+  '32aaca368a545797f698c9422e68692e8c04fc9101a2d749fe4ec929c60992fe' => '试验2',
+  '032b031bcf52a3656b9a3e1a3952debb98c84ad6e6a2cd405981ee1f929ec33e' => '无效( T)',
+  '32b1c4cd7131f8c7ca02a574690edad7c870d67cfda038d73ce8a323853db40d' => '配置文件( F)',
+  '32bb2ca2f1a9266d94348b6194cc93703b4b4bc2307982b6507605cea8e91ffb' => 'SNMP v3 隐私密码句.',
+  '32ca2f527cbf04706ed3a1fe416940f1935e3e806edff0a00543248cd8cf5830' => '部件 #',
+  '32d3b0a94d76e581bcf1002288fcc0b2e7b0e83e3899530761d9d4bd761e0d6d' => '麦克地址',
+  '32d6750a5ab5be570a103b952123d41e45981c63721768ed44fb0cff1fa667fc' => '点击“确定”并关闭 DCOMCNFG 窗口。 上述变化需要重启才能生效。',
+  '33b7d8658b90b8cb432ff76aa9065db4b39a155041aea08b80516175d219ebeb' => '无论是亚马逊,谷歌还是微软.',
+  '33bc774fafa6bb197b64f16cead747d146e6b7a255a155b52e8533150088f48b' => '命令状态',
+  '33df78bdb644cc19db34c88d7af49ef1e2c18c0278b8ec1ea97e64723beb696d' => '行动审计',
+  '34aabd826f08401f56d271fbc775be4d213bc44d65ad87a829baba51554cd382' => '动作卸载',
+  '34b2cfd95fe1a445101a72db479462325414a89d239b4d572104a9a9572eda37' => '使用从您设备中收集的数据,并将安装的软件与所提供的值匹配,它计算出使用过多少许可证和剩下多少许可证。 它允许在 <i>匹配字符串</i> 匹配软件.name属性的字段。',
+  '34b11a99b93de3e24a0348ceb342ae19eff9d91aef8395cd4f94bd40110c7cd1' => '向下浏览树到控制台根 - > 构成部分事务 - > 计算机 - > 我的电脑<br/><br/>右键点击 <i>我的电脑</i> 选择属性<br/><br/>选择 <i>默认属性</i> 选项卡',
+  '34b36454cab2e7842c389f7d88ecb7df279e3918cbac07970d4cde496e70f4c8' => '编号',
+  '34ca0e76608842ff3e7d924a455a396a82f471052c15e3f2ed7f090ac702e5c1' => '组',
+  '34ed8eb64ca1c569d2e72eac2bae9bfe347bb60158f71526f19a528042b607f8' => '用Open-AudIT Entertainment的FREE 100设备许可证尝试所有最新的特性. 请读一下 ',
+  '34f04aabfa14075e262510240034562ea7fc603295e37f28bc497a3107b234a4' => '打印机  共享',
+  '34f1811708162ac2f6a9e8878c3caac07747e838f47bccf602812c017314e8ad' => '这将删除当前在',
+  '34fab5cf79f30e8a349ec699fce2b8b85a5eb4e2a7f15c955f73161d5921f20d' => '如果一个端口用过滤器响应,我们是否认为已有。',
+  '34ffabdb076b78a3af6866b47f88cbd021b1bbbd085c33fd5f979362d60c0656' => '不喜欢',
+  '35a7c509f92336283a96b833e7fc3e3e69fe521fd01d73c1f1c0c2478000fc70' => '仅认证',
+  '35bf3b3c95ee26452cfe5b6230d687a52b8609d24d6172f9d3754f51006938ce' => '从500个设备',
+  '35c09fc33bb95ceef920c37bf0ec21c6718cf75a00f4be87face58a7ffcd432a' => '提高业务连续性和复原力',
+  '35c9de3c639a54f10c1aab63def0955284856650bc1c2a41b7c2d2285b3ee2b1' => '瓜德罗普岛',
+  '35dfee05009432e803ffc8e2294bdca2d93ad97874a24cd01e4e302d15786543' => '向应用程序指定设备',
+  '36a9e7f1c95b82ffb99743e0c5c4ce95d83c9a430aac59f84ef3cbfab6145068' => ' ',
+  '36bea4eaeec060b0ff3d4d9bfcd5144f0a2bc1f698ac4de3512ff594a81ae8ea' => '设备  id  a',
+  '36cc779faec3278039924de6c4f9ece831163f9363876cd70eee48b785170334' => 'ru 启动',
+  '36ecb4f8669133ce744c21982ba4abe2ecd7086e1dc2226ccd6f266f3a5005f8' => '投入',
+  '036f196763639127a6988e2c3ed3ca985942a7449b480a0cf38c3213171ca2d5' => '查明和评价安全风险',
+  '37a9f0f62f024e18c82b790adeeb5ca58e58dd49ca87d182eacb2fed783d7354' => '在线文档',
+  '37ad72fbb88c78b0ba90fda4295da155e30195b737a623359e23d4dac1ee9d8e' => '派限制',
+  '37b6ab39e80d9cbda192d9d3bdb7f45a8a75d9f2b792a4b89349c7311e6733d8' => '随着审计脚本使用bash,您可以在定义目录和排除时使用 * 的通配符.',
+  '37baa44180eab2a9fe8c5bd7e4a385f9f4f7e3be4ef3e944c6ee83c317c116af' => '你对这个项目的描述。',
+  '37bac4952becf21ac5838d3c9ba82811bc421c857571e89634dcbe346681d54c' => '计数',
+  '37bba6d7aa1aed1083ba48c3eb11682492066145ef736606c51ceba2b8745b49' => '工作全权证书',
+  '37be46f4b26de340ff5ea1f9f652b3167b6d3dfc087c3ac2aebc51e423e66912' => '生物学',
+  '37da4ee98f9ce9107679aa141dfd6aa82219b6b552e27cef4dc1da4d0ea683a2' => '本项目的名称 。 理想的情况应该是独一无二的。',
+  '37e8f900d7ea5f59ebc18127e3d22754122cf182bdd1a5f7bac94446faae10cc' => '接口 ID',
+  '37e3817a408d845c8c05fb5a5f48fc7d38ca0909172628a911676be1fac7ffb2' => '证书可以有几种不同的类型之一 - snmp v.1 / v.2, snmp v.3, ssh, ssh 密钥,窗口全部实现. CAVET - Ssh 密钥尚未为 Windows Open-AudIT 服务器执行 。',
+  '38a506dac2db8c7575c3c2847369273c2d5dda2d6d106b8ac05892c62c0aefa3' => 'db 表格',
+  '38b522af03ce13423750b1542a5ff31a383c8103b459c8e25e22c8e38b81702b' => 'Dns 主机名称',
+  '38b16670500520d5f04b259d6db400ad98ddad4d39b14a0ef2e56c1ebfb6e3ce' => '设备匹配的逻辑包含在设备  helper.php文件中,在 Linux 安装上可以在这里找到',
+  '38e5a46cbc5ad32842ac60a4f1425ac9b31c06bac685f446a06ab72b87de31ed' => '分数',
+  '38f6a376f68591c66943478a3c8b0bb7ef15d1a9823a5d40b1fcbf43d42bb6f5' => '要按数据库列排序,请使用',
+  '38f7c1245e7473bda3fffc567da472bffa6d72e1273dba93b30cd67c68953249' => '例如, 您可以从运行 Redhat 9 的设备中创建基线, 该设备在集群中充当您的 Apache 服务器之一 。 您知道这个特定的服务器是按您想要的方式配置的, 但是您不确定集群中的其他服务器是否配置完全相同 。 基线可以让你确定这一点。',
+  '39a2a780f6a0240c9ce8cd5ec4ae073e2ab534aed255f9c5046df4b31f8614b2' => '指定给 Org 的设备',
+  '39ace9bbaf9b63f27802d0a27bdde14c1c39c7df47a307d7d308cf8c33f81a65' => '您自定义所依据的审计脚本 。',
+  '39b36d38d6eb03c89206f3b7b74397e7a9d9abb081ad48e3f73dece59dab7ae4' => '条件',
+  '39b41f64decfa0d8e16e3cce48cdfc639893861f182fa2004d16a4471c862ca9' => 'Nmap 端口扫描响应',
+  '39bbb719fa2b9d2251039cbf2cd072e1120a414278263e2f11d99af0236c4262' => '组',
+  '39c3be1198a2fddf18d03608348d9cfaf8823d2dda4d5ff13fdb851bd15d29ea' => '指数',
+  '39cb7ae18c93ab609a20e24871bb5891f1302e35bfe71debaab569932ba058f5' => '净指数',
+  '39d0bda67df8c0326f6766140a1ffab6a0d6d6c5a3a136eee03637a4aecb3b4f' => '正在测试的项目名称 - 软件名称,netstat端口名称,用户名等.',
+  '39d16c3dbc60a23e38bd3986fac5bbb21797f01938b1d8ddbf2903800ac0a330' => '奴隶',
+  '39e0f5efdc39ec10992833ad019f0ddf2b42b49b098313df991b8229a37aed21' => '高度',
+  '39e02c46a08382b7b352b4f1a9d38698b8fe7c8eb74ead609c804b25eeb1db52' => '发行人',
+  '39ee95b098bf45e3bd8cba0393a19b34f3c7e72593861a4f5327bdeaf4eb8c3a' => '核证审计',
+  '39fc1503a769cae7680cecd054e8614fdb210084bfa41780bee6d058021da838' => '托克劳',
+  '40a2085371b8effbae526101c0fd639a2ed6604c16513802a0e05bd3d9b8e1b0' => '软件包',
+  '40b12b960c620a2311e56ae70d2131d4610475ae48df99dc85595e042ad77b5a' => '当一个发现运行时,选择了相关的发现扫描选项,这些设置被Nmap用于扫描目标设备. 扫描选项决定了哪些端口nmap扫描,扫描速度以及nmap ping是否首先用于确定IP是否有效.',
+  '40e1b02cdf0d06526b24c590d5fd50b167c8dde565eed6b269017b3f9bc6d44b' => '可以通过发现或用户设定. 使用位置表上的ID。',
+  '41c4e91531ba97c304e77e5dd825a52cf8cf2e7702a56c5649d215b4a1f093ac' => '自定义 UDP 端口',
+  '41cf6794ba4200b839c53531555f0f3998df4cbb01a4d5cb0b94e3ca5e23947d' => '来源',
+  '41d7888143fb296bafc38e5d2e328ea54a2b0551bf3670a6cc981af96e7f0e31' => '要发送测试的电子邮件',
+  '41e1319710ef66badf01656bf12d019a85ffbff521ac480b29fc69113f0cebd6' => '打印队列',
+  '41ed52921661c7f0d68d92511589cc9d7aaeab2b5db49fb27f0be336cbfdb7df' => '网关',
+  '41ffd8b76afc92a65758fd9a080ae80421c196f251263b87cbfb6e567dda0879' => '细节',
+  '42b1c35a5a01fef6e61e8bcd32ba9d7051de05df091ea298c1546ed82a77d648' => '<p>集群存储在Open-AudIT中,用于关联设备,以便更好地记录,管理和估计许可成本.<br/> <br/></p>',
+  '42b92437d128068b188a06afb5bb335497209f729d2a3dbe054ab233b3cb01dc' => '软件版本',
+  '42c298ba17fed5da36b79be3d5ad4eb769ca0d31febae3ba921058068a25014a' => '牙买加',
+  '42d58222b328681b9923634991312932089876a0242f78cf488157aa24969c1a' => '正则',
+  '42eee025f92e17c7665b9b392c429a9d9dbba6fce6c73963f619fa416d80215a' => '未排定',
+  '43e6ddd059c1ecc07d7a0620f05e2d544a9b805d216b9b067363fdce61ff2a29' => '风险评估和治疗',
+  '43f9b89c0b9d22d8110ead813ea3949f20592a8bfc3c777d2d49e64da3b0cc9b' => '现',
+  '43fb76c208e28887fe36aa693107760639dc94b0330daa17f7db7b000fbaa96d' => '您的东道主是',
+  '044aef24fa9e709ddebca7864a0765dbee2d8c1ae1c39b5646fb82af19ec6cb5' => '这些只是例子。 您可能需要调整这些属性以适应您特定的 LDAP 。',
+  '44ba2bb11709a7e479b71fb40a6962a8207c674ddc83e8c0eb33693491035293' => '对象识别',
+  '44e6b40480deda07bc88b7bea39e4c44fa80bd735dbcbb8ec5e16e41e740446e' => '您想要看到左侧的标准边栏 。',
+  '44ef83145490eb5e2faae32fe4eaedfad9c1b3f1b6f7275ad767e3883ef606c2' => '不要忘记所有文档的 Open-AudIT wiki 。',
+  '44f5e3fbec57be75ebfb2e42caf7f5ee1542f84748a0380b6f20238c4a257e1b' => '注释',
+  '45a15a2470e1d1824536af27f81455818ddfc5c4b353080918b24d0bdde02e0b' => '危地马拉',
+  '45a20b59901b9cb7e6de7443e7b031923b2560785aea669015f50dd1a276d6e1' => '匹配选项',
+  '45a88b26d3a24d975143697776ef3013eee0e5df18532d4fffb9776e4184b6dc' => '基准所对应的一组装置。',
+  '45b3e36074ee7729bceee3dbc4b52b1d620dc95ef0e8a062f756fb4f91897a6f' => '最后,单击“提交”以执行这一发现。',
+  '45b6cf1fcf1e184a989eb5a9479e2e8f7aa3dc22dbade2c47da9ac29bcadf7d4' => '我们是否应根据审计结果创建文件。',
+  '45d9d6738cebb0c0e6ba1b1255aad1a4b8e146a265d6d8246fe8a470ad42bf53' => 'A级服务',
+  '45dc8924548e4573f7be91ef5c06f062fbada32c02f526681841032ede8da344' => '传统中文',
+  '45f28ee790f289ee0c865c52f9298b53ff82cb9513233b6f21d9fbe8aa47a2cb' => '数据基于',
+  '46a6cbb92adb776feb7170f909a655fb6eabde62e3ea51938159f26793942871' => '首页',
+  '46a96a7faf1aa5491e3bf08091791f746e6039ccddcaba54f0bd934702358c66' => '到期( L)',
+  '46ab442e4c567e25fa21a9d60b45271183a18eb834320c6623588ca1f3ed8e5e' => '插入示例数据并发现 Open-AudIT 可以告诉你的所有信息 。',
+  '46dc75bbc7286f31030cff26b1faba94b95756eb1ceed0fa162ccc2b3aa02599' => '安全区( Z)',
+  '46dd9f94fdf413953fb2fc9174af3f506552acea0f2adab28cfb7a0b72adf176' => '当我们执行这一基线时,我们是否应当检查该基线政策中没有的设备上的项目。',
+  '46dfc43c8473822728ba452226ae504121673546de094a6f08c3441d5bf356d7' => '这个账户正常吗? 如果设置为 <code>n</code>,用户无法登录。',
+  '46eb212e097b0888d02a5acc43c222378ca87f359fe2e46be14839adf8f59914' => '应用程序( D)',
+  '46fd3e08a0fe52bd56d1ea9b48eca3d38e7b04c76e7a83089999c931a3934d5e' => '计划设备的发现和报告使Open-AudIT专业成为繁忙的信息技术专业人员寻求减少间接费用和增加见解的有效解决方案。',
+  '47da87045fedb481287be655495aeca41d96d78ba178c475164c33f77299e31b' => '查看策略',
+  '47dd56c2c7a7f7aac789ff6a0190ecc9f7508548c7e4f5118bef1622b478fbeb' => '套接字',
+  '47e4515495744a544234bf27271d65cb7c7cd90291280c89247e2a2e1f58cb84' => '二级说明',
+  '47fc5bfb5680bd7a9d55085c13c03c5c75ab3a5e2beb3eebd08067146a17a0f1' => '调试',
+  '48a4e3fbd9b57f805470fdb0b2dad29f753a2f425349f98cf44f4c469b013143' => '调值',
+  '48a53f0774c8ceff574a1fdcb0d470dbd382b3db273cff4344b6d39d5379c923' => '密钥',
+  '048bc34d9f7101890b192855fedcdeb005f736c15b42bf14e1f4412f5502c134' => '为了使用Azure Rest API,您需要创建用于认证的Azure Active Directory应用程序.',
+  '48bf9b4f142ab45cac6f33cf99415bca6ca8e07608a031237aa76560fec2204b' => '口罩',
+  '48cfe4e462b74936c247649161f5dafa182dc08dc16c9efc7e4bd70a10fb3fff' => '过期日期',
+  '48dc76dfa23ae03fea1372c5ed6c0e1bd62eaeca7bba6d804eb0afa87972f031' => '问题',
+  '48e640e2221e35ff22d81c95fe0719f6550e9e6d9a9525e0a41ab52265c44180' => '基准 政策',
+  '48e10296ae1f79b6d9eaa50226f3b94cdbcfe0b7b8e235ba56bb5a108e04466d' => '格陵兰',
+  '48ee1ca0bd28716cfcc57d77c68b1ea021f8032b2385c56ef05f2f42927b8a60' => '关联网络数量. 链接到 <code>networks.cloud_id</code>。 。 。 。',
+  '48fbf8ee9876f62edf7bea1201b90aa67d6d910c763ee7288ecf41cf39319f59' => '如果设定, 任何已发现的设备都将被分配到此位置 。 链接到 <code>locations.id</code>。 。 。 。',
+  '49aebfc4c0610eda3730529ab1310433547ee7b41ea6961331425cbc7a33da48' => '从中获取子网列表的 Active Directory 域 。',
+  '49c266baaaa70981ea188fa714d5c40cf13830d786a861c9943ae0d26a7f3fe9' => '搜索',
+  '49d5ba3d5582d813940384f2f08168b397eeeb5e569ba152d753a456e8418fa6' => '<p>基于NIST CVE的脆弱度报告.<br/> <br/></p>',
+  '49f19beeecf442ef476211c290c76edaf260b56f7dea5589963947207202c238' => '实收',
+  '50bc4d26164c3c1bbe2b124c886c8652908c3f46c117d19488b060f97669a1ae' => '插入您的购买许可证密钥',
+  '50c6b2d6f241b48d2c209955d530b4dd50392cecb8d69d9d523346e228ce3b53' => 'rx 位速率',
+  '50d4e353b9246b9a29a8f5118096b4887d1ba64098ce435d76419fcb00eb856d' => '二级图标',
+  '50f1878d24fe66e518f98b963710f84574685c718a4b83e8b08d59d912f54f73' => '地区',
+  '51b58a948cc36116bf9525db26aa6d602c190cfbb3ef9830624986d84b2fc57e' => '文件编号',
+  '0051d9f5414534d6999256b376731c12ec5751d3b8810ec779ee3a515f542dbc' => '设备种子发现类型是网络爬行的最新高效方法,使您能够按照需要,以狭义或广义的方式瞄准网络. 速度快,效果好,也很棒。',
+  '51dda992a7a221e033dc1c06834d9d39a519f723b81a47b794e35c493822cc11' => '发现是Open-AudIT工作的核心所在。 不然你怎么会知道? <i>什麽?</i>',
+  '51ef11e6bdeb77ba0d587381a54ef9c10e0c8004f925b96f521064c9eb76a99b' => '当链接为空时,用于构建关联查询的URL. 被状态部件使用 。',
+  '52a1f265ed95dfba3029ea6783fb257e7fe9d2281b778867273c8abae582b146' => '衍生自云发现.',
+  '52be7d8c795dcf341ebfe01db1fe2c0553d1d3aab83d910c203c895d801788c3' => '初级 外部服务',
+  '52c4ba384c0bb712e8b9b2105aa069200be3b796a64769a5040e6dfa74e8b772' => '当集成运行时计算,并包含该集成中设备的JSON表示. 每个链接 <code>devices.id</code>。 。 。 。',
+  '52d2b741f6196e9020d19805f415bd31d9a90c8b55447753cfed2438e85dfbad' => '文件编号( D)',
+  '52d6e3de4fa0dcc29946695f93940c3e7f26f30e1e39f4b1a49ad98839112786' => '发票',
+  '52d38145bf1e6dad74bc84f758e837455614db18643ebe375fdaef29b7578ba3' => '这可能是由于 MySQL 时间关闭。 MySQL一般使用主机设备时间. 你可以看看这个',
+  '52ecdf2a2d1cc3a9f4e247acc03332eed47a1b339336677f05c8c4eaaea0f96e' => '启动',
+  '52fc27bad475b42eecf6e66088699d09ebd3e38a63e51cbabeb050d6f6b7fb7d' => 'tcp 端口',
+  '53a2a8b86e5f174a869408fa4265362eb2abfa126b7d34cb4a422c6ea9ea1d25' => '未过滤',
+  '53aade77cd69a77bbb51bf8ca4e7ea8b282db75edce8883775e47042478d35b5' => '列数',
+  '53b09e104f608daac0a306abc28a053b592f4518cfc1dc28d81c5b52813eb599' => '数值',
+  '53b8033c14b0ec005a37bb58245390b8b5eeebb250956096921286c3d81f6fc6' => '发现的叶子数',
+  '53bc9838577d336458e12ce8aa0a8575f6765f91409913403fec14a1d6f961c5' => '刚果',
+  '53eacde854a7422c2ea047d9ab7c4475c4cdfae3324b5cbf050cec74612f04c1' => 'ip 地址 内部 b',
+  '54a0e8c17ebb21a11f8a25b8042786ef7efe52441e6cc87e92c67e0c4c0c6e78' => '错误',
+  '54aef9d56bd253057f856930bec246c34088fa5483ec2872e1b6f1d9fe450a1a' => '编辑 log',
+  '54ff9d3be499b8dec6bd7a15d7d0816273b62f16138ee686e3c42c05dbc03e56' => '管道',
+  '55ccc5014f2a6d4c42c7b1b7e74dd26a2983c362b14c89e4475a2d170fe96dfb' => '卡塔尔',
+  '55e9b94491541feab2756d35c31eb4ee60243b17f308013e3aa1c06e865b654d' => '<p><strong class="text-danger">说明</strong> - 您必须有工作 SSH 或 SSH 密钥证书 来执行目标设备的基准 。</p>',
+  '56bb61305bb26cd55e302d451f4f8b590b160132ebafa1f6885cf5e6414c7cf7' => '接收日期( R)',
+  '56c5faf672daf81f3099c59a938504c11f3d5451bb0fce056ac593fbea675b72' => '创建查询',
+  '56d4f035c936b87d9fa56b3b3f9385dc2e48875a18f6e7f40561ab20377cff2d' => '已使用的计数',
+  '56d6c738d6d68d403f62991519145966a4e2725b0d8f5cec1acca567eedef5ed' => 'CPE产品名称匹配 : ',
+  '56da628737b567cf54b019a6e126745f6a7e904dcf4ed0b69d04fe3c73d0c11b' => '红色结果查询的ID 。 被交通部件使用.',
+  '56ef8f20955f256423d328f65b62106005252551db25d660031887e421cb4684' => '地址',
+  '57a4d3bfc6e01d002c5614ee63be7110b8a36434e0cad3a854a351b3144ea256' => '=<',
+  '57a6c943026b490e3d48e67f2d8113b3b3ecf043716666e7ed3484e8190b37ba' => '实例类型',
+  '57ab220f0ce930fb0395bf03c634059719926c9ddaf375e7f645c1b44b3f4ae1' => '购买( C)',
+  '57e900885d442de2089cbfeabc36e6ff2760849d0818bb3a6af8c4250185d4b6' => '瑙鲁',
+  '58a2e5e674f21f1ebb65a2af6363af760927e4c06777e7aa3ad81564f3762aae' => '地点套房。',
+  '58c7f99a88ddacb9eff18ed63e9d2e146f80c4b305238ff4bc4216075aff5a91' => 'vm 标识',
+  '58d6ea7b3629d547738910fd9b557622d5f17811353aa2a4711d187edb11bcda' => '以下步骤概述了这一进程。',
+  '58dc9cc5ae40094347517bc9205e23548c66c9b0d07e5c9562d02c6296a973df' => '标记  2',
+  '58efbdf0859a258892b3403b0c179f8e2117c96f0ffad8c181c3097610fc7c54' => '不喜欢',
+  '58f23be0ac904b65417cb027ed3ae6b3b8be2da74375e3bd15efd06c446a85f6' => '理由',
+  '58face17992f1f1bfee73c255dc6481296f18ac6c0b7120a609c5e2c7c11b1de' => 'Windows 用户工作单元 # 1',
+  '58ff8be022009646d2a7e7223fa8afa36a038eeae651f08b80d5b28acb812dcb' => '登录',
+  '59a2565ea15dfd2b16fd552d956edc48def19582cfb553b5d54e9bd69b01c787' => '安装来源( S)',
+  '59b4ca30cfcb31ff62b77cde6d438ec4d93b001d396d6041b1a88de9b3071c53' => '帮助文本( T)',
+  '59b16037af287eaf28a54b8b0b4dcd6770d08f1104f5e8131a5bcd95ae3706fd' => 'os license 代码',
+  '59d8b5cb5a8c56ed6f317f57f91b9fdc04df0cadfd678f85d6adc48905842e07' => '域( R)',
+  '59de121db1b8145e4c974543653fd48e1d6667b41160f5a393270c9c0f7852c3' => '软件包',
+  '59f03d642b41e22f4575061e817f9e87c3ced5a0e77d5c92364bd45b7f90d0c9' => '请求',
+  '60a1e4e24e9b8f686be80bbdd06611aa5a5299a451bfe33ee2bf0f79e60e0d49' => '客户端( D)',
+  '60d28e9481352fc47b414f06fc4d096bcfd293e2508d9e7e8d319d55b76a0980' => '衍生自OS名称.',
+  '61b3f31caab77011c08cd4f72e7f9a8ef4a155596d145266594e518194b2daf7' => 'Nmap应该等待多久 每个设备的反应。',
+  '61b57a1cdf91a140f8f7062ef3d20fe40d5085a72354a940a8f4de5bdc8a0498' => 'API / 网络访问',
+  '61bb39d2285ac51aa7fd0d02f5e87ea54f7295a545dee0ecbc0431d4989af1b7' => '提供集成设备列表的查询. 链接到 <code>queries.id</code>。 。 。 。',
+  '61cbab03bda2a0303138d9dbfc8861ea2f822ea29446ce60ce661a72c94c0de4' => '影响   可用性',
+  '61cc20cace90dfcf89540212886421d03cfbe1d2f6aa6a675188a85a94fe1e0e' => '用户手动设定.',
+  '62b67e1f685b7fef51102005dddd27774be3fee38c42965c53aab035d0b6b221' => '>',
+  '62dd1288e37957664150bf7ecdee3e79dc2263f5cec5bcf95ffa23e1d5f41e2a' => '奥斯许可证',
+  '62f2ccfffcc5103eabb193172833e6d95db890898849ea1ce84b8d7843997539' => '中学',
+  '62f9c9cceb8a4c6711560f84fe40978ea59c882038764c3048b1c58891c123b2' => '打印机端口名称',
+  '62fa5a5b0d3c318835a213e22a4b335c42515443d598741d0413e8c47f9ecf67' => '路径',
+  '63abf3a5d1406bf9f049d84f85a163a5cdcea9609995d90a3f3d568528463599' => '网络创建者',
+  '63b07f8966fc6c17951ecf5945451f6c861fe6411c78602df8ef2ccbd2699664' => '阿拉伯利比亚民众国',
+  '63c1d2d0b46d9fbe6b7c8c27b90c3d90fdf347887ff829e077076f0331580a1d' => '此任务执行时的分钟( * 每分钟) 。',
+  '63dcab1805ba3b9171399c0cbe8f1a6dd06748b3a0423c25936b3a21210742fc' => '使用 WMI 软件',
+  '63dceb8800b2dd4af9567a1f54f03b7c3dbdc27fac4799091ebfcc4928899ee5' => '电话',
+  '63f56a41d24005aa0624a7be907853327e78c8509a38c71437a9ea2df591bf51' => 'Open-AudIT在其发现功能中使用Nmap. 如果没有 Nmap, Open-AudIT 将无法正确运行 。 每一个Open-AudIT安装都假定Nmap已经安装,也会在发现者网页上测试. 有关Open-AudIT和Nmap的更多信息,请访问',
+  '64aa03c83597cdeab17de8ce9fb3788ad24d68c154ae9bb47d29df45d4d1f913' => '但我只有Windows客户机可用!',
+  '64afcbe01aa8a8a4c6622b7ebe06d28d9a0e4caf2a2cd47edab3a99eaf811a33' => '奥斯',
+  '64cff1319d2fd2cbb7a1e84ccecf22c1cc07b24435cdb522f8c0aa525d6002a6' => '行动',
+  '64d063074ae46f9eb739ab8e567a96298e8799a15b9dfe2c10bcbeca5db4f8cb' => '地点区域。',
+  '64e3cb0e4960ba69298843d481376d1ce7b92cd43cf70e61a982da651c0335f3' => '买',
+  '64f915cb8bfcf2d0a471b9559a9d08f7349413813a72a78e053062377e29b8f5' => '喜欢',
+  '064fae94a34f2190f699f4dd94a97e06b0beae812a7276c168985716d26a4586' => '活动目录域',
+  '64fbbdd71c7e9d3cb0aacba9583fd39875a9957352d678b028f3fac49971ac6b' => 'RX 电源',
+  '65c67aeec8b7e4c5ada985a779c967bf8e7c92f77d8f9337b0fbc6ecdd096233' => '链接查询编号',
+  '65c202e84060a6dd5d4fb0b3b2b79950f7e5aa18aea86a01a7a4edc93ee608e1' => 'Azure 活动目录',
+  '65c50534424553ec105411c09c18f20230c2fb8ed63514efbe1509263c64cd0f' => '上次修改',
+  '65e7f52c3829ecdfe00407d21688ba18a9b557f4ae700a24e11f184c99d59eb4' => '从主机名复制.',
+  '65f7c4a55a761f456f927957c45d87371ce62bcf76fe646107d767c63ead7f08' => '动作延迟',
+  '66a9911b60421107c034008437af9e89aa11906e304272244ad40cb609ce1016' => '最近我们被问到这个问题——你是否认为开放-AudIT比其他类似程序更安全? 就像大多数事情,答案是 <i>看情况</i>。 。 。 。<br/><br/>Open-AudIT的操作方式可以非常安全. 但和通常的计算机安全一样, 你越想做点什么, 它就越不方便。 老话 <i>最安全的电脑是关机和柜子里的电脑<i> 想到了这一点。<br/><br/>下面我们概述一些可以与Open-AudIT一起使用,可以增加安全性的选项. 与Open-AudIT中的大多数项目一样,这些是选项而不是强制性的. 你带保安走多远取决于你。</i></i>',
+  '066aa86811a6a4ec14415b827c17b8540471fe2f6867ecd1f9a7b2c1c261ad9d' => '选择外部值',
+  '066b02130b7e0ece3b40f3169a54f1efcf051232b0c3fe3dfb63d949b9910d55' => '塔吉克斯坦',
+  '66b86bf0f04594746e886baa094d6038b92895c79526fd60a44395cb0c0854cc' => '保加利亚',
+  '66cf5513b37462be52e7fe7b1791b7a6b704f97577680acc2f270e365a1b01e3' => '角色',
+  '66d2c704565b2b302090cb541e64e3683d8a573d0a04e8b0f531b145bf2c6ad3' => '小写',
+  '66dd23cd8fa9ffccd57f97a19e94fc1c548ffe14f87d36a8bbe6ce3fc14880a2' => '包含一个 JSON 对象,详细列出相关的部件及其位置 。',
+  '66dee70f9a2180ef3164cd80e8b55dbde044633bee77dee1f42881de825e2328' => '购买顺序( S)',
+  '66e20234a732c6aa325dcfa46268acf7e859d5098b47a7f6c7265b311953ce3d' => '没有在',
+  '66eddd19583150657c450a81f9901df04976bb4ef12551ccc789930b07c00199' => '这个属性是使用属性来构成的. 设备 关键 要添加另一个条目,请加入属性列表.
+
+极端 - 否则,组织将失败。
+
+非常高 -- -- 对各组织生存至关重要,必须立即恢复的职能。
+
+高度 - 应迅速恢复但恢复时间可能稍长的重要功能。
+
+中 - 必要但可容忍较长停机时间的函数。
+
+低 - 非必要功能,可以延迟而无重大影响.
+
+未指定 - 设定前的默认值 。',
+  '67d1ae64b7602c630ee5d5bf473baf589672900f04dd61eb9fc0c30248dfccef' => 'JSON代表这一一体化的领域。',
+  '67d4fd4d8bcbbc3510acaa48ccc3eeded1973fcdb64b18a8f17cfcb476f79a7c' => '该软件不再得到更新的日期实际上完全停止。 维修停止。',
+  '67dda008b6081e533f39e6ba7a3d73dd9914b34f7386cb8263ff3ec87a22f42c' => '外部引用的地点 ID 。 通常以Cloud审计为居民.',
+  '67e277fcbb2287915b37937dbbbb891d926ed898cef04304fd8e57512a2b4658' => '电源 电路',
+  '67f8a3440bda3708973c16fa2fd48e9f58ee0a1f6049c8e2005abcdd2758583a' => '线条 数字 a',
+  '68a55f2b4b26a0fc63e784f3ddd58e367975aab1a7cbb56022caabcedd8bcd1b' => '初级内部身份证A',
+  '68b076be5ba974795f927bf1aa53b0dc2991b90d8d535a9dbaf33bad74a2d3a3' => '鼠类',
+  '68c114ea9c8c66041e9452211afd1f4fbc6e15554179f7f5f96a73219d4937a0' => '外部',
+  '68d7beb6df59ee85bc11a6679c29ac3e6aab738833c6871c6df29ae0246d5d98' => '服务器',
+  '68d335b69feaa6695a167a480579ef012d9e5253c04e6a1e4ba1268494e2b5d0' => '选择内部属性( A)',
+  '68e4a19aa13736621b3ff2cac91a7093dc6ae46598fb879639eeb92cd1f01e92' => '我们应该使用TCP端口135测试WMI.',
+  '68ef870ed2718c706a8c64bdc89d8788b82b86512960cb891a5cc095863d7c37' => 'YouTube 教习',
+  '68f045fa30dc98ca0c805b3ac73f1e99d12823091193d297940e4165550d242e' => '政策标识',
+  '69b64efc825b6bc4d9ceb3db63e11bc4ae1a306979bffdc124f464e39f692cee' => '通常为Mbs,来自地点A.',
+  '69ceaa408bc1525dce584ea04c9f0eb712a1d17e700be6a10d15f0e5ba100e85' => '实例( R)',
+  '69d0a7b84cd1d5d0928e636b0a7204897af58fe55bd258ff996f4c5063bb2e2f' => '贝宁',
+  '69da56ba6fca9710f6561437ee4ef98c8d98baecdbe4faf616fcf1faa2d4f80e' => '外部标识',
+  '69e831a2a7eca833904e6ce538c221b2259efa7afceaceb0726ac02642ed17fd' => '用户能否编辑此项目 。',
+  '70b2d009fb945a99bec910b5e0dda8228b8aeb7d32acedb3478f358795f0ab09' => '影响',
+  '70c4e968a2e804bd976f332f7a5af3ab31591807c8debcb2a91440b1a713822b' => '许可证过期',
+  '70de91185ecd7b6a92be8e4476a8580319f4e170fe120281bb45c90487673fa3' => 'Open-AudIT中要创建的设备的计算数量.',
+  '70ec1e47554aa80c005067599fe32e5e69b49d6a726420e9c88101b68aef8bd8' => '处理器( C)',
+  '71b3cc46e9adc89937d74bd84eb4627cae1307f5bd5e7efb50e97dc69ba95610' => '网络任务',
+  '71c37f629a274c980c6c139803fb98d3175828f50c9e7d91bcccdf2236eb8326' => '配置管理器错误代码',
+  '71cf6b780ccdcaced33f7927c76cb3863ef81801e8d1f1d0fbbb5acdadc771e5' => '收藏者名称',
+  '71d142dbbebbeec667cd2eed2f0e2a1111c12199e9e6dc327654f59e103d463a' => '启用自由企业许可证',
+  '71dc81f13c2d66fa5814b85a90a18a4181d22caead990696ef3e502dbc86229c' => '伯利兹',
+  '71e9eb10755c8232974d186a560f7658a1ccbdd3097877dfa1ad3436af90d46a' => '马耳他',
+  '71fd251dc9380fc386cc3aaddd295190aaf2abfd746b8d2ed3991f7bcac9590b' => '许可证密钥',
+  '72a5b0885d08902d0a66e31f66e13e5f6762a94b730f58a02d6c5d9bc83d7e89' => '昨天找到的软件',
+  '72b5f5c05074ac7513eda75d1d09b39cc5d6e62940ba42b6f609d41c8bcf8ed0' => 'DNS 东帝汶国防军',
+  '72bb95a6c1bac8e949a2aad17c80aa48c391c5bc305c219efd6bda38ef94418c' => '收藏器或采用收集器模式,或采用Stand-Alone模式。',
+  '72c01429577fb72a4fadf55dc8cfdb5633dbce732d8db32ebb284f1c4f9cd311' => '在 Open-AudIT 中更新的设备',
+  '72c4afe23260a00d490c9eb9ed4ea97d656ad26d17537d4263af086ae429627c' => '基准( D)',
+  '072c9af4e3d826f89524668cecdd9f73dbbc70b37ba665646fd829c0d8076366' => '当 LDAP 服务器被配置以添加用户细节时使用 - 这包括它们被指派的角色 。 如果用户在这个 LDAP 组中,它们会被指定这个角色.',
+  '72cd8a64e591c9ee6a255b4e50df6b77f25d97783271add5811f754766af5961' => '可执行文件',
+  '72de08941a762d151f653c9cacc0f43d5801fb1f1945398151741f8f4e80e6d4' => '编辑日志',
+  '72e2f03367f77cb2e78d28816c71dc52c2eb46a33d84295d11de779f3498e860' => '供应商',
+  '72e9a59f5a1d6289dbacb35df897d6c007c55a27e77018455c37e7b372668475' => '端口',
+  '72eacfc21c7c869dbe11e269de84e343ac27c1c03da9163569f995e21a09e979' => '单击编辑按钮 <i>基本 SAML 配置</i>。 。 。 。',
+  '72f106acc268775da28b21eb67479bd65af4135c24d999cd9460b832772a3e22' => '母板',
+  '73a9980bf572bdd7d420bc6704cd4234a028a6a8cb9da830a61343764e162814' => '复制值并将其粘贴到 Open-AudIT 表格中 <i>客户端机密</i> 字段。',
+  '073c1634c496cdb649d1afe0a312bbb4b7e1741b271542e4a436c3b8824b1761' => '状态',
+  '73e848aea2c8833506468e1efc2d67bb36e4e70ba454eef27dcd16066d4e1dfc' => '如果您需要为您的用户配置 OpenLDAP 访问权限, 而给定用户访问 DN 通常是 <code>uid=username@domain,cn=People,dc=your,dc=domain,dc=com</code> 那你应该准备好 <code>base_dn</code> 改为 <code>dc=your,dc=domain,dc=com</code> 和 <code>user_dn</code> 改为 <code>uid=@username@@domain,cn=People</code>。特殊词 <code>@username</code> 和 <code>@domain</code> 将被用户在登录页面上提供的登录细节所取代。',
+  '74c703d08ceb8d8f2d1f36dc77c804ae50f0958afa5755cf1f5d20b58c2faa8e' => '地点级别。',
+  '74c152714cbc433e476fb8649b903db4a220781aaf7e5b82d4c93a3e3b869fb1' => '作为在Open-AudIT中授权如何运作的提醒,请参见:',
+  '74ce46ab654aa41c37a31025349f8b5b26e9f4582352b39040d0e0d269a39b32' => '谷歌计算字段',
+  '74d22efb22f3c03510b0a346048f68c701ce57489ac6a768b1ae1fbfba2f7542' => '发现单个设备时内部使用.',
+  '74e0bb8e020ce8d5eeaf6c619e5d48a1777fd8f89224828fd273c72d96b14b67' => '注册用户',
+  '74e1891dc615b22fac103c74ab7133742dd1d95a604f6d4edb1a9403b7156506' => '肯尼亚',
+  '75b08ad5f1a08d1d0aa971cb0b75b51e704f64752475bbcfae6bb59d5f6c7699' => '用户在LDAP中,他们的证书是有效的,但并不在Orgs的任何Open-AudIT LDAP组中.',
+  '75bdb6d25517b06b130cfd9cb2be507fa8fd2d73aa2fbaeb682b8c41afbaf60c' => '认证',
+  '75bea334a1b1ae75ad48734a611e29714fdca78b0234c6155f36aee921ece0e1' => '等待分析',
+  '75c02b8d2f91ba67aa6445c054c45bf11355321835a2e545cf18d054d2b4ebd8' => '哈萨克斯坦',
+  '75e8f462f9dae90e449fc1a7e4e3ca571f83541f5314096f4de1d224c4dbfacc' => '几内亚比绍',
+  '75efaf4335ff2f58c17054251e049a0d9286ed6e6a484353407041283f5bc5a0' => '主颜色',
+  '75f26de3d41f5a48cf4bade1cd78a55b30fa14d1ac9444139252c1174da1632d' => '更新 Open-AudIT 设备 ',
+  '75f33cdfc8e52098ea07f853e36473fe35bbe128d6c320019185bc888f9b3ca3' => '不完整',
+  '75fe7af46dd9929b068289dd88535d8dcaf0f3d94ab974aa31ddbd490cc99ca5' => '使用代码Igniter PHP框架.',
+  '76a275e3cd455997712376b00470bdaaa9423d0de17002558b1672bc0dec38df' => '我们应该对安装的软件进行审计。',
+  '76b79efb55be585c5220229001635542672cd0faf5af9802078062d927ed8b03' => '交通专栏查询 ID',
+  '76ba9e9a6495959d65c549a194f3dee3426658760c033311343554443f54169a' => '等于或大于',
+  '76bc907fd0d90c31a66421f5623dc2a531002f22a778559a735f335b2f8900bf' => '操作系统家庭包含',
+  '76bc66689da8350987297549184e37bb232cb7592f9d4c812fb41ab0ef508aa3' => '赛斯德斯克',
+  '76c1b893d0cad5d7687f5804f45748ee30ccd014b9936f097fda74eaee0dd62b' => '通常为Mbs,来自B位置.',
+  '76c86c4c32432be30bdd4037aae3c816045cc2a34a0b41b2322bb2c37927323e' => '模块',
+  '76ce9d52e977417559fc23decc97d432b890fc347b7b0d6fcabd004d543ea500' => '总严重程度分(0–10).',
+  '76ee94675a7c2c8336577a383ea0ed813ea0add90e5c2540c52c46ddd5399e49' => '测试电子邮件',
+  '76f25b5cba9a99ed4a64cbd3484ebe780cbdc904172b3a7a34c562c81fabdfd7' => '监督审计: 维持核证的年度审计',
+  '76f1909f882c529b4b39b63d3a3613965f168654cb01b4cf9f0e8844e3210a5d' => '过去多少天我们应该报告。 由行图使用.',
+  '77bdbdc7919ab48e7d111661d22f70da50409379afc712a4c501265fc5959e42' => '服务( T)',
+  '077d06f48dd7d4c4e522a7a147793867400af5497708d3f7eafd837553496cac' => '组件类型',
+  '77e90b89c04007a0b6331f10f057800121c3b7e35a3eb76200c3ad1194bc3f07' => '应用程序标识',
+  '77fb474525e5efb394a355a35b1c3484ab440bddffd937614c3020974032b76d' => 'sh ports (缩写)',
+  '77fc209fe21039cdca8d9190eacfad2b33d5a998ab4740a1c686a8b27e0702fb' => '为查询创建 SQL 语句',
+  '78bb73c8cb2a41deb1e4e7c32a33edcd712068776060f5c772ebe4b32e2e29c4' => '软件找到最后7天',
+  '78f9ac018e554365069108352dacabb7fbd15246edf19400677e3b54fe24e126' => '函数',
+  '79a0e0ccd35f9cc87ab7b3f82ccf86906737343b72da08a525351135b11adfcc' => '动作日期( D)',
+  '79b7f1e504400ba25040f4c1b3f4f66861c47ebca3a04218773481343b209f52' => '条形码',
+  '79c77a0c7b7af3ce7056ccfdd41ce3b5eb88687b7fa21b44e3e1ff4b4dffad98' => 'Ldap Dn 账户',
+  '79c89fd457dcc1b1ebcadcdcb294f4797cf2725d606a8df51954e0b1badd4e0e' => '百慕大',
+  '79c48311df3fb2b16e7605de0da26c223a4b93cf26bb85be9ca076a518a1c6d4' => '标准标识',
+  '079f21c39d547e4d8279cd993ab50c236159459f6e06cdf0e13dae2ea7337726' => '不要扫描这些 TCP 端口 。',
+  '079fa42ef32d86675669ccab93d7d0c6d8eb480455fe2d193ffff31eb2808d52' => '创建地理代码',
+  '79fa33618d8eaa1fc55f6f8a2d34c65ececc4c5961ac2b1433802c2629d55ca1' => '域名',
+  '80b9910746e55f904d59ef006f0051f1496083ee368c465f9b808d2e31fa5c88' => '导入示例设备数据',
+  '80c7ca9f05fb0c6ed7d92b349b45e734314147ab5b3370c5232d5e3da30190a5' => '请求脆弱性',
+  '80d2e18c7da9f0be0578da69b1701091a2c91ffc3bbf13fdc734620eb443ce0e' => '查询',
+  '80d4651a716f22885a0689c7658a20d237138fd1851875a5eaf38ec9339779ff' => '可以是来自/open-audit/public/icons的svg(只是名称,和roid,而不是和roid.svg),也可以是Lucide(icon-computer)的图标. 用于状态和交通部件.',
+  '80db4ccdca106d37b920206331fcfe3e9e50a9e763d89b54ce3ad5ac8cf30f03' => '德国',
+  '80f301bfef190638b558050b44b6f5a085d3a46d9a7ffb6f6f3d26fec9438a55' => 'NMIS 设备选项',
+  '80fc402133201fbe0e4e9962a9570e741856aa8b0c033f1a20a9bcb06c68e809' => '发现',
+  '81a8ec34b8ac4f268bdd2c2862dfbbe286bd0634e6cd63e26e84042b297713da' => '云发现与审计',
+  '81a830625d1abf9b2c3a7d1699fdcd03b5226e33d1aa3f7620e5ef396fe79ad4' => '来自FirstWave的企业二进制必须持有许可证。 请从 Open-AudIT 下载',
+  '81b06df4303e6581efecfa2830bf76c30a9d32a3e4892eac2fe43b7487d3ae2f' => '目的',
+  '81c5bf35c8fdf637bffde2bf503d5dd103e983994570a8d9b495d3173d449d07' => '发现',
+  '81caaa74d69fa836c1ca2805b05fa4237f572ba001900b45b69d4588a24c264c' => '第二层母板制造商通常不设置这个,而是设置给所有人 <i>0 个</i>甚至是所有 <i>F 级</i>编号',
+  '81d27ef6d5033c3e1d46b7b2b50868604fd432ddb77716b5ed9383c30c08432f' => '重量',
+  '81d8079b9090c339e787f802fca98582fd3315c12b1ebda58c7f6c7abe58ef08' => '身份是从云号发现中找到的',
+  '81e884cb2e857fdd7b77ca8f2b83551f08d6f8f3b33ff426397e182346b62ec7' => '多米尼加共和国',
+  '81f6ba2c28601191ea46da9bb81a3f4d92ec386d55a25f53ad4951768f801cb1' => '添加证书',
+  '81f79aa70883a8d30dd4dbae611cbf91537e3da5428dd658ed7c882175fb40c5' => '所有设备子表都包含一对重要的列.',
+  '82a96e4e2f5b4c439fc8fe772deb37aa584c445268b2e2854cbf9f18e30d1c16' => '如果创建了新的 Org,则LDAP组名会自动从名称中衍生出来. 例如,如果创建一个新的Org并命名为Test,相应的LDAP组将被命名为open-audit orgs test.',
+  '82a3537ff0dbce7eec35d69edc3a189ee6f17d82f353a553f9aa96cb0be3ce89' => '名称',
+  '82d2d1aeadd603f2ccd5ea7a224cdce146d88813d2936fc213db183aa815388d' => '在浓缩数据不足或生成的SQL不完全正确的情况下,可以编辑脆弱性,并提供更具体的包名。',
+  '82dfe88742c6b93a7aeb34946ead1f6a59f4b67d1058ffd2fe11c85f0081e470' => '默认情况下,我们跳过证书验证,因为客户往往使用自签证书. 要启用证书验证, 请编辑下面的文件',
+  '82f4e719a19ce7e573734543f366f55117e4048116b3892adcd1831fb1775d8f' => '加密',
+  '82f61369b61f7c1f1158ecc965176f06b10bcc95d1096e27bbc7fbd6764671e7' => '已过滤',
+  '83b170eb5a09692d0fda8088d4e48677183cdca7a14759fd729e26f24918353b' => 'ip 审计 计数',
+  '83d151a98eac0d0cd336a12859ee555ca1c07ecbc7e5a79fe1fba23098d38ea7' => '客户端  机密',
+  '83dda44fd9593a4c20f6cf465cc81f33660a3a16154f0f294e4f19e2dadf4360' => '二级  内部  id  b',
+  '83f2b333646edb6e0d63a4d62571362f28ea94742b26089fbe0a4a6849a6ae50' => '开曼群岛',
+  '84bde451426f34daf3b1571bbd42f66d09195cbdad5722c506220e86ed95cf3d' => '作为参考点,并通过系统检查过滤出所有虚拟机。 VM 的序列域 。',
+  '84ccc4849f887513c47f30bf0b8a212c0790ab4ac6d457345db1eb97024b61b0' => 'Netstat Ports使用端口号,协议和程序的组合. 如果所有人都在场,则政策通过。',
+  '84d1b5c87897c1c7c171b5c6556853628abe09e7a61342ce24f5cf3d6e1bffff' => '此队列项的状态 。',
+  '84d93f6064553ada3fa8938cb8e36694dfcfc58c6a2c1f10fd60b4b1fd6079ca' => '审计我的电脑',
+  '84f0c229a4b0140cafddc514b3d178e7500c67a63dfb6d1c241bf558765c5add' => '整数',
+  '84f352dec06a495e9c1faee0655ab1208333d702b3f0ea2e0d517bc19c81fc5c' => '获得高层管理支持',
+  '85a39ab345d672ff8ca9b9c6876f3adcacf45ee7c1e2dbd2408fd338bd55e07e' => '对',
+  '085bcbb0987b7da62778cd102cf2ad087c0d5b64cdbec1a2c9626d85e29d89ec' => '选择认证机构',
+  '86b13aab3f8f0645095fd7c2c6c7646b94b3269c4bd66ec7d9a220f364290724' => '许可证类型',
+  '86b3901eea37a04e8547cd912225f548d2e0a92078887682ce831a433072f9d1' => '访问( T)',
+  '86cb4453724344aa3336c2fce126eadd847be1b8cc849f6483a0506e386dcba9' => '默认情况下,我们将所有设备与它们的 nmis 管理属性集成到 <i>区域</i>有了4.2.0,我们还运送了一条规则,说 <i>如果我们发现一个设备,并且它有一个有效的 SNMP OID, 标记该设备由 NMIS 管理</i>显然,如果这不是你想要的,你可以禁用它。',
+  '86cba4840df74c1165683441389bcbcee6793749ceaaae6f6f409817dd8e52e0' => '种子发现',
+  '86e965deca8ffe024626c6b95df8a0287e3bad52295bca2c0e3ef3a004c6cd46' => '宾号( d)',
+  '86f56fe8221f029db2c9755cc998669a7d873c32bfa83bc9431bafe0bb814400' => '警告',
+  '86fba861b3bbc24419abed0eaca6e80bc0fa000588200fd859f345a1ec3b0dd9' => '连接的这一端将显示NTU设备表(设备.name)的ID 。 链接到 <code>devices.id</code>。 。 。 。',
+  '87a1c16c8d473570eb95e2071b55b9a512e10b868dbd23d9a443889cbbda921c' => '动作命令',
+  '87a2ba907b7f7520dd61035c897fe372a696053ee2c46181d0e59ffb359b4305' => '硬盘索引',
+  '87b42e40c2a290e01d87b721bf381c3c5e259d1eb0a4660e41fdbf8bc73f7ddd' => '核定数',
+  '87bc590e047d3df4a8e448ac83e371fad69dd73607752cccb0ff7d34263cef8f' => '摘要',
+  '87c5912f2cefdf9d7d1913611187fa8ab653a89a8d4b65f574812f899834e8b1' => '大楼',
+  '87ce30c863eb63e71cf9b8a878861457b91885adce8c59c3343520d2a89bdfad' => '开张支持票?',
+  '87d296ec94898c86baf805dbcc47af48e618ec25df0441f7471c60a7d6b05b4e' => '说明',
+  '87d6650edb8b2887516ad3fb3c7d7db3a4ff79b8de8994e78a5ca2f84496e39f' => '在设备上运行发现',
+  '87e89abb4c1c551fe08d355d097f18b8de78edca5f556997085681662fce8eed' => '配置',
+  '87ebabdea564b3097768c74cf9404b52ef023058f7ba68277ea9d75c3d6fdb1b' => '<p>汇总将显示一个项目列表,按定义指定的属性的不同值分组。 <code>table</code> 和 <code>column</code> 属性。<br/> <br/>当执行一个摘要时,结果将是列出一个与此相关的不同数值清单。 <code>table</code> 和 <code>column</code>。在允许用户查看匹配设备的值上将存在链接。<br/> <br/>如果属性 <code>extra_columns</code> 中,产生的页面除标准设备列外,还将包含这些列。<br/> <br/></p>',
+  '087f2fb1af308206a7992fc7166eadc9baa871f8174daf2193afe3fca8396e50' => '安装日期( D)',
+  '88c2823b039df48b6555b62420c725684781d01709d6b3d93eb5b76ea570b753' => '购买 服务 合同 数量',
+  '88df7afbacc653b69dc36b0dd74797bc9a1b1d244cf07f6d83de8fe02e874367' => '提交日期',
+  '89a93f55788421d39925973c921ec7d1980df2648a54ba6fe6774306f242703f' => '行数日',
+  '89b33f96b58f8fda20211c3297cea2793659261129dc6f05df1339f3384c4a8e' => '种子平',
+  '89b94e523fb58036c20f01b16d170e70aa4f0456164c0e6dab968e1616934660' => '西撒哈拉',
+  '89b98aa22a2905cdfd71e692788da76f721fc2ec72c6d028cb66bb73c235bc98' => '网络地址( S)',
+  '89c00ba67c0599f2f252a92411e58b62b3ac96e78828114bcac870b18fb21682' => '外部提供者',
+  '89c82e48c70cdfd73cbbd899f17de37ce5474d61000193a8eb615d43171dac0a' => '制造日期( M)',
+  '89c588cdf926781e095844bfc09a57d1f24c7d8943fac62871c6ccbae4bc4009' => '请使用',
+  '89edaabfbcbdd6c8bc4373fd84a8f1d1622894245be40c29c1dc2f9df88e1423' => 'log 旋转',
+  '89f3d2aaaf06cc617d2926d3a0af973af5753c7f36d4a60219099d7d44e68886' => '请注意,选定框将覆盖文本输入框。',
+  '90ad7e9e4e9683ba8ab8388b2eace3590bf283918be072750b6fe69f4a500199' => '商业需求',
+  '90b7c02217370c57c03d07928810ff8739bbe079a623f22fded33bd11ecd0cf5' => '广域网',
+  '90d5f9c8444d4129cb5e6888397f40160c236f4e62c0bf07ab54db1657fa13df' => '数值 : 涉及 <i>列表</i> 字段中,应该是一个逗号分隔的有效值列表。',
+  '90dc5421cdd3c9cfe75a78d3f53bb6e0fa30353e43e9fc6dccb6ebc635997aa2' => '报告的项目数量。 用于馅饼图。',
+  '090fa5067cfa6cb9c16f9907794c680f3d9cee5301f7d5b9df3ec1007ff998fe' => '指定运算符',
+  '91c664b1a251e2f6db3435714c1d7ef356aec64ab0dde423c7554490a9b255fd' => '位置   id  b',
+  '91f606b32dfc475eab99c1ea44b05add881751ee08d7b2e198eb6420e76290f0' => '身份查验',
+  '92a00d7d91da9f0f06c3f218c49c9b98323469962b291365b85d3c16b6b7f95f' => '>=',
+  '92a9aae4f34f4380537da8c43c88ccb535376f4d7d4f8a221a450a12f27e1d70' => '说明2',
+  '92c1cdfdf4cb9cf6fcca962f206de36fd5d60db1178bc9461052f8de703a0e06' => '已启用',
+  '92d5e4c5cd37431e5a659de27354604b4b95684a307f2b9602c51d84585a85b0' => '集群',
+  '92ec74233356b53c6eaac48701a2cce441c64abc8947e5491def41a8fbd952c1' => 'Udp 端口',
+  '93c4abe27cf1696102534bb60b3795f41f60f52fa806cd5d0feadfc8bd2b8170' => '方向',
+  '93d8874c8c86f0fc893dbe15c765ffa0fcd342f798dbf669e08f8cbe095d230c' => '控制台',
+  '093e7d5fdbaacfa92448861b11075b3fba532a07d945b49a44919252f5e830ad' => '联系人',
+  '93ec29c822aecd26a74ed23b9e31d4ec563e85ecaa1b5dcafb5ab3ebe0af5891' => '我们应该只根据设备IP地址来匹配吗? 设定为否, 因为 DHCP 会引发假正比 。 如果您能保证任何设备都不会更改IP地址, 这可能可以被设定为是 。 例如,您只能审计服务器网络 。 在大多数情况下,最好由NO来决定。',
+  '93f6a4017ee637aa0202e2668de6e19cabcb4b8a83c6c432bf0630958f5bbb18' => '考虑打开 QQ 过滤端口打开',
+  '094a853d13eb5724b45826ffe498b1745d7186b0a00287dcf224a10e3817cb95' => '图标',
+  '94a17387df1d26139d762bc64262e511ce0b3b71c9a19497d41bafcb5c42f1b4' => '从外部创建内部',
+  '94b2859b913c9e2cff6a5b2ecf260ef36c3694e366b15952c0d9033577e5e80d' => '巴林语',
+  '94beb18f2461f87eb4a460c64cfaafd7ca192bbab519c025da1a94da5999efad' => '政策结果',
+  '94c6b66c44932803596b8a4f82d5bde54bdd077b3793d9aa9e3ac1afbe97fd65' => 'Os 许可模式',
+  '94c38e98a94c88bbb0ee5088c1697149f2fd4c42625a5d777324c80326cc416f' => '应享权利类型',
+  '94c757d332dfb29b21ce398e9de09870332bdee5d7b4e92a3bd90fe119927565' => '采购供应商',
+  '94c953a714f482df89d88e34604ce0031acc9ee32bacccf1bbdbb23b09316b3f' => '现在约会时间',
+  '94e6bd574b6e3c556056fefe8fbbe4609df9f8e63df86c7fadc7468d1b217cfe' => '尼加拉瓜',
+  '94f77434a80010a3ae1ceb1ca212b09c84ffe2129006c6fc2156fa81c87a9217' => '临界值',
+  '95c61170318a2851165109a8116a27a9ec36ef96bcfb0a8c211de5d568435655' => '地点',
+  '95d6d752cdccb230583d429604595153da624a490285aca6c1800d72b47ffddf' => '如果在Open-AudIT所选设备中不存在远程设备,我们应该从外部系统中删除它.',
+  '96ac4e16e556fea843c7484a405367f32e45bf42adbd7a4e036cf792bc05fd07' => '创建日期( D)',
+  '96ce6e6193a047260f5c32aa416d88b6e8959111f43f98457af9cc009a0907ad' => '名称',
+  '96eb3354be82d3e620e8f842e1a4657e8880bcdfdd7157226edc581ecd66381b' => '补丁小板',
+  '96f1ee56d7a7ee45b2ab50ee1e0fe646a798c10d2b8b0a2a4cb28bad13c70faa' => '用户提供的证书失败 。',
+  '97b0560280ed60a5a1eaa1bc45492543c8a986ad5a25b468c427eb83c3e88191' => '当前',
+  '97bfb7aa471aeb86e25332121a0754e6815855ca9bb6a5538566344931f86d6d' => '注 - 您可以设置配置项目, 防止下面显示纯文本证书 <code>decrypt_credentials</code> 改为 <code>n</code>。 。 。 。',
+  '97cbb021d56c175dc79564e11060b8aa04dc83a0fbad3663469c7c2d019e325d' => 'OS 家庭',
+  '097ced582f097a3823d2b18e6e5509d0c18f1adfb9a14c5624350b7b0f9a3743' => '直布罗陀',
+  '97cf0a9c7ef6790f6bf798be591efb91184f8810a90edb1aaf8551082c8f8b97' => 'Dbus 标识符',
+  '97d007f21b5d60ecb73fb540d3a8044ac2424e8f85f1996ee54a17931b3ad850' => '谷歌 JSON 证书',
+  '97dcd9db62ea73a91cf4a15279123eaa2e83bc8fde28a3dc7fcf9ae8d81f77d7' => '证书名称',
+  '97fb85c3ce3a3ce85e9658f6bc35530f9fbc6d1a0a5b3bbd960daa28f7c85bf0' => '物理高度',
+  '98a05d5beaa29b6e8ab1c6dc97d6c549c114587a09bf12052eb60429666bfc71' => '该网站通常可以与谁联系的详情.',
+  '98a55319ba81f2e651bd1d1f9f773845ff42e4f79c4fb4006160aebc38a72ef4' => '完成这些步骤。',
+  '98b5be2537571756d7c8d917a37d7ae057777f0b522c4c5303dc626db7ac5bd7' => '网络类型',
+  '98bc41139eb726c2fa07be851a2a3b661734907a1f689c6f037c5e4422b6e2ec' => '更新内部计数',
+  '98d5e89adeac695aef5a880780efb69d917b6e0ccccf2419e353320d06ccde82' => 'Openldap 用户成员属性',
+  '98dc766e32c38c402a4f8943d7a37e3adb8e1bb7ca722a1e66fe93275a8bc1b4' => '索拉里斯语Name',
+  '98e4a4ccc8b3ca907527613721ddfd4d5e6ed64f9b8d4e583719f2bee08b19a8' => '欧盟LA',
+  '098e6eafe363d347efdb72128a51cc8937ce7496be6a60695b368b00bcdcd31d' => '物理高度',
+  '98e33b0f3104fcf1b812ba2c679c0f15a94f583559b731d6580df2d8307d3edf' => '应用程序',
+  '98e548b4a75ffe30a43d7a7953c36daa33b3051139d32106e2a00077c56dbe6b' => '重定向 URI',
+  '98e93783401e4161edf6bb0fd9ac2d46627777b982ee22f9e537d3bebd61487c' => '未过滤状态意味着一个端口是可访问的,但Nmap无法确定它是开放的还是关闭的. 只有用于映射防火墙规则的ACK扫描将端口归类为此状态. 用其他扫描类型扫描未过滤端口,如窗口扫描,SYN扫描,或FIN扫描,可能有助于解决端口是否打开.',
+  '99a7c065a730fdac00718082c230850a5ae80dc98ba1b4e17609c56dec36b458' => '蒙古国',
+  '99a52df3ff3d499488e2fa28150c4106a2cb5e928891a830a9aa3922b2d32160' => '密钥',
+  '99a225d424014ed7d904da018e1bbb2b319c980f5c9c895454eb9555a493d663' => 'RX 弗赖克',
+  '99b5426cb9557518cb2291f79839c5d99f3e9eacb25d85bbb2f801682f36d2c9' => '抗病毒药',
+  '99c40ab405926cb5ad1def9cff4d7ce624f8f8abfff4e85f655347fcb949d08e' => '日期',
+  '99ca4223ec60bf380e24afbe56fa9ba41aa49418ab5532c0bace021b7387e718' => '目标计算机',
+  '99d94aa7b6e776d723296852a2cda1db60c9e7c8818cf3102c7f35f7063b46b7' => '更改标识',
+  '100c4768d37d3b0330697dd015641185b91a931077b0c92bfb792f5eb3a6b519' => '安提瓜和巴布达',
+  '101f2ff3de22441fcab3e15ca0b09ac3428642cf628558f16fa404fc3137baea' => '行数',
+  '102cd6f2a22dbeeffab7520128ef818377c572ac1d1792d10b75c423b4e3be75' => 'nmis 注释',
+  '105c1cfd0948446a56ef8a9e2cb7824f2445cb99d348c5ac7e55ea13a6cdf1fe' => '如果你是被支持的FirstWave客户, 几件物品会帮助你更容易。 使用 FirstWave 打开支持票并附加日志文件. 还包括支持按钮在右上角的输出',
+  '109fa9f54c849bb7c2e983911b0d3d75bd7e947c157dee7c012ea29648058191' => '丢弃',
+  '0113eb1771bbfce1827d4e09bfa870ed2fef33247bb87ec871f09eee306bfd62' => '单击 <i>新客户端机密</i>。 。 。 。',
+  '114eda9ec4106bd335e478ce08daf00f5dd136aa224ff473c2ec7053f5a3163b' => '产品 名称',
+  '115a2cc92c1097ac4ebeb49698f5e22635a24ee1ef89722616f862ea43c5baba' => '时间戳',
+  '116ce8e5566cf909cebd2e91a292961596362752f5443507a91f58128e8c7a09' => '从 NMIS 创建 Open-AudIT 设备',
+  '117dbb19db72ab17c98e4ef1274d5981b68ee4b44889969ee74a04a51c383056' => '创建( B)',
+  '119e66d117ae8f0cfaf46ff97f0344f21ba0487574db7ea5f36d5399fe948792' => '地图',
+  '123ca638fc3043dffdd1c7f74e9abfc09812a1f43fe4449d1c656bca4a121992' => '状态( K)',
+  '125b9af606a09a13ee5b54570c6a0a335e553416761e0e97086c4a6750d3015f' => '基数( C)',
+  '125c9081ca4e0b1a7e42a2d8451edfcf7d55b3cea9cce68ec0165587c5b672be' => '提供人提供的身份证。',
+  '125ed7d7c1360d26ef22fd072ae60b1868c5160b25e1a3a51c2dd1e02728dbad' => '查看发布注释',
+  '127bcfe9766058c95045fa15138dcb1e331ee4f334f35e26d92dd546b274cf9a' => '蒙特塞拉特',
+  '127fe9e00dd7ef5d28b7c5c2fec36be23d353de50a378d5fd1f26e1e487aad46' => '排除任何列出的端口进行扫描。 逗号分离,没有空格.',
+  '135e96f747286540c270ffa331c453b5d4de4cbbc10bbb30f1ce5eb47a5f217d' => '资产数量',
+  '138be63b23a50033206557cd047a25c308a6fd15931c1221789df785f0567b2e' => '<p>Open-AudIT附带许多内置摘要. 如果您需要特定的摘要, 且预装摘要中没有一个符合您的需要, 很容易创建一个新的摘要并加载到 Open-AudIT 中运行。<br/> <br/></p>',
+  '140bedbf9c3f6d56a9846d2ba7088798683f4da0c248231336e6a05679e4fdfe' => '无',
+  '0144b1defcf7561087015f8d830d65b16f024ad7eb9245fcd4e437a1552b138a' => '序列',
+  '145dbc37f2290fc420167f62c2422c81ac1794ec5a19a8f51c071f9e95f52372' => '此错误表明没有足够的虚拟内存或 page 文件配额来完成指定的操作. 以后再试一次',
+  '155f816c0407310c0dab222493370773e045ee7fe04e6c9a951b07f495531264' => '提交',
+  '157ce98b9a370dc7124ac9a28e6db4e507df68e483f4d1324c3ab549073fa633' => '乌尔尔',
+  '160fe53f7e2f9ed75a9657ed85b317715951758f5954e2225bcd3f2dcdfc6000' => '二级  内部  id  a',
+  '164cf1ca8391532e4f239c556c0c19589ae8877cb25ecfaf0b310c6c3713ba1f' => '分组',
+  '170d42bbd56e79be3063836f33939c44e542f29c92f5ba5d5f01a445df240569' => 'A号线',
+  '172ee4e3433fbe235f83b95e03e0c8e66473adee7da936f8f89d3818ab75a0e1' => '可选 ',
+  '173b3168ebd735ede1d6e130658cd5cf7c9ba193639aa5bb33de446160485bbc' => '简历',
+  '176ca52906b001daa816562988464d2af4e18590a85bc7090e28ad3faccb7f8c' => '标题',
+  '178c0dcd38c90f990db43b2be2b7bdfcacff6cb2505f088ca2a7cd9d9420bbf7' => '设备种子发现是一个很好的选项,如果你知道你的网络由一系列子网组成,但是你不确定它们是什么. 用本地路由器播种发现,并观看你的网络在你的眼前展开.',
+  '179a4ccb98b6cbaa9b3d392e9e0dec2c63fd602e336efd178cac50ce752ac4f0' => '冈比亚',
+  '180f9812b70eef68f74e789ab46d5dc85f40459e0421fd56321e00cf9b5a800f' => '一个与从CVE中提取的软件名称相匹配的JSON阵列,由Open-AudIT检索的软件名称丰富.',
+  '183f67763ebde6e3ee6d00b11aa48715a72d7143bf8b56b3bb7af30a14878989' => '无+M',
+  '0184add28059bda9b441ccc883b0f2ab038526f3a8ec46991f347bc2a77a79dd' => '我们是否应该匹配基于fqdn的设备.',
+  '184d9b19a22f5d831feb5a0ccba819e3c6d2b7c7119c18d4517f0c9fc064f3ef' => '设定( B)',
+  '194ceb6f61c082a61cbf84fe88753678549c17e89809dec73fb3ca9d522fa30d' => '网络域',
+  '199aeb050a31857d3589a2a85defc342a8ea4e9c5ab0aad474dcc7ad4f916603' => 'os Display version 语句',
+  '203e8f1f361b4f995bf890cfd64aa303f2bb093c7c96d1c0db57dd4f0166c1c2' => '用 id 88. 获取设备的所有细节.',
+  '0204b2e19931f60d67bfa7a7daebd18dda8f30a47103a085e2444ea6f2e95d8f' => '下表中详细列出了我们所携带的发现扫描选项。 如上,企业用户可以创建更多的这些或编辑已发运的项目.',
+  '204dfa88df8791df162433ffffd8b94a1f0e924bee45e885aa26352e9d42e80c' => '版本字符串',
+  '212f9e71356f782095c252b6563b2e5b99e07618e0a1747b17cca9f739dc42a2' => '内置、文本、布尔(y/n)等',
+  '213a1a75ba5e3a39ff1fefd3ed9734d93f0d09b0bdc7737674fa5d1a19461fc8' => '逻辑( C)',
+  '213b45ff6cd48c14beaf2d59c2b2b2942a4fb223714961b67c4a3bdef9183955' => '连接此端位置表( 位置. name 将显示) 的ID 。 链接到 <code>locations.id</code>A位置通常为 <code>FROM</code> 地点。',
+  '213d59793c76e1d5e1965563b11b1f8dc21221f80a42f6952021e54182e7c7e2' => ',你吗? <i>必须</i> 正在使用您的 Open-AudIT 服务器上的 https 来使用 Auth 的 Entra 。 请配置要使用的 Apache <strong>网页</strong> 在为认证配置 Entra 之前。',
+  '217ada3b0fbcc43f7cbcf8911adaa6b226e65608642feec66523a69070de6782' => '文件大小( S)',
+  '217d3eafa4e7628001f0c3305929ef7609769454280978a695a1535ca7ec75c0' => '成本中心( C)',
+  '219c4a6c86a716e99d5dc9611b61e584deb11b57e972d87d4b773387ebc3cadd' => '结果',
+  '221d52af060763db50e8fec1618e18c306c2761a72b6bc093ad27b86e66eac61' => '外部字段名称',
+  '221e12c79983820d62cf6246354db7f52c83993068b7a21dfdac55d1d5c4317d' => '抗病毒药包',
+  '227d34f4936ff87a459d0e0b073eaf6a810b7fba286c9eb2a2b55400545a7c90' => '认证密码句',
+  '229efc8f526335f103d962810fe99f785811ad8ed36b9437a4a215a44c7152fe' => '权限',
+  '230b26a83df807946c8e1dbcc13410d50c5a015a2e91817d705f08f2e6e99ef4' => '所有收藏 URL 使用该格式',
+  '230d8358dc8e8890b4c58deeb62912ee2f20357ae92a5cc861b98e68fe31acb5' => '机构',
+  '231b04a8374d35289e1d5dc19905b1b7c51ff846120e05a63e4559f40966df10' => '攻击的复杂性(低或高).',
+  '234acd0dca99a4b470bda6590cbd5f82fa1eb871bb7f28e9dfc842cfde7d9565' => 'Rx 电源',
+  '236b7370cd953bbb2fe8ca1b7621d25cc2b5524076ea708ab0a2459bef33d5e4' => '并非所有计算机都能够成功完成基准. 我们看到,由于我们无法控制的原因,试验失败。 日志应帮助您为这些项目指明正确的方向。',
+  '236f070f11ac02afd3a48b188e79a572900def9fb2c1975616e5081caee87959' => '金额',
+  '238a676da45a2f9c02f338b42799e07d172632a17d8673f93dbfb7e2571a999b' => '纬度',
+  '241c13a561caf16706c34dd8f9b640213f606a324281ac32dbf4d88a8dc53c9d' => 'SNMP v3 安全级别.',
+  '242f67d66ad74e3c6fa429625fb352cc0e0284f0494f9dd858a2433996249c88' => '行图',
+  '244befdf614b6af17fa6d394663b535691bcac6ea612533a6f0640f8ff20eecb' => '版本( raw)',
+  '247a12898a1c067450240087eb763d715513a9b21deb944c2ebca736814e93b9' => 'Web 服务器',
+  '255c415ab5af11d7b62bcb6ecefc25f7b0025e0d6aaacf3c011adaa49808158c' => '发现数据保留',
+  '255e3f1119472f9f2d29e08001dc12657bf31160be54a9ab513972a2be8fc2e2' => '网络发现',
+  '256bc969b297b4213dc0e04e436fe5e55a197d6c75545d6db3cfd4ccb860ec3f' => 'Ssh 端口',
+  '263a4dbe41488fb87214b0032339dbb9f0c8da14c16dfcf13084bf3c2552eca5' => '设备',
+  '263e4619fb6610ff3a61caa2090a81bbce97973430ab8e51df9d1dbeee89ad58' => '新闻是我们不断向您通报最新修改、通知、查询更新、软件版本等情况的方式。<br/><br/>你不需要在维基上面保持 或检查新的发行, 我们可以发送这些给你!',
+  '266b5c4ca3fd0512252585da7c316195bed96e55397bc5219a5bd16095bb76b7' => '您的 Open- AudIT 服务器的 URL , 此收藏器将报告给( 没有跟踪斜线) 。',
+  '266c7268edf8e2ac21dee30ef44e931f8d6bfa621f31552614e3c0852dbd396d' => '此特定项目的存储值 。',
+  '267dfc644f95dbab61c503e18091374b63e92945f58a4f6f06c97385295bacc1' => '购买',
+  '273ca62ccda1ca8e7eed2b84cb54637cd70c7ce4fb9a4e4d4810d1331a931991' => '与您的 AWS EC2 API 密钥结合使用的密钥 。',
+  '275c625b9d7c14c02e6a0d33d54d5847c7ef1999e94acfbf7598244c9a66beb5' => '您将指定任何发现的设备到该 Org 或 位置 。',
+  '277cefa65b497f717a979125416e47b27cb6c8ddd8fcc195ea1aeba95d88bd57' => '由用户手动设定,默认为Production. 这个属性是使用属性来构成的. 设备.状态。 要添加另一个条目,请加入属性列表.',
+  '277fc3bfb1a2f9f614529ad97f8ad0a38e163174c45f20c938029ee2f2558bc3' => '是否使用系统或用户级代理提交审计结果 。',
+  '279b44d2ab4b40c0fc132f8f3051293544cca91de9c8aa14f2cd29adb132b0ee' => '探员',
+  '285e4748849e9873a38b9d80e731576f29d95d939434774a3d9a802a2e5bcf8a' => '该设备必须响应Nmap ping,然后才被视为在线.',
+  '286a1b62dea394e675de5d31de5ddeed1980261750cee4a4f27801dcf2192feb' => '是否启用此任务( y/ n) 。',
+  '286b31fd15da4dcb2a97bb8cac686b7457fe2a19ba522656b51a10e1334cc170' => 'nmis 客户',
+  '293aec5468f9517fd586017b17b802f86c9ad7d84a5ae49973e6d88a0a3b2560' => '访问管理费份额,RPC使用SMB2协议.',
+  '293d404a500f5f9a149916d810ff4f4231bd5d6ecd25eb0f55a867e2095eca48' => '目标',
+  '298e2f8368c24273f5aa3eedba688a33d6924a3947405af31663f97e446e9d78' => '如果 CVE 存在, 它将被检索并覆盖它 。',
+  '300b5b3954ee8181f3e0786f0b248246f20ffee7f351ea8081f8c6f43ecb7c10' => '更改日志',
+  '301e2e77fdf4bb73bdeaa31211f17ab78e2722cc748ec159da4c6a364d83e93f' => '用户在LDAP中,他们的证书是有效的,但不属于任何需要的Open-AudIT LDAP组.',
+  '305fd6adb2295a939e62e4fed83349c610aa4e1840280503e6b64c8042dccd16' => '最大长度',
+  '310bc325097977730002bcdfe4c09bb1e62d26f4b90eb63645e8dc6ccbde1370' => '汤加',
+  '310ca503ef36f177ddbc760463fcaec1edc6eca12bfd590ad7bb244b31e59543' => '月数',
+  '311a2cc6fde21af5a905ac8f4670bf34843c7d3ee24e9d9f9363484874537d62' => '感谢',
+  '314cddaa1e0a11b68f762f803289e4946e51b2a6939f1175cbda7b1061c04701' => '当我们将一个内部选定的设备转换成外部系统的对象时,外部数据应该是什么. EG:整数,字符串等.',
+  '316dd5789a618b7e220a66c720908c64a9c92cb2c8b746e0aa382fdbbe214689' => '添加例外',
+  '319b0a5068448c66fbde77a7fe9dd3ae121e95b00401b2ad46f14cc7e2082747' => '您可以点击蓝色视图图标查看 。 如果您有权限,也可以编辑或删除.',
+  '0320c961d303f01e5b8b316cf75cd74f8b38b45de34a5b6fdd1ee5e6e080fa06' => 'Cpu 数',
+  '327e49a8ab41a93f26802c2a3fe5b44af6a45c5e4fe89ff71bbb63f8dc5292f9' => 'Rx 级别',
+  '330c7d885caed1b66a90053fdcdd83e34f1aacb852b1d3cc26ca53549734560f' => 'dhcp 已启用',
+  '330ffe58fa0261c25d9caef986cf070f215a4cd8b1bfe4292c0c7e521bd5647f' => '由审计衍生.',
+  '332fea1678c4d34447897468c621e21634b0394dc5e6fb544da260defd250e80' => '此队列项的进程标识符 。',
+  '340d600392818df2413382dc7d8325c360d83ea49a262d31760348484bbc10b5' => '窗口',
+  '340e0cf3bfa8d23dad5fa37503e9491fd6e5e8c99cc801849be39cb10a44ad9f' => '磁盘',
+  '343d012d58b2e98fef52dd34e82a4672a044d852e5c5261e9e1c21608127644a' => '业务办',
+  '344b3bfe51db4672ebbfab5e65e33262d35999fb77337e93f78b293ed4d011d0' => '返回 {收集} 的列表 。',
+  '344dc3b5357f1d268f8c660dbb16bf1e5513ab537169f756b88d62fa0d8aa070' => '资产标记',
+  '0346f1494bbfe05519de576afa75febd02d3264ec0783d16d87e63ddc535255f' => '种子( P)',
+  '348a629f5ceed032c3e8706ec47d9bfafb00fb4250b018dd965435ca50cb836e' => 'mac 数据',
+  '349fd8671ce6a9ef3d4e8309c042d88b85abc19e44f0ef3c02bbfc147226a2a0' => '如果我没有证书,我能期望什么?',
+  '350be3643ce78043f7c268bdcee1df0bd01bc04f4eb83a62beb66e76c6e776a7' => '日历',
+  '355f79f29d7d3c2df917ad07f7441e3ce4b0ac48892b778076dbdca401851712' => '评论',
+  '364e3ceff4c399a775a9ee1601121e36f52a8593808beb36b7a1564275d2e447' => '<p>我们最初设置了带有默认选项的默认脚本列表. 这些默认脚本无法删除 。 您可以根据需要创建额外的脚本供您使用. 您的脚本将基于一个已有脚本, 并应用自定义选项 。 脚本可以在菜单中从列表页面下载 - > 发现 - > 审计脚本 - > 列表审计脚本<br/> <br/></p>',
+  '364e5f6525c75b813171e128c9475e7dd4679989e4e865e0a14db87a9771da2c' => '塞内加尔',
+  '371a4f1e9e2fd1fa38227dc190761a9013da1c9a423b6d9da1ad507d3d38ae80' => '默认项目',
+  '371a87b534c8672dd644d4c53e139cc3751b261a4a46cf21ee375b390c14dcd8' => '序列( S)',
+  '372d1320b0efc17fd87e3ccdc7cc751465e959282e3a390ed3db664d80f59444' => '关联组中的设备数量 。',
+  '375c6fd21e5c81c2c7830330fd436241eccf2abcf002708adfaeddaca8b3237c' => '执行',
+  '376fac12c824a0a46cf386477dc800f506817cfdee3e87af1aae02e583304592' => '编辑者',
+  '384f57a29e3ae69e82caebbddd82e10eac1f5868c7c5c8dc0ff99f4638b32455' => 'SNMPv3 上下文引擎 ID (可选).',
+  '386e82fdc7d59a045960bf4fe7d926d081e78d0ab278aec55f04f095c7f19085' => '交互式盘片',
+  '387dd22f9006ad93c3e2461cef1727d7e4fc887ed17dedd66e0ffd0f071178dd' => '返回特定组件项目。',
+  '391dac3d15b16fd48b5e10d46b485dc3a7950dc707dbf38a4c8a0004afb1d182' => 'vm 组',
+  '392e10f41ac9a086a6aae111c9a680a9737ce4e8581384fb83de3b7629f4a2a8' => '超导',
+  '396caef4273f5f6a907df2b795a3278492f0e5251d0f31333187d70a1b036fd2' => '扭曲',
+  '400a6cc0337f47d7b1aaaf16f18710dce7c7e22ad234672bfa7fd4acdb3a4083' => '收到日期',
+  '402acbdc6f87f106845e4afc90487666327665883ffafbd598380474062fae60' => '这是我们存储设备附件的目录 。',
+  '410a35c6c828bf311cfc5e0dbc4afdf103c6251ae16e2cdd83102dd017da34a7' => 'Linux 软件包',
+  '412c6ef900dce8f4897e39ef9155a4fb1d8e334aabc8a326585e2dcd4fdd5526' => '。要启用此功能,请编辑配置项目 ',
+  '0415f8ace523d7ae2d4f57e64469cf3d332c4442dc2a393c69da634195edbbb6' => '包含指定给此用户的 Orgs 的 JSON 文件 。 身份证从 <code>orgs.id</code>。如果用户可以访问Org,他们可以访问Orgs后裔。',
+  '420eb070648226b6ed163fc5da3f29b49a3b7793ee629729ef14027c41f4231c' => '位置( R)',
+  '425c89ed5bb78a7623fae60fd8a6f648488168740fe82cf6ad34caa4d07aa972' => '舱位',
+  '425f233626b3cd02e48954803f450ad165ac9d36d44181cd6ec2f3166573f606' => '实例',
+  '427dd2969bd140bec3c1bcc7983da982f4815938cd4510ad0b2bad48ac5b55f9' => '关键',
+  '428dc197a1779776a10c1a6205e08b9686c80f9f0b5f0bec3e89ea388b88dc84' => '无效的   to raw',
+  '430b3e6da2bc0490fa91df08c506b24ab735c66a2aa9f51421115f0b7e0b0adb' => '投资',
+  '431d891a131b8f2915d6c469e5e61f933b16658d236a9417245d65be23a866a5' => '奥斯比特',
+  '434d224d019107a70c630ec7692c386128143f5af7e9ffa4dacd9e1a6d65b041' => '远程地址',
+  '436fe71bb9561f0596161c4d50c7b23327b4189acaf63dc89f4f9205b67a7528' => '已经通过',
+  '437e086ba91775408359d1c0b1f8d86b352bf12d47ed030435c224b93bc5db4e' => 'Open-AudIT中使用的 SQL 查询需要使用 backtick - \' 字符和字段的标准单引号。 在大多数美国Windows键盘上,反键与tilde ~一起位于键盘左上方. 在美国的Mac键盘上,反键位于SHIFT键旁边. 标准单引号仍用于附加数值,如下示例所示.',
+  '439d70b4838cd8c480e911f1d4c1eab4748e0035cf5003c7c4815c2acb94f0ac' => '选择外部计数',
+  '440c92e36321cb206b6e8b378cac2834fe21b56a118fefba0b6b2ae48f7c7e35' => '开放-AudIT如何和为什么更加安全',
+  '442aded87a55aa8c8f7d5ff0c30228150d4b1cb8756e4be138d615ca4708fc26' => '业绩',
+  '442b7bd40f7fec79582ba347b1db480023dcd5147c5a3429275dbd4976d912f4' => '单击“删除”按钮从 Open-AudIT 中删除示例设备。<br/>这将从数据库中删除以下设备 。 ',
+  '450e0b4c4397e1fe98fa65aa10711734b4e966a657ada1808d166a652fb354d8' => '排除   tcp 端口',
+  '450f17d1ba65477d5b8185d6624f6b10505cc83c36099472822306e2ba7be7a5' => '要创建新条目,请单击右上角的“创建”按钮。',
+  '455ab57f64f73edd2b2fa769aabb72c98186e9e2a8396a63d7f340341c451fc9' => '文件导入',
+  '464c4ffd019e1e9691dcf0537c797353ef2b1c1d4833d3d463e5b74ae4547344' => '编辑',
+  '470f335e24102878f3922ef9a6de56ecc6d7b496444d54152ebcb900cd528879' => 'LDAP 被搜索到此用户,其账户未找到 。 检查 LDAP 服务器日志 。 用户证书已经奏效,但是没有找到用户。 同时检查您在 Open-AudIT 创建 LDAP 服务器时指定了正确的 Base DN 属性 。',
+  '471f6f47bbd70ad73ac4e84c33768801c5335889810bbc570b13387de626806b' => '主题密钥标识符',
+  '478b13e323f01283ec30ab8196a03da408ad75be80d6b1c9ee3f9151f30bfa22' => '子网发现',
+  '489eb737ed24529f35d104e46e491685f5da859566d33d0641fa0511a3d87d41' => 'os license 类型',
+  '491b795f44e2a7eaca1a772d619c487929fed43468f2dc3789955326be1cca09' => '<p><strong>基线</strong> - 包含基线定义和个别政策测试的总体文件。<br/> <br/> <strong>政策</strong> - 基线范围内的个别试验。 每个测试都是针对特定项目. 一个例子是测试SSH 1.2.3版本。<br/> <br/> <strong>细节</strong> - 基线可以比较净统计端口、用户和软件。<br/> <br/> <strong>软件</strong> - 为了比较软件,我们检查名称和版本。 因为版本编号并非全部在格式上标准化,当我们收到审计结果时,我们创建了一个新的属性,称为软件 添加,我们把这个属性连同每个软件包的其他软件细节一起储存在数据库中. 由于这个原因,使用软件政策的基线在运行于一个未经1.10(至少)审计的设备时不会起作用. 软件政策可以针对版本的"对等","大于"或"等于或大于"进行测试.<br/> <br/> <strong>网点端口</strong> - Netstat Ports使用端口编号、协议和程序的组合。 如果所有人都在场,则政策通过。<br/> <br/> <strong>用户</strong> -用户的工作类似于Netstat Ports. 如果用户有匹配的名称,状态和密码细节(可更改,到期,需要),则政策通过.<br/> <br/> </p>',
+  '491dc54ecc8d31d616f6b885c73c648d78e220d64add25246c6f28d4b4d984ad' => '匹配字符串',
+  '501fb0997aa6c7546f10968b26ec727e3acf478ca3a25d57a37ea25b4ab0640b' => '说明本站所需服务水平.',
+  '504be3084f44d3e7eea35c83d4c8338e1fa19b777badc317f69326a4083d804e' => '匈牙利',
+  '504ccadf40955764deafdc6eb2ce796a2ae83f0c2514188511ce48f23b9eff73' => 'Open-AudIT 设备选择',
+  '517ee2c89a19e52fe25e4280e7e2e6959e6c2a82d237f0c031203d45360ba7ba' => '可执行文件',
+  '518e0ffb1cde0eee824dbab56d1ed180502355d00d259b4ceee6d649135ecb8b' => '加密状态',
+  '519e82fec0a0be06595ce41304adc4a850ca3ff420b9e4f9b9daa6b806708318' => '先见',
+  '526e0087cc3f254d9f86f6c7d8e23d954c4dfda2b312efc29194ae8a860106ba' => '说明',
+  '527c519d76a1e2e2e17167d59dc897b24fb2ea765f1a3d44cf12a3d017a897a8' => '网络地址',
+  '535c6f8eb511f5d966a1b0725df92ebf27514faba945cbbd698e23ac72c41757' => '发行者',
+  '537bb8effba6f1409333352330bfbf3cabc6781e30f79a106f5d93dc689d8c0f' => '如果一个Open-AudIT设备不在外部系统中,我们是否应该创建它.',
+  '539e9aacae0a19f0eabd1f4ab9e625e8667eb672bd551392dc7b13ec146b2a69' => 'Nmap Udp 端口',
+  '542dbadf48223bb1a1845a5595d019624a9f8b2bd4e880eb1a7e79ec86ca6e96' => '获取新闻',
+  '543f8b6837a2dd7ee0fa60ccc86b9607f9897f30f167c41a4f586e16282c1e70' => '种子 限制  到  子网',
+  '556f85efa2beec5213eaaaa22951c73e4c0b499c9e9af875bd5c88a2f0d84583' => '外观比',
+  '557c1599d9a04895d3817d293e0806a4419a14de31958386182798d0d2ed3a56' => '埃及',
+  '565c1c33ba7710b7405b34e824add4fadb02b46290a424a9f318388cccf85e07' => '在使用 Open-AudIT 专业或企业时, 部件是可用的, 可以自定义显示在 Dashboards 上 。',
+  '566aa4beb252d5050fd0ea27975695ff7fa80df36cf9668981f219f789d624bb' => '打印机( C)',
+  '566bf5c5417a55bb4027e80c8b2d6c184de5e898ec39c25f6fcb9cd5576932c5' => '鸟类',
+  '567cf013bf70f18fc5d459686e47f2d3e17711c3bc68bcc7de3a6d0489e25b91' => '缩放',
+  '0568bd03b8eb6cca2799770a3cb2b2d342e9ae7a8032e8aac7b948341807d7c4' => '或者说',
+  '568fdabc940d43b88bf79b4a97c9898732f02f5fd28bb9b8c659c51afd65ba3d' => '此处的位置',
+  '569ca49f4aaf7846e952c1d4aeca72febd0b79fa1c4f9db08fd3127551218572' => '安装',
+  '576a25239310687942fc044de29c8a4f2e542587cb985ce27d1b0580eab36e87' => '联系人( N)',
+  '578fff7d80d3372a606bc9c3efdc072dac2c6d4598818d57adfefb9535f50e55' => '发现单个设备时内部使用. 链接到 <code>devices.id</code>。 。 。 。',
+  '579b8fae3006c5ea11d5aefe1e2f7b4cc77927175e8e78162c39b002fa0be345' => '要填充主号的查询的ID 。 如果提供 SQL,则会忽略此选项. 数行还原. 被状态部件使用 。',
+  '580eedc669f3b989d0a0be1988b583af29a45a9edf5ca8375c36818d2c44ee4a' => '乌克兰',
+  '587ddc8e2a2856740869e1932e81b25565db915b0899d651e4e148a5ee9de84c' => '访问点',
+  '587faf031638c5a5aa0acee839292d2bc9b9941d6120634a97d90f1fd57e5668' => '小写主机名',
+  '588befd248d3d44848a5f898c187f7a30158f70d235e9cc78d39c8ee591cb7d4' => '要执行审计脚本, 打开终端并使用以下命令',
+  '589a55fb4bac915ddf658a83bc0d580b2a0df60595f5425a2e3dc4b2c915327a' => '此示例创建了NMAP扫描所发现的设备和开放端口,协议以及程序列表.',
+  '590c8ac81df992807919e558c9d528fb1036ceb4e4b019803610345648f1dfe7' => '这是在排除Open-AudIT问题时作为第一个调用点. 您可以点击右上方的导出按钮以获取此文件为JSON文件( 将添加到支持票/ 电子邮件中 ) 。',
+  '591f3fc14d94b5984d9ece349ff144f0aaa0a30b2bad684320c86e5ad385ebd8' => '现在约会',
+  '0592ce7b455821d3718bf5368a04cd7afaaddbaf1db3789c0ebf81d3c2072284' => '此基准适用于哪一个 OS 。',
+  '592e01eda5bc726c850091d417c927112683be12052a41dbf55b68e10cf310d9' => '选择 <i>通讯安全</i> 选项卡<br/><br/>点击访问权限编辑默认',
+  '0593aa0c8ed587bb36f2f3f859d575fa49cdb0a178670a03d3eb3ccf5bbfb429' => '格林纳达',
+  '595a296b57304f60ce0f3c4c1ee73300ac64cb591a154c4a1a4f6a0f0e854667' => '有效值',
+  '595d6d914950b8a20f65bebf7a6278b0bde5973de85c4be47950b14a3e8f74be' => '冰岛',
+  '597aa442f1bc4a7aa420147ee4dc69c89bc0387bc88cc1b07d32f87ba00f0b0f' => '地点在郊区。',
+  '0597f441dcca7c9bb0a79da4d94d03c523c031a3384009afff47ac1fd1a72b95' => '礛',
+  '599bad39ec4504607a4aa484964cf5440b70619278541da586dfa0018aea4525' => '购买日期( D)',
+  '599e116b3bcfbba6433fbef346b6f7dbdfd51a50d990e20a3492c69f9d3c76b0' => '支付日期',
+  '602a5e69c3021bdbd3d25156a02d2cbb467605b8203248eea6af3fb42168d663' => '附 录',
+  '610b7468ce69872ffa3636f975a3d340022b33c89c6eea659dc8bd2b0466a5dd' => '默认',
+  '616f48c1db195b6f23031e5064d19920ab9f1c394100bbad51800d1020f7702d' => '字段',
+  '617e7f9a318fa3a5225acac4635fedf7c374d516454d28ef3b395875f1b28dcc' => 'LDAP 服务器类型无效 。 应该不是 <i>活动目录</i> 或 <i>打开</i>。 。 。 。',
+  '625caf5ed1304efbf486b3f7c28895572dc050b4759dc04510b132e0df522b83' => '组 ID',
+  '630ba09448af522154f38ef7685ef1f44b0f3e9430f80829a03ce24f400f3754' => '供应商',
+  '630bd02d905700a47871445ade127e2d18e70819cf75607ef6047c091bbae0b6' => '企业私营网络',
+  '631aada47deaf488bb72eee0873a20472c8f43ff960f2188f66cc41eb3f35428' => '全权证书',
+  '633cafd713dc1c980477561349ab499fc595cc77de64b873879e325b7af5c208' => '版本字符串( S)',
+  '634de114775082f002bb5cfdba0a28e768be807c798159c549e7bc930525b476' => '附录',
+  '636cc9315b9134909adab923bf2f47779a609ad7102f9c8bc9eedaf39bd5747c' => 'snmp 企业 id',
+  '637ac5f137389ff3600346b61fa0fbb7dbc4d763c76c421b6388860e7793b6a6' => '在从外部系统整合设备时,如果该设备在外部系统中已经更新,我们是否应该在Open-AudIT中更新?',
+  '637dd9ea9ac9c01894271f1acb261d575e42bfd4de7d6474bd4f9f06c40b40f3' => '用于整合和第一Wave监测应用程序。 如果通过发现检测到工作 SNMP , 请设定为 Y 。',
+  '638e249f4a15ebb84957da130701d138a6e06d88dceeaa2e6dcd91db70cc1381' => '过滤器',
+  '639a40e82b9a96f0cbeed5f006cf5634c8d1b990b3c83753c00a910fc268d2a6' => '连接',
+  '639da3f57f94e185bc1c4ed0ac12978a2adc98d492d44e34f3c2289596642a15' => '设备未见30天',
+  '642c6cf8b6eb312c988adb940943e40d2937279ab7f886ee865def314bb42fe4' => '脚本超时( T)',
+  '647cc4253428b25fe686fa8d5d5da5841fed53ad85395cdd43920d0226900c1d' => '默认值',
+  '648ded583958549525b9dec9555421a450ef5e672e1e1c71493893c8dbf097c4' => '附着于',
+  '649c6fda0201263d031bee14633348b979442669c42f3e189aac93a1cc2eb3f6' => '审计脚本应当向URL提交结果.',
+  '651c5590474a2e7a86ed79a0fcf148819847618a3c02a53be7fa77c6ff22e7d5' => '从内部更新外部',
+  '0651ff3d62c1d5a91b240f3e4438338a406d558fd504746bd53006a33203265a' => '状态主颜色',
+  '660a8729d24a6537fb2f86d976da85e8ad500713c2ffa16b7a7c275394d2b3c1' => '在设备细节屏幕上您想要看到此字段的出现 。',
+  '663d1828270806b29f4eb0b380c2a0fedfee4b68feec66e48a3047261d1f24e2' => 'JSON 导入',
+  '663ea1bfffe5038f3f0cf667f14c4257eff52d77ce7f2a218f72e9286616ea39' => '改为',
+  '664abcd005f611e0a1360938f8293d825573a9e9e163cbfff7a73cae4ee1c85a' => '需要的 AWS 用户权限',
+  '672a43c3ff011023691afe50b1cb08733b0fdab9a03d4c7fbc5978d9dc285d71' => 'Vm 服务器名称',
+  '674b0ed54bf7667356c19baaf2ec56d4432d485bf0ebc6d687ad6e50e9611880' => '限制',
+  '674ff5729d0fb3435a94a2206384d8cc59f1770e34c5f8df59455114721547e4' => '远程端口',
+  '676c471bc8dc3d1324133cf087c20aa0137fc02348811e4162c79e560298fb11' => '银行',
+  '679a1ab4d6b927a58fb71de8319aaceb15c9ae5c4b46778211186a3a563a0537' => '测试的属性( 必须匹配下面的外部字段名称) 。',
+  '698d2e5bf27df52d5b4c57f7d82d5bde611c7c832b9e34e5b12fb7b78f25a21f' => '内部接口的IP.',
+  '698d999022dba4a3624d7c2b24d5adffa969138ebde9f703e65dfec8dbfa9a5f' => '示例设备',
+  '700a8b4c9a310b81ebdc6cfc193f50115c46ca009ca8f7b3e0d2aabc1d8feb4f' => '所有排队项目',
+  '701d021d08c54579f23343581e45b65ffb1150b2c99f94352fdac4b7036dbbd5' => '国家',
+  '709bd5591ce44d849a7753d0d12528e0ee75e21071d8c714560bdccef4dbb157' => 'ISO 27001标准报告',
+  '713bc65123771335a144dd2abae8466a61ea7d7968700a13f48262c6e69b1722' => '可能会 <code>active</code>, (中文). <code>passive</code> 或空白。',
+  '715d436c78e363eea9a2b68e69e276d15f099e3304a04e0d6d62007302489988' => '发现队列计数',
+  '716c0494c0afca63ad24b5b81dc1d14754edd6d784edf8b95d4e6584c17da422' => '更改类型',
+  '717b3cd9cda6423ad80eb1d4af77fae56ebd9bfb4ad286e76585dd166da3fb06' => '此用户的实际全名 。',
+  '720b6017f2e9067c4a77d277075a684a7d0e8e4c2445a772b2d1f3ce28d30e6b' => '供应商',
+  '725c7e6a28ed768f29f9bcd880a7d0391299a77dbdc1f2603d1da27f8debc369' => '您集群的配置可以是: <code>active/active</code>, (中文). <code>active/passive</code>, (中文). <code>N+1</code>, (中文). <code>N+M</code>, (中文). <code>N-to-1</code>, (中文). <code>N-to-N</code>, (中文). <code>other</code> 或空白。',
+  '725c206e6429379ea862c3db962a1be4a351b507d33788146a5fb15c2712171d' => 'rx 配置图',
+  '726f23c968165a4feb6d398eaaa31feb69bb1472ecc2ea6cea438f4db63f35da' => '用于整合和第一Wave监测应用程序。',
+  '727d881f45a0a37773fce0c3864d0cdbaa491ebe6f8e195b4ce7d13d685d9e33' => '图标和文本',
+  '731e86225365d57097601400331835fd1fde3ff890e5f0fe4417de2193756769' => 'CVE出版日期.',
+  '731ec8d632dc5fc4df23c5c64a06f5d2a9fad04bd96b15b8fa17647dee4a97c5' => '奥斯拱门',
+  '733e80eda14cb1afa97d629d0ebf3ac042feb2c234861e228cb618d690d05f10' => '如果我们不审核本地主机,就试图监听设备.',
+  '735b565556e7611c2814b9d74ab508874bf5b221a91b1a22d6734e228252a94a' => '上次更改的元',
+  '735c511c90e706eb86913fada2ed43e75bebc279521b5756c716d54470edc98c' => '位置上的部件 ',
+  '0735d8eeb070849967d5e43ddccb6486f404a63fab525c5d76a8622a47a614f5' => '动作审计( O)',
+  '735f1cb472a1dc7dffe153083e00a1190c987489898d336ddb9f6a8fb166bc4b' => '替换为( B)',
+  '736a1e7107ad01067d8defccc24e9868e8aa16de730e39703bc3fa0650d06b57' => '你有这个配置的完美例子吗? 也许一个位于实验室环境中的装置 或者一个工作站 你用来克隆工作站 VMs 从。',
+  '736c7d2e909108264ee8ed2a29509e76e7e3b8ae0ede232a158626b401fca7ec' => '地点',
+  '739af78d977c49826b6b6353c7d990f4275e8ecf0957e11712e1f7db227ef68a' => '状态查询ID',
+  '740cb0bf81d08071f3fff67febcba356e03e00faa9bcbd7bb7bd8f0f573a97b9' => '内部 JSON 阵列为该用户有效的访问符 。',
+  '742b3ceaf564b0572ed45acaa1531f8e0fccc2966a5bda8d44782de0a924e5cf' => '下一个跳',
+  '743ebd098c77bacb94b34fb041667097acb9b1a7410777a8442484b188e9acbc' => 'nmis poller uuid (英语).',
+  '0748c10c08a446cb9cdd1531f2daed4b51504fa855ea6dbbd84ac7d2ffc71a00' => '最后几行很可能是最有意义的。 这些行应该给出登录失败的确切点 。',
+  '752b178777660bd5a0e773bf3c404a2322081de6863d5336c543eff6aefe615f' => '设备更新于 ',
+  '752e58491ea7caefbcf46fccc8b304f5e9f0112adc7e0fc39bb4adc7949c5079' => '因此,一个脚本没有在顽抗设备上工作. 额尔. Windows,Linux,和MacOS的脚本都接受调试参数. 这可以设置在脚本本身,也可以在命令行上提供. 使用设置为 5 的选项运行脚本, 您应该看到脚本的哪一节出现失败 。 比如说',
+  '758d61f26a44448384e5c4468a0dcb7a2abe456067b0f7b505bc28b9411fe931' => 'ing',
+  '758d3200300993f983a47778caba5433cbd0b2ad8498731bd6228bdb8ecc2f97' => '选择管理员 - > 任务 - > 从菜单创建任务 。',
+  '759c677f8e334e04c7a1554fad71c880eb1fd7bf52c279c274e7fc95d64247e8' => '停止状态下的设备',
+  '760b70ec20e3f33857d48a23fee1618c7ab530f11ca023133fc7455161bf4809' => '此日志创建时 。',
+  '762a2370dd1a0b4be775119ce52110051a4b2c63353d2b531d0ecd2dfcb75b56' => '微软 Azure 字段',
+  '764a8c04ad4520a7e1319b4e4e483017b4baf95f7e90e3ee11611f10bc15b6fd' => '泽西岛',
+  '765e80898665caf96e6ee8119e5355fb2c1b5d307bb6954afd8ca34febb983ef' => '发现支持',
+  '768cf298d62e5a621d975c5249fa1f91e031f953eb156b5d0f6ce75287a21ab4' => '申请许可证',
+  '769b05a655d994753d5c5fcd1dd15df040880e86c8d66da8c2d48e6a418936b2' => '要执行的任务类型 。 其中:基线,基准,云发现,发现,整合,报告,查询.',
+  '771c874229e91b44b1a75af50e0332c8082fa42e2dbc63d895412b7e90d83c46' => '创建  从  外部',
+  '773ca4d618097a21abd42f446485349d7547bd70dfffb496c29565ba2d4f61ff' => '法罗群岛',
+  '773f400f2418e51f93d96170a0c2065db5b947cdb899bc5b659d88b13bc6e2cc' => '每次发现都用Nmap扫描过的IP执行更新.',
+  '774b3dff4a0e941fad0742c915bd93885c9cb15f769f2c92c2ea384b69780f51' => '超过',
+  '780c13a1ab35714c0f285dc6611b8ba9fe0be7c05f96625ec738204c1a57e499' => '匹配顺序',
+  '783f11205556166b0f3d5873ee90df4dab6e644f1b0ad98c42bbd2d780dbfc13' => '减速  a',
+  '789a276d84c7ebdcce0f9647f2a3590fd652da58d0f9a64e51b1ae8a839a7110' => '此设备',
+  '797c0d1f1df7a7e759435ccc538e38e8447514a0d32c9beb8ea5783261003809' => '软件的版本.',
+  '804a9aea59e94cf98d73087531e63e4b0d28b8b9449998958e22aeb201252122' => '种子 限制  到  私人',
+  '00806af7575cfd81acd74e3d602bb671403cbddfdf02754be73db121177d235f' => '列表表格',
+  '811a46ee06da32696ecd0a93dc57af43d7d90da6316a4d9f57f13a26855a6c75' => '斯凯港',
+  '816c4eb1ff861b438b0b2386c7187e1221d91ac042f46ecb4e1ba17e8c490e71' => '风向( F)',
+  '817a8ecfd73cc522ea664deccbf8b82ee3385d0e47a59ed26881bf4d3b4e81ce' => '物理计数',
+  '823a6b3721f72ac1a76f194cc5284c9128c92e7e4c4832ce448430cfc099d4e0' => '插入一个新的 {收集} 条目 。',
+  '832c8827669759a43e6b5b257ba4938bd29a2f21fe0b04605874f63ab1e5b862' => '对于企业用户来说,匹配规则可以被设定为每个单个发现. 如果发现的值为: <strong>区域</strong> 或 <strong>无</strong> 对于匹配规则,将使用。 如果没有值存在,发现将使用全局配置中设定的值.',
+  '833bb0edad0c2ce5b22137f52868607da4caed01d2deceadf36141325bdf05c1' => '一张自定义TCP端口扫描列表(22个是SSH,135个是WMI,62078个是iPhone同步).',
+  '834e9a97efdecf2b5d6c5e7c5df603efba36b8968a4fc66e69c5ccd261a4470b' => '存储数',
+  '835b52b94c3384c574fac3aa0524b9531c430621834100ef0ce322753f197fbe' => '影响  机密性',
+  '836ff184e7b41b1e13cb5fd89fa1de98dbbab99e9d2918913ff43b86a5c7c213' => '日志',
+  '838f74e6c714ca63222be5d830a46c1fa5909e91e59017f0fa4923b63a2cfed3' => '被指派',
+  '839e0e5534ccbbfaebec118491e67250b67a52cc0981853154ab0a9c566f97fd' => '地点 Rack',
+  '839eb992a4ec68a29282d226876cb0a8e952517503a20c2d32a9438c2fd2847f' => '活动目录服务器',
+  '840a8dcfeae95966a870b0b5257997ce94cbc19dd979409d1671d2e93a9e0de6' => '单位',
+  '842c7b394bd0b56bba2f200dcebd24feb5f17e39cbc761b1172e4d3307217d5a' => '初始大小',
+  '843f0ba1659c5f0225e7b670c2b52dfc74d887c3034a58bbf156d3f0c41f485a' => 'fqdn 时间',
+  '0844df8fee9eeadaa344bc7e1a7ae769602eba35e773c2093c8fb9c3e5ead14e' => '重量',
+  '847dafb84ea5a1bbb7cf0ca704fcaa5443ddb9659581823ccea3af920357c71e' => '地点地址',
+  '853d9e965d492ac8874e3053b7ee27fcf463df80be3367572fa6c12c0e544624' => '关联',
+  '854b11dac60693a9d198c0d8cc4360f98f9055a8705fb51f1f9b07d44e9fa007' => '行动日期',
+  '0859aac6b889170b5cf72988fe2a8473ac97d970f44c1eeb8cd6514d47e6d891' => '专权. 如果你想修改高图,可能需要',
+  '866d7c3e44b9c2f10f901a7a49f842d95a138e4b6078992ad1618bd3b68d075c' => '获取像 Windows 2008 这样的 OS 名称的设备列表',
+  '873fef760e5d001ba0a843bf1846713fd92538699f323ef00d51f97a2ad2756c' => '礼拜',
+  '0880af3407ada672c9911efdb80e7e4a2298c98925099ce28bf1c71ee78804f3' => '这应该是数据库中完全合格的字段名称。 目前该系统的栏、字段和证书表都得到支持。 EG:系统.nmis role.',
+  '881d5fb60090f59aabba4f287d7596317ca7091d00c2180b6cbc8ab018b9febd' => '栏',
+  '883a009592aeca6692762b71804ac275047f9ed4c5edc4b3307d05d1946fc5a6' => '如果您通常设置设备  assigned to org,且配置项目被启用,则会使用OrgID来进一步完善匹配.',
+  '890d06845b3b0f784fd3afb2c99e0f44a996369e5c371cc2db0c5873440e8f26' => '端口( I)',
+  '891f0222e25e817365d0f47c69a6dfe6f9aed234d69b5273fcff9d13c2450980' => '受影响的设备',
+  '893d538563bcd9aca0cf6f926bd7902a7dc17471ba50c10a54210fe4d277bf14' => '乌干达',
+  '893e1c5a619448c2bd4a5496c12b2e56e79f288119b7650001e36040dc6e7fd3' => '商业支助',
+  '898d60351b89360a846ad391d846f7186315f45a9554d8103a7315892c2aeac4' => '生产结束',
+  '901bf9bb9f8376e9e3bfa492e46bc069361abbaaef7f8893001906ddf26308d0' => 'JSON在所有装置上都对单项试验及其结果作了说明。',
+  '902e915237b05963414863389a02996563026a23564973ac7f07bc3f3bd78047' => 'Linux 的样本 cron 文件如下 。 这应该放在',
+  '907c5246c4f90542dfae87b7445721f89956f285fc86510e0ecd5a2daf772083' => 'DNS 主机名',
+  '911a577d01879a7e7433300626537fffe3cbd4d312ed63b2faebeea620fe0d1c' => '社区/ 专业设备匹配',
+  '911ea89c43d9dbb85f5f25fdebc52e6f20816903b5946e36a1163d94d74c2040' => '会议室',
+  '913c3c93497fc8848657a4eebf13e362df311d160f8613cc3711e4a935ca9241' => '复制设备/ 丢失设备',
+  '915f3c63cff28565fa9550ae5b5db3b998e0dc72bc4878bc560255fd9c02474a' => '自定义 TCP 港口',
+  '916a1b531d4edbd6731e3ef53690fa85247cf9b41af8fb1bc0f6f6def24c9760' => '无图  udp  ports',
+  '920e413c7d411b61ef3e8c63b1cb6ad058d5f95f8b481dbafe60248387d8c355' => '状态',
+  '921a3b33993a37615b24e2f57dbb13df40a92aeeb1bf8529c9ea1be3b5aba3cf' => '如果我们在网络界面的《报告》菜单下的报告列表中披露这一查询。',
+  '922c6d60d53bfcd6700614129152754f1f81f4b731ee2b47a37263f47aea4f13' => '这个收藏家具有普遍独特的识别特征.',
+  '925f17281f4c0e8b81d269dd290cb85eef3266cb7774f62d2b996fe685c86a18' => 'rx 权力',
+  '925fff52021548be1c015646261680934fea8660a192ffc28c46203d5704d558' => '将设备指定为 Org',
+  '927ff66f67efae6f0f97ce5087f1651f5158978c717e76e62bc0c605fc165ac5' => '用户 DN',
+  '929e34f018cefec98fec782004a19da64b60746f5dd750c57e2568e4db418586' => '设置列表屏幕上表格的大小(正常或紧凑)。',
+  '0936f91369c250c1e5e03ca0af27d3338e0922929f7bb50af6954d3a4299278b' => '更详尽的SQL可以用于在一个范围内分组属性. 以下显示在馅饼图中未见设备的 SQL 。',
+  '937be389c675e1bb23cddd2e0cd273e2abaee2d16900af0639402fdf1cf3fdb4' => 'Open-AudIT是一个程序,旨在跟踪和报告您的IT和相关资产细节和配置. Open-AudIT 能分辨出来 <i>你的网络是什么?</i>,它是如何配置的,如果有变化。 Open-AudIT为设备的发现,IT审计和库存管理自动化直接提供精密,灵活和易用的平台.',
+  '939ea5706bed0491fc44c7063a65461f90bdb3c6c188ef75ba4fa6f9db75fdb4' => '地点A',
+  '945b79ea86a4674d8a64cd0f8320a3dc4a619a1d1080368503664690d53419fa' => '注册用户',
+  '946e98b2f2d96dd2d896a89bd7ff74bdf858ffcd2e998a637f203d0ae29d4020' => '测试的属性(从 <code>devices</code> 页:1',
+  '948a40a291af2393fd83d8a3ff3301ecca2b4df3bde26ba2592c6532a1c009ce' => 'Nmis 集团',
+  '955ed10b73d6265b1adcf768b94f8dd5d91f33309db94b6b3af4efa822f1d9af' => '供应商',
+  '956bf8cbae2e80785212b6ad6a84305d0e9459a33890f2eb0b0a21b1443f6ae6' => '工具栏( S)',
+  '957c8ad50dd7f1589305152d7c3f2eaaebdf60e962fa603c5802d5857355a07b' => '一个应用程序正在积极接受TCP连接,UDP数据图或这个端口的SCTP协会. 找到这些往往是港口扫描的主要目标。 有安全感的人知道,每个开放的港口都是攻击的渠道。 攻击者和笔试者想要利用开放的端口,而管理员则试图用防火墙关闭或保护这些端口而不阻碍合法的用户. 开放端口对于非安全扫描也很有趣,因为它们显示在网络上可用的服务.',
+  '961aa68ed68a10c0969d336e8fb1feb0a95969fa1266283205fa5bf1473e482e' => '制造商 代码',
+  '963ef2c246d4f6033d1896a75e38e65404fbd065ccbc786dcea35095823f6f30' => '重复一遍,直到你有一个完全发现和审计过的Windows PC.',
+  '969ccbd3cf6300ecd5c880459d81ae9027df7517563184a1b8b15282db230621' => '电子邮件',
+  '971b974235a86ca628dcc713d6e2e8d975206cc84c858720ce046c2dab72855a' => '文件名',
+  '978c2f8941354cf552831bb8b5b648bb3748e83f5d0a69e3301569af01e1de93' => '标记',
+  '983d04336772fd06f2882443f1ae8dec973d8a0d227752b3388d08b0b9ff11cb' => '信息检索顺序为snmp,ssh,wmi.',
+  '983f311018642b0ae60c71253b5735579906d43d260ea926ebe5e815b1c97abb' => '开始',
+  '988bf640110b7b39cdf9955c92b7c850f0f27b1305eeddd253cd1fe15220ea02' => '<p>您可以在匹配  字符串中将% 的标志作为通配符 。<br/> <br/></p>',
+  '988c8160b754c01d1a62b7def28a8b1bcafc842ce2e48f27f9447095d72967e6' => '拉脱维亚',
+  '992ae9fd119bf4e0987cda69565ff63318e08f7c42cafe4eb8b8ba260aa3c1a2' => '用户组( G)',
+  '993b8268c449e7a9016bcf84719600eab07321e6cd1847e77c23bc0dc6a14bc0' => '包含决定我们是否应该使用 ssh, snmp 和 wmi 发现选项的字段 。 一个JSON对象。',
+  '995b86ef757eb497c020626259cbe6ab53a6f572c788e4ae6d88f59d5ea975d3' => '显示提交 POST /{collection} 的标准网络表单 。',
+  '997d404de9c27e1f8b172574e3d7393d9c0e941a64411bc63293bc9964933c88' => 'Ldap Dn 密码',
+  '1044a4c056d0d685bf4f09174d2bc136137765d62916779fadcacf006a99ffac' => '成员',
+  '1044dec7206e8d7c9fbb4ae8f766668406d2567fc7fc1a160a9d4700fcf8f8e9' => '磁盘',
+  '1083d30075a1f9e3b2e9c939d779a111cc6de4a5e2d2d44dd606b2c63dd1a36b' => '安装源',
+  '1116b18d0f5e4d1736907bbe7d4356c7fe98e3518cccc5ecd6ab8e6b88380c1b' => 'OpenScap 已安装',
+  '1166b65423d928c2beafb770249f8ad86436c40d0d332f9b2fcf8b80c06711fe' => '指定设备到位置',
+  '1246fc93bca00b90d0fcaf2f7b7b41546f08817ce552c25eabc7dca19181c65a' => '固定',
+  '1251e4881bd572044c1bc9582e13c605145597e41d42930c44ec30daf79af7e5' => 'Clouds是Open-AudIT Entertainment特许客户可以使用的一个功能.',
+  '1261f6dcd7e09bb55a2e1f869c326fd10f49a1ab9b40d066d83e67fcc264e824' => '上次用于获取设备细节的过程',
+  '1269d6d1768dfb2f454e443d6888e345d69ecf2933ce92cbdbdd6de71026834d' => '你的微软Azure租户身份证',
+  '1294dedcb500dc2bae120eeee19fb093691c57f06a733efdbfa22789c9d73b53' => '名称: 您给此字段的名称 。 理想的情况应该是独一无二的。',
+  '1303c06b0b014d0ce7b988ab173a13f31227d417058ff4bbe6f8c222b4ad913c' => '类型',
+  '1310ca2c8932dbd118668bd97442558a3e1f546b5e15c69699dfbd6024f548d8' => '程序',
+  '1325a9bbb5ba819c1690ed4522cc81f686d75acd93a67f7296540ed4437b341d' => '瑞士、瑞士联邦',
+  '1345c032369a86caa04c9cdddbd604b87940685c1ff96331d4433161a31c740c' => '从所有设备中获取属性 id, ip, 主机名, 域名, 类型',
+  '01364aadffe5e48522bad4c5e3a92bb600e92b95e96b8ba7da5da345dc5d9639' => '与这个信息请求一起,我们发回第一Wave Datapoint',
+  '1447ea9ab6155f90ad6cf6b0868d0895cfaf5e209d908999b2488ee9779540cb' => 'RX 配置',
+  '1480fb125459cbca6cff13fbac5d846220d91cf906e466eb2842ef350878138b' => '安置情况',
+  '1516dc04ae2f93447cb76867ed8eccebe82c6c20ce3fe9e96d66a8e695a85014' => '打印机共享名称',
+  '1521de789404ea2264d9594c2656f7661874fb789976d65244b3aa4bce7e7a09' => '对于 <i>类型</i> 确保选择基线,对于分组,如果适用于本基线,则您应当选择一组设备,这些设备最能代表设备对基准进行应用。 这将防止错误的条目。',
+  '1672f60c3a9ae94f9e7ca742d9c4dce6a547baae599f938b060336b82f9d1652' => '博茨瓦纳',
+  '1720d8eaff790da6af4406905ba663d0cc6a6cea2b3e54e7384ac334a037f59d' => '吉图布',
+  '1744b96470b51bf30935e2748b237a708d226a0430063f92accf90961cd28d86' => '网络',
+  '1758ff637bb9c59f4436a83478b24bf119923ef17680ea50e4dc30735a6835c7' => '添加然后',
+  '1883d3c589c493af4554a528bce1541f8939b0e5a9b7cc44d26698b886f232c7' => '设备匹配规则',
+  '1900eab6c028483d7126599ee6f50de0d27907b5c65fa90524580b4b0f9852b0' => '配置文件',
+  '1984fe966b9d94a16e6edb8a3b68488612c82ce1bca774edbad2efff8aa1b53e' => '没有 Google 地图 API 密钥, 您将无法显示该地图 。',
+  '2199d32ef598c9809b721f0423305ba6e7edbcc638957acc011914b0556c9d9b' => '主拥有者',
+  '2214b64e6bb9d51fa9bd48aed308b54d3503bb5139e4689eff67c2882fca17ef' => '线条( T)',
+  '2221d17bc5e9628ed5762cd22348585b984ed7966de5abab38a246db4aa0c483' => '如果您正在 Linux 上运行 Open-AudIT 服务器, 这不会影响您 。',
+  '2268d904de9c818ed20c2c704bccf8692eaf1415b96cc5d8ec0c57a84cb1345f' => '创建部件',
+  '2285a9e8b06b0d7ada583e43d52df5af30e353c98801541b7e6a6f0b9ac68f90' => '默认的发现扫描选项是UltraFast集.',
+  '2330b20693614fb50b60b823e9e13637eccfe0fe74ca29643c7d01632b018191' => 'Nmap 计时预设 。',
+  '2334a56cdb816c0de6fd72c4914a8ed585d025e9bc6a9d267c6ff4d27b11d35f' => '创建此类型项目',
+  '2486e2932226f029e1fb2ba1a6265399fee7470cbfe29aa9c7066f354902c060' => '5分钟',
+  '2642e44ed25f946179065c3b399d6a1eeadaa61e4044d8ba140da1936dbbc5af' => '访问模式',
+  '2665b120750062227bcdcc7a5f91067abc6cb7808357b3097ad7471196d22da5' => '生产结束( O)',
+  '2676a0b7e31ae143c3b12375a76a810314d6a640d0955665ccdf143abd9c1088' => '版本( P)',
+  '2676d19664029c83f4e885c3a5ee72ea7cdd939d4abe1972601990b57c8173e0' => '这个文件告诉Linux对应用程序进行投票,以确定是否有任何应该运行的预定任务.',
+  '2769dbed793df7c403b495e2330ee5e3c0469dcd4bd4b5ad1bff0c50f6f857d9' => '浓缩完成. CVE拥有完整的元数据,被认为是稳定的.',
+  '2898e16d4e4ee2ae2fa8815d719efb385f0b40ca912e06fc2940658547c30237' => '新西兰',
+  '2900dfbb929979eeac445bcc303de7b385d93a141b0f9e7da87d8f530a4fcc5e' => '标记 3',
+  '2944c09a57f906c85ab3a3713607d9b868ad43cc4cd522b705a4a0bf0f84460c' => '采购服务合同编号',
+  '3009be769fb8f956e8413ee9f3e0836e34968bc40457d0a10c549d2edcf00cc1' => '网络',
+  '3061e27d02f12eb7e8621c8f1bd3e158f7d2bf5f683be8ae36303c435918c3cf' => '需要打开端口',
+  '3092a5f0dba05ff3cadc3c2c8eeacd47940b1837f9534bc559d19d8435c8b219' => '优先级',
+  '3179dea737c5abe584f1f79faf498a5bc62ef702e4c34167a3f32c01b14b04c8' => '审计',
+  '3262c7bc7332a29986c13bfe7630a39b9d5c21c4cf3b7b57ac27671f1dc2aa25' => 'Open-AudIT专业有能力从预先定义的发现扫描选项列表中选择每个发现.',
+  '3318b91dd68483df399078043d2f328d3ed7e78c8be91aa054c60a6c60a3cbb3' => 'Vlan 身份证',
+  '3359edb09ced906e0cf57938345f6621e2e9a9155f20e61202ea4b6f275becfb' => '最佳实践配置基准',
+  '3380e43826a056fbb0c8cf57aa168ad76b4da542feb03fb5bd9daabc056be352' => '用户成员属性',
+  '03401ae9abbdb2fe9f5ffee430947a4a620ef7ddfb93725f7e0e69ebdba80b4b' => '有多少政策导致成功。',
+  '3405ce7029bd7667094ca13d39689acaa662ea4160a1ff01188616f200d3e54a' => '识别信息资产',
+  '3412ae724371d3de12cfde40c3897a0e1672bb8e080dd0d4f307429c34c9b1da' => '一旦您选择了您要编辑的设备, 请单击表格右上角的铅笔按钮 。',
+  '3489b52478843c24a40382ba9ac4cf2531de5975d22dcd583b0b569e26924d5e' => ' 秒数',
+  '3521f0d0bfbd1de3fe8a7c3a4b5e02f2cf5783c0ed03c648bf2a59775990f1be' => '派限制',
+  '3524c62ccf2730a039a6cfb74368ed308457c600665e43cfaba7efeab91a25b9' => '重置全部数据',
+  '3552ac0c032467fbf592cb4d10c5c9267800c01e343ad8ca557256d882ae9327' => '以色列',
+  '3591c64a996180dfce17c7bcafc73bc35833978fb9a0b16408595491d61d84ed' => '备忘',
+  '3683b19c3bd5d0ca180c460d44ccb66a08758b829365a7c7a0a70a6c665c0236' => '收藏器任务在启用收藏器特性时自动设置. 收集器任务不应由用户直接创建. 收集器任务可以在创建后进行频率编辑. 如果 Open-AudIT 服务器有向它报告的收集器,则提供额外的减少。 您可以选择此选项来指定任务要运行的收集器 。 只支持收集器的发现任务 。',
+  '3693e28834276c333a972b810eddde35c16bca19ec79fd9aa5530a3b8945d39c' => '连接状态',
+  '3734a98a904ea577b72f94ebd09bc7dc8667ba26c98ac52b612799c1feedb12a' => 'Racks的功能用于管理和可视化您的架子用途,包括组织,位置,建筑,地板,房间和排.',
+  '3755fc0b37ef2d8f661d73471b50702bab543fae909f0d8f94db068b6ce1e02e' => '您可以在页面底部看到一个表格,显示将应用的更改设备。',
+  '3930e671c9e40dee2a33442c6f1055e8e8b75958ee19da8bd470754fd44beec2' => '附录',
+  '3947c6e3b4065764996a46b455ac579139b14cd97f97af90cd9e419b655d28c3' => 'Nmis 角色',
+  '4045bc858e4cfd9a34db02e4ceea98886a53b1327a69af3bb8c72c3df8d7705a' => '活动目录服务器从中获取子网列表 。',
+  '4078b1dbafbc88d1a7a333c31c204a1696beb75098778ca828d50ace9a83fa91' => '最后更改或添加此项目的用户名称( 只读) 。',
+  '4137b01e139589b7a1d3b3fc4da031d8ce5bb415808734e970c3a58ea0e98f0f' => '必须',
+  '4155b2805e0eba9c65e64b9db7ebd446fb61267a1c5314ccae97671919365c91' => '加密方法',
+  '4228aeb07c410ffc9d15b458bf7c2bf8d9dfa7af632f2c339e69f8cb54654da3' => '规则',
+  '4256e512fcfb03cad0ee741589ec9ea9d525dc2af0ebb1d5db1ffa9eb4cc3f49' => '乍得',
+  '4293dd14cdc68aef9e3079d991a8a90e85976926b98d52b4546f3f8e5371249e' => '生成的 SQL 查询以测试此脆弱性 。 可以编辑此字段, 以便按要求更正查询 。',
+  '4336a67d942e0988bd748e3184bd822c779f07b2a6a764cd38ff9a10df80b7ee' => '域作用',
+  '4372eb32cc8943a17522e8402e5ff7f60ea5773788e59e7b5b4e5643b2d9f55e' => '选择关系',
+  '4381dc2ab14285160c808659aee005d51255add7264b318d07c7417292c7442c' => '银行',
+  '4453e49dd26398835307e00f14763723dbbdc31adc48e79e9ccfca3c7a6fe387' => '请求建立专门的CVE',
+  '4552f6f55568924c4f9232383f05db153451bbfab85be4812efa0b5a2a4f4a13' => '循环',
+  '4587d52067d5ab01f90e61e14925395f9e2ecc0f38431c711618fcfd9f2490b1' => '您可以使用',
+  '4670d0b5d737de9956a623c42e142616a8f452973f3dfacf5642a8814ec9b2da' => '相关发现(如有需要). 链接到 <code>discoveries.id</code>。 。 。 。',
+  '4678a57b30912b23d1e908a04decb5f4a004d7056b36390ee3737f6bbb50b202' => '吉布提',
+  '4689bf2ec49fb53248fca43f0d6aea8f878f184d54c4ab5d90fcec869e7533c0' => '选择内部类型',
+  '4740ae6347b0172c01254ff55bae5aff5199f4446e7f6d643d40185b3f475145' => '主机',
+  '4785cd45eb6b567ba8eae2c4b65d942f51dfd6cec7b5a11e1ba86ecd71145197' => '本项目的名称 。',
+  '4828e60247c1636f57b7446a314e7f599c12b53d40061cc851a1442004354fed' => '链接',
+  '4842b25b816acc4e53663c6d42e2f182a0385dbfb078e207688856ee0e0ba61a' => '域控制器名称',
+  '4850b174b713d88cfc63de107830d5388929020e78abc91fc19bba7a6821625f' => '要求数',
+  '4870fb03498b5f1526e64a6df8b1be6ff03b3e77ee5400eb69b8673fd3dedc66' => '一个局域网可以使用路由器连接到一个WAN.',
+  '4888c174c13d41ac6d2dce6bea37fd219934fbdd0b977f5d691b7a31208c1ff2' => '返回单个设备的细节 。',
+  '04952a0f984dccfa1c401fbe5669c5342059049be3e2bba73dc5a481759b22a9' => '尼日利亚',
+  '4956c2090fd791a111fbab1ae778af062343f5c925179a3c564a40d8cb1d9c03' => '纽埃',
+  '5016f5871fcd5f017dceda4b2143d66dc7d719b7d61bdd25caef8c22507c8387' => '在Open-AudIT 6.1.0中修改了应用,只会有所改进.',
+  '5029ef94d7540c2b6a7ff462a7be9cc364f284faaccefbe6b1fe2f4ef4e20b46' => '设备审计',
+  '5043aa1c57edb19d3533708f89b67e1d8a1506c95498aa231a119e80e46784c2' => '您可以编辑设备细节页面上每个设备的附加字段值。 查看设备细节屏幕,打开包含字段的段落和(如果有)',
+  '5055fa006e168c36b3737a7522949d1a6fddad91dd04703003642bbb31713d09' => '奴隶',
+  '5084fa67330a88998e56ccee653b1ec4dd5075b9c5b31c8706f8095926d92b02' => '向社区寻求帮助或为他人提供答案。',
+  '5098aeb4c5ce85f09d2ec3e5e6ba81c792ccfeca922260e08d2464f014ad9b90' => '或从以下字段选择.',
+  '5145d4845488150a2a660fd2a1d87bf07301609be8950b29fb4cb12239c9e7e3' => '导出数据到',
+  '5161a7c1905c144b7140ea701d50146d3efd3cf282d3f4744562a3981680012b' => '探长在报到和何时执行行动之间的延误。 这是从0开始的随机分钟数的最大值.',
+  '5167e9677e1fbc500ecb1751eec3b2a6fc24cd378b934b14b2544dfcd1228be1' => '大楼',
+  '5196cc83218f9f5aaf0e593ec946ee0a0bed0d8584cb6bf96f9adc2d4b378e4b' => '在线提交',
+  '5286b91aa11e48184da2c742f7f08492b8be0e02c01188b55b47d4be0e23fb18' => '地图',
+  '5304fbc8752e7b684d15c9283b2faaccce24e8cc46965d9a85de9626560f46ee' => '来自 Open-AudIT 的设备',
+  '5342e09f2729fbc6514528e727aeb9857afb31719d43568e6b18661ace7d1014' => '启用',
+  '5419d48bf3c871519a97e5f32f6dee4a5fa948534fe7af66a9f766674206a22e' => 'Open-AudIT可以存储与每个设备相关的额外字段中的信息.',
+  '5475aefa27de3f31adbc39d9610a5f528c611d35c4f4ad56617230b05e713131' => '此 Org 没有指定 AD 组 。 检查Open-AudIT内部的角色细节.',
+  '5599dd91652f73b1fc989cac9b96bac49f1e0c8dfebef056ee786e4a9baf71d3' => '国家管理信息系统小组',
+  '5612cee3b2c09da293c971049095c9590e34baae315545a7f7c20464e253e0b4' => '收藏家应该多久向服务器询问一次任务.',
+  '5614ba99b1e9dc14c43cb9c6b0fbc3168ceb6c00b185343645565bb00dd3bfe7' => '当发现规则运行时,任何匹配规则都会出现在发现日志中. 例子见下文。',
+  '5618ac063f323981b992ba59e608798b0dffc0ad0e33466568ae110b49bb67ed' => '安全名称',
+  '5697d03daef4de9cf8db7cb11755f71358a32b4acca94909a9d449f71040d2dd' => '特征',
+  '5735e37d54a49aaf332d062dab7b9fb0405433d1667586a236c5e2787ba12ef8' => '域名 控制器 名称',
+  '5750bc130fe160a1b3a90bd9de76aa5fa760d84b4145ec53d2553dbc441033d4' => '选择 <i>此账户</i> 复选框并提供账户名称和密码。',
+  '5780cb60e083e819b75af343b80daa1b7b860afce082549860ba4ddb93acd182' => '当集成运行时计算,并包含所选择的外部系统设备数量.',
+  '5802f36e634802a56ff7de67204ed87a7ab22e92d2d3a5db319efb87c80f2b19' => 'Open-AudIT最后一次检索此设备的细节.',
+  '05972a944444cb46751b3d4956bd67d4c864226eb530c30602ca7b032356257c' => '已审计设备',
+  '6010aab383d554b371157edb4b985df24f42492f2f21df4b6f0d86bcf3fb4ee1' => '分组被用作符合所需条件的简单设备列表. 如果要求使用JSON,他们返回一份清单。 <i>设备.id</i> 仅此而已。 如果请求使用网络界面,它们会返回标准列属性列表. 组合可用于整合,基线和其他项目.',
+  '6077b863c529f7ca04fc15b979a974592555816e3c592fb55cd24b40fed85534' => '指定数据库表格中的特定数据库列。',
+  '6105d6cc76af400325e94d588ce511be5bfdbb73b437dc51eca43917d7a43e3d' => '图像',
+  '6256f338c92c5f856400bb16006c3d2724b84a4c54a11133afc6a78eb531da92' => '第十六届',
+  '6303e847182509dfaa2a16268a3c0b8bbb5c2ece12b78753152b12e1bb716e2d' => '东帝汶',
+  '6328b880fba79ac28d949b04a6a05edde06bc5bcb4a493e7a2a6d873af966cc6' => '架设设备( D)',
+  '06376ba9dd96aa97c3585f4f8024a6b6f139c635433aefac580118cb23096cc0' => '软件修改',
+  '6415f86bc24f4765f61de1a5aadbe9226c3a48d0786ab260a6e47330299cb774' => '设备名称',
+  '6454b8663a810386ff697c0463cfe1cc317d72718ccb6f4da69a081f6368d475' => '豁免 理由',
+  '6462cad439345025cd0b3fa5855fb7f548182b68b5f1e63baf9b00cd659bcaf7' => '无',
+  '6482bef37bc3665e6d1cf8f6d50c7d0821c7748a541ca86248bf5827cb6bff14' => 'JSON 文档, 包含高于所选发现的属性  扫描  选项 。',
+  '6497ecc3ad8ec319e71e0cee80b6b8fc855c6429ed85a6a8a1afc2ae7e8a7c9e' => '叶地址 内部 B',
+  '6531ba1183b3a39a18ec0bf5f7e1108ff8e8b51c1b39aedc6daa2dd3da6aba01' => '链接文件',
+  '6639db37852c6feff511412f896e26069a3c005aa87df5c40206a21298ca5dee' => '派图',
+  '6691c79856617c687d672fbf1e5d6b0571f248efe1ee3529c896386df17f2a03' => '美国小外岛',
+  '6694d21009f03730f3d4b0a4f6e80d33b7b21bdcd529d672660af6388de18674' => 'SAN 自动发现',
+  '6773d4a44ab32c8bce12247e8ab46ebee14c1bba40f1741d4b09d2c3875a06a9' => '关键部件',
+  '06773ffecc4f86d0c03ede0c266ad12cd4a8cf5731bb18e1046104ba2abc4754' => '认证协议',
+  '6809a318a82ed460cc9b08df2aabb132809662acc0c80adc8ce839b96da3f61a' => '兽名',
+  '6965c131dd31b32d23eb451a9090f56c65cf8136f3131a2e7860849a064fb2dc' => '菜单( C)',
+  '6971fd747e91de24d7afbfceeb6c74f31b0f8fb831e16f8d30b8e984a73256a7' => '要使用此 Entertainment 特性, 您首先需要像往常一样在 Open- AudIT 中创建您的用户 。 不需要指定密码 。 您必须指定角色和兽类 。 Open-AudIT 中的用户名应该符合 OKTA <i>名称</i> 属性。 无需使用全名或电子邮件,这些地址将来自OKTA。 如果你不认识你的用户 <i>名称<i>别害怕 您可以在 Open-AudIT 和 OKTA 的应用程序中创建新的 Auth 方法, 当用户尝试在 Open-AudIT 上签名时, 请检查日志, 您将会看到它们 <i>名称<i> 登录为方便.<br/><p>然后在 Open-AudIT 中通过菜单创建新的 Auth 方法 - > Admin - > Auth方法 - > 创建 Auth. 提供名称并设置 <i>类型</i> 去奥克塔</p></i></i></i></i>',
+  '7001eb5e7cb2cf9d030320e8bb426c8378ce808a7aca4a0f4949304ec41c103d' => 'JSON POST机构的例子如下。 这应当附于"数据"表单项.',
+  '7006a191ba3a4a863abbe7db05c1a21e476a71bf7cd234df0abe43f06f348d62' => '大冈',
+  '7020fd7aaf1656dea5c0c0c3d4bb5a28ebf6243fba95d380467472757b6866ed' => '若为',
+  '7063dece7cccf374d9fa1ee30ff23300fa42477e064e69be7bb6d01c0cfff682' => '主机名',
+  '07078a025a2961b99054b7c813afd4b2f0770d284cd2319ad43d99653c3abc42' => '使用数据表搜索',
+  '7151bcdb7bb071ece271b4789af8ec7dbae3a19bd80e150d948424784cbf2798' => '用于认证',
+  '07193df400d460d8dea9e7bcd261e9e48cc82036e86003135c4db6f0e22b48fd' => '查询',
+  '7295aab6bff932fb6bbac4bc643fa50338c8a3751644002fa8720d5699616d58' => '见上文。 注 - 这也可能是LDAP服务器上自签名的证书造成的. 我们正努力在今后的释放中允许这样做。',
+  '7295dc6b3e4e3d7201fba73e9981f6a342865ff73e1dea1af0653ffe0ca163f0' => '光线',
+  '7328d3f829b7b3405e87f3041aa984b8844c4155ea865d5be3b2036bd5264898' => '克罗地亚',
+  '7575d2a6d4ba5fd5a4ec37eec778e442d339d333f22bbe82825977fef1d4c895' => '命令的结果。',
+  '7615f562f2310983ac65f2eef9555430648e9e3ed886a4efecc9189843c000fe' => '此示例创建了函数或描述字段为空白或购买日期为默认的设备列表 。',
+  '7638d303339b59503bb818c3cfae64eeaab36560c8d5a14f836211fb01311428' => '时章.',
+  '7690e80de16d97f8a3205c097f35b8d661b82bb167223b67a18f0663341f6def' => '上一个值( V)',
+  '7703d5e8d3342a072e3b15eb2c271d2f055084ac93dec38fc884511fa22e7a1e' => '已行动日期( D)',
+  '7752ac97568f9eda9c715fadfacd176f789dbaa29439ffac20105918c9eb0e68' => '执行说明',
+  '7783f34213b8860a3021ee17272566dd3f5cd8933ac387387237024c7f5557ed' => '你的数据是你的数据。 随时可以提取 我们甚至向CSV、JSON和XML提供出口。 我们有一个JSONAPI。 你可以写自定义报告 并在CSV、XML和JSON中输出! 再说一遍,这是你的数据,不是其他人 你可以相信数据的安全掌握在你手中',
+  '7793ed6f6fa38e8a4cbf510c38dddb795e42ae91c06cf9dc891ab64817ca3053' => '主类型',
+  '7799dca2a488638050a37a002587a65eb2c4dc18128466841632822e6adfbfb8' => '基线 结果',
+  '7873d47376221266a445e254c00a3dc22738e9449c9b376b115662e6f4316ca1' => '开放的AudIT API',
+  '7903fd1ac2dc3d7507ff1b25cee428741249bc7d905e62732390f84fd2b820ef' => '具体数据库表.',
+  '7954a876d73b0d9cd9feaf38ed6a2e05b867cc07302b426de9be20d284dd387e' => '当Open-AudIT接收到关于设备的数据时,无论是通过在审计运行中发现设备还是由设备导入的用户来获取,它必须确定这个发现的设备是否与其数据库中已经存在的设备相匹配,或者它是否是一个应该添加的新设备. Open-AudIT使用一系列属性匹配来确定这一点. 匹配规则是作为OR比较,而不是和. 这意味着第一个规则,将发现设备中的字段与数据库解析中作为现有设备的字段匹配. 所有匹配规则都必须失败,这样一个设备才能成为新设备,并导致新记录的创建.',
+  '7955c8192dc2275a98000e7d0cc35e815a44b949a67bb8e0b8afe184c97b82c5' => '一体化',
+  '7956b85a291d00b3b2eb0134174debba993af00ee0bfe2c26a02cfa7ca80a8ab' => '密码上次更改',
+  '7962ef235e1ce1a173b806a3f96e157b3ebad1dfb2acba04a4e9e9b4ff977fde' => '为组件类型返回所有项目。 如果你想要所有软件 你会使用',
+  '7967e089a7b94464ee1b0c6d4b8271e99bcf36f9e5481e40a5eec5c5a5108d01' => '用户代号',
+  '8159eaeea03c713ab8ad60867ad065feaed4e0361f771f831e303acf2ac08df7' => '可预见',
+  '8212ae5bf3a4f5e30d4a6876306b7fd2b20d6fdc4762d689387a8011a67c5500' => '表格并插入原行。',
+  '8324b88848e66d60cfe00c271977d73e28eae005730bab9ee9ad1a5153901fe9' => 'CVE在CVE列表中被标记为无效或撤回. 它仍然留在NVD中,但被排除在默认搜索结果之外.',
+  '8332a875d5bc37bf2edda8849476136e9f21681295d88a22e6d351e0f43562cc' => '<p>发现是Open-AudIT工作的核心所在。<br/> <br/>不然你怎么知道"我的网络里有什么?"<br/> <br/>发现被准备了数据项,使您能够一次点击一次在网络上运行发现,而无需每次输入网络的细节.<br/> <br/></p>',
+  '08351ffdadb8856b31478231b0407195930c9f16c3278d5cf0afc3448a57e3f8' => '该用户默认显示的仪表板 。 链接到 <code>dashboards.id</code>。 。 。 。',
+  '8367e1d72aff7f791b5b04e9e1ee5ae12d82b15bf3feda9a759880a51e37b633' => '由DNS传播.',
+  '8383c8741170eff69d84b1245e19e1ab36ac4b23b819ea9a915780247482f6b9' => '新房间名称',
+  '8455db6fb691582748501b50ec63707370429f78cf9a0c44d75e120fdf7ff66d' => '创建内部计数',
+  '8457d59d13911b52416985edabcd6904f3db652e9f8849838c42e988dec0e2f0' => '大于或等于',
+  '8465e0197a9e731adbc9ce6c243c9e5e1718aa02033540457798e32b0ef89f2c' => 'NVD指定了基础状态.',
+  '8501be55245528ba35466af5b55b22d94e1ef7e18c1fb20b6469cc4c046d7ab3' => '从内部创建外部',
+  '8587d0f17eae4c884fdff1e474e1658d5b3cd01ac3b73bff4f7ce15e9d8ce3e8' => '最后结果',
+  '8726db013948f0703807f17d23ca6c9903dc27f5d70c5a453604bb465c50864a' => '客户身份',
+  '8747c763ac9106eee9373f5b12444ec764acf453f0354c52860ec93771e0f733' => 'TX 电源',
+  '8749b1693f74941144464b73f49e322066f437079a400d0b11abffc6dffae2cc' => '安装',
+  '8752ab21230d362df76863f7aed1294c92b1ee9e073f5444166e1ee6c501a285' => '打开 AudIT 字段名称',
+  '8774deeabe8faba58c444bce47739848bc47555cded85398c7776e0bbdad5eef' => '转角方向',
+  '8779eadadb8070034935c6e047bf1b37a782ae160d1cfc6e14fe87f3cd4f592d' => '攻击( R)',
+  '8845a0a30ddde1f1fc694c415c1b4df871ab6b4d64b23fa2a0518215e66c68fb' => '格式中的当前日期和时间:Y-m-d H:i:s.',
+  '8856ba9e51fcf5fa2e3ba8d9e874e4b18cf401de9578421c804938c909be0e04' => '此端点允许您添加网络基础设施中的连接, 它允许您自定义各种属性, 指定此连接的位置和所属的组织 。',
+  '9024c197d84940e47ff6aa631b7711c4cbff4e7fb2fe1a574a3592b662983a0d' => '链接',
+  '9037ba67e1fb1830833daf5e76d066047ce7875adcfc33d739d6d1e69ed4b910' => 'RU 启动',
+  '9224c062d23106100d3321647dbc9a96267253ea6bec81f4579f934300f31382' => '提醒样式',
+  '09230b3dbc35635f04595dc627c267a62174ba6435078ab5083dce4252c999a1' => '失败',
+  '9285d5e445a53ed03efb613d592f6a15873a4b825de7e23e0cffb8294960e006' => '相关类型项目的ID 。',
+  '9293d25c4f7a337d9b26326bda5f261381e8864565096f76e6efaae58fefecad' => '后代组织',
+  '9296ee64b1af0ecb59636ab8dc519ce29bf6000c279f7ff4d9a2a8f5614248b5' => '属性为Open-AudIT存储,用于特定字段,目前所有字段都基于设备,位置,群和查询表. 您可以编辑的属性与下列列相关:类,环境,状态和类型.',
+  '9338f84d32d91001b7c4f7a93f5cf5d428316353eb7dfbe6e1f4616e0e10ecd0' => 'SSH 密钥',
+  '09342fa201bbf2714d43dc8e1fa31f52f908ac56220732d0402913dc9077e399' => '葡萄牙、葡萄牙共和国',
+  '9346c59bf7c5cba76373c92bf91b624e18364f244ca5dcddaeab5bfb7732debd' => '命令执行多久?',
+  '09350bd1873ee3e260b1ba8159fc8fb53b9620b568e3b138258156972eaa304e' => '由发现函数设置 - 一般不手工设置 。',
+  '9354da4c61bada10a707ef377978ea34b94b3c21edbcb88bcce659b61658a17a' => '最后一个 Os 更新',
+  '9372c470eeadd5ecd9c3c74c2b3cb633f8e2f2fad799250a0f70d652b6b825e4' => '模型',
+  '9460f16ac9b5171e7f3d3f2336ec66b547231be8996ea9a0ad25079f84641be4' => '能力',
+  '9488e8f7087c84cda3b4830a79b704715a75b61b2a929a691512fbfbfb834437' => '如果在上述两个位置中都找不到二进制,则会在安装器中显示警告消息.',
+  '9563fb928d22f10c1ca8b1ee817f319fc0f3029efb50c9182125285e2106d035' => '试试Open-AudIT Entertainment,我们没有时间限制。 企业号的所有特征. 仅限20个装置.',
+  '9621c07364400953579ccc9f8a998c0258d325fedc08dc49f340693f616957fe' => '玻利维亚',
+  '9687fa49cbabe130e6700fb6dba29d6650f2a4f3ed416a9956a1f494c16a5c36' => '展览',
+  '9908a6918c701cae02eeaf3a5552695ca39d6cc0ade9a2bacaad29a14ebc041f' => '认证方法',
+  '9922fe9bdb4b5e3d8d0c115a746fb6aa38a57f73f60bdf4a50f8e7f2a7e723e9' => '需要权限',
+  '10153f84a1c8fa8e2c90ef53b02c06feaa15ff7f99a1e600e5d3c5147ce4b830' => '脆弱性',
+  '11755fd7eddec37af5e12275d67bca2357f4556ece78dc47389badddb1b770da' => '替换',
+  '12973f538307f6289ad7a44596d658a29478d77fab8b0c1560cfb482c15de6a5' => '服务 数目',
+  '14143c8d56fc39a508068ab1e31d017cdd2f41d6fa57731df37b54e9a8e816bc' => '用户、角色和类',
+  '14336bf31b6406c923078e0f7da94955472646babb9ee58602ace2757821f154' => 'Rack 管理和报告',
+  '14736a2eb9f4159f4b6b86f192c3c222243fd9659aadf2ecc0139e3d72bed85c' => '作用',
+  '14745ccf5350e2a4c1784ee40f631e9ab54dc3e0ab10becbaf861b2da2f976a5' => '构建数字完整',
+  '16218baf89bd9130cec79a85491e0830a167ad8f73447007e2b5744c2b418168' => '亚马逊 AWS 字段',
+  '17373ca1c7634a4be4a13861a891abd975ec916caab8f3dcf5142fa4997d0b96' => '成员',
+  '18805cbbda53e437faa15383880edb4a9f4c35f6ce8913f2680acd680e90fc09' => '附件A 控制措施',
+  '19766ed6ccb2f4a32778eed80d1928d2c87a18d7c275ccb163ec6709d3eb2e27' => '取消',
+  '20521d84ff543c8f1b0e1a4288494e8b9479b754a7c01e126ed9f43a3a1d6116' => '模式 家庭',
+  '20556c131d7092109d9b58783ee4df3ee26dc9a1df22e2d7eda61aadf7ab7b0c' => '网点端口',
+  '20659d3dbc6151209b1f6157f22625920a00bf853758a5b642169012dae212e6' => '限制此发现的装置数量 。',
+  '20947d525fed136c6c1472d927d71b76db45d5874c8cbe333b11d27837f46462' => '一旦评论出来,您的证书将会被验证,但如果您正在使用自签名的证书,并且没有正确配置您的服务器,也可能失败此验证.',
+  '21114fb6eeda94750d57b12b84debc0311bf48610ea3cac47059cc05b1d19223' => '连接 状态',
+  '21743c32039e8c970b379bbca50b279abcf1c659435a1e79da103e25d29fdc47' => '修改已有脚本',
+  '22961ec23a2b70dc451000355127aa04cef14093763832d65847317f5ff35609' => '顶级Nmap UDP端口. 前10,100,1000个端口可以按照Nmaps"顶端口"选项扫描.',
+  '23519e831aabda3b5ce84633264a4ae8788459947fc30dc78dde17da14b5f5f7' => '将此发现链接到关联云(如果需要). 链接到 <code>clouds.id</code>。 。 。 。',
+  '23617bf422bbf29eafc24f36e0ac1f086cfa8b0d496724e1d98fdb515296cd8d' => '地点B',
+  '23771b20d7a2c4a8c2f7aaef26bc39a63f15f41f19360c2601981fe26ecae5a6' => '转到菜单',
+  '24433c70eba5b15368fe2e1dda94fe3d61db2357aa144363b9ab487e60235ab2' => '启动',
+  '24567bab88bb765685b25a9c0e8b7d511e2e8eefe8038d6ca24a6f09bf599221' => '注解',
+  '24929b8a57258f90d0be2faa7e0d985a1fdf4802b8ba3aacee31b8b666abee98' => 'dns 宿主 名称',
+  '24938c07f2c9417932f5b5709ae0a43c27bf1d230975c5bf0ae9585bfbfaf2ee' => '结束日期( D)',
+  '25490a10d071aef70f7a5d4fba0b8f17c9629da0453f89aab0f9dcd5fd0e0a21' => '关系',
+  '25510effdadbf2b796081222466ce056fed4e2f0f2e6b15f91849579badc9b1b' => '还有更多',
+  '25546da65374fca6b3d961b33b57500bbffc63e93eccc46f19a4f0dd0a506622' => '线性图表必须返回日期或我的 日期、描述或我的 描述和计算。',
+  '026933a205cec19f3217a974b83489c795ea8260b22c95b6893397a902c54f87' => '这一任务应执行的年份的月份(*每月)。',
+  '28621ddd684474bd4ad1a4317af6ce9c3b854fcfaeddd8eacda57b6c935e413d' => '供养者提供之名.',
+  '29756e9c43f8ff73b1182f5c065316e3dc6f492cfb7f4ba76da5cff0ffd29041' => '豁免理由',
+  '30171d3d76c74b43c49b94ffc92f9885384a41120f98cf84b17a5e5f0a86db19' => '基准 log',
+  '30376d36a3d62a8604dc733ca3c2005700b352a9065a0a623a606c883ffae40c' => '超线程',
+  '30565b256ef23dab371b44f0f5d04f5f96049b9f01b7e7a01922bc024d142bfe' => '在',
+  '30777ac2b4acc70fac8b1de111a9b5741b995b32e38e1ec285bef18adcaaa026' => '荷兰',
+  '031533ceff60d8d37060a1549b1df5113adf4ab0080c260d06afdbf55698cb42' => '您可以为任何现有的审计脚本创建包含所有选项的脚本—— 而不仅仅是Windows. AIX,ESX,Linux,OSX和Windows全部覆盖.',
+  '32664f5091c9eca7c2e053fb9089988895b3c0c6a33a7bf8433c5ebd6472727a' => '以下是各组成部分类型及其之间可能关系的例子。',
+  '33006c3a41ed0b57c7a077f72afcc0f3445813b82ec4f674d878823dc027ef77' => '我们希望你发现开放的AudIT和我们一样有用.',
+  '33500c317bc8fe3c70203872b17a97b1daae1170ea6c9e8c33378d375ca51a28' => '特设小组',
+  '33502c053c6a8c30a38d4bf194e87406f309e0666813e345c20fe17ab1e36f2b' => '报告您的设备、网络和更多',
+  '33544b6339f1a07dfbabe891cf8a4c3553a8647fafc36bf02b72210233fca83f' => 'id 内部',
+  '34096f96f68fb8fa37a92e0f42e33a14ccf82a11660d05b015357ad1fd407535' => '马恩岛',
+  '34813ec6cc032c6b7bfe246f502a58b357a9a1ba9b641123729c6650ae062bf5' => '整合 log',
+  '35390f5453e810b6248028c63e5860ce4b2ec6401d3849a7f4f871c0d183c22b' => '软件',
+  '35792b4ff6bf7e08d9615010b1547e2e8b395b711d32e42d36e95c4379ac7fc7' => '服务版本',
+  '36371a075a1976ff1a389d64725515efd7d667a127572d45db7bf85d0147f326' => '版本添加',
+  '36836f1c0509cceadc60ae2fb097ed7b5d10125b0fdb9aa6b16c1c7864dc9030' => '您的微软 Azure 客户端机密 。',
+  '37082e68df858e0ba76442174128811135890ae4c2c5df8b6f31aef5885d0be7' => '1月(半天会议)',
+  '37111f48e64b6db186e8647c10c7bc6218b32a3cd10dcb790f4d943c26365ab6' => '发现问题',
+  '38227bb04e6df14a065d8f2d13c63880d78c6a2b3217e82da58b617e100cfb71' => '卸载',
+  '38610d7ce62ce4e1bc7ae88df3a7717f4e2c5053263641eaddb6e7e407a33a38' => ' 如果事情不能如预期的那样发生 你要做的第一件事就是检查日志',
+  '38957d79efc498509e1e9c0eea6763e3dab73fcc1fe167ed7e7b2c44d87ac2a9' => '简短的说明。 由状态和交通部件使用.',
+  '39894f12d5a7fb26ca83976ddb074e30962f82d645a93e82bde06714c5a4f6d7' => '在 MacOS 上安装',
+  '40040cb181f7f0ee5add2b52e8467c6652477f7ce12af39fe380b5084b64f4fe' => '财产',
+  '40658e9af8fd92229ae162dc98547cb75eb96999edd7dc214582ac6c23ef6585' => 'XML 函数',
+  '41055f72edad1559b8ba43440cd7938eb73685930c7141fede9b95000fd41299' => '替代品',
+  '41121bbdc9dc919ab94d69929778833165c36c0aad8a6773efc56bac88a1c867' => '界定项目范围和目标',
+  '042501b4a424be592357e5fddf520b66666c0f4f4599a707f2570e86bd6203c1' => 'A. 内部评估信息系统管理系统',
+  '43912d575f87aca81a60279cd82bf8db272f83c2b5c5c5855d09faefb67c0e51' => '普通名称',
+  '44737ac9fa1f8322af845a5b030a328a2e55bf91c81c2fa2014235d91081d925' => '手机细节',
+  '45569da57f4b7bf472d7a864ef4781451cae6383fee9fb0ae40c59aa1ce475b7' => '电话',
+  '45624bd0cdb2cad1e44b0f9917760a911f5f1d622b174b3547d33468c1fea7f9' => '可能会 <code>application</code>, (中文). <code>compute</code>, (中文). <code>database</code>, (中文). <code>storage</code>, (中文). <code>virtualisation</code>, (中文). <code>web</code>, (中文). <code>other</code> 或空白。',
+  '45689a337aa254fdd7910cf9c79944e9c7ba7befa82a0196cea3e6d8c252373a' => '注意100设备企业许可证不包括支持.',
+  '45822f54a0d0e030f75698c9252f1345982e743c9466806048f542467b3ca4f9' => ': ',
+  '45989de49fb7f66dfe17a8fc26f3a02c7abcd74f7e8e6cf9f39fa0e3775780df' => '细节',
+  '46081c48f442138f47301720805598c97bbc3e74a6837c0590d44d8dd5a8a667' => '和往常一样,去菜单 ~ 管理 ~ 集成 ~ 创建集成 . 和上面一样,如果您运行在 Linux 上,并且您在同一服务器上有 NMIS, 您不需要做其他任何工作, 只要点击 <i>提交</i>. 我不能让它变得更容易。',
+  '47689c2a178f5377cd9f562d8ef45611dd4c9f68db9b15636b4dae8ede3a4ba1' => '位置标识',
+  '47751f88edff89d56aeb5b1e46fb03a853bfcd96617f25195c752d5557902227' => '审计日志',
+  '48470a5e9c8ae0d28af291eb7becf5ac7c1ae5005c78dd6496c8ff6cc1b40cc0' => '日志格式',
+  '49720d5cd71975f488605368d4487de134266956f664cca984fae221a0ea47f8' => '怎么样?',
+  '49806e3dc93c88eaa9a8cb4f429e392d6af98c0cfca5f472dbb3cf1c64b84366' => 'RBAC 活动目录和开放LDAP',
+  '50009ce1da4d15e1c4a04024df691eed5f0d598e2c4c67092f205366d0adf99e' => '文件',
+  '50499f6b7df5b3dce1bdc556983af98d2bc99a44604c3ee944cfa94895497ec2' => '用户在LDAP中,他们的证书是有效的,但不属于任何Open-AudIT LDAP角色组.',
+  '51442b92694568d4610caca5c0ce1bdc17d399b353fd007e8b3cae590f1b156c' => '收藏机盘',
+  '051548dfab627114e81a58f2e6a0079b8fcb287363e3bab15cc3e05d9bd60fbd' => '原生子孙',
+  '051668d7d6ed550d0a51a42b6172ed50a298e8512a327044f078afeb88a6a396' => '当Linux上的 Open-AudIT 发现 Windows 机器时, 为了执行远程命令, 我们使用',
+  '53095d66a12730ad9027edaa69891f796cb6505fabb7dc1ec8e5fa3b04fb6cc8' => '域短',
+  '54595d402573141fa16a979db11e37974b8528def72593c9a6cdb15290f9a46e' => '地理',
+  '54964bf738f07ce80d73fc6ebdb76526d1ae4a36c1db931ce67cfd10a494d761' => '每个结果行生成链接的模板. 由线条,派和状态部件使用.',
+  '55630cac156e16736e76476c6cd182dfb48b2380df31a276a1f00c2671883cd9' => '状态',
+  '56059e7fb4e9ddfa1470a50a43ac2f05509cb802757e68d35d9033232b097e58' => '斯洛文尼亚',
+  '56850f3e9cb313b53ca1daeb72fcb3e8135aaa0912c118e660387dc10891c0a8' => '库克群岛',
+  '57617dccf406ce812413e3a41eed5639969972d6f8464239128471652bd0fa06' => '选择设备',
+  '057882f5489a63bd25bd1ccbad55b0b3fa07ac0977f58ffbc1ceb40c71a2f68d' => '安装目录',
+  '58169c737d4b86ed4353b711f7ef5fbdb7d3d5c0474c2b52a0f835421767e703' => '日志路径',
+  '59238e4f67ce8670dfec068a47b8042ccb8025a41dcafaf97e332f7593422008' => '小于',
+  '59329d8aa55ec00868359ff581868cc14614a71b0c9202befd8211d7badf1f63' => '点击日期( D)',
+  '59830ebc3a4184110566bf1a290d08473dfdcbd492ce498b14cd1a5e2fa2e441' => '测试',
+  '59842ee389ddc925b2c56c450c1f60015c057cc0b533fdcf2b785eaed8f7ae77' => 'MacOS 软件包',
+  '061286fc39a62e506b6133f17c3176008d3bae37bb7ed303b70042ff8678974a' => '两种形式的',
+  '61338b4a8ee912ac9b4a882c5aabeb737e79f0f73c7c95049c68ba20ca92a5a9' => '如果您希望从AD中插入可能无法接触但自该日起被AD看到的系统,则设置此功能 。',
+  '62755f606f60bb401e73581254a97886d0c3fa7cd697b5d0fa17acdb9b86d54b' => '如果您在正常情况下设置了设备  assigned to org,则会使用OrgID来进一步完善匹配.',
+  '65207ae464fb384bcd3ab089c38baa0602b830bdaf3e211e60d78126dc0c8fdc' => '小数或等于',
+  '65236ad11bbfde04a2953bd62ca47245b1c1bb7b105ff68d3020b6d5aa6ea233' => '组类型',
+  '66270a7e41da9b6d994423282182f401f92cdc1a9aaec9df3140d92b09864e2f' => '排除( U)',
+  '66545d35b3df5fa3b7d512f52fdc6c41c017604650284adc79f2609b35c70702' => '北马里亚纳群岛',
+  '66962f72a08883733c35df6f82a049b929f9579f19c4bc083ac99bead602eab3' => '首选项',
+  '68238fc1b0382f5e932b4f6b40946a3ad82c66c4a72ccfe4c252109752fa9858' => '组( D)',
+  '68368de73715d6422b0c1b63e567b822184aae0b35d611988c650f1ce3e7b539' => '要查看查询的细节,应该使用/open-audit/index.php/queries/{$id}的标准URL结构.',
+  '69122f4e743d2734af134854b916027eb526577e7d55eebecc3ab0b98188a655' => '软件名称',
+  '69301c042c1672ff25a7d4339f347bc061238850e66166898a682d934cc9cd45' => 'db 栏',
+  '69752f2313b2f0173a64afafc8fd7c6342a4a03ebaf47f7fe56792c146082232' => '新闻',
+  '69824d3b0e70ca6aaa0da1613b65fd914c442bf1f7ad1bb22bcdfbdfe1a05e39' => '参考资料',
+  '70215c0bf9197b4057d5a84901dc619ec81a7b9f793cd3acaedddaf743587124' => '租赁 终止 日期',
+  '70594d932950a164e0d820060410af4ea1d127b7221f577d2dcfc22c2d8ff1df' => '超时',
+  '71988c4d8e0803ba4519f0b2864c1331c14a1890bf8694e251379177bfedb5c3' => '文本',
+  '72479c095079889269443481d4d3fc0181f9ef635c424177f7ef1d2e88ec2513' => '使用代理服务器',
+  '72743f2dbea2391a4aa27dc261be992ed371ada30b839f4800d9e0738a303ed7' => '整合可以按照"发现","查询"等计划进行.',
+  '72927b6fdb5388115d478bb5e0e69c203231f35ad2e0721d77750626ea4fe4db' => '开始于',
+  '73364c7113f84b6e5a6be3485e467365ae7450cb95e92539c13524af8f658f42' => '您的网络服务器是',
+  '73543e5f7887c3f3eb65b0d794a2cc25406acf88f61f7df705792200fa08dd01' => 'SQL 无法包含 <strong>在 @ filter 或何处</strong>但SQL不会被执行 <strong>@ filter 和</strong> 允许查询。',
+  '73597c199339e5ec92fb134b17d62fac4ba3e574281e481e1ea9fa888348afbe' => '要获取您的密钥, 请登录到 AWS 控制台并选择您的用户名, 然后选择 My Security Consulture 。',
+  '73832fe9f6c27b34d2cdf1b5c854867c2040367a33ae2c8187aba5a02e328522' => '您可以使用基于 Open-AudIT JSON 的 API 访问收藏 。 就像其他收藏一样 请看',
+  '74284d9dcbcc09928ca5d7d6187270a62ac1b58ccdc4a44b81e47257ffa53b9e' => '颜色',
+  '74835b2b1e736e89cb1a977a57c4291555a1804f019a381ad8407f0c9b15ba8a' => '需要的字段',
+  '75081b593d15cf6e631971bc6768723f593b88b172477e40ae7d363e4829816d' => '已禁用',
+  '75485a7814841dd194782cfd00bfdc4f51fc99a61cbda4f4bc5ea7ec0dc02e69' => '罗马教廷(瓦蒂坎州)',
+  '76215bf321dcbf6bd297ab19cce5d28feed5841e429a1eeb4a74b38ec52d3a02' => '未见设备 90 天',
+  '77246b0b44d948cf1235df75f7f42b1ca5698360e01ef5a0a6c1b87d9a8b83bf' => '要执行 Windows Powershell 脚本, 打开作为管理员的命令提示, 更改目录到您下载此脚本的地方并使用以下命令',
+  '079217f4cb5ae0c60b2f6be9896994c314a2f7dcf0ee5a455d7777a85d28aae9' => 'Cloud Discovery 中使用的微软 Azure 证书',
+  '79933a55d05542275c368bd9ce3bfc6812767ff547b78f689e7855019d57ea8f' => '不包括 Tcp 端口',
+  '80343da8a5e0360631adc33ba5fc9fd651b0792a4c98192022517b893d3aa5c8' => '外部字段类型',
+  '81317e9785b5697e3759fd19a5f23d702b719b26c6621154967280c7edbcb482' => '在第二个标签或窗口中到您的 OKTA 控制台点击 <i>创建 App 集成</i>。 。 。 。',
+  '81332ce44f9b68b3530b64f3f62c03b61da2fc02d72218d3e3392557fa515d3b' => '不相等',
+  '81565ddb9a50708e952ab52a8ddfead1d46464e174ea8be3f72d4d37b3babe8b' => '设备  id  b',
+  '0081779c287d567d9ca622f4c0cc2ede819b0cc7f286a5f01d8c3c0178191ad6' => '职等',
+  '82130e177ce55020d1ecca17887b07bd402fff616c626a49b32690559a3d0ebe' => '已连接到',
+  '84112f0a164baba8a06f85e26b99084c0e5d8e04e91690377e1b05ee5aa0080e' => '该账户必须有密码; WMI 不允许空白密码.',
+  '85663ab99056828e45a45473c52f978b5b227d3689d48515dac3c727a60e40c5' => '从集群删除',
+  '85752a46aa46dc5e13e8f440ed8e93d127ff3321709530dff0e9834c6e45c6ba' => '关系',
+  '85785a4b2abbda615801b6a0080eca74f8d6e0442fccb142f92b1ecc2ee2bc68' => '<p>特工们让你在没有发现的情况下审核个人电脑 安装代理,它会每天与服务器联系并审计自己. 如果你的电脑有防火墙 审计数据仍然会在Open-AudIT中出现</p><p>测试时 <strong>若为</strong> 代理人应当进行动作,所有三项测试都必须通过(如果测试确定的话)。 <strong>礛</strong> 采取了这些行动。</p>',
+  '085807f22f69d2c9a89a9bcbcf06b63a32e5afc414c7c66b42992de8e5a7cd21' => '喀麦隆',
+  '86801f9e8622fcbe4248f93cd14a29d84033548456ac6efd99ce2a2ce036380f' => 'LDAP 组',
+  '86846f67dd19ad454801b74c1204d316574553797124bb914e5902c9d682d0af' => '认证',
+  '87915dbc6ec1f74685ff9184ba92313ba52a1b27fbb3df6bb9b82911c67a4168' => '活动/ 被动',
+  '88035c444ada22b47157403a0588fe05c6d30a624e0fc909f2195b6d2e083fa4' => '您的微软 Azure 订阅ID 。',
+  '88447b83090cded58b10214c752813d476fa21c8c1d8dcbccbd2e2676231aab9' => '创建者',
+  '88506ad0f6e3d96c1d37b4199f083ab0d6dd88636a16b5eb1a6145f44abfd4b7' => '检索',
+  '89445ea08b55421faa49919a5fd272e9a520f701b479d6084847e161ca5b7711' => '数值',
+  '89478e6a9f19860a635f15fd07f4225a528e63955fc01ee8a8cf14bbacb63680' => '不包括 IP',
+  '89713b9c9c1b8f659c9f49db25e4a47886dd673fee248c3f650391f09a759cef' => '接受',
+  '89746e43d482febc0637acd8b0bb7c9343ae81b2ee54d2be247d17646db8a9c8' => '范围称为授权范围,表示脆弱性是否影响到超出脆弱部分最初安全权限的资源。<br/><br/>此属性唯一的两个有效值是',
+  '090512d93fcc3c0d307d0c5760823992c4670ced80eb4464aa6c97c71b456891' => '一体化',
+  '90789c12d0731b4405f2065d3dc5a31651f31ff7c84edef11c0e9c97eab4a75b' => '查看细节',
+  '90920d93e2c7e6323a947c6edb0e31a9702002e329af32a67fea53f221983cb0' => '程序',
+  '91068ef6572fbd3207b40caa523a400877a26dbb073ea91960e6e8cf9d1d194b' => 'NMIS服务器是本地的(在这个Open-AudIT服务器上)还是远程的?',
+  '91325f58a20537fbd0e542580ae5888ee262ddd5882a7c1cb479c93727c2a4ee' => '位置 经度',
+  '91738c3d80ccdc54ad6030bbd57b0bfd335622289acee8399fbbb268a52efa71' => '如果我们在网络界面“报告”菜单下的报告列表中披露此查询。',
+  '91820afd9c78331eac098290d8fa0c19f00c2d873caabe9b2a02b1b852772392' => '服务器状态',
+  '92022c2f45b6a9ba92c51438e6fed444d69673e4bd6c529e3ea8f0a8bfe1e969' => '主密钥',
+  '92089fc61f4da6dfffeba0c46a4131ae505d9a13b38d27627ea6128445d69f1b' => '包含要执行的队列项目细节的 JSON 说明 。',
+  '92189ee43c06d7946336be0e7ff01c3b96d7f1432a998594e47d44744155c32d' => '哪些设备应从外部系统创建 Open-AudIT( 如果有的话) 。 使用全部, 无或给定属性 。',
+  '092380cbec19e66c82fbdc06dc3209a3fb32f1858c7dd8def64ff9b1482b9bfc' => '数值( D)',
+  '94014fc72503b15df57e9c744e00635a3f3b79906311ce50ff0a513f75d4cc10' => '所有任务都可以在Windows和Linux中同样创建. 任务使用 CRON 方法来调度执行.',
+  '94571bda07e33aacd1ab173008c914713cf0d6058bed014db7a15e398005a853' => '叶子扫描数',
+  '94734dd4f13d60087619f8016768335a01e942737a096c7f3ac8361a725639b4' => '自动更新',
+  '95061d3a51cd8d87483c357790fe828205d84752d7b6075fc99052e92cf2948d' => '创建日期',
+  '95110d74c4c009126c967cac38ab0454d73e337c4fdafc280c04f67e66e5fe95' => '行',
+  '95133db2a90723b432f67f66341f46167085f3cd385b03eb93c6434fa69946a6' => '执行( N)',
+  '95573b2aed67735893fae2d0d8e947f2d5a1f45a650ee877fd036850200a6676' => '您的用户现在应该能够点击 <i>用 OKTA 登录</i> 按钮。 如上所述,如果登录失败, 请检查日志文件并验证用户 <i>名称</i>。 。 。 。<br/><br/>这应该是所有的东西了。 现在,你的用户应该少 一套证书来记住!<br/><br/>和往常一样,如果你对这个功能有问题,请发电子邮件',
+  '96772d5632ea819ac172992ac0e17e5c21795c72d994d7e1b86167e8890a881d' => '包含指定给这个用户的角色的 JSON 文件 。 角色名称从 <code>roles.name</code>。 。 。 。',
+  '98031f1c44b3b523a065bbda3a8acdc8fed519dd8daeb00c666d64438e718130' => 'Active Directory / OpenLDAP中的用户必须是所需的角色和兽类Open-AudIT组的直接成员. 一个属于另一个属于Open-AudIT集团的集团的成员将不工作.',
+  '98125bdc934ff8a83e11c90c22c771a2d6088aefd345011f06a1e78f27deed00' => '分区磁盘索引',
+  '99945b2b88fcbd0a1320071b0b7c795f647db6644b97792b30c827ab208b6df1' => '选择表格',
+  '119418ae7d0b50ba96fa629213eb9bc145d12ed23db3298a599ff1c1b5b32a09' => '完整性',
+  '120970d812836f19888625587a4606a5ad23cef31c8684e601771552548fc6b9' => '模块',
+  '125466b821c6448a68d22c6ddbdbbc921f6b174a620f0fcbc3d219afd7d22b47' => '以',
+  '127590d2164b5f0ea32c5acae82745fee106794176070d31dbe8c411b9464a26' => '<p>如果你打算完全审核你的云端机器, 不要忘记你还需要那些保存在Open-AudIT中的证书.</p><p>如果您正在使用 Microsoft Azure( 22 for SSH, etc. 检查您的虚拟机 - > 网易规则.<br/> <br/></p>',
+  '150164c9059e284b561f5503f9f9aabfa4a2b2313cd643135c92bec46bbaef97' => 'NMIS POLLER (英语).',
+  '158056adac9bb9db068849f4cf4a2c4658d6ace0002da80503547c0618d72fc2' => '如果一个端口以打开的过滤器响应, 我们是否认为它可用 。',
+  '168507e83067463198a5cb74f55f654adb9e61f942926a95dd42ed63ea78fc74' => '我读过欧洲国际法。',
+  '170322a32f3c35b2c61576a5553d352d7b3c8ae7086dab78f15fc891a28c067c' => '资讯',
+  '0173243d47f2fbed466ce8b500dcb9fcf19ecf7bf4c6119f031ff7f131869077' => '服务 级别 a',
+  '174045cbcaf2362cbdbf7a03f88db004df0dcdccfd2626ef6ba48e70d5a06d4e' => '可自动调制',
+  '184885a068b6ab7080508ba75b7af101ecd1677b18caac1c853db09d12e25372' => 'ip 地址 内部 a',
+  '219424cb79acf9062d3faef38e410cb134eb4691c878e100f2e5034c93abfa74' => '支持遵守法律和规章要求',
+  '227042bd12457da2ece0191553c477de8ca7004a75199959a8388f6a82b614b3' => '采购额',
+  '230450a2499dfe9d6729b5071eb850303d73fbd720e759cab5072b437bfaa9b5' => '圣马力诺',
+  '232764ed09399f9c31f46a2f8338257370d81d73f05645ed01c265747d59cd31' => '计算了此网络的有效IP地址总数 。',
+  '236593fea8e96dd589c3eab4374a48cd183a9f37e1d4b4136bbfecee8d559824' => 'Nmis 名称',
+  '245562e163c2ae00f64c31ea4b697b15f3c2cebbb13ae6a26e24ff954906f3ec' => '更新脆弱性',
+  '245753e7f66234ca27527c03c08cd06754612c07957a5c922515f14f47e4cac7' => '资产 数目',
+  '256064ca8a8bc812e0d6e3389a63435a19d6d76a200fe75d29838ff2150cffc8' => '延迟分钟',
+  '275979b53542c74c9d29a0acd110e1012eb05c8ad2eb24c9ff506d4c03392ab9' => '管理员提供了成功用于绑定LDAP的证书.',
+  '278089c7b917d3ca6849d9fddb8860c4d437c374e118128543b8b265bf5c90b6' => '设置外部文本为大写 。',
+  '300802da358d72d23cd7fc7df36488fbb30221548557373477eb3c62e59e179f' => 'tx 级别',
+  '304688a1821852f13453d4d04f4bac58eb22df95b4bedec9c8a0ab3508901abf' => 'Winexe需要启动并运行以下Windows服务: netlogon和rpc服务需要运行.<br/><br/>请登录到目标Windows机,并检查Netlogon和rpc正在运行的服务.',
+  '308073cc1d458f4f23bc36ff10714cc733fd4111f3a97f2aa46a5cf492ae928c' => '相关发现的ID. 链接到 <code>discoveries.id</code>',
+  '308638baa4817b556a0803965c12c6d6fea58f506a9e11b2ef29689dd136b18a' => '如果没有值,请提供该值。 EG: 用于系统. nmis  group / 配置. group we use',
+  '323748f86a762247e6631bc01c26fb22c63fd0176a2e1db7b0d5b78de228cd86' => '时间戳',
+  '325392e8dd2826a53a9a35b7a7f8d71683cd27ebc2c73fee85dab673bc909b67' => '地图',
+  '327444aed4758925729b85390ae2b68657bd25a54d44e8cb40da80841e86cf97' => '我们是否应该在当地添加远程服务设备。',
+  '348841ef53dbd5a64008a86be432973db790774fb28b59b0d99702a3188b3705' => '比利时',
+  '353773ebd7950d7b89d189296eed3a5430162b3e6513e24d6c5a847b52f6eb67' => '赛斯Name',
+  '372202dc15898a6cbe5cfc5c75f155a578498109f910b4e9d73eae32da1cceb8' => '从 Open-AudIT 更新 NSIS 设备',
+  '393435d60f7ea40cfe8a00e6ad32534cf9910fd7aaac830ecc1629a1926745bd' => '<p>一个位置是一个物理地址,可以拥有与之相关的设备.<br/> <br/>您可以指定它坐标( lat/ long) , 如果指定了设备, 位置将出现在 Open- AudIT Enterprise 地图上 。<br/> <br/></p>',
+  '403722e7ae421c4dede2fc30768359152ffbbc3a591d0a6af66ecc93f6e14fa1' => '处理器类型',
+  '406742cf9d161b83ed8ca9ebc1c6b291064a2beb5276370d394b62702852ae77' => '用于启动种子发现的设备的IP.',
+  '407699ec7a33f9e5c93594fe2cf09c3ed8ce98029c420e06871072e0b2c6ff73' => '网络类型',
+  '0437728bf0ec9d72f3cdef102b6c108c5caf984479a533dd83c5bb141bc97f69' => '基部严重性',
+  '447814e39929e5b705f54f5ee0c5267f70ef17525f9713c0e93583423db5c9fe' => '设备种子',
+  '456195e3be7567e03137839555fa8eb602f494c5e215c02ca78a7053fc65af88' => '您描述此连接的状况( 已提供、 已退休等) 。',
+  '462904ad68e498611c8c3ddd2b04b6a75f4186de7552ac43179cdfc1a004db85' => '如果我们匹配一个基于其DNS fqdn的设备.',
+  '463712fd9b2e18df9af6079a55fc518ecaec7b468c7a921afcc7e2ce2d7d829f' => '某集的文献资料.',
+  '472590ae974d4c1f44b3780df0b152d9119f076c61bfb3e8cb6affd7889ac0a8' => '供应商',
+  '473287f8298dba7163a897908958f7c0eae733e25d2e027992ea2edc9bed2fa8' => '字符串',
+  '490126ca2dab2b6da43d21c1c1356f2f0d1393725d8895d6112b1f118e4c08b4' => '云号 log',
+  '505306fa75f5188754d47c4a36ae69fa82fa015bfe2c16abb9c08cfbad61d7c0' => '最大大小( S)',
+  '508137bddaf470dd3f01061f316058f3cd31b46b27bdbcb52dd889bb6f9cb33e' => '您的 PHP 版本为',
+  '508731a3c5d375cb49d07a2b83439abf84a501d75f428c8838ff01b69d21b412' => '秘鲁',
+  '517184a96a2ea93c1ba3016f84643aee0d5b31fdf4e34a5706aa35e895ea038d' => '匹配字符串( T)',
+  '528689ea664789861547fa37e3dc83cffc57abb22c5def6c97f43cf4aaa65664' => 'Os 安装日期',
+  '0540835ebef77f0bc8b4b72eef72eefb6fdcb20fd556522bf3de641eca044ce5' => '核心数( C)',
+  '583201c1efbf30eb13b79352ab6ebd35103ec347953d8e99858a57b5bab3dde9' => '加纳',
+  '601025cbcb090d2c4d0e192d08e7469bc8d7e57f0cc09d84e0bde83df6a8aa0b' => '解锁',
+  '609494d3ba48aca2cfd0799de99a3638275f62f2a2769ec06b94a9203eec4245' => '影响 保密',
+  '611025cdde0afeeaae379492b36231ab70eb0f81ad6cb59f11cb807ad1ceb09f' => '马拉维',
+  '632923e498dcfeb756d574b1bb677fc1a76387888c3547a7d3162003e8d1de9c' => 'id 数字',
+  '634768dae1474506e4bf7d341890542b09987d7e6aea5d446c02e37581a56954' => '线条',
+  '636020bf5d27797998003f2826acd6957aab1fcdbae8d7993c3157df3f5d8624' => '命令选项',
+  '637982b2aa68dbe89c17f9fd3eebe8396b7154332b530b0ea6f334c9cfa5531a' => '船舶日期',
+  '641054b4ad6367c115aad5866dfe0e2f5fb2bc45ac483f2a286c731c24d79d41' => '你确定吗? 这将重置队列处理计数, 并可能导致服务器负载 。',
+  '643507ec5439d37a9d8be0d68e2e69fe77a67e97ae1a46a013a8fae638c3c4b8' => '确定风险处理备选方案',
+  '646078a1d3721d8ff12c3ceb6a62ffee360b3f8bbffef180c8288159f961859e' => 'SNMP v3 认证协议.',
+  '666067dd376e5d4553b8fd554f855855819ad213ae825022d2a32dfa28431115' => '问题',
+  '679814fb1faec359363b11f121e323c85efda458b93272ae27831916c07f6b45' => '最后见于',
+  '681043b314bcedd2d426506a9c8b948a84f358bd654652e1df7a6e71cfc3c870' => '任何需要的过滤器。 被线和派图使用.',
+  '683385b36a18ec333d90481159cd278a24162a63ca849ae0d2bd7b1dfc1f2333' => 'JSON 文档, 包含默认设备匹配选项上必须的属性 。',
+  '699522a9ce196e74ab71a2e7679d32647c166176bf85b126e12095d9cc59cab5' => '证书  文件',
+  '713933db147a28ce612f2468dfed2c34862a4c4b49ab2741f02cdc9b7216617e' => 'nmis business 服务',
+  '719277ea745f3e594470037f155b8fa2c4045d24a787972df4af761023c3a6e4' => '基础DNA',
+  '0720224cb185fb4597b8a3cc22c13613cd0a4e1b61bee1269e120852c233b274' => '我们需要一些资质 才能有效地和你网络上的设备交谈',
+  '728140a9d8a993e2e3fa2650e202ca8b842cdaf680e5c2ca56e9f535b9906053' => '支持类型为 <code>subnet</code>, (中文). <code>seed</code> 和 <code>active directory</code>。 。 。 。',
+  '728905ec6958d90a84d3096e363058d286dc1410d49e19193a5ebb15d73a9e1e' => '密码( L)',
+  '750639eed1d1e0953ee05e76544a35e0919b6bd103cb0e90f961838519a4bd59' => '重新定向的 URI 是',
+  '771139a20b8180dd5219e8cfd78231d9f075c4ee307dce19d1bcdad68e9232a2' => '肮脏',
+  '794308ddc9fe8f3a81546b4f31f88ca4546c763da512851416594f62269ba0f1' => '圣赫勒拿',
+  '809742f36f2c3acb7cf829660e254ea50c915265e21dbb7008b5c88845a50fc4' => '创建内部( C)',
+  '823412d1eacb67956220e532959f0104603057c88704863ca38e7cd188fda812' => '政策',
+  '828422cdb375cfa219871e24ec055b6e6942770616cb2ccf44e2e2ab2607670e' => '隐藏审计窗口',
+  '848123d14f84faa22d3dc567c6dec9dd70151f208eff68a1206ed28010ea2df4' => '原始内容',
+  '861860d1e1a8254ddf2d26d56d6a41e1e6c2515e0b3cb2cb26eb08a807095dec' => '添加组件',
+  '877163ec0f4269496e7cc50ced6900136dc5a9053adfeff6d6eb71de7d613206' => '无用.',
+  '0889113e04d3203f0c401c17c0fd8b352b740dc607433779d3edcaa13320b001' => '类',
+  '894583b8fb98ecc1949d791e9581c5069ea4ee9257c8f1788aff5db4145518e5' => '实例类型',
+  '900703e39d59726b04e7985551778279dfa679bc837225c6ae5e22c7c94d55e9' => '选择设备',
+  '921942d8172b4539e6c5dbc72a31bb1f1543e0d2e3ee809664839463ed19a81a' => '删除 {收集} 条目 。',
+  '935018cc4153102a020fc749e7565e9df5c51a4ddeba6f74694f0ebac1ebe5c6' => '摩纳哥',
+  '938904d91c6547b5f985576e17c12ad41d129b8805daa88453b5e91b4a712ad4' => 'NMIS 字段名称',
+  '982004c862123e725aa668a3b06846c355465d338a4bcbf1f57d9dcb891bb5ec' => '等于或小于',
+  '984702f4585e17f93c272de1bf1e3939117bba70b396765dfe12c90babaf1381' => '对于种子的发现,我是否应该只在私人IP地址空间中发现IP.',
+  '992779f9164ffc20370c25f9090e74ac80f55d0f2a9ea4fcc304cf5dee9d5be5' => '<p>Open-AudIT由FirstWave以惊人的支持水平支持. 如果你更喜欢一个积极的支持者社区, 也一样。 你还能在哪里直接和开发人员交谈,并在24小时内得到回复? 用其他产品试试看! 惊人的支持。 完全停下来。 你需要支持,我们提供支持。 没有如果或但是。 广大供养. 期间。<br/> <br/></p>',
+  '1030955eae97fbd789e66ca299ba1d1e996724fc0564435345b6d5de7e5d632f' => '列表( F)',
+  '1193284afc17bc21af5497f1a826e185fcad51c77620927adf7a8803d8736fde' => '斯克西公共汽车',
+  '1331275bc537b4c2bf1e46f7275677967515342e30b572e6852fa6f51b831fe8' => '标记',
+  '1503916a2ab2b0fd6768d3455fd8f2d9aa3b31333a8507dadcad983704a975d7' => '标记',
+  '1689965c16c81303bef4ef1125a22ae8871f6e445fe757fd86aa0f018aaea61d' => '数据库服务器发现',
+  '1699521e5c81c3f856ff963b472413507386308df961e5f99d7c9f292a3b431f' => '光学',
+  '1702231ca86a075b2d5a3ff482dbdc87d0eadb363f5300431d50c918d346d33f' => '曾经创建小副文本. 必须使用 <code>secondary_text</code> 名称。 被状态部件使用 。',
+  '1709305c9fa966d14f56f0da3c3614bbc10adcf53d72f90341bb96d24afcfca3' => '职等',
+  '02036421b00543e45bb6b32586199b3174efe748757c104cd2973494165b786c' => 'dbus 识别符',
+  '2144341e60d1e7fa5af686c1e10913d33e6b6d8a4bfa8f13b8b826516cf934d9' => '严重性文本',
+  '2166708c9dfcc08933b559423f7a0c1f8426edb7fd349c1ae6962ac9a5d01020' => 'Google 地图 API 密钥',
+  '2383897b6cbd47c8b26262b2879d9abee523d7d543e86baf7f58d5fe0703aca4' => '初始登录证书为',
+  '2443632d1534648529840fdd3ac9d4a59ee5b47036a4a7c32de2df419ba85679' => '墙口( P)',
+  '2874498f734709bdb2ab8534888d8e91a9182a4556896c5cfed21c271eef8141' => '叶回应计数',
+  '2876814bd73accf51719d41f10f51e597dd474da7099427ed609ca5ee726fbb5' => '整数',
+  '3019947b6daf18b0534a15d8c7ac30ab587e36cc93fb45a6e7b750348006d620' => '宽度',
+  '3026480b0e4c71d76e6bed9b78e0756606cd76ac3ca3fc2123a0698bae37d65c' => 'TX 简介',
+  '3316348dbadfb7b11c7c2ea235949419e23f9fa898ad2c198f999617912a9925' => '读',
+  '3411059cb8e0660e29dd7a3737e65a28b08eb01524a8ebc3d4168932649f23e6' => '西班牙语',
+  '3536171d1a17585536c27fad43eb749c81b1939c8283a70da83ae03042f7155d' => 'rx freq (法语)',
+  '03606816b5542af473b705aa3e7c8920bbd56b5f1a7cf21da1d57b7a69d084a8' => '对于种子的发现,我是否应该只在选定的子网上发现IP.',
+  '03648550a11a5eccf66252c37594e2f9a9bdfffefaa9372bbf9f3d32a4a10b4f' => '查看相关发现,然后单击右上方工具栏中的支持按钮。 这将提供发现设置,配置项目,发现设备列表以及这一特定发现的日志.',
+  '3806505a49330a49bb9a34b8460cdaa1697fca85aaefa4ae265a1927d445128b' => '菜单类别',
+  '3843971dcfdee5083e6289e1bbdbb003e538b5a8a668fc43ae4f19d415ac18a2' => '身份证',
+  '3844108a13d742a9e15a8eb95deb11cf40bf6c5fdd478d7fc3204d407b213a4e' => '举行管理审查会议',
+  '4080343ee0fe2dc36867973cd59a1ec0a331c7323cfad8af4ea214367dcb7974' => '多哥',
+  '04136060b40fb36a9e7633c5b08dc63a6d72179711eee10c153dcdfe9544ed52' => '添加图像',
+  '4275463a86d05eaa4ac2ceb995f7691241e62595414dc9b996739f7455c6544c' => '匹配进程',
+  '4316009fd051e4c7b40934e44bf4548ff62b89860547cb22716884044e844812' => 'Ip 已审计数',
+  '4609682a2f3d7a64f456583019c21a2cf89644d62ff4b3b4d59ac3cfad720a2f' => '突尼斯',
+  '04744688ce12b1cfdf78479603ba620f1c8d02f9c15a7c520f25b418d5632e70' => '为什么只有Windows服务器?',
+  '4759498ac2a719c619e2c8cf8ee60af2d2407425e95d308eb208425b2a6d427a' => '创建',
+  '4790277aa10cc1d7e5611645b9b6248f6ae72ecf40156932a5ea2d6849a602eb' => '获取',
+  '4932324d5942c0bb64fbbe0c45283eb493c1cc27b1e65d4595d6da5f2c16e234' => '已设立',
+  '5079972b17a7f425bd4ab8f6196149e778549b17fccdf38343cfa92a19ea71b3' => 'Dhcp 租赁期满',
+  '5169844d9514ec13b7fec3d4f64606814dab8d755c4707afd4c7468ef2b88ed9' => '序列( imei)',
+  '5258789a68455c2e93fc7929636b8b4138cb9d617291ae122d4a65bf1c0fc2e2' => '限于百行.',
+  '5548809e64f0795e74bb022a02427359544bbb44b31798043332c59cb430edb6' => '智能状态',
+  '05887608c7c6599d86a9eabd31256a8584927e9b2174ab0087e6cb83ee698e49' => 'Open-AudIT提供了许多内置的查询,并使得创建自己的简单.',
+  '6201111b83a0cb5b0922cb37cc442b9a40e24e3b1ce100a4bb204f4c63fd2ac0' => '和',
+  '6434463fb5b41861d4eff034ddca24370e2a72d33a81651bce0734a3793e2621' => '证书管理和报告',
+  '6593582d4a63cde3e154cc86fe7f471b31eaa1461a498055abacef0996e2d82f' => 'SNMP v3 认证密码句 。',
+  '6897866e4d568abe8e55348ec16dba12436d17dcac6e18e84c2d7f647b805d5e' => '那个',
+  '7105532f41a68949ab58f67866b692cf447b95c8914595cb092298c49c29a3a2' => '改进 机会',
+  '7168541e55b32e5f86ec2aa2dc641879dc21ca0bba396945b4d3d1823e5db348' => '运行您的发现',
+  '7175517a370b5cd2e664e3fd29c4ea9db5ce17058eb9772fe090a5485e49dad6' => '或',
+  '7458199fe97a184002bfd3c42bae81371f0ae2229b5c0a257a9bae77e4f4eda8' => '法语',
+  '7577408a12b20ffd8d518087ea2e166c33a5a2037d12a2c90871b4d3b61a7adb' => '逻辑计算',
+  '7596704bce7e59aa1e1545884e746aa94dfbf78dcf0f7053641231bde8be8652' => '服务标记',
+  '7624770c95c42972aa7874a3cfab945166c547ed68b3910fec839e0ab1a6f7a7' => '这个错误表明所使用的证书要么不正确,要么不存在,要么没有足够的权限远程登录目标Windows机器. 请检查date=中的日期值 (帮助) 校对:Soup',
+  '8290035d4cf4b73639357a7251e0192ebe5b5242a6a3e3148f764c10e73291b2' => '未设定',
+  '8445639ed05e6a2b80f488f2e6ed13dfa20f223adfe5b4eaa4e5c8b0696ca492' => '元( L)',
+  '8734542f9c9028b77a73ce2736b2d8073cc1515957d772aacdd33b09e032fe9f' => '微时间',
+  '8761269e267c6a7b1e1ac816fabf6bdcfcd18a2d69b4256630d3a9923003a374' => 'db 动作( A)',
+  '8806947e9b6725d3b590a476dfe78030ae47f8fdfdd3868e3e8e9f87564ca6f0' => '已采取行动的日期',
+  '9037744dbf6a9a920c111eb544d0ea2d0059d24d4a9ee6870924846674db8cae' => 'Web 应用程序路由',
+  '9061383b8e228ef3ac36ddc06d128d0fc5c93edf924cefb5a65392f6104798bd' => '回应',
+  '9065052ba1d419268bae85e6ec5a310708a1b39dd02181fdc63da715c5508088' => '月份天数',
+  '9234390e88ccdfeb35c9845a1115cdbe63d2bd811b2792daa765377b478277a7' => '基线 政策',
+  '9339428bab9669210eb68e0aa14047d593eafc05255f9aee66d4967f542ade0b' => '默认组合',
+  '9389219cfc9f6dc34308636fc96784fe2ddda80f9a168c15c289212278e1e712' => '设备正在设定基准 。',
+  '9555664fcf433126481600df355699e290fc5aae1b758439968880b973f1c256' => '坦桑尼亚',
+  '9889853b3309c30e46be944efb3853c4b7c0c541a3f1787dcd0ec9b3b4ad2c99' => '希望这篇文章缓解了大家对开放-AudIT和安全的担忧。 如果你有任何问题 请在第一Wave和我们联系 我们总是乐于讨论你们的关切和需要。 如果你的问题不是我在这里讨论过的问题, 我可以在这里添加给未来的用户。',
+  '10002859ace9985449d177bc2612b74ef5aaec3c8dacef5c62a603819b560f2e' => '制造商',
+  '11710054a0ca0c716cdd3d308fe777dd67d4f70eeddca7911ff3f6e183cbe873' => '用户位于匹配此 Org 的 LDAP 组中.',
+  '12474878a87f18c58f34152a3cb7d6bd641f293e9f3a47a862875980449a22af' => '查看',
+  '13189133c3da40057aeb4554314f976cc2baf705e2d4768507fa5f71524dbe5c' => '应用,操作系统或硬件.',
+  '14773817bcf0cbbfef7e4d691c1da17e46cbc7e64de47d30e0f10f38c9df5e33' => '子类型',
+  '14934434d409b13a34cf807f445137e0097ff0ab1edafd9e3efd74784a1e814a' => '可编辑',
+  '16271017fa01b662f6bad70da1ce0bef786b40971b9e91d03f6756b21f52e77c' => '由审计 域或发现 域脚本设定. 不设.',
+  '16477688c0e00699c6cfa4497a3612d7e83c532062b64b250fed8908128ed548' => '蓝色',
+  '17088681c2f4560cf458d16f892b6c9097f9e9834dfd51d3b4cff10df63a5fac' => '指定设备到位置',
+  '18507519c552a7b98b138ed04dacd2f7d126534fcafea5deb68b496316e814d8' => '子网络',
+  '18536631f0bcd32016209286d21557bbd6016d3b140a96ab98135a125ff69f37' => 'SNMP OID 编辑器',
+  '20852291a21fdc26e87e0432248fc45ce8e72598d387a1441a9b5640ac0f8e74' => '这应该具有全球的独特性,但我看到一些情况并非如此。',
+  '27512524ac2cda824663791a56d1881370379051b7476917616486bde0b5268d' => '列出设备',
+  '030241339cda0915024342f9b02e1ccf155edec4546cf058bd878339bfe5ccb8' => '资产识别',
+  '31706432c3a10fbf62adb7387c0fb77e4ef955d563455146a73bc79fd84a748b' => '环境与领导',
+  '32381523e63197c929b67f793a8098bed0ae3a6fa902634fdbcc6fa4567f3346' => '投入',
+  '35443277fe297662cfc34d304b04f2f5fb2b853a8292901001ef6232de91a7a3' => '排除',
+  '35531179fd34daa6501871dd483cb2bc428655b5374fec456251c7ee2de5f709' => '实例选项',
+  '40580669c199f84e6b851d301a98d11bdbccfb45e5519518770d47e27390e25b' => '可执行文件  id',
+  '44471273acea0d1961bdb4c17c891e7ed9e96397882ff46c07b32a9475afbcfb' => '需要许可证',
+  '44689383aa14e94ca006bf4416a0255e60c1500f46a902bd3182923d512dc1f8' => '购买 成本 中点',
+  '45548599f7e81ce3ec572af25a90012684f4dcc148c6e37090abe40fd48ae335' => '启用窗口下的特性',
+  '46610887a7913b54a6b70e7dfaaaab5dec3e7c280521ab981f03e5d63a89279c' => '许可证',
+  '46643516cf406032a4684ff11b63acaa6f28268aece7862342ea3a88a008389a' => '审计状况',
+  '0048366353cd314e71ee262dd20ba7d677fa408214f73e0b371641742ae727b6' => 'N-1级',
+  '58003580c63f8f9e3a21b9499b606df237081cbb9547ed191540387d7a8a1961' => '内存( C)',
+  '63653260f45f4b6694e3bd67b6e1899d3e55f8bcb0f9299797d8a7b7924ad602' => '云名称',
+  '66077575ad3a43dddf1693c6b87e95300b28c09e67816fe8dd41c5781913a7a7' => '电袜',
+  '68321222aa769f6cd18bb364242fcb0a7df44c3e1c91b8500e2c135f685064f6' => '学前状态',
+  '70130591cd05d5a4d85da77b92db9ef968b5471f7c6eb0334cd953829ec1bd22' => '流量( P)',
+  '70210346d4d0fcdf9d6d1fd26fe42c01ce307abb0a59b96ae28b07fd567e8478' => '我们倾向于使用Google Chrome扩展名为Postman来测试实际的休息查询. 你可能想安装和测试这个。',
+  '73525323d9e36668c6bddfb22d95cec11d457feab5e39865132a70ee2626748a' => '$x是一个数字。 这么多 LDAP 条目都在 DB 中, 并已检索到 。',
+  '75666699b77db631f576041e8102a55b46758c01b807eacae0f170930ab59b3d' => '乌伊德',
+  '76318525ca68d5dd1d1ad3456ebcba6b13ba9c99a9983e08e6444ec81e86fade' => '在使用网页浏览器时使用格式选项是有用的,但您希望看到JSON格式的结果. 添加格式=json实现此目标. 通常一个网页浏览器会将其接受页眉设置到HTML,因此在这种情况下,我们返回已提供的页面. 使用 API 检索 JSON 您应该设置接收信头到',
+  '81020087d24465248d8c7463005005455341bc080944ae400799427c56a6f589' => '社区和专业用户可以在配置中在全球设定匹配规则.',
+  '82244417f956ac7c599f191593f7e441a4fafa20a4158fd52e154f1dc4c8ed92' => '电子邮件',
+  '83256550b872a01904c09cff16aa7a84cba96042a873bc2eeedf1881ec6fc4c5' => '已安装( B)',
+  '084504165b0775879a4a0c9b8dac6d58a0d205ab44be6d33fe4a96191f039a61' => '马来西亚',
+  '084921651d91ad22bc2810a1178269de090bf7312069a4c7b9f04eb6595a3a45' => '最后一次进行这种整合。',
+  '085154084c7427596104bc42f51f59f6d3ffd3d5f49f098210c20449fb7b2c71' => '任务',
+  '85536978ce37f7dc23b187501b6ccc2cf9fc7ddcd08d84e70fa1de7411c7bb70' => '物理深度',
+  '086889353a673ed445064651f73cdb61d55348f7340947626de996310b1c8d8d' => '微时间',
+  '87931981e70654fa7768d1834f8f8b1b2994bacb1ae970f5d0b6cc597f371642' => '今天找到的设备',
+  '92231702e8a4d3227903d0f0ee4a8f45476b55d934b71aa83c0da6ebf8a02b39' => '维护( L)',
+  '96173666afd5359e266fc73c039970e4ae37c86407e16c9528d699b2d86c8678' => 'vm 服务器 名称',
+  '97150541b2fed80064ecaa7a20d9f01e9120fd80db1a03b9f56285d91b1ad931' => '想知道更多吗?',
+  '97411734a561029b611b7911454927882ab2e3f2a9c9092e8cab4b9f9cf9fafc' => 'Snmp 版本',
+  '97862730c3a13cd957b766b03489cdf46b415e9d465b67812974158d631d6107' => '开始于',
+  '99452646e34b69704c9134a093d5ce5af823cc6d4ed3566fe8ad3ba1555057ae' => '压缩',
+  '133001949a45cced739934ce873925ba218b8e7d424922a99479f55fdf08acdc' => '具有内置角色的Open-AudIT飞船为管理员,org admin和用户.<br/><br/>一般来说,作为Open-AudIT应用程序管理员的用户本身应当具有管理员和可能的org admin角色.<br/><br/>用户可以扮演多个角色. 许可将在最允许的关卡——IE,如果用户具有用户和org admin的作用,他们将能够创建位置,因为org admin给予此许可,尽管用户角色没有.<br/><br/>管理员角色可以访问集,如配置,数据库,组,ldap服务器,日志,查询和角色. 影响整个应用程序的全球项目。<br/><br/>org admin角色通常允许为包含org id列的任何收藏创建,读取,更新和删除动作. 几乎所有数据,除上文提到的一些收集资料外,都含有 <code>org_id</code> 栏。<br/><br/>用户角色一般只允许读取带有 Org id 列的所有项目.',
+  '145475914a214d9fb10ec3351d9ed804160f9dd565c71d263f8335d9baafdb73' => '风险 评估 结果',
+  '188105584faee80d61c40a1ca1a7e824633a4a2b744f11b383f14286da5331c6' => '斯威士兰',
+  '234893420af79632b5f6de75713228b84bcdce47a9e72739ca165142fd89bd26' => '提供电线板 <i>一览</i> 对您网络上发生的变化有重要的可见度, 以及提供设备类型、制造商、操作系统等等的快速链接。',
+  '0286249762f7c94349cdc0ba3bb2255baf9a80036e2193ead1d77696f888582f' => '自动',
+  '333178788eae3e0b14c9b07bbbb6232bfa4689c7f134eeaa9daae60aba96de53' => '目录',
+  '337912045b0751c5d7534eea495905962a90eca4f6f3f8aeac3fd5dc1c188287' => '制作我的默认板',
+  '394295503eb00f3b20bec11bb36bd803f05ccccc74b1ad5d4216cebb940faee9' => '使用一个 <i>登录方法</i> OIDC - OpenID 连接和一个 <i>应用程序类型</i> 网络应用程序。 单击 <i>下一个</i>。 。 。 。',
+  '582485354cdac13eb58fcd6eb29d6d03cd5b2f7f4719c1e4f402b7f908a46e88' => '设备类型',
+  '582967534d0f909d196b97f9e6921342777aea87b46fa52df165389db1fb8ccf' => '输入',
+  '585495035e00450428ef2c6c95865af3846560f210e8d1bf0cda41f7fe11367b' => '扫描 UDP 端口的 Nmap 顶号 。',
+  '647294383b2cbc24b18f629498fc7c6f61d3819fb42a2287e93305aaa01b74e7' => '日本',
+  '655362934afe26ea73a5ba350cba9830010cdf4ef836f830aec97cec2c714cff' => '攻击( V)',
+  '713166971d730f81fcf8b757f2ea239d1a0360d9f74e8f5afe60fba97105879c' => '命令',
+  '819123146c09d7ef385cfcc64ef21691f42d9d4520e0af31eead156f43d8c640' => '基里巴斯',
+  '822041757fc756e53a79b4418fd670739f4276ee479bbc959e8d480699fc9d80' => '圣多美和普林西比',
+  '838557924a5cdfb2f10f233635223e79be8443aef62f9d176cfe18787a2e8b03' => '备份',
+  '865514682d0132abd96594e2eff0ac8d379e16c60c7def0ee5c5f220ed3474ef' => '先决条件',
+  '884571008a24d553eb4f1c7b408c55a1cbcc0f74f56a747a2aadbd669fe3898b' => '<p>许可端点允许您跟踪您设备上发现的许可数量 。<br/> <br/>要创建一个条目来跟踪您的驾照 <em>必须</em> 提供名称、组织、获得的许可证数量和软件名称。 现场 <code>match_string</code> 您必须提供您想要跟踪的软件的名称,您可以在匹配 字符串中将% 的标记作为通配符。<br/> <br/></p>',
+  '966893663f6585618aacea8089f7162e9c31d35147e450458ddef80a38032c55' => '任何设备在运行审计脚本时都会被指定给此 Org (如果设置) 。 链接到 <code>orgs.id</code>。 。 。 。',
+  '967359244a592ad0a627526d32c578ee702b719d64ec502c85b82009a15a1f11' => 'Dhcp 服务器',
+  '971245821c4ef56157a8a08f5cbe00aff3f99b9d83d1d64e572a8244ef9fe0be' => '测试分钟',
+  '1630970636aa4ad2dc3a4904114f29fb72bdae71d27ec3149f3b22090c38c918' => '无效( F)',
+  '01739641296ad700234c7ce0b3bd846a29f5d8323c75cdb5b0589b6606271b18' => '基线名称',
+  '1817546456c1fb77c088ab68314dee3a693d96cbda9eb2cf3c25763f540b84ef' => '命令',
+  '2107058352cb85cfca48d2623e327505bad6cb6a6078c292e8884a87d60a5845' => '更改编号',
+  '2975104784a401e3880e2215550e9490eda7e67db5fc2b35e1a244acb092ced3' => '网页',
+  '3153425194cfe179628d5e8e5538e885cc5c508e0ed4eb9e39201a2373f66a67' => 'Tx 级别',
+  '3664895579f0a7e68c4aa09c91316e20239bc74499010e6423ece40cad7c28f7' => '导出',
+  '4691492179d2208993976d27d343bd02964068569f241d6061116d7df6d4099a' => '格鲁吉亚',
+  '4748930045a1bc6c83639b634afa8a7609481d0b9c5493300bb7f412c052fe91' => '准备每三年重新认证一次',
+  '5131655784ea028501bdfc28b42be2d86c391983c2b30872f5336ddf5bf8cd81' => '实例标识',
+  '5845797983d9f81cc5b30332c9cd21e932d59a82e4ba5673cfbe6791be891089' => '我们是否应该根据其序列号来匹配一个设备.',
+  '7114285570afe0bb408e76798c055d0e316fcd8ac7860259853a4bc8c4eded0d' => '替换',
+  '7873288309f1d63aec9a1adcf6263d6aab7e4f9c1bcf0377dc2bef382b54bd1e' => '马其顿',
+  '8994687843a38376e70bf40df5ef5160f91343a895c62515571aeae973214132' => '赤道几内亚',
+  '09662211209d51fe9676bf81b460375737dfd634b626a2ce9678365ea7af25f2' => '发现身份',
+  '10436829032f361a3de50048de41755140e581467bc1895e6c1a17f423e42d10' => '中国',
+  '21378545892f1fe2b0f70fd49b619f6c4b326f2748a03d23d9b0220053222d9c' => '出版商',
+  '30740008677c5150f8c2eb8543e06c4e8c23573f58838c66b461645011373ade' => '以审计为主。',
+  '32824113838b8c2fccac614b9e80e027a8e5ea5a328b36c5107d6b509d938441' => '根据ISO 27001要求审查目前的做法',
+  '39761911205b911c9662874d2c399459fbf01e83deea791215b4d43f2a73c337' => '行动指挥',
+  '45855688011b856c016875ad9125d7fff5e6ffbc11240a6bb75a25931fb3cc09' => '俄罗斯联邦',
+  '62010383813a1b588cbfe1798acfe4531dd2876b158c043e4f9b730b75c261e9' => '加速  a',
+  '65659145569b894bd67d06e685509c2decc5b2ac5e18700c085a253506b0fb75' => '通知',
+  '80192861821bd115e6bc5ef74c24da7e83213e5566da2f032b0ce2b38e6d8e19' => '设备 ID A',
+  '90901557803fe62dc0d69db128d5e189b8e80c4aa5280e8534353459a7a80621' => '一旦你拿到你的云层合格证, 这只是一个问题 创建新的云层 运行发现 - 或者安排第一个/未来的发现。 确保您也拥有登录云端机器所需的资质, 这一切都是为了您而做的 就像一个正常的发现。 云层的证明',
+  '92340695899bd2d86223e4a007620e0d6502fc0e08809773634c7e0743764a9c' => '活动',
+  '95640748295fe28bd9d7b7a08544ef7ed2995156864110c5375a04526dd88f81' => '开始',
+  '096172128125d789fd74a7b33e67a33bafa5dd640a0831f83a44fd06201c9e90' => '集群标识',
+  '96879611650f80a81392a52e0db9b0237669087c4518e1c130e541a505e0eeef' => '活动',
+  '97676102139c39455853a079d7ba1f736cf256beef6743665d632d2f80c62b98' => '我们是否应该只根据其主机名匹配一个设备 。',
+  '222480204081c3f11782eadaa8c6a7f858d06e2f939912b83937d6a065695266' => '种子 ip',
+  '321909804606dd70fefc6f848521695247fe86d2e819597faf042b9bca49dffd' => '使用服务版本检测. 当检测到一个端口为打开时, 如果设置为 <i>区域</i>,Nmap将查询目标设备,试图确定在这个端口运行的服务版本.<br/>这在识别非机密设备时可能有用. 这以前没有使用。',
+  '339511427159e7ac735031ac155ed425acd92c714511beff10d38ed6104ecefc' => '模块索引',
+  '597043655349dcb6f5051a54921953b5d7f56a126ce3d1d809312e26e05406e8' => '有时候无剂的发现 不符合你的用法 也许你的电脑有严密的防火墙 也许当你们的发现被安排的时候,他们不在网络上 也许他们被远程工人使用。 不管发生什么 特工都能帮上忙 安装在目标机器上,它会 <i>报到</i> 与您的 Open-AudIT 服务器同步并接受任务。 服务器请求的最常见任务是让代理机构自行审计并发送结果.',
+  '722535823343cbaa050d74e0770007cd235ecb07db1af8d4ba7cb0aa87a5cdd4' => '密码已禁用',
+  '762655660249c474ff1834597320759cb4b07de73bf32ac2f75fb00ec491cc6a' => '<p>您的 SQL 中的 SELECT 部分 <em>必须</em> 只包含 <code>DISTINCT(devices.id)</code>。 。 。 。<br/> <br/>您的 SQL 所在区域 <em>必须</em> 包含 <code>WHERE @filter</code> 所以Open-AudIT知道将您的查询限制在相应的Orgs. 不包含此条件的 SQL 会导致组无法创建 。<br/> <br/>SQL 选择所有运行 Debian OS 的设备的例子 - <code>SELECT DISTINCT(devices.id) FROM devices WHERE @filter AND devices.os_family = "Debian"</code><br/> <br/></p>',
+  '4683241575588b55c90d851d8d994d07cbc88404a708c9a7610c087d50c9824c' => '错误代码',
+  '8485011716705c7dbe8fdf69291fa3fc11f6bc30b55262e38196d23562707ed5' => '设备( D)',
+  '39455047194062b2a3d0ecb17c88f414c46fddd754176b78d88a9956cc9a470f' => 'wmi 失败',
+  '50869662813061bae57bf73a59473ffffa379d09ee22edb6f29e8aefc5ddb092' => '创建部件时,如果选择 <i>高级</i> 按钮将具有上传自定义 SQL 的能力。',
+  '130011756125313c72f2cab730db4347e2841526d236a89cb25f38789fa49229' => '打开',
+  '853637136575897a73cba3c5fb085e8c8a2627df22983d2bbe9ff158d11351b4' => '瑞典',
+  '995979514664783c9678494eca22194a9294e38f799ad7bfdaffe7242241ebdc' => '补丁面板端口',
+  '7424982255694289cef8b475ac3ce312997403b1a29b65fa08df12d292d373f8' => 'si',
+  '84891700133626591f68c55ad06bdb82bbef1f1e6364e82c8a9debd1eaa16482' => '配置变化检测和报告',
+  'a0abb909da6241bd12bc806d8927faaaa729796edf7f38f84a90abfa6d92d8a2' => '自行删除',
+  'a0af9f865bf637e6736817f4ce552e4cdf7b8c36ea75bc254c1d1f0af744b5bf' => '路径',
+  'a0b5115d50c928fe2e889d0775f023d45cca0998ce650d605d22a725dbe7be6c' => '在菜单中显示',
+  'a0c002f91bf98dbab8b98cd9f84ff233dabcb79d554ad13ec03646eeff357f79' => '例外',
+  'a0d90b3e0ef8a0ff990b73ab700069b61e157b7e442c13ab601abe557578fec6' => '现有楼层',
+  'a0d149e5d24ff238fff329fd011bc2c070f22b29da67b0d25e522482fca1c904' => '计数( C)',
+  'a0ed18ed98940c81710d343cc7c51c8cb7e913d9223cea61b632b91e19576252' => '由Linux上的机器编号传播.',
+  'a0f7892f5d452ca230236ca13f09a310cda6d7c014965938c345cf6ee4a9dbde' => '最后一次见到',
+  'a0fb4279fe875162f25c692cf26c6fbd180fc7a35a7d7d5d7ffebd8a862bcfd9' => '通常为Mbs,到位置A.',
+  'a0fd2f9c0087b8a4f80af6154eb884c541df3dba0a41f863f89d8f2707c1d57d' => '部件类型',
+  'a0348c11ea886849db4cac2cbf3b3974eef0535258b950c30b0ab646602b9ec5' => '优化',
+  'a06daab9b1ecff54bc107b8c9513393f559ecd143865e48f05a52c02768f7ffb' => '只需点击一次就很容易在网络上运行一个发现,而不每次输入网络的细节.',
+  'a06def07d5dd1dd0ada68a9adab0f7a9a7a01022d994638c874eff3018f0fa9f' => '套装',
+  'a066ff921096d0f99b5f985b7e37a9c703bcc0db4d3409cdabf31cf6a22b5556' => '布尔',
+  'a0799f1f33e1ddc9f3ad9f53218903b8679926bb3042d3bcbfeadc8b351aa8ef' => '检查( M)',
+  'a08dbe48c27d922e5e993860df7ced7e29f527c433ae506ec942e0ec9852713d' => '动作延迟( D)',
+  'a081579e5b58b5dcf68ea1370be825355cee8cc25ea936078088583694e07744' => '接收器的电子邮件地址',
+  'a0903be829894e1fba4be02b68000cf9dce9a0369416a12bdcdd9cf7b057c37e' => '选择外部类型',
+  'a1a227743f3f7847f29c7a4e5e7399ba8473daf6597a028cb876c393d789fc37' => '选择类型',
+  'a1aa02a25e0809f2ea96a56a6e9fc6512f582e4d78b5d129353a0bfaaa5c8f6f' => '选择用于创建和输入相关细节的 Auth 方法的类型。',
+  'a1b2e9b937790a16ca9be36f4ec07bec1ee158acbcecc85bb275e8ee9e6ac2a8' => '这个特性,因为它比通常更有能力影响目标设备,因此必须手动启用. 为启用此特性, 将配置项目特性  可执行项更改为 <i>对</i>。 。 。 。',
+  'a1b942f5cd53cd7268affbb4abb675e04b443186211fde29cdbd2dadfdd6cac6' => '外部系统返回的完全合格的名称 。 EG: 对于NMIS,我们使用配置. roleType.',
+  'a1cf268b583ed76d22caf91d0f787fe4136ab6ff4f5d3231e1a8d568114df2ba' => 'dns fqdn (日语)',
+  'a1ec0565efa1059928d9fd564f5d9de8a6deee76ab4ab8cc76af140839fffc94' => '服务寿命终止',
+  'a2e85a480072b5bfbf7e85ce3f833bbf952834e68579f97e123091741a4dff81' => 'Dhcp 已启用',
+  'a2e507973f7d7b032db13b8acc2f3c9e7239b61fc6d63b0444a10907e6bfac10' => '符号Name',
+  'a2f3913795f94de4379177e9b11623f4e2f4a7380bcf771515fc562f5bfc4841' => '所有有类似计算机类型的设备.',
+  'a3a1035213d27d935f39cf44a087afa3483cdb56cd9f3eced24ee0dcd6f11d03' => '获取 Lat/ 长',
+  'a3affb0bb00c62ec03bd1b6fa4e0c59dcf84b9c830df66b7697912eb2beb12aa' => '攻击复杂度',
+  'a3b50c476732c7409d297c3d7d0e23569fee5e08318553ae76041ab5fe60582e' => '状态',
+  'a3b142af6e97cfc3bb23e409ab83467af7d16ded7dc0632be6a6a9023e49ce8b' => '使用情况',
+  'a3b179874b69a4a41f2071b10d6dea8238f81be797d63f59adbab96fdf17595a' => '处理任何不符合同之处',
+  'a3c3192d2d22f3ad255db953c7a2dba3a3eeb4f9e5ab3974494274423fa719a8' => '手动输入',
+  'a3cbd24e2ee90b32803fecf6145841ef418a1ff580bc79655c4d703be3f3d150' => '基线政策',
+  'a3d458e1bd1eda066018d8db2dd5537c9e742f02f68401457c01553e77f57403' => '经常被问到的问题',
+  'a3e1f4935b0919b346c2caf4da18078a1ebaf6451eb7f7b5dc79c11629b6368c' => '楼层',
+  'a3e68527885c6c2405d7e2619b9793932d965db297888ee5d804a57a8bfdf3bc' => '返回 {收集} 细节 。',
+  'a4a0c7e7b76ddfcad14d61b1374d83ae6b75e1add9c22d335763d145bed2e91b' => '安圭拉',
+  'a4d1b51a230492db9ae2590c006ff05dbc0176a7bd37f44dcb6985555088f50f' => 'ios 版本',
+  'a4d26868017c0ccffe2efe50944ef4211834660cca834c6e9f86dec6a88246fa' => '共享',
+  'a4ef304ba42a200bafd78b046e0869af9183f6eee5524aead5dcb3a5ab5f8f3f' => '语言',
+  'a4fe65264ef7dbb38d104b1e81eb3350f3142f3d16f32bdec39b1d9b42c1b8d1' => '语言',
+  'a5b6ce7a8cb6f4cf45870d589f8d4b45244328f28cd37e303469b16ba7f8cf60' => '示例文本从',
+  'a5bfbc3fc9b582d7cd348fea08e42963f075eb6d3a814f7ee6696fe314147577' => '我们应该使用 TCP 端口测试SSH 。',
+  'a5c7d1719e284f2c9485405d44f62d152cde9e6ede83e1a79a2442b65f6a8735' => '月数',
+  'a5f90e5cb41ee44f3a12343b376dc930ebf15240ce95b98d5d346ac49ab13f3f' => '打印机颜色',
+  'a5febee5ce0f00a0b47916c8a9cdc1782ca82711e9452b107fd2cdf548bc9367' => '通过 API 获取的设备',
+  'a6a32dbc5618ea39f6df5b0f9808e3588b19e00d5f6f96c69492e40386e5aeab' => '链接',
+  'a6b66ea852e9e6b1a101eb4cac661cfd384404c2f197cd806d7d0923df67c76f' => 'OS 组',
+  'a6d2fdbd8d707bd8750fe23e18fb8854a4fac6dd89b9932870144bb455589c65' => '额外报告和基于时间的报告',
+  'a6d32d722e8c3123a7ae414d53d48afaaca390610298f2f0785a82902d362587' => '工作组',
+  'a6e0f011e734e1d08f69d69d9dfd29ec00d35ba7ce0eb2f0ff8bad72f0f8f32e' => '每次发现被执行时都会更新,发现IP会响应.',
+  'a7bd3c24a09f74866771a2f23c6a9f90a77e8b6a2f89bcf039104d41b74e87a2' => '重量 当前',
+  'a7c5adffba608c8c20409cfb01434e7f0280ff3177a26b6f065dce547b33fb87' => '底盘标识',
+  'a7d5c6f4669eb3f63ae7fa3f604711489b20eba3b0b3e98dac66991f630e3e57' => '证书密钥',
+  'a7d355b26bda6bf1196ccffead0b2cf2b81f0a9de5b4876b44407f1dc07e51e6' => '墨西哥',
+  'a7dad3426f01e0a4a16460f009ac97474120a0ff3f14d82100a6ac1e29396e71' => '审计结果投入',
+  'a7dc49e3c274c02c388132a2ab1f8a8564463a19a7e822ae1fd6ba6431d82b3d' => '注 - 关于日期时间格式的更多信息,见',
+  'a7e4d74c4d4fb2234fc45c312989d289ae99cf3f383061660e35f8c2c0c58ca2' => '如果您添加了设备类型, 要显示相关的图标, 您必须手动将 . svg 格式化的文件复制到目录中',
+  'a7e4884ef4700466aeb63f4cf7572685a38329079a439641e68151501efc2338' => '输出',
+  'a7ec2e0c782160b6cabef383f15257273da376099c0679abc1ab3fbb8c5868e8' => 'OpenSCAP生态系统提供多种工具,协助行政人员和审计人员评估、衡量和执行安全基线,包括开放源码社区制定的各种硬化指南和配置基线,确保你们能够选择最适合你们组织需要的安全政策,而不论规模大小。',
+  'a7faf0e239afcedd4f824356a01bb31a21053f4edc2b165557a9e9c68a7cbe74' => '单击下面的导入按钮,将 Open-AudIT 添加到示例设备数据中。',
+  'a8c66febc9a0263878e0d273404e54e009f4d482d75852b714492825738ae615' => '图标( P)',
+  'a8fe592ae06a1fd707c6802979cb3756125a56f3c7fb7fa191752b3da1a523b0' => '结束( O)',
+  'a9f4b3d22a523fdada41c85c175425bcd15b32b4cd0f54d9433accd52d7195a1' => '回应',
+  'a9f21d07612492b132806f8e5ce88caf9e2b70fee91e94f1ad7e97190019ea02' => '瓦利斯和富图纳',
+  'a13abf819d8f5cfd0e9faa3ddaf0d19970977f118f3c9bb3385659b7f4260541' => 'JSON代表构成这项政策的测试。',
+  'a16ab0938dfe761aa793cf3e0973159056d0977d39682d0ebc6c6435f3df73e0' => '数据库表',
+  'a17b652dfac58df0c1f8a3da02ab955862f5b822f3850e511573d835a43d1dc1' => '监测和衡量ISMS的绩效',
+  'a19db4951fbcd4cb71abf080d03aa174e0e0a821085e70159975abe4f1c32c4a' => '网络',
+  'a25d4af580dbf02a3c3bfbaebc6110507216838ff045861fc9d5b043e2a8dd2b' => '请求方法',
+  'a29c2123a01df1d0febb9d308a20d8a2fe3d40a91ca8b1294f59f08f9773ebea' => '可执行文件',
+  'a35abcd6dac9a2e5c1d7d6a58b9bcd2e7b00cad33a8aa63b75766f1ba6ce207b' => '图标',
+  'a39b48f602c2b8cd403eca61331af5cd8108f8391bcb24a263f23ec54f871e4c' => '购买更多许可证',
+  'a43d3d62d9676070ea979d6d979d583eeaffe3855bf83ca633698dcf4a82d5a1' => 'Dns 服务器',
+  'a44b394617674f048f3cdf9f8de62cafe84ccfad0fba90b69d43ab1cf85cb7c7' => 'Open-AudIT 安装在主机上的网络目录(需要后继斜线).',
+  'a49e4342965a3738ccce1416495f711a8d3ed45316584f9b098d22311e7cbfc1' => '政策细节',
+  'a52ace420f2175d08b1577a1bea5445e36801229c074ef9ed6c55a73401fd9c2' => '全体',
+  'a53bcafb67d960dfa5c39237f0ec8ed84f32b49ed717e09913441d86ebaa327a' => '电线板',
+  'a65d2d0d50a4d789000817005f72769649ccd19ee838f799aca5e925a27abf1d' => '活动( D)',
+  'a66d8970e569a944234cbee8c414357fa6092c1ab779fbd637433f23e2a8abb8' => '8月(半天)',
+  'a68eb59b28e59872afc0869a9d067f91293357cdcc74f999f153b891856915f8' => '为了启用 Google 地图, 您需要一个 Google API 密钥跟踪此链接并登录您的 Google 账户,',
+  'a69c4dece144a46e40d430726395533d8f335a7d601d8ca292220b3a4a7faca4' => '储存',
+  'a72aa597fe28f90a594ed6eea021eb30123e7bcb0a00cf24adb73edbb0d580b4' => 'FW 修订',
+  'a72b8f60518cab487275e93263d5902fd4e0e7bc5b34daabeb4edcd419373929' => '选项 # 2 - 更改翻译文件',
+  'a73a604fb8699ebacafbc753cd49323f125c75eacf1b8f7ae7fb7e944cf779ab' => 'tx 功率( H)',
+  'a74e503354fdd464eff1440f72fa800dcd9f4e24aa7778fd4cc02d4cde120437' => '网关',
+  'a76f51b108317fe28cfbad139a952ece0ce96a8071e3114e0e1d75658ba04790' => '请看FAQ',
+  'a82cbe39b32518edbe454c54b64f5b1f610a0ad4158b017f690d6ce4f43138e1' => '地点的房间。',
+  'a90ce38c7ad083ce01d1d0b84a9ee50f8cc468e6f10f4b15db6e07f9235c46e2' => '过滤的端口',
+  'a96a26208ce187d4acffff9becc4abaa2f0365210665b9108f54e2ff27455f21' => '将执行此基准的 JSON 设备标识组 。',
+  'a150ce22160259313c47bc66940b905a9c2196924fd447f802cff12dbb1e9702' => '构成部分',
+  'a151ceb1711aad529a7704248f03333990022ebbfa07a7f04c004d70c167919f' => '第一届',
+  'a179ca54ab2ede32982907a8cc270bb85b899aba6b7e37e130b2b364434e472d' => '收藏器( uuid)',
+  'a412b837f5a8adf2c7041dff9cf176f273f56f96bad2df7cba0bd5d23b7e7c7f' => '乌拉圭,东共和国',
+  'a478d67a3730fbf962e5769bed5a2bc4c42264f619d2e81f1253b9059c5c3f95' => '您的驾照',
+  'a514bbc3d780909dbeca59753f3bbdd4c7990962b63b9086265462a4c595b9f6' => '无专业或企业许可证',
+  'a528cae031fb19332fad7e6ce7f4ea39d341347c786ddc49a7cfa52879d9b71c' => '返回在路由器上安装的所有模块列表',
+  'a659b60d246dce8d4865d45673963de83d0e49a57e8559da98581c2bc5d7d97f' => '德语',
+  'a670c8a2c3dd4499cef1d87d6b087305f2019ec5f7cf3ac47f281db49dfdd3b7' => '检测和报告',
+  'a793ab8fcc2afce5e42b3044090719ddaff19741697d93b3b7f36838dd5e825c' => '选项',
+  'a838e998313c667a7e7e71e633c0d904ca64aecfa309f218aaaa519e5ba8ee22' => '第一阶段:文件审查',
+  'a868e2f67bcf10b8f3d209522dc5e2e7f4211df4bcfe762409510fa628b99ea1' => '二级查询 ID',
+  'a969d04ec2d003299e81414a53a2c4079a10d8f181ff0a10505a33caef8f3af5' => '用户名',
+  'a1446d34e416b68d917b75a15b0ee30f03fe0530a80ce9ecafc3de2ca451af6c' => '发现已经停止工作了',
+  'a1829fc66c3154fdbd971f78dfdf5db263f5c2323ee0753e26a4b6751dbbc1f7' => '<p>分组被用作符合所需条件的简单设备列表. 如果要求使用JSON,他们返回一份清单。 <code>devices.id</code> 仅此而已。 如果请求使用网络界面,它们会返回标准列属性列表.<br/> <br/></p>',
+  'a2012e68162f7c73e97351da55fc5c6ce5368310ac3a267860a82f4f707862bc' => 'Tcp 端口',
+  'a3863c5d7ce546d24186581bcba0b0a157db9d318d9174d46d0db3f3f38cc1a6' => '防火墙',
+  'a4177da0ffd878a5df28f4b8a760fc5343717dd1358bb5f51c23a90bb2ebf01c' => '有一个按钮要导出到 JSON 。 这将仅显示属性的设备表 。 要将设备导出为所有相关组件表格,请查看设备细节,然后添加',
+  'a6377d55265e1f167cb3c337e951cf3852172ab1947df6ec1cddbb33b327c76f' => '实例选项( O)',
+  'a6527b2eb4a96dd41fbc735c8c1cc1bd698317358a7e9693e5afb731ebb82dd8' => '症状',
+  'a7056a455639d1c7deec82ee787db24a0c1878e2792b4597709f0facf7cc7b35' => 'SQL 组合键',
+  'a7248eeb45eb1ce247f81693283e22e8b39e8a50890cecd22d02e75025547d90' => '常规',
+  'a7567ed8427fbf3ff4af1a65553af0674cbce309b37c606cad325c890b4fc3f1' => '从选中的设备 ',
+  'a7587cb80a05a6ef4e293cdcb7030a149697c2dae58e5b9e6b5b22d0662a1567' => '要发现的网络',
+  'a7968dfd7fbf9e42cfc1d5f7957de73da21d211acfa7a034aef47e59cc2e665c' => '当前以Y-m-d格式显示的日期 。',
+  'a8153b3cf3fb755a11784fa681e189d94f11e6f415f0149f9a06cbe31f619d45' => '地点城市。',
+  'a8295e08ff7a961c8983c52226d29cb036dbdb21e110a5988f6a461db5bdf366' => '系列',
+  'a9246ee464866b3bacd6a105f797d5054a4102ff192da163155e9ea99499f7d8' => '所有带有计算机或路由器类型的设备.',
+  'a9698b26bf91183d20bd495ad28bfdbc9fd92c8a85cec2938b97c2f82577f723' => '二级 SQL',
+  'a17422f0ea143f5a35fdd36fc9b23cddaee2622fb809608e8179eaa05a3df22c' => '要审计本地主机,则不考虑所提供的任何证书,而使用运行脚本的用户的细节进行连接。',
+  'a29947d5d3394702af9ac8cf6987b6d90f9717dff49dbbd3ea83a2cbb1eb383a' => '服务  计划',
+  'a57524a4eabac1a4ab0b74b09431bbeb5b0c0702cd08e2e35ce378dbe63df468' => '部件中要概括的列 。 用于馅饼图。',
+  'a74023cc4008cd5ba49b2122141c3cc35d4c7f49746ffe487efeea588f96b734' => '从显示中删除, 但已设定',
+  'a330395cc0a53ad1207736546afff4735940937564bbf75ce1edad40780d9139' => '列表',
+  'a407879d148c2d2e462e6c9a25e6b2216ee495e173b749d6e61e3a8dcaecb837' => '线条活动',
+  'a448148bd2bb7b752e3cc54ea73d3e631baae0f056d9a79a4527c2d8945e0ed8' => '由设备审计提供。',
+  'a455460f5e4dac1c44fbfb24d818d91af0ab53e6a80c4571097fb200dad5e7ca' => '匹配 Linux 设备',
+  'a506322c01564bd0219b465ff3dec899b0aaa2bb8dcb2d8c6bff30b9eafa3bd1' => '最后一个( S)',
+  'a564371ac0f23840bc76bd564bdbbd02b32795a1583359583795698dafa8d3c0' => '布基纳法索',
+  'a580905e9086eb3a1f01221c5ac1519f5880684293ec7460883ea9367b971c11' => '该应用程序被替换。',
+  'a840405ec063a57cfad884363a05acabb35af9de0f5f2be0589502338f084f7e' => '运行',
+  'a37826217f6f89b1cb52b0dc97a3d0ed43c8dd8ee81852e272085472504d6a79' => '匹配设备 - 包括',
+  'a56145270ce6b3bebd1dd012b73948677dd618d496488bc608a3cb43ce3547dd' => '编号',
+  'a91069147f9bd9245cdacaef8ead4c3578ed44f179d7eb6bd4690e62ba4658f2' => '哈许',
+  'a94001477cf0a74df6c33daacc57d45733be0975a33b890416ccb149d612fc1e' => '生命的终结',
+  'a511909161e1b84fb81b52028fc2ce79525a96b40ccda823caa4a66ee64772b5' => '版式',
+  'a733285486d5438327c37af6e6e84a69a6c6f22aae74b94d33cf88c6eeda93cc' => '贝壳',
+  'aa1ac82f407112ceff97d95f445645a58e7b2d63736b61d73827b65230628b0b' => '解锁( P)',
+  'aa3a05d9d57c08d694cf230a36386221f56890092e54cf8d6b04fab1b2cc0702' => '电台',
+  'aa5e8b5d76234d8dadf5a2bf31a5b4655f1c176dfc133e446ddf8b91dc09d8ea' => '延迟 分钟',
+  'aa119e87a6c97a4acb4187c54250ccd49a6aad7423d293ef9909577be0672f06' => '开放AudIT许可证',
+  'aa8057ecb40b1361656fac129c1ed8793c89d64f4934aced427166a5b2657731' => '毛里求斯',
+  'aa550956d821517258564a1c604f4e17cf6317e702a1647ba6ac76af44ff9962' => '地点州。',
+  'aaa8d3c8d74ad3e8f6b1772aa9c7e0eaa528cb42fc93599ce2f125b00d4c424c' => '不变',
+  'aab832a220b8d72644e77e3c349f9a6ce23d9c635e33d09eb7f0a7d3f35e6705' => '和/或(或)',
+  'aacdeaf668ea377b006c3664b607af8c9ae59f97059aaea74482dc7c15fa6222' => '列名从外表. 应为:类,环境,状态,类型或菜单 类之一.',
+  'aae954e161070b0f99c569413a5509b7901b847879276e8edcecc92cbd99b119' => '发现',
+  'ab02f5b9f36663bd305f7482e00d8b312b5cb99e1f76a156814ed7afb8b315be' => '部件的颜色 。 如果查询触发了正结果,则使用此选项。 由状态部件使用 。',
+  'ab2c47c3c77fa34185f902af6d30cd8dd6376a392a95152b4cb53d57fc04e62d' => '网络',
+  'ab3ade0c0fb5a86dddf505378e12fae439d0284c46728b2d5e95489ac777eb5b' => '在产出中可以有以下数值。',
+  'ab5aa97074c454a0632057e704220d9a6678fbf773a0a5806fc09b8173b07309' => '说明',
+  'ab5cfab84ca97292ce012895e7750e57aa99426c51fd076a4696e4f3b041b38a' => '以下步骤并非Open-AudIT的过错或独有,而且会影响 <strong>任何</strong> 使用远程 WMI 和/或 Windows 的发现应用程序。',
+  'ab7d645e4e5bb8cfceaea072be625b3e4a8ecec7d7ab8636a599ecb36a8957e6' => '以及下面列出的组件类型,我们有AWS和Azure服务的清单.',
+  'ab7e3aa3d0d8c78763c986b6a831726ff623b195a38a8d4b1191976c0becf72e' => '减去',
+  'ab8a2845f16cb2ffb5b694dd6786fcc51f00b855881712215f57066c8e050cfe' => '过期',
+  'ab530a13e45914982b79f9b7e3fba994cfd1f3fb22f71cea1afbf02b460c6d1d' => '消息',
+  'ab828d868ffc25a07f5a5d01ce609bf4ad1eb65214bb09eb39dbe89c145ea083' => '父名称',
+  'ab644241d322f8a3bf967334c436fb67572f090c8cd935c37dd1abaec828f2fb' => '核定包件',
+  'abbb58d6668c16b3540f7f076575c68a3656626eccf9674ba009411186c7755d' => '挂载类型',
+  'abc7e9892806b047b4d4786b3685285543f76ca314c4c76246d5f6544c7856c9' => '文件',
+  'abccc78cc93c07931feccfbd0665c003373b48334fd8d4cf5c6d0c714e68f26e' => '权限',
+  'abd0d24aaf8ff4fadd4fcfe624b6909209d4f3e28bc0bb6b5ea989649b57e082' => '已经 <strong>没有</strong> 提供以下方面的脆弱性报告:',
+  'abd0706e3ff11c47f5ee2ddc8bdc464201e4fe6ba2b5f66a12fc7edb32721b38' => '此用户的 LDAP OU( 如果使用 LDAP) 。',
+  'abd149214539d9f222d25de6358735b9fa0efd3956f66102b2c119ae2d9f6348' => '印度',
+  'abe06aae4495f3cf8615eacf0f3ad984d5a86eb681c588b789ae523c01268449' => '圣卢西亚',
+  'abec824dd5e60b946dff6acf9b6a8cc482e61f4ed90f62e90a17b493a8b7dd91' => '命令选项',
+  'abf8a60fbb818f7405d613d3760a68a8e794a415546761e42340661f7351f74b' => '组( D)',
+  'abf8879681eb4ff441c56ee2dbba44fb5decde6c4993fc1a4684db31a9af493e' => '来源于收集器发现。',
+  'abfcdb0bacbbd06e11bca0c2de87d597e360ddaac8fd6263f40c102ea7a913a2' => '初级类型',
+  'ac09e5750347419ef717df6db3591d41e9ebecdab777758587f5ab4b1568912a' => '虚拟私人网络',
+  'ac3e28411455961f2f59818181ead96b20c340116c08979c7ca6c9d6405a9605' => '邮政编码',
+  'ac3f7bf671e08e73a177e9b103f9ab5f786b86bd2a5e36b084b3bd258c237d33' => '最后,这不是一个安全问题 - 更安宁。 数据结构是开放和有文件记录的。 你可以看他们',
+  'ac7c949f1211b7814bdd28a698e6c04e05e1a83f9f86e7ad43d2086d00e98afd' => '非活动',
+  'ac97cb877f8e4a4a6620fa1996c9a8009437b8f637152652e7718f497f6301f4' => '发现更改日志',
+  'ac2283ea0e0b9c362be660f2914119d85db249e7ae6027990a853a2950209048' => 'sh 超时',
+  'aca8834020159b20a386398378a75b929cb1a2b5c747aeaac668eaa2fe793f58' => '购买  顺序  数量',
+  'ace3c5423aea944d909d52cf9bd860c9c4f5ab2b0a4fe1aae62baf17e0befe90' => '更改日志',
+  'ad3c3261e6081dc46b97a55ac30e4ec388b5fe8b4a0acc0b36a0d8c0c3f661cd' => '自动续签',
+  'ad3f6d87c15f296ecfe026698687acca010856c397e65c7b44c6e58bb4fd6722' => '为项目分配的值 。',
+  'ad5a47ff6cb7019a4bea1ca0329bd302bcf2c6deef6d1223de1f396cb94ae73d' => '列表发现',
+  'ad6d2835a6af59069c6c0aafb089c3ebe17a527955aa405236c6aa547496ce79' => '一旦您生成了基线定义, 您就可以将它排在指定的设备组上 。',
+  'ad8b44059bcb4fe17f5649ad3699bf814e348c9a34d3c74de6c05232bd11e2c9' => '网络随时随地更新 如所发现的,添加了诸如现有IP和使用IP等项目以及Gateways,DHCP和DNS服务器.',
+  'ad12e3e3f54c125133fc31625cead74cc244b56caa894846bffb604ac38029a3' => '对于 Debian/ Ubuntu 运行, 包括设置 dpkg 以记住您的覆盖, 这样一个 apt-get 升级将不会中断',
+  'ad60fc1942aa65ad8d9e34b6a36dc2e153d1461a80c12f263ecb4a4bd690882b' => 'hw cpe (中文(简体) ).',
+  'ad62ddfe584ea046455e4952455e3327d3eeb4fa1eee91283a62f8dd40b9b72a' => '配置( M)',
+  'ad95d5fa651ba86d8923fe1238d24a4f1988a752acfe426ac72ac7c04471bc17' => '免费',
+  'ad179c283209192cce8d0aaca1209b92ccd0021be20f2422546ca3b92075373d' => '校园区网之一 云网 企业民营网 家园区网 局域网 都市区网 被动光学局域网 个人区网 存储区网 系统区网 虚拟民营网 广域网 无线局域网',
+  'ad936fcbed631fa67e05c3ea03953905221c9d46af0616b70badf105a966fb11' => '组',
+  'ad36051e7a11b7c5f51bf865ece16af82aed6157a93632de21e2642ae831b35b' => '时间日光',
+  'ad85678322617b525cb623b250f2d800d72bc062d141479907739a754ac6117b' => '列表表格格式',
+  'adbaaadc326fa8986fe59b7390213167138225a70710f2b08851be2c857a97da' => '您的谷歌计算证书为 JSON 。',
+  'adbc7abe19340631b62cae13827afaf437fbf55ec5a74b41ec454ec8ea636803' => '此示例创建了标记为',
+  'ade15a1287dabe92c77ad32bbfada2ba4f6593433011b090530bd2fa0d86d8a0' => '设备',
+  'adeb3e50705a80a7ca0604cd18dab815606277d92b1ca22cd97d26ae31db4d30' => '此文件中已执行 Open-AudIT 服务器代码 。',
+  'ae03ec32239ba3ba536bf96b37b01dda191123231f36cbff6f95931cc6bfbada' => '表示更多信息的外部链接的对象数组。',
+  'ae1e542dc94c171d2bb86020ce51c4b5561b27ae44599a50a59a587c5897dcff' => '设备默认显示列',
+  'ae2cf71fe4357b1ec131d8b611c218e6b14d2d6d6b33653378da5fa9374412fc' => '见我们关于启用的页面',
+  'ae7d8dfac9ff5e0fc9aee0d70b174a16d556f7759ed94b7a9f7b88c3dd3230a9' => '已使用',
+  'ae21cf6d24b8ca460e91fe9dc61432a60403b1dabea53792a9c95c63a7cb0db2' => '客户端机密',
+  'ae65d096550ff4eb2a643d022dad2f3f511876d7720f2cbe7a9f5a71c3e91f77' => '能力',
+  'ae94c7ef3d05ffc6c0e3008c5b1c94a9af4768e15289f23e262f1e1eba0ae850' => '您没有安装 PHP MBString 扩展 。 需要延期。',
+  'ae2384fb8545a73cf6ee00c3efdfa45f483e221ae4c7322cd01df3b08f755806' => '熟悉Open-AudIT平台,探索其部分功能.',
+  'ae2507f11580e50c6ce17f9424311dbd46a20f28c077afc094babe079821040e' => '基线( D)',
+  'ae43692b2a310b8ed2443d2b7d2a3e4cf0b6d73115badd72831b3d22381f235f' => '属性',
+  'ae32472512c5e663164877b881ed94a7feea5a9f4ba9bf819d4b4f271614a70d' => 'API 结果',
+  'aea4a04a80426ed865ec2058b16854b9146166d22c1f3282a18f285941c42eba' => '被拒绝',
+  'aea65bd7bc3ed71bb4589bcd50d5aaedc5da6697bf75752c075d4e0a3b4749b8' => '忽略无效的 SSL',
+  'aed8f531aa7e785be255bc435e2582e74c58defedebcb629eeabf365b809bd6f' => '芬兰',
+  'aed216d902ce506a0064f3b36d20c258d063889cfcbd9241015e068cc5814e78' => '我们最初设置了带有默认选项的默认脚本列表. 脚本列表可在/scripts查看. 这些默认脚本无法删除 。 您可以根据需要创建额外的脚本供您使用. 您的脚本将基于一个已有脚本, 并应用自定义选项 。 随后脚本可以在菜单的列表页面中下载: 发现 - > 审计脚本 - > 列表 审计脚本.',
+  'aee66aa942d92226e96c21e3327305b13c9d9b272a6fbfc2041fdd57f745c680' => '编号',
+  'aefc6020df7bd39bcbe63f270317ebc102a38c2b37d276875a275df8f994dbfd' => '属性所需的最小属性是',
+  'af08c9e8ee2ff8b7eef10bdadb8c29c70fab0d75e0632e187351ff1bb63d157d' => '运行中相关发现的流程标识符 。',
+  'af08269147f2bf8bc50dfcd225512ac57e837cb5d5018b849aef560972faf181' => '发掘现状.',
+  'af1cc41ee0066ee8bf943b5557b47625b7071de8dfdd26935bb4cc153556b40e' => '我们是否应该匹配仅基于其SNMP sysName和串行的设备 。',
+  'af3e7c278ad20f51c294e8ce98da006035ab0452cb21c08ba84681609c8b5a09' => 'Collector / Server是企业号唯一的特性. 企业客户可免费获得一份收藏许可证。 可根据需要购买额外收藏许可证。',
+  'af3e709249dfa2193f3128cc3023225ac3b81c413f75cedd14c55f3e6bd46a3f' => '索马里、索马里共和国',
+  'af5cda4d97f5e8a286db78db069bbd05bf495cdc0c5cfa2a158f8836792c7414' => '在创建基准时自动创建基准任务.',
+  'af31b5bfae96cb8f38d8aa58fa091f1403d304f5263aacbf3f321d2643280633' => '根据发现计算',
+  'af78c9c9dd2adbb7ffb574c6e62c2a3d7c588c670a87060088ec46db141f53fd' => '局域网',
+  'af719ebf7378f4e33ecc313adada4038dadd5d84bb84aaf2c78bdc9e66830af7' => '校园区域网',
+  'af90322a50f9761252661c0616502e39e84fce9ec6553442dab1a9b399691d23' => '扫描选项',
+  'af704196a7c03db95daddc529f3583aee854fed59318a117fd47e02a6d330a0e' => '主要外部提供者',
+  'afba8e3421a81effd09e9a6eaf5df7a7922ff957af0888fdc07f0ab8afb3e52e' => '卖主从CPE中取走.',
+  'afcf5d0ed00db9d6344c530c99ff70dc1afb31aabb0643b680876553ff93752e' => '创建示例设备',
+  'afcfb949461ecb60a73f75127497397bc42ee3fa0f77f5cd6ac4addf2cda0e7e' => '域控制器地址',
+  'afdc3ea3ef865cd7118f961d6b3c8e668563d250c07eba623fc8228f88fef074' => '关键度',
+  'afe26bcec625f6ef353b9950605679af7f7319c667bb3c39df1376138ec858a6' => '管理敏感信息的结构化系统',
+  'afe773e42fa0e8939e89e8bd489a3abcf3ce4912375aac4698e94556a0a48ddc' => '使用',
+  'aff64e4fd520bd185cb01adab98d2d20060f621c62d5cad5204712cfa2294ef7' => '国家',
+  'aff108efda6880b8de938f42037c461fa6b57e76723253387125d938b0344187' => '状态 link query id',
+  'b0aaab70e6e2bd3027432dc04ab892355a3fcd41a0356b3f31f2e6904f838515' => '专家组曾管理基线。 链接到 <code>groups.id</code>。 。 。 。',
+  'b0aaae14b084e9c6d2b1b327c1c7206a4830a5bcfd953ece85b822cb4b2c0df5' => '当集成运行时计算,并包含从Open-AudIT中选择的设备数量.',
+  'b0b0565dd9a8a378cecafd3dbfddc4bd7beef13893d7835192558f1137374001' => '数据库行',
+  'b0bb63aa1e1e99ce98ca441c70d72698b8514333d94bd904c0fb163bb1871ca6' => 'ldap dn 密码',
+  'b0d54a541a160ed3d35d7cf35eb26dea864ff5af6856a14fec3b7666b35107e1' => '位置经纬度。',
+  'b0f6ee402454e017d47e610dbd01aecf2f9b05eab9f6b9a04f7d7902a9d25ce7' => '荷属安的列斯群岛',
+  'b0102155fec8113ac218b48b592bd8bc427935b8419e45bcc77a0009aaa2c10b' => '现有大楼',
+  'b02a446a4386316deb7391f662a250e606ea8c0b279ce77ff90f9db261b2a28d' => '测试 子网',
+  'b04e5ea201bb040cae53f693f6a38a3e00b62da6039ca248fecd59b7fc842894' => '已出版',
+  'b073f6c68ef8721107fd9815b19b2c35ec111d526b75c2123d1111ba64424000' => '范围',
+  'b0772b9c5500c4f5d53a519dec5e40d8ab8428bfcbd252dc5b0346a88871b631' => '波斯尼亚和黑塞哥维那',
+  'b08c3bea5f4b6850a1ab7b393afec3cfbd1c963aae19eefb12facff9f34c2fc0' => '在特定组织内有重叠地址空间的情况并不罕见。 不理想 但并不罕见',
+  'b088b560684c440c5a805bd7d637f7c9eaa8502188c0c358425e5571c94068f1' => '制造商代码',
+  'b09fb5cb1bd55a722ec4d23df508cd7c41fff9128f69433e7478cb26f77e8fe8' => '可执行的ID',
+  'b1a1e8e3cf7c522ed8606c3c3c3f35d3299eca78cb664fec00d9787da111f418' => '折换',
+  'b1a522518829000dbfee67bcba5cc36c5060891d1ea9127d2420a301bbce24b9' => '代理机应当下载审核脚本的新稿件,运行,并将结果报送服务器.',
+  'b1ae9292bcb8b568c11c5ceaadd768ad41a1fc679a0ac534b53a4abd62195618' => '只有图标,只有文本或图标和文本。',
+  'b1b1bdb480c61d075300d9bff7d9cb69cf31695ea048e478facadf426e8d0fb0' => '链接',
+  'b1beb85a9a02f9205bb6e0ea8261bb52170b15e9a8e7147a688f4bab4d2e006a' => '从内部删除外部',
+  'b1caf15efd79315ce9580380711b4019f75f9e501bb76d7c12d169bb700c02d9' => '许可端点允许您跟踪您设备上发现的许可数量 。',
+  'b1cb8eac5b3197a658e4c42b0066b907019317509538a355bda917331f6f63bb' => '苏里南',
+  'b1d453aa8a609bdb5caa2851c154147a344799653d59faa6be07d1102ff77cef' => '最后一个用户',
+  'b1ea1a96d148e1907fed39bc06c4d07db7ae0955257317ff172dd3ce70dcbc42' => 'nmis 作用',
+  'b1eabe4230e275612d69f96fab24eae98fdb1bc96ffcc0eedc7d481f1efb6246' => '数据库表格',
+  'b1eb2ec8ac9f31ff7918231e67f96e6deda83a9ff33ed2c67443f1df81e5ed14' => '算法',
+  'b1edfd2c0aeefcea6949db289830670cad14b2c90e7a67556cb7840b326eefb0' => '查看 Racks',
+  'b1f81e7d8e42add181f3d19e86568efa35b8735210ab31712d933f3c949f3eeb' => '生成者',
+  'b2a99b582d75ed5e6e03f8ffbc8ae838907da7fb82a001002fabc9f39824c9b8' => '从整数严重性衍生出来.',
+  'b2b223310ef19a83186997ad6aff902de296d95fd8fca5b493cc8eb28ad6c4b7' => '从那页',
+  'b2c58ea4e3b164ff2721133d0a809435bb34b4fba1c9b21baf0acfbccf8d64aa' => '搜索设备',
+  'b2ef230e7f4f315a28cdcc863028da31f7110f3209feb76e76fed0f37b3d8580' => '字符串',
+  'b2f69f757aaaa114eb485d0453d712a9307e6457d2db347c8ae4466c72717cfd' => '叶子已启用',
+  'b2f21724d77643debe2905528aabd2a7aba8203db80ef26152e42699832ca335' => '选择 COM 安全标签,然后单击访问权限编辑默认',
+  'b2fd0aa677df248a056dc6a388785d467065e05cb1905e8c20f9dd9e87c58333' => '上次更改',
+  'b3a60e61a5233d0506ac737405a2a45280349683cac68722f18d0b73eb495ef4' => '任务',
+  'b3a85bea996e885545d88807110b0ffcb7adb0a929b082e1bb58864c639a4d3b' => '标记  1',
+  'b3b24fb0871802a4605777410891d5dfd3c74686c29d0b9b4f95078e3711ee6f' => '本栏由',
+  'b3b265e226a6ee8de303a70f582eebcb9e7e42c36847a28df19036181b3c0133' => '发现(Discoveries)是允许您在一次点击中运行网络上的发现的条目,而不每次输入网络的细节.',
+  'b3b75380c25148e0502f361eb425af6105bb598fc13778f1a016452bc3fb6bb9' => '完成此任务后, Open- AudIT 将尝试根据配置的 Auth 方法验证您的用户登录细节 。 如果用户拥有有效的证书和 <code>use_authorisation</code> 设置, Open-AudIT 将询问用户所属组的列表。 如果用户在 Open-AudIT 角色和类群中,这些角色和类群将被应用到该用户.',
+  'b3d9b42cb10aae31c43f9e24156c183c247bda1e73b32c633fc215f3cf887bfd' => '科特迪瓦',
+  'b3d863c184dafa0ee37ad5749586b3c75f64019f1af98e57551e6b7d3b8573e2' => '阴极',
+  'b3deee9cc1ebdb370c96848444124936dc86a02ace48178b28170d6d1ad74a44' => '别忘了维基百科上有一大堆文献',
+  'b3dfc8505d59e324e89a763c5705abece10f668215e69c0ad9be77900837bbb3' => '土库曼斯坦',
+  'b3e648730f67f8f7bb241020a892fd1e3e8a9fe91d26272be248618ce87cf7d4' => '周日时间',
+  'b3eac843406522b1ff857f02be6ca8adfedfdade6497421d9a5c2ae2a263a3b7' => '在设备上',
+  'b3eacd33433b31b5252351032c9b3e7a2e7aa7738d5decdf0dd6c62680853c06' => '服务器',
+  'b4a7365740ef880b7e19c7ddba99950365af73b2346a235ba7cd6f1bf5f2c281' => '状态',
+  'b4def8217cadae26d4da633fd2a4e58e326cbb5d570afdc3989484da07af3579' => '驱动程序',
+  'b4e49d9515e31fef9a59e9c9c2bd416f722cbcb0bc0399137c53d45c60ba5fbd' => '一个路由域或地址空间,其中IP地址和MAC地址是独一无二的.',
+  'b4ebd67ce43109769399d57e2fb8a9ffa96af4225aaf5b1f1bf2230f91421116' => '需要端口',
+  'b4ecb60439348a9367b36c037c08a41aa51672c6833f804f4542b7932c61d0fe' => '服务 级别 b',
+  'b4f30775dc4f236d6cce0d51328d6a11f6495d7ff272353e1543c7bbf63ff622' => '服务器( D)',
+  'b4ffeabdf5401f369b8124e88c39780bd10d9214553ad73de715b3cb6d337df4' => '如果您选择了列表类型,则会出现一个额外的字段,称为值。 您应该在此设置一个可选择值的逗号分隔列表 。 当字段被编辑时,这些字段将显示在一个下拉框中 。',
+  'b5a4beff7c69355014c278f7c352f80c3ae78a2b205aaff4ad29d40a543b697f' => '基线',
+  'b5a229ac8becc6035511f432ca6018f581f0627233eada6ae8e12b505d44af7f' => '网站',
+  'b5a8020ddefa64c26207ab39fb9e43e7b98bbee6db6e3fb588a4b981067b5980' => '您的数据格式应当为:',
+  'b5bf05e8bf273a84e6a2d0c934546a236a27f529ef50213a3dcf009140abcf7b' => 'tx freq (中文(简体) ).',
+  'b5c755aaab1038b3d5627bbde7f47ca80c5f5c0481c6d33f04139d07aa1530e7' => '目标',
+  'b5cc8f70d76de59b35f83f37a300a438e752b12674a20c726e7359689112baab' => 'DHCP 人权方案',
+  'b5f0ddc7b62dace06b906a5c15a9e71c93cd07fe42f8d1c04d6b53ab8b1abbcc' => '权力( S)',
+  'b5f9221ae041a8f8fff31fcb6f43e6a57de061dd67b14ea8308fd2337200ea9a' => '赞比亚',
+  'b6af395c5020f3f19337172a94b2607d19ef6f8fed2424cf788b0d00b0572264' => '何处',
+  'b6ce788d9786917c9d19adaa0d904213365607c7f683d7277f508dcf142b4cc2' => '报告',
+  'b6f6f3ad07b3c05fa0bbbbf2e3d257ff1e3e31a83efbe2c9369cd008594f94e0' => '设定',
+  'b6f4174da56fc7267d1b1f5e26bae8b1035f7899c2448442ab9fd577861d8512' => '订阅编号',
+  'b7d4db19908078af8a9cd981f45a5813953191cdc5186ee0139b47882de81430' => 'wmi 超时',
+  'b7d64a9221007dfd5390f7df6cd5b8f3ea4f82faa1237141e35ebf161f5511a1' => '配置',
+  'b7e55b1cfaa307c5ef07bdba24fc7a79f8cd39c72457d1ad52302b79e7981c41' => '您必须有工作 SSH 证书来执行基准 。 目前支持的操作系统有:Centos 7,Debian 12,Redhat 7,Redhat 8,Redhat 9,SLES 15,Ubuntu 20.04,Ubuntu 22.04. 我们计划进一步扩充这些内容。',
+  'b7ebc2c48551cbba7511b78f67e50edb2b3d772a8f0bc8f542ccb933d1cb5442' => '此示例查询可获取3岁以上设备列表 。 查询今天使用',
+  'b8b4e9cea77ef29a5e958f13addd4855c35d2f04a060c3a869f8c955fd4c9a34' => '计量',
+  'b8b501e56e81b6040b26233a97a0f8fa0615997e93f2445b0bf516f8329033d0' => '用户详情从LDAP中检索。',
+  'b8d31e852725afb1e26d53bab6095b2bff1749c9275be13ed1c05a56ed31ec09' => '打开',
+  'b8e29f3c06f40308ee1c4afd1e8aed75fdde313167a2d1b712f8d5a48497ced4' => '布尔 1/ 0',
+  'b8e56e41ad28534e8f477ad22d92f5903c71bc0ac297ad2d0ce7d557b5ed3341' => '科科斯(基林)群岛',
+  'b8f56c656ec582390f2a0dbcbec7aa7c0898ebe4ca53c3acb877244091f56a10' => '处理器',
+  'b8f75551543be143ba675f787466efcad57805118241484402458b8cef4f6460' => '线条表格( T)',
+  'b8ff523a3ccabde4217ca133aac4ced712db28de481bebedeb0c61fe681b45e6' => '窗口用户工作单位 # 2',
+  'b9a136292f4004e2751cc366f0c263ce15711f79339310963ab5101f26cd6959' => '标准',
+  'b9bee504e98feab596c329379c8870940306e5cfcf11b51167499a043ff2c251' => '任何已发现的设备如果被设定,将指定给此 Org 。 如果没有设定,则分配给 <code>org_id</code> 这个发现。 链接到 <code>orgs.id</code>。 。 。 。',
+  'b9c0e27aeb2d5501fd097e3d55ff3f039ff541a7b82204d857bbef7d0d13c352' => '欢迎板',
+  'b9c48cb1fe9aa884659e0632256c4a0154ab64b61b8cec1993d9c2aa3a0102bc' => '根西岛',
+  'b9d3c17fb99fe1e7a86a566df81e272bc17b79a7f275182f44c0ef90108d9d73' => '净统计政策',
+  'b9dec3af39fad0a179c2f8cf18344cc27f04f9d39ae11c735afb4c035da38bfa' => '资产身份( O)',
+  'b14bd8a6c7c247eff6c0481be1c2ad42e6c3f12cb0751285b7da6766a6a5fc00' => '您的数据库平台是',
+  'b15c667c1ba61887c5f422194711a9ebacd7b8e7d84c37a9044608466223219a' => '每个终点所需的权限',
+  'b18c416001b654f394274c896d27854d234c860b0056936236766c327ca8f369' => '更改类型',
+  'b19ad93d7ed311348cf8312f9d8e5e926469af20d9d445c44a3edc07e6dbcb6a' => '服务( P)',
+  'b19e02e9502bbe5ac59dff4b2d4160768a4a7b8feff5693e5769613562290a45' => '别名',
+  'b21f754b847f574844ca6ea9d46707c387eea6fef2ffc70d4a5798d4d63b2b35' => 'nvd json (英语).',
+  'b23bf6892529f17926519df0ec6e05bcc5d1ce5d67c474564cf60dfb0fdc39b3' => '保存下载的文件 。',
+  'b23c9d54509cc1cd74bd5ab8c22374399668ac30b9bd1e18c070d546d2a09498' => 'Rx Freq (法语)',
+  'b24a63ce001c5a1e5f55190c21b6619e8dad41b4902d590084851ce845baf0d7' => '扫描 TCP 端口的 Nmap 顶号 。',
+  'b28b1ed9821f38c64524ea13e19264bb0772f8376afffd5d8a1f8277621833eb' => '软件包',
+  'b34c19e7f69c74706591b45b442ce9993387e912151d319862470b23350412c3' => '数据库中没有设备 。',
+  'b36e2fe88ce58e5d682f9d2ce2926c05cec06f7a4f75837c5b33659c599f7dc2' => '位置纬度',
+  'b38d9d168c3aedf156f4f249b81adaef4b738790510573f57b502cca0c35f16f' => '连接',
+  'b42aaf2084ab49cc39952141bc4794435e5878e4d356d50258ca5714b24da141' => '种子 IP',
+  'b45e1b0776487ce72587eb606923abb4ef3f087cd3ff1286542ca8fc7e7bfea2' => '并制作一张支持票并采取行动。',
+  'b46ece6e8e9fd57412adb6724c2a32b0322e4e082d2398287b5585e00d58eb24' => '以这种方式找到的任何文件都存储在 <i>可执行文件</i> 表格为其它设备组件。',
+  'b47fea659d9aa3b7d59b413340e63eedfec0b59b4afd345b42336a316cb14467' => 'Snmp 企业名称',
+  'b48c31de0e63ec3d4dc89e13a8f1e153ffe827110fa3f3040809bee14bf185a7' => '所以Open-AudIT知道将您的查询限制在相应的Orgs.',
+  'b52ca407602330f76f5c11a3c72a8894a97a643ac82e79ff76bc8ec430cdd1f6' => '处理器槽计数',
+  'b54a278a9f86c2c81b50629775866475691da0aacc1b6e345980e3bfec851341' => '<p>您的 SQL 中的 SELECT 部分 <em>必须</em> 包含完全合格的栏目。 爱 - <code>SELECT devices.id AS `devices.id`, devices.name AS `devices.name` ...</code>。 。 。 。<br/> <br/>您的 SQL 所在区域 <em>必须</em> 包含 <code>WHERE @filter</code> 所以Open-AudIT知道将您的查询限制在相应的Orgs. 不包含此条件的 SQL 将导致查询无法创建, 除非您拥有管理员角色 。<br/> <br/>一个实例查询在设备上显示属性的 SQL <code>os_group</code> “ Linux” 属性 - <br/><code>SELECT devices.id AS `devices.id`, devices.icon AS `devices.icon`, devices.type AS `devices.type`, devices.name AS `devices.name`, devices.os_name AS `devices.os_name` FROM devices WHERE @filter AND devices.os_group = "Linux"</code><br/> <br/></p>',
+  'b54b57bf6b53f6c30585e7695c15f5a4962225ebafa7b64b9ed1bcc3362e432f' => '打开数据',
+  'b56cb283f6da95fcaab30596ae95954868c542ea346f4be85f5ebc09bbf4685d' => '列出每个设备的所有 NMAP 端口、协议和程序',
+  'b62dd6c6a437fd4c236d5e1ee423a8dcd3600526c99a0bc2f887c37913651e22' => '硬件修改',
+  'b63f66026379eb8c8baf731b89009485927538edbf228a3dadd966ae0c8f9d2a' => '纳米斯·波勒·乌伊德',
+  'b72e20b32b20dae24ad236ce7c20df2c25553c6e77392bfdf7a7f3a4679bae90' => '计划和进行内部审计',
+  'b73f72b3e9a1225f0a2e94e77c1dafcf400a69a8979008e9a46207b986cf129a' => '所有没有开关和打印机类型的设备. 与上述查询基本相同.',
+  'b75f5e301fddb4d5bede1814fe80096e0b9a347fe2bc97541dd74b434b9ff92f' => '二级 外部服务',
+  'b76c6e80aead9049bafadf1e42b0a5214ad4f1a584b67cce41b5549e1eb2d077' => '循环',
+  'b79b5f97bc67a30a68e4697c34300823a0d5df791673d4396891c2f845034caa' => '洪都拉斯',
+  'b79cac926e0b2e347e72cc91d5174037c9e17ae7733fd7bdb570f71b10cd7bfc' => '帮助',
+  'b80a37564fbb3c0753202a1f92d5da8ccfb906b244f2842bba2232cea9883abd' => '查询',
+  'b81eb902e8f5398e271655df2765c5a4b50b3eb35bac30eab8cb023f8ea258e3' => '发票 项目',
+  'b88fdffb6d419389715929fe564cb8bb09bae2356d45c9dea80c1b87ec4b4528' => '转到 <i>单笔签名</i> 菜单项目,并单击 SAML <i>选择单一的签名方法</i>。 。 。 。',
+  'b90c4d5a0650753f8d035b3268b40719592224f3e20daddb2c057ea74ae01a24' => '种子限制为私有',
+  'b91b5d944d0c2b6bb9e11c936e2b62585d952c287dca669ecccbe978388fa6d7' => '你们也可以',
+  'b94cb158096b32daa7cb10c6b0adc0a540784ed37ea884072a30a11b11efd3d9' => 'LDAP服务器被连接,用户资格被接受绑定.',
+  'b99d0836f3aa0ad0b6d964c0eafeb81d6c9936685c2e0c476c554124fb822a09' => '符合下列条件的: 1.<br/><ul><li>a 角色指定了组</li><li>一个 Org 指定了一个 ad  组</li><li>一个 LDAP 服务器已使用  roles 设置为 Y</li><li>用户存在于 LDAP( 无论是活动目录还是 OpenLDAP) , 并存在于指定的 ad  groups</li></ul>该用户无需在 Open-AudIT 中创建账户即可登录到 Open-AudIT 。 Open-AudIT会查询其中的LDAP,如果用户属于需要的组但不在Open-AudIT,其Open-AudIT内部的用户属性(姓名,全名,电子邮件,角色,orgs等)会自动被登录,并且会被登录.<br/> <br/>',
+  'b99d5cd32defa3369b9d3fc239c1c58d4dbf08ed75c1347a06e351d4a5961b35' => '内部',
+  'b212e51c20e98189bc94821010c549195c2ee61d2b86a09b79aaa14d0733ef60' => 'ip 地址 外部 a',
+  'b225fd33cd5312701da28bf1f7fa2ad584aaa06926f50e919553cc4d84768266' => '圣文森特和格林纳丁斯',
+  'b287c9b7265323df45777199e5957764ee35dc9a6d78dcaad354147caf185baa' => '安装支持',
+  'b315cf18148b5458aa6cc3d9c12c7ea763497d83766131acc8f27289dc73e963' => '国家监测信息系统',
+  'b332c3492d5eb10a118eb6d8b0dcd689bc2477ce2ae16b303753b942b54377bc' => '配置',
+  'b339c97d94298058f04fc77441ab56ded2513828d122d1e2fae48808809e1d36' => 'Nvd 贾森',
+  'b407f8141285730f16525a0fb71f456591ed1d7c86178b0f46fd40832f9e55d9' => '基线',
+  'b512d97e7cbf97c273e4db073bbb547aa65a84589227f8f3d9e4a72b9372a24d' => '用户',
+  'b543f7483887dcbbbc8284cc208b35a63395e76a98178ed6161aecdb62412c96' => '这种一体化的现状',
+  'b675f5df5fe68da179f367852f25b42aa16fd84b05d9b05da50cd723635dfd02' => '摩洛哥',
+  'b764cdc0eab7137467211272fa539f1260d1bf2e71bcf6ff3bdc960f5c16aa14' => '未知',
+  'b850c3567b26a345fd0ca3c8847cbe3ab46c267c363af8c9effc7faf56fac060' => '线条事件',
+  'b876bdfdb1a8b74036e8a0ae3457f2a8fc0b4a492b1fc7ad9dc7aa18440b4b84' => '调试脚本',
+  'b977b950c1ae31e5aeb9ef778cc20a66fc034eb81e738e0206104b677962c465' => '云头',
+  'b2439bcb8dee14b685f137f294b0e0cb62f5aadf45143ce01d79777d435a93b4' => '产出',
+  'b3315adc95d2085cedf96eff58c814d04b79745d0e3918d3fd10eecb24f5f735' => '以发现和审计为主。',
+  'b3506a1eb93d1e6d5430f14a27c96c9569927409a58bc29c89160e842bcdf365' => 'Snmp 企业标识',
+  'b4267ce93cbba4e415504feb895f662dcced5d7aa406f27e8447c8fd5f0d48c8' => '应用',
+  'b5365c361fbd40e576bd11d748043d1fb14e3d4bfbd276f01892e23a6db0e0e4' => '日志( F)',
+  'b6087e8b465397eb9092ea72ec9e3f042a0fba387c785c10c841e5cbb3505ded' => '一个位置名称可以帮助您在未来找到这些设备 。',
+  'b6192a1d93fd9a77b52e54492db565058c011b0c6d409459ee02f182195e86de' => '初级内部身份证B',
+  'b6469ff6c166081725f98acc45b306ea375568b5ed011384c7799c9a8e10beb1' => '提醒( S)',
+  'b7752b1b46fd0e582fa9e13fdbe920dfec6babbea7e169809cc558c34a109859' => '设备丢失信息',
+  'b8162fdc85bd8475e602c82253481aa225781f30bbde382c1d2db3651ab347a1' => '二级类型',
+  'b8901ba003fa3852c346519bd1a8aa56fdbc9e3ae00edff46acbabe18f9f3e95' => '确定您要对数据库进行基线检查并创建列表报告的次数',
+  'b9766de8f6cad8641eb7e63ba87423f33b5419360ca77f51368d65e72a1632c1' => '帮助管理和减轻信息安全风险',
+  'b23498d7a7d844492444336c5822873f6c1edd4ce8b45b549f9e82800121f72a' => '相关基线。 链接到 <code>baselines.id</code>。 。 。 。',
+  'b24659b29aadad99f91521aa23e6e3c337f494cc2ef2eff915c0f7bee50ac203' => '这将显示批量编辑表 。 您在此表单上设置的任何属性都将被应用到所有选中的设备上 。 可以同时设置多个属性.',
+  'b24963ea2cbc74b97321a347754137aa207b126695a95c860406098528966b55' => '覆盖',
+  'b48111c10c65fc119368edafb19f97451759ee90b3f44647368135ca47aa4753' => '地点',
+  'b69235c1f6ce0e65ce89f34b8a47dd62ef64b58e080ac9f2984b379a5603f116' => '您的用户现在应该能够点击 <i>用 Entra 登录</i> 按钮。 如上所述,如果登录失败, 请检查日志文件并验证用户 <i>首选用户名</i>。 。 。 。<br/><br/>这应该是所有的东西了。 现在,你的用户应该少 一套证书来记住!<br/><br/>和往常一样,如果你对这个功能有问题,请发电子邮件',
+  'b79483a1e09cb3d512aca6ab771afdd941c9dfa52b1dec7103715821eac3fa4d' => '在下一页, 您可以选择访问密钥并查看您的密钥或创建新密钥 。',
+  'b79606fb3afea5bd1609ed40b622142f1c98125abcfe89a76a661b0e8e343910' => '配置',
+  'b96567fa5b8ff2f0db6df30812543b38bce503922f4ffb4b332c794fd2b19e87' => '酌情注意到每个项目的所有产出和行动。',
+  'b133992b7c15280e99b8f7eabd279abbbf19fc065c533aed2714b9f735901300' => '仅供参考。',
+  'b508483c5c4f30d7269d99ea14a4e7fb452ab576aec52616581ec3e33e8b4858' => '局域网',
+  'b566255eb054e5c92c9bc7736edaa52d300c8554c03197c8109303643cf79430' => '阿鲁巴',
+  'b568303b7b2fc3247d9aa91b9ecbeb6e36d76e11c3ffcfe548d7c805fbf23e60' => 'Rx 配置文件',
+  'b605350bc00209520b7cd8f546322663356ba630708f71bbf30aead6b3dd608e' => '导言',
+  'b674762cba4367d0f7b1ae922f0eb7e0d7687dc534f5c2f8952606cfcbe5dbad' => '每次发现执行后都会更新.',
+  'b518354277c8b5568b1178e81a570c759a6992b66987237ee04ecee241c72b83' => '站点 小时 b',
+  'b5099011086a558b056edaf1391b4d837b893997439c31211914f2364f149a08' => '构建编号',
+  'b97037333398166f987bbec6fb54e407a0704474eaf4e11154fce3ac3d037960' => '记忆槽计数',
+  'ba002bc839522a8753c7f2f8ec9b3ad3bc5915baf17a948317bfa18424efcf32' => '奥斯许可证代码',
+  'ba01bcce731122fd9e0907f7433db0fe3ea3d0053d8d259a6342be0bb73d89f8' => '用于此部件的主数据库表 。 由行图使用.',
+  'ba2fff8fcf09cc533d2d825081d07e58e2e6db55211b5241cce0dc6b88718455' => '二级角',
+  'ba3cb005cef1d595c796a558ace487c92e591017e0ccd0015a5d2c22cdae44e4' => '麦克OS',
+  'ba118bf7fc9c1aedc1edb28a0aa86e0b43b681f222af6616e13c43be87815b06' => '联合国',
+  'ba551cbdbb9ed387ccf36d7147618d8ddb47ae6fcaa9c9e9a779802f6f9657c4' => '返回特定设备组件类型的所有项目。',
+  'ba708a01a30ec836088e1037e272049c70b57f8b0221e2e83dd91f7ee0720fc7' => '每天都会',
+  'ba2039a4cf69defd3f474495125904bb9286d1ec20651501c42c146b8c38b2f8' => '缅甸',
+  'ba122460ea71e4b0e004ec42f210a3c8e5f3113aacdebdb0a935ae4e613dc935' => '等为',
+  'ba5285161ba6eed0085fb13784ce5c92f70ebc268b94fd66aa1d68a32884204d' => '环境',
+  'baaddf70fb5d432b8bd948ef91d6f910124a6d138edae4d5f000c4610ddc8eae' => '类型',
+  'babcfc1f69231369b2bc70042bc373b6b601f405a1ee6f015fb1c5200b8d1b49' => '向应用程序添加设备',
+  'babef5cf415ee028f485decf6ad9e68e35ccb68973b2597a8e81f4a2a3665bed' => '基准的执行和处理需要很长的时间,因此倾向于安排时间而不是临时运行。',
+  'bad6d57a6b8efa56addd9f1f52e2944fac19a8ccfa508958a550fd120e8230c6' => '如果代理 OS 家族( 大小写不敏感) 包含此字符串, 请执行动作 。',
+  'bad89344cdf369f7291d3c18b64234b3b0319dbd3f013a42256f65b50fa70999' => '命令输出',
+  'baf79c1f30073225b30c693f4af5417021daa2a00262c0b3137a02374dcf75cc' => '一个现有的Open-AudIT用户得到了LDAP服务器的认证和授权. 师成功.',
+  'baf802b25296be4a2c86ce5ad48449f398c209b65b0faf7b9ad26ccf2d9169f8' => '南乔治亚岛和南桑威奇群岛',
+  'bafb8df5474387cfd4a96ebec6d0a644dbe9d7b5c461992c89513392296656d1' => '完成上述工作后,解除代理.',
+  'bb6aea28739637ea0edb0fbb6e228db85821b76bf8f5e15d1c02ed3949814fc4' => '审计',
+  'bb9af5d1915da1fbc132ced081325efcd2e63e4804f96890f42e9739677237a4' => '页:1',
+  'bb9e9e264f4abcba49770fc388601e5d76a74430311560282019b5769dcd4502' => '一些收藏可以执行——查询等,见下文.',
+  'bb24c4d76097a9de03e4e683c155f85733a7f216d620189719d281c6372e4e35' => '下次点击 <i>创建自己的应用程序</i>。 。 。 。',
+  'bb501d7877eb7ddbd40baf7990e8058212e8140a2e6ceaaf2d54a6412b770bfd' => '社区',
+  'bba7182a41ecc4362eefff75b8dd2bfae820146e58a47a21c7f5db1ea71c816e' => 'Open-AudIT带来许多内置的查询. 如果您需要特定查询, 且预装的查询都不符合您的需要, 很容易创建新的查询并加载到 Open-AudIT 中进行运行 。',
+  'bba9579abc7eb8a1e78c031136303a16fbdb6d093b7286dc268febb6ac70c613' => '状态( A)',
+  'bbb2087ebc077086d3fc4edadc158e5f6b7cfeef7562468287eb07ab36e65631' => '系统',
+  'bbccb9c002d5ed5994789fd8d38a8af3825f7691e10c44cac9b07dc54b15c2ee' => '速度',
+  'bc0c47195cbea72cb207bc5290e1e59a7736cc8740572f425382fa2e13060746' => '在选中 Org 中的计算机上发现了一个显示此软件的次数的计算字段( 如果配置的话, 以及它的后代) 。',
+  'bc3c8b8cf1c00375a5611de2f2269c119314690e16578b56531a5cc46085f67e' => '不进',
+  'bc4a71180870f7945155fbb02f4b0a2e3faa2a62d6d31b7039013055ed19869a' => '软件包',
+  'bc6bfd848ebd7819c9a82bf124d65e7f739d08e002601e23bb906aacd40a3d81' => '创建者',
+  'bc9ccbb685ed9354ba53848d472b422ab648f07f5b7e3ea7a072885187267634' => '福尔特',
+  'bc18ff7bc2100c9ae000ee429e6c8f89c168c307fb994b0ff6841c304263e6bd' => '成本 代码',
+  'bc45ff1a1dfba1e8bd80b64fe3c521b2178b11c8e381071fed63bdf4bb81a0fb' => '这个属性是使用属性来构成的. 装置 灵敏度 要添加另一个条目,请加入属性列表.
+
+绝密 - 军事/政府分类. 披露会对国家安全造成特别严重的危险。
+
+机密 - 军事/政府分类。 披露会对国家安全造成严重损害。
+
+机密-军事/政府和私营部门分类。 保密数据包括商业秘密,知识数据,应用编程代码,以及如果发生未经授权的披露可能严重影响组织的其他数据. 这一级别的数据只提供给其工作需要或直接涉及所获取数据的组织人员。 获取机密数据通常需要每次访问的授权.
+
+私营部门分类。 私人数据包括与人员有关的任何资料,包括人力资源记录、医疗记录和薪金资料,这些资料只在组织内使用。
+
+敏感-军事/政府和私营部门分类。 敏感数据包括组织财务信息,需要额外措施以确保其中央情报局和准确性。 披露可能会损害国家安全。
+
+公共-私营部门分类。 公共数据是一般与公众共享的数据,不会对组织产生负面影响. 公共数据的例子包括有多少人在该组织工作,以及一个组织制造或销售什么产品。
+
+未分类 -- -- 军事/政府分类。 通常可以向公众传播的任何信息,而不会对国家利益造成任何威胁。
+
+未指定 - 设定前的默认值 。',
+  'bc77c5d78a1b056ed280f4c8463e262c7930df2b147c2ab44c81a6fe03c6c25a' => '活动目录 Ou',
+  'bc999991e33fde25c4027c721027da1fd8d23141a188286cfb32474b610309c2' => '我应该从这个设备中删除所有非当前数据吗?',
+  'bca82adc9f9b3bc728e787ede3a8ef0f443b0063102609e67e4d283455500aa8' => '分析',
+  'bcb05600083485986ad3ba7552c0e78e359329429fbdb960036460b43b75f231' => '装入平衡',
+  'bcbd85fd2b456d7a2bfe64abe2e125a8d6e64a245dc6cca2784a197b5d0a8bf4' => '文件审计',
+  'bcc3b12d48312d8f4f090048a97a5ea75a0ba0ec89df8fad0986ca3c159ea7b1' => '未审计的设备',
+  'bcc8cdb6cc1aff05a05c4bc9588792b408598ed835964b3537909f8b3e1d298e' => '通过输入运行脚本 <code>cscript test_windows_client.vbs</code> 在操纵台。',
+  'bcc649cfdb8cc557053da67df7e7fcb740dcf7f721cebe1f2082597ad0d5e7d8' => '已经找到',
+  'bce47d970cc49c805e3eee4236456c690e4bff4cd72778c5ba01b14a3116193f' => '硬盘( D)',
+  'bd0f183fe269c38b5e5d18833550579fb34267c30eed72aa1a1a5a283ce5f946' => '谢谢你用最好的发现和盘点工具开始你的旅程',
+  'bd2d677b2ed4381b48bb1d0841052c6d076e7d634d5052e85dcbe0b8a0dedd80' => '家庭',
+  'bd4ae6f623f8ffe7c1f3e1f72731e48f652fbe31ddc8bd0a87454f42e8109577' => '事情发生了严重错误。 Open-AudIT 无法读取 <i>角色</i> 表单。',
+  'bd7d214487b61c8f5bff11fd69f6f87ca271f401592a210c2b63fc91fb9f41fb' => 'Dns 主机名',
+  'bd8d1850c8b79259b8aa75bfd676dc7e17e8e48254d3e49fb9caf431bf698aa3' => '<p>能够确定哪些机器配置相同,是系统管理和审计的主要部分 — — 现在,报告情况将变得简单和自动化。 一旦您定义了基线, 它将自动运行在预定时间表上的一组设备上。 这些已执行基线的产出将可供网页浏览、输入第三方系统或甚至作为印刷报告。<br/> <br/> 基线使您能够将审计数据与您先前定义的一组属性(你的基线)结合起来,以确定设备的合规性.<br/> <br/> 例如,您可能从运行 Centos 6 的设备创建基线,该设备在集群中充当您的 apache 服务器之一 。 您知道这个特定的服务器是按您想要的方式配置的, 但是您不确定集群中的其他服务器是否配置完全相同 。 基线可以让你确定这一点。<br/> <br/> </p>',
+  'bd78ba5dde8996d2e1c29ab5faa275ce7355ffe0e1f9645fc3ded4e51b0212a6' => '我们是否应该审计点数。',
+  'bd247fdbc46ebf17c13623418d9f54c8ed12d9c498521e00c802aa5c19156994' => '实例( D)',
+  'bd282e9873ffc8c8e1f620371845548a07995e393950472928a53e7e8fe03504' => '一旦创建了附加字段,它就可以像数据库中任何其他属性一样用于查询和组中.',
+  'bd938c688f49b77c7fc537c6b9222e2c97ebddd63076b87f2feaec66fb9c05d0' => '动作',
+  'bd947ce982ebfd819d4cb7b51b4b2c280059eea48ca61584dc930eec61939c57' => '无人驾驶',
+  'bd4742d2319c42bb9619fa420980e4aef2a3c60b10738c5cd9334883489d4725' => '是芙鲁吗?',
+  'bda27718e087188dd652ded377ff518b5b074635a93f5273219541d045c9f359' => '如果设定, 则持有一个 JSON 阵列, 由该用户选择查看的特定设备列组成, 而非配置默认值 。 这应当设置在列表设备页面上 。',
+  'bdbdb4de6e295e572c43e4f95a532cfce537037988f29428e4b6f1cd5f9d0e2b' => '一旦你拿到这些物品,在Open-AudIT Entertainment中你可以去菜单 - > 发现 - > 云 - > 创建云,选择 <i>亚马逊AWS</i> 类型并粘贴在。 没问题',
+  'bdc91bb394aec64485a909299f3a6ffce3d314e7713bfeb4ed8bd6ea1233fac2' => '对象标识',
+  'bdd73a221a8eedfe30f57340e638a08303d4612fefc2cc30a37070fdd7fc4605' => '然后点击表格的细节按钮。 设备细节存储于',
+  'bdde4a2ecdae09cad30a27ece7756f2c80e2d9eb9b549d3802796c49989d1526' => '怎么样?',
+  'bde7b3547fcdfd3467bb6c145c219f9503f58bd4594036538981f9891f69f7fa' => '上一数值',
+  'bdf49c3c3882102fc017ffb661108c63a836d065888a4093994398cc55c2ea2f' => '认证',
+  'bdf800ea13d5e3c878331637a6cad13dc745befbd4dee3f342029be6e0dad4fa' => '已采取行动',
+  'be0eff06ee31b5f25e6607d14ca4b0215780e1390c4333a19da1841c4344a01d' => '地点电话。',
+  'be1eff3cf9f55c83c6bf04c5a1080a45eeefcbce80cb30c329e6cb58def03f91' => '他们的祖先、长辈和后代',
+  'be2a7f5684fdd2ede8b5ef5e966b60e2386fcba778168b8b8a4a2e14101b5f90' => '多米尼克',
+  'be2ed03e1c90201a614909140503154e0ef0861af73fbc1b9abb9a51837a7b30' => '在 NMIS 中管理',
+  'be4a295a73f6539535a3f4ae77760fe8c934877d8e91d791897e282d8b6e4039' => '更新 {collection} 条目的属性 。',
+  'be4d34acb09041298efe8c42813cae8f3360b1d2a4cddc0c046a9dfd27d61378' => '证书文件',
+  'be7e2f20129365c2899b2c11bfc465541e61b1858f45bf0248cf99b9271bc707' => '图像',
+  'be55ef3f4c4e6c2d9c2afe2a33ac90ad0f50d4de7f9163999877e2a9ca5a54f8' => '加拿大',
+  'be78d97abda6a6872a93b1a1d47241ae4be1a6f7134fd764a45e14e0da2430c2' => 'N对N',
+  'be91a244a1357e7eb733b889ddddb7925aa5ac22cb4b0dc7fa4c3d48e72b8e7d' => '终止( I)',
+  'be176b0015c424b78e9f343f8bc3014a7a701cc2eb9000b6acbc04d67dbecb8f' => '地图',
+  'be194db2ec64b00091cbc24558bf8447edabd874999b373539c7752e64f55aeb' => '位置 级别',
+  'be587cbf35ecde3a054886e20e71abddb5f7726b04476fefe17787f16309498a' => '您可以将设备种子发现限制在严格的参数范围内,包括: <i>限于子网</i> 和 <i>限于私人</i>',
+  'be4248c77ed4806c94fb8bb60728f69b5ad25f876bf268f08fa7f56d3097d6c3' => '选择表格',
+  'be8430ae58f7b7229353c78ac474d150d425e0b304375320c08abd7e61ed75d2' => '何处',
+  'be60011f5621d4fd6884efd9246fee6a19bfa2ee834959b072f29a7a45ae0538' => '新喀里多尼亚',
+  'be77275a0e0405193a9187af5747b7e81794802f73d14fd6246bff16e21e5c86' => '挂载类型',
+  'be91940b79f469101df9a50544b6873aa5509a12f1f93f1cb5e3be3990d344b3' => '支助',
+  'be1560615264b15fd70d137d03b0363e32ea9ffe9924588d3ba7fa9387afa41e' => '所有没有开关和打印机类型的设备.',
+  'bea8fa7d429622c98fe5af449170cd8791302cec5f44cd23ac92fcda15e3e186' => '开始( M)',
+  'bea54a349795017db7e863500429c8ba0c78b89855d73f9c82dfd92cb7c2d748' => '挪威',
+  'beb58ccb9f3d6af29979fcafa0a61909f131e2aa4559c323af79e506cbcf2466' => '审计事务厅',
+  'bec69036aa27e7fab7d44cad3909477b76631c39ba46fd7841ea71aae7e5a735' => '排序',
+  'bed84a27364508847a702a6ac86d906a0dba64ea7e1bc82f016d28dbb6621ff8' => '链接云的Open-AudIT id. 链接到 <code>clouds.id</code>。 。 。 。',
+  'beeb20fbd67695085c26c5dfa7b5ece4d1985d201cb6f0dd9aa66a36ed987ce5' => '包含',
+  'bef1fd9e5caea8b51aab74a9db1cde99164263ed7d076225d7829faae9737d90' => '不包括',
+  'bf04eb54c74fd9bacf41c8e1658d5ea96b718dcd8298db51a117f68cba5e0851' => 'Open-AudIT可以下载,剖析和使用NIST CVE脆弱性报告.',
+  'bf3f0b3433f5d6aea1f8a4a2c0b8c1b42a6de0651d02a90445fbbce5b1c950f2' => '垃圾袋',
+  'bf6ccf81398eed34c23c201f6fdb4fd45c048ccd14bd192475e9b7add5a4d317' => '添加策略',
+  'bf7ae5b8fbe1340a435b2c9a09378e1f8e7e779a362134102debc5272676d50a' => '根据设备环境的属性. 生产、培训等',
+  'bf13fb464a3dcfde8be9605c7d4dd020d4831f329bc49dc3be8122c44a08dda9' => '目前已安装',
+  'bf36b6f4e433cdb52a382e350fad942421895c6a2c750b3ebfb8adf3b415f920' => '都市局域网',
+  'bf61f09c35658e272be4aa2478d2f6b0bdad106aef38916f32ac289261b9f81e' => '时间戳之后,这一任务应运行。 例如,在2017年6月1日早上10点后执行一个任务,设定为 <code>2017-06-01 09:59:00</code>。该值应为零加值(e, 09, 不是9)。 此值默认为 <code>2000-01-01 00:00:00</code> 这意味着默认情况下,一个预定任务将在下一个预定执行时间运行.',
+  'bf646cd7ebe6a950429f9a3901af75d810c281aa3976c0c3895ada27e4974590' => '设备  默认  播放  列',
+  'bf86075ceab2af34c4bf04695936f6522b383cee6b0d377a410b470499ab5485' => '加密',
+  'bf5505174a73b2832a95fef91403b87f99df3b1d283ad26729e4cfd22e96f208' => '执行伙伴',
+  'bfb0c8d36f4aaa84129067675a722a877e0784a54edd5fc6ed1d86d7717eef9b' => '毛里塔尼亚',
+  'bfba7033571d606f3c2ff0415b3a26ddbfbf1f1884e5c391333a5470efbfe4a3' => '关键',
+  'bfbf088a1b66308a03f476765ee3871f4b914efecfb4ac8ce4c454981840b37f' => '显示发现是否已完成的内部领域。',
+  'bfce37eafeb3b1b0a86531dcda9fa290dacfc31218dff7d32bcb18ac9d94f18d' => '直接下载测试窗口  客户端. vbs 脚本',
+  'bfdbe0d11a84ed5452be5a063dad630cc185bb5b4e97a2f5eed04f180b81637a' => '接口( D)',
+  'bfe017a95cd786324983087f40a072652179567a539bfcf904b23c5c75c1fd7a' => '界定信息系统管理系统的范围',
+  'bfe2eca401797325bc268f93c7397554551de4274d5d73ed421ee36fe9cd3ae0' => '高度',
+  'bfe5d697162d90298c67c1933908741be8395838aa230408e04710909c576806' => '字段',
+  'bfea90e5ae1816a3935322c35705a585a2bc319ff57377428455a234d6371472' => '子网络',
+  'c0a6cc829cd08735294765c75938a7da2b0f222d52e98bff13cb237cd99deaac' => '星期三',
+  'c0a80f7e82eafec124ba993bd204c773b6aab585b0e991b33e21632baf832b6e' => '<p>属性为Open-AudIT存储,用于特定字段.</p>',
+  'c0a95cd4067ed7a95f298b1486a64b6789d3c841cf36b2b2d3ef0b35c73812b5' => '此云器数. 链接到 <code>devices.cloud_id</code>。 。 。 。',
+  'c0cf462afac4a97e1af600407ef524db291097a92f7de1b5d23bb70cd7b16971' => '位置( R)',
+  'c0d2856b74d0df05b9d4456b177950351bd88e98b77f12574dfb7a911acee0d0' => '字段',
+  'c0fea29bf9a730b3c92cf2a5283d8bd85765104b654108245cd49e5aad69db68' => '排队项目',
+  'c0ffc1f30fa918dac19d473802f0b590bee08092a8af348aa4b803e2ee5077c7' => '您正在运行版本',
+  'c011d6097bfbc8e936280addcf2e3e7d06ea2223ffd596973191b800a7035c32' => '许可证',
+  'c0122ebce62256d385a71e1c46bd812c6480ec8279328929bd64954988023183' => '保修时间( R)',
+  'c0334bae10532242090727ce60382123981e61c854e8b29e78b787a71f48b898' => '重置为默认',
+  'c0408ea85e46b949193e661750a43af830889cd2e3abeb6d5ca642a5bc34f4e0' => '具有内置角色的Open-AudIT飞船为管理员,org admin和用户.<br/><br/>一般来说,作为Open-AudIT应用程序管理员的用户本身应当具有管理员和可能的org admin角色.<br/><br/>用户可以扮演多个角色. 许可将在最允许的关卡——IE,如果用户具有用户和org admin的作用,他们将能够创建位置,因为org admin给予此许可,尽管用户角色没有.<br/><br/>管理员角色可以访问集,如配置,数据库,组,ldap服务器,日志,查询和角色. 影响整个应用程序的全球项目。<br/><br/>org admin角色通常允许为包含org id列的任何收藏创建,读取,更新和删除动作. 几乎所有数据,除上述部分集合外,都将包含一个org id列.<br/><br/>用户角色一般只允许读取带有 Org id 列的所有项目.',
+  'c064fbca9d9de8dd9bb0624984403b28d0da807a69365d4f7fb09123ecb0c405' => '内存',
+  'c080b8f35660486fcaba2cbc5dc06954182f10516ee3e84d41f956281744176f' => '服务网络',
+  'c082456a7766e23a18db084cd34b6ff510baef506548b897cc80e9b7d3e121c8' => '介质',
+  'c0883044a4ecaf6e10f643cd74b249004da37afbcac6cff406747f32601823c8' => '用户交互',
+  'c1ad3bb9035ec0ce3fc661630ae0c8b8f40f0dadab3474e7f8b4d2b3da5c2180' => '架子',
+  'c1bd8ed6925c8d89ce483b8b1f67d1c5322894b8be87ed32a9d2843aea839c3f' => '实例标记',
+  'c1c224b03cd9bc7b6a86d77f5dace40191766c485cd55dc48caf9ac873335d6f' => '管理员',
+  'c1c406a98aeff694bf6ac1836938ed9a1d0c5ec6c237c03f6ab8507a7ceb33c3' => '硬件修订',
+  'c1c1009d3f37ec058070a62e22caf9ac9dae2169d452487c5c271a8bcf57a291' => '更新',
+  'c1c1370ca427801050400e48858da908c423ac3c7410804c51f5a35ca6a4fc4d' => 'Openldap 用户 Dn',
+  'c1ef40ce0484c698eb4bd27fe56c1e7b68d74f9780ed674210d0e5013dae45e9' => '澳大利亚',
+  'c1f3a1a415aa467f922b8f34034a1acba5dcbc16ebc701f8e27d666bc67da8a3' => '计划执行此基准时 。 衍生自关联 <code>tasks.type</code> 和 <code>tasks.sub_resource_id</code>。 。 。 。',
+  'c2a314c3b32b319cf5f868d620f96245f593dc7c401acd8b5a566fac88bb40f4' => '固件',
+  'c2bf93de84f81adebba479c6c6ad29dead722ce956399424b8929b1255759b54' => '要在 Windows 上安装 Nmap, 请访问 Nmap 页面 :',
+  'c2c29422db6397e768396dab14e08240c60e6a4be425930dd0e2cf10fe3c70f9' => '科摩罗',
+  'c2d4b446a44ce54fab8e01150e24dd24f3d850c7c14dcfe31f6321341dd86874' => '图标',
+  'c2ecfac6da5231c5a403c7bb1a991d3f7b948da643318202a7c99ca49a206341' => '储域网',
+  'c2f16ef6ab3f9741da3db36340205cb923dc435c7b0f54627de40f7deb100dd9' => '最大大小',
+  'c3af076f92c5ed8dcb0d0b0d36dd120bc31b68264efea96cf8019ca19f1c13a3' => '解决问题',
+  'c3b258168c41c0bce97616716bef315eeed33eb1142904bfe7f32eb392c7cf80' => '维兰',
+  'c3bc45ac352fe43ff8f0a1cc26d6cc29f71f536dc417906f8513ea44ed4bb161' => '份额',
+  'c3bf47ea1f4a4a605470313cacb3a44f4a461f68c6faeab07e737610cb5ac835' => '固态软件',
+  'c3ce4bf88db5e7b645d4630c54f757f055bd5163d11027fe81e7cc04d3574c42' => '阿曼',
+  'c3f4d213fbc25f074f1e1c82d8204d1d1a3c73e68f97349e676841922d56f3c4' => '使用 CIDR 遮罩的网络',
+  'c3f194159e0a6ae44841c52fd013c05f77f462e218c859ee015aafbc61cd97dc' => 'CPU 组合',
+  'c3f503657625fe70774309a5843cb78c63fd8ad2185a48e0d4215a5bc60bd4ea' => '基于收集器OS自动配置.',
+  'c4b4fd0f59e404639ee3936104b24f898b14cfb3ae58ce1723ee8c6fe04868bf' => '点击下一页后, 批量编辑选择不会被保留 。',
+  'c4c554df5b7814a7b33d203bb7cbea975160e7a0a0a1af996ba2668d8bc73618' => '信息系统处',
+  'c4ebc6d4a5832cd9415f906ad03661110c705a72381c8b8b145761d02e2dd23a' => '高级',
+  'c4efabfd301992be385d560031d912e31cd3f45fb434bcef5340e32948b53785' => '子资源标识',
+  'c4fef1543890022d8f3fdb91084e8c16f2006299f68dd1959467da7b22d196c3' => '欧西',
+  'c4ffb4577963b70779c47e4a458be6430584d31d4b4000f4ef1f71e3b766d27e' => '团圆',
+  'c5b2a6de9d5ae20a21a551d160d6e6bdb1322f7dbe94c6f30d1f88f092af50a1' => '瓦努阿图',
+  'c5d18016f669b5caa542be646aacf80bfda68382cf063c61d2571042291cf1cb' => '是否匹配基于主机名和 dbus id 的设备 。',
+  'c5daba0e1602026517b0602b10e07aaebf6d43561c9373a34aaf339ff5ccd923' => '需要安装 OpenScap',
+  'c5dd7eab36e65c743f0d223de6c64b363ef86346148c6ee566b3f6cbe83e806b' => '下一个跳',
+  'c5e54ce3ecd1aaaa0571b96ab108164be93153cdcb9fda38b657a5fb679dfd61' => '摘要采用与查询相同的参数.',
+  'c5eb1192926387eb15fa1e2fe4d25aab8ddd1b3e0de4c3d1dccc1e7427dab48c' => '日期 M -D -Y',
+  'c5f88e747d24a44c9d4634693fb53df721909317aff01b4ae14ac9d979c56b39' => '责任',
+  'c6a91ee7f93b091b009a611956b9c0a9b414e4ee111666cdf3e87e2271defa79' => '请求',
+  'c6d4c625abe22c6510d1f54725932d599f48d113e7b6b2bfda51ef2d014c4030' => '下载您的更新版本',
+  'c6d121b3ddb8e5175323e1a561925060dba6f4c7ea693596adc9d59fdb924a65' => '用户细节没有从 LDAP 中检索 。 检查 LDAP 服务器日志 。',
+  'c6fa53e68c1bf06a55539a742b29eda108393c0e12b7e1bd4585f6f3693b6043' => '行位置',
+  'c7b0808d527ecc7413b0625bf19e179b40fae9e5ba65b23200cfa497b4d6b02b' => '脆弱性识别',
+  'c7b2c3f3d7289246a11a3bf312fbada9eec70173a7fc908924c688ff8958728b' => '我们是否应该在网络界面中曝光这个团体.',
+  'c7b962e8111822a56a2f133cc549b5fa570227d416533c593be7da2b5d549d93' => '设备收藏',
+  'c7cbd74c4fa7d6614fdf21dab926af38794f6eb38601777c9504fb5e972a324d' => '设备如果设置为 <i>删除</i>。任何其他状态将允许匹配。',
+  'c7d5807a07c0b490b01ddbec124396d465260101330b20ab869d9802c9fe2205' => '安装于',
+  'c7f937836f5d82d53bc507752075f87e25009ec11bc9fd4e282f0b645e47af7c' => '选择',
+  'c8becaff731d85dd4427fa68eaed68b59b82f0b9a8f3d747725468f0c838e00b' => '所以除了一个普通的词之外 还有别的选择 很高兴你问了! 根据Open-AudIT API的标准,我们有几个操作器进行过滤. 可以在数值前置的运算符是',
+  'c8f84c3c5378b920b0ec2702cd9963a470098638b0c8aae249f74ec1a857633a' => '目录',
+  'c8fc76d5dff6dd022160f2016c947de988b8fb543a556e54c95e734ae2e1faa5' => '要逆向排序,请插入负数,从而',
+  'c9a6861e18e15e52aa47b306434761428bbf6f4c65ead73163a09179e5c0a32a' => '连接的这一端,由提供者分配给线路的行号.',
+  'c9b68059e8bbc5c7b72d99f0f73c1e1ef54e704d3557c998f7cf9b3d2a0222ef' => '日志状态',
+  'c9c88e5c74c5f407731b494ceb89e12314e3dc2521164b6763b1854fbef20b15' => '基准   例外',
+  'c9c436a522fe481b759ca570654603b2f51c69645050c5641e498e9cabb49cc4' => '三边文本( T)',
+  'c9cab0238debc6e55498e2c0963a1d8e25bd29c95ddd53a3fff841ee636b6bc5' => '奥地利',
+  'c9d2604dd5187b6a6ab3635747a24a6d01d443070e33c12780e72cf3647f4142' => '利比里亚',
+  'c9dfdebf43838e069f3777262e879a3bdc2e04c91c4b37123f08da70487e2275' => '域名部分( O)',
+  'c9e4e4576aee659a00652008cdbecdc03faa5497ec89fd14835050e86ef7b00f' => '实例( T)',
+  'c9f365c597431c3ca0081bda0926efff8a214d41a1c04810fdc6071266942dd4' => '初等   内部  id  b',
+  'c9fd48919a3e624d9c0d235e4cad40abc64a71c50031940219fa4f41b91ce8f8' => '一旦你拿到这些物品,在Open-AudIT Entertainment中你可以去菜单 - > 发现 - > 云 - > 创建云,选择 <i>微软 Azure</i> 类型并粘贴在。 没问题',
+  'c11dc6f024e36c85accc00b03c941ca2a2f224fed0449c90bccd5b242b01553e' => '想想mail.domain1.com和mail.domain2.com - 同名主机.',
+  'c15bcee3398969cebfe43267515d412940e0832b2089832b63aa59eed840fa72' => '重度( T)',
+  'c15bdcd56d7e57ab3e1b8b447d8618a3e1384034481adb5b1b733bfe7224f400' => 'NMIS 字段类型',
+  'c17e8fbf1083ef4ede7d2eedf513113081a06e22146bbd871653a15df504b403' => '行动由',
+  'c20c3ff91d97ad26f67a10709f8b982318b0ce55e0d30a5b4187b0d831a5fbad' => '测试子网',
+  'c21ead0614e7e1b70edb3759e1d19ca1e12e6036980d10bfb73052fb1a018efa' => '关闭',
+  'c25fdf8c2b76edc791f4f94037e468c2a9b7236e4fcad39c9bc1c9ecbe51a5a5' => '匹配按以下顺序进行:',
+  'c26b3ed4ce70e202816608a9ca6cc14da9ed4a5cf14c7c758be0e2c20344ed82' => '接口',
+  'c26b8a0b29b3b4d1954e650e1b82697fe42766e7167d6afa517432010c30a8c9' => '打开ldap user dn',
+  'c26f41151e1217ed83533017accf61fcf80a8804c23ff21f61cfbc4e4d68d592' => '赛德',
+  'c26fbee7a11b58d1735a9162ceb13c8f366ada648524875a4791d318e208c19b' => '单位( B)',
+  'c27f340461659bfcb4b9381f2ab01072d386e34112d34d2a8153835adc98a122' => '二级   外部提供者',
+  'c28ac91a2f1e5367960ec7693110f2ef82c13671c2dec256310eab496ca91e62' => 'Dashboard 部件',
+  'c33b0fc78a0568e497e6fae2b5929fdacfae53e5898660b155425535025cd0e7' => '保证期限',
+  'c35b2cf20d8d6b1d00076c2ed6e5afede87536a8ae9ddf8d6197466e6bc3cefa' => '此示例使用',
+  'c36d819e7bc6d2b7da51394411c733db89c395987885ca6770167a3b9bc45c3c' => '使用',
+  'c40a31781e7060271bb893e4e7d565eb102f5fd24722e641a8766b78ffee21da' => '如果您想在发现室外使用脚本 我们创造了另一个终点 <i>脚本</i>。见文件',
+  'c43f33f0578db9c3a0b0d5d4dce5f1cd5d4e9e03e316a6e0d13fa16a1e53f370' => '南极洲',
+  'c44bb2fd516909dab78ae0bfedcd5672b131b996c4b7a4328ee55fba170da776' => '注释',
+  'c44d34333d17793a008f8ffcf09d2410a832c28df0dd12c86e25f4d5d7a2f428' => '客机设备标识',
+  'c47a58e12937ba7dd647290dcf599e5731801b4274acc462f202d59cffdb78bf' => '郊区b',
+  'c47adea41c3358c67284b986cc69e17242daa2cf0f8cba2073e974859b197e78' => '解决问题',
+  'c47b8919ddd30e56d88e219c82f43fc4a1e1ca71a28abd0cf752b87c99c8acbf' => '如果发生这种情况, 那么您所看到的问题与网页上使用的表格控制有关 。 它只存储当前页面查看的复选框状态。 如果您做了选择, 那么这些选择将会丢失 。 然而,您可以通过扩展每页显示的设备数量来完成您想要的任务. 在左上角有一个下拉的标签“ 记录每页”; 使用此选项来扩展显示的条目数, 直到您看到您想要为 Bulk Edit 选择的所有条目。',
+  'c48d985049c0319f869c1eecbcb210b0eb220029eb7c74b4b4dcbe1e3574042d' => '其当前时间是',
+  'c51fba5aa1bf60c757a530876e7855d6fae41492d8099e6a29eed7f4845cc2e4' => '查看设备',
+  'c52a7af89393677d0bfdb084ea4ec711048212f8c0ccf3173c406c654e70b622' => '行数( D)',
+  'c58d1a23ed9d60ae9826defe683634b4140c6d3579659ee6ce76ca4fd5112867' => '自定义字段',
+  'c59bf0113de3e27b175456967bc7e1870698faf578c46e3a536989ff460ad1a6' => '启动网页浏览器并前往',
+  'c59cf32b132c815c214c02a125da297903e6ff8d108526259b7d338c593500c6' => '方向',
+  'c60d8bd239af1970ede1ca70c239d67cf9be9bcffa48c955b2957fbdd190dc66' => '你确定吗? 这将删除所有队列条目,防止发现剩余的IP.',
+  'c61d24fdcd02268fbe51f87a7fc33e94328c7626c664ac4f2e8fb45728c10307' => '子类型',
+  'c65b01b5d9b206390336bf109028c58d73a138e0feeba955ae26936be5ec4ca3' => '显示版本( V)',
+  'c71ecd09906b701d1e4ab3db4e4ee8806402e7989c8fcf2a049906d3d78a975d' => '解开代理',
+  'c75f45f502edbbdb7fd428134012fc61c3b12c75fa9a88f669648483cbb59478' => 'AD 组',
+  'c79a7ca573362d22e143daffaff16decdce4928383aec7c695e3ac15f49d67f3' => '组织可以使用自定义字段来扩展和提高每个发现的设备的存储细节水平,开放的核心可以方便地集成到CMDB,事件管理和罚单系统.',
+  'c84b0c700586790defcd9f74dd75871bca03e3c3b7eaf9ba5eee715c373616b5' => '软件键',
+  'c87f1a51a7664756536304a2cf2d7c1e0e905aa4f03e5e2c57749824a5aa37be' => '发现( L)',
+  'c87f9e8ca059335f1ed1cc989a55ebbc8800a92153eab53eedef17139329fb00' => '我们的例子将使用 <i>类型</i> 栏。',
+  'c88a0b907419a70c27ab7c1f8e5fb54441a4d9c3567e4c928fa7b2091194aecf' => '成绩',
+  'c88ecd8c2e384528d2bd48cb58d35a814d14ebd50665712d42ef2f7845eda104' => '交互式仪表板可以使网络库存状况具有即时可见度,使IT团队能够一目了然地发现新发现的装置和不寻常的装置行为.',
+  'c90bd2134cc35bd155ccc7785dc76c4f33af105180450de374bcbb604699b299' => '您应该复制并粘贴整个文件到文本框中 。 下面的情况,复制所有文本。',
+  'c90cc53b3875b594c8226de3a5f8c1ca6541044ab7dc1d271b9c9c0616dba219' => '权威密钥标识符',
+  'c96dd81db196cca5f57bd4270bbb9d9e9d1b242d67f9364005ee1dfdc2632523' => '新加坡',
+  'c98f54e5559a95688749d3ef00290e170ce24acae94f29671dfc0a23ba8a6840' => '严重性',
+  'c99dca9d7f3d3a8b910e6605e4525caf7995d566026891f4d5ce693dde2f7b63' => 'SNMP v3 (英语).',
+  'c134a47fadfd5540130aa0903f6e9a0fcbdbe2989dd277cb38818977cfea9bd7' => '暂停',
+  'c137a7f43e23f7ff6251c85163eaa185911424a2ffb443a3875110987a25389d' => '分组',
+  'c167c5b046059a302c491ec74df3a064b5987c7b9f92a2d53e62491017632cd2' => '您的访问权限,根据云 本地API。',
+  'c216c4c76f1d4e1caafa80050392a1250c36f5c9dce70230e045b3fa7afafbff' => 'Dns 域注册已启用',
+  'c242eec24954f8918b1b6d694807b238122b0e03907d9e7d1f9ea702b3222501' => '政策成果',
+  'c284b2307829e01f0f2d9d5b804cd0f978d47bc018cb319e4a16a303ab37db5c' => '在企业号。',
+  'c299f04c006c31396acf95d10d2646bfdd6561cd7ae2a93ef0e224ac4fa7eaa7' => '新楼层名称',
+  'c324ad67bd00abfa2017ff1dd5158d558e220fdb8186630f8c694bcb181cdb9b' => '黄结果查询的ID 。 被交通部件使用.',
+  'c372f9ad16e139b243f86359a3ee55c23348e31e6310397a90eb05d7f1e32c7c' => '查询绿色结果的ID 。 被交通部件使用.',
+  'c372fee9b4566b85a592ae6e98e571f3929c8e262cf2feff7acba63a65a50f14' => '速度',
+  'c408d26c1ec1301a84d2fa2b22b4d65302747767dd0777659274fd913aa92c12' => '萨尔瓦多',
+  'c463ddb110dfd2bdaa0972c85de17bb13b8f4f19d83b39b9da1af6fbf1e6272c' => '风险管理',
+  'c518d05bad23714576c863ca58cfbfd2fbd75ddd5d342833af94b9310540c069' => '是否匹配基于 DNS 主机名的设备 。',
+  'c541cdd27f4b664043cda4d6d6f7991dc6dc9a893615259f1cb11e442dec3601' => '全部执行',
+  'c570c6e6fb130afc4c34310d50311b057562da44a83266092dd3fa8e10eddd3d' => '<p>此端点允许您添加您的云基础设施细节 。 Open-AudIT 之后会使用本地的 API 伸手到您的云端,并返回您的服务器, 就像 Open-AudIT 中的任何其他设备一样.<br/> <br/><em>说明</em> - 为了利用这个功能,我们 <em>必须</em> 启用配置项目匹配 mac(对AWS)和匹配 hostname(对Azure). 首次执行云的发现时会自动完成此任务.<br/> <br/>云层的全权证书( E)<a href="/index.php/faq?name=Credentials for Microsoft Azure used in Cloud Discovery">阿苏雷</a> 或 <a href="/index.php/faq?name=Credentials for Amazon AWS used in Cloud Discovery">自动取款机</a>要求这样做。<br/> <br/></p>',
+  'c612e19562527fa63515dfb2b44a02e11601063f0af9ca5af6d86d4d2a59d38b' => 'dns 域名',
+  'c626a992e31bddf7c99810ed648325d6eae70033aae4362eef9cd4da3bd6c66c' => '目录',
+  'c697d2981bf416569a16cfbcdec1542b5398f3cc77d2b905819aa99c46ecf6f6' => '区域',
+  'c796d37c6d491e8f0c6e9b83eed34c15c0f377f9f0f3cbb3216fbbf776da6325' => '接口',
+  'c808e4b5ace85f03a44cfb4b84bf16aa97f54e4ce8701b36006911751c586145' => '客户端标识',
+  'c835bd1c4578817f60901e0153611b19a97b2275befa8de44e1e42cb3f53ea0d' => '布隆迪',
+  'c861a2ea533eabca4cae0d3ced7071e94e0e98951cbc5aaaa9236b6aed1d61b5' => '打开AudIT 选项',
+  'c877c6ff405ec29ca3d090237af972c34926ffde7088da4839394b48931da888' => '2月(半天会议)',
+  'c879b3615daeb5cc822eb744d4d9caf0079e300499a386247695bd0584cdd804' => 'Open-AudIT方便地同时编辑多个设备的属性.',
+  'c1409d0276788de1d51bab244e9e36c9ced73c641988a6bdf642f251b4b434ee' => '匹配选项( O)',
+  'c2127e501c2e74f21a27166e4a88bb35b899948df476a1ac9304d37ff12fb0df' => '位置( D)',
+  'c3668f581289444ea84763daf6c7b76d7bf6b48ffed85aaee68b7662f504f6a5' => '巴拿马',
+  'c3782c86d8099f3fb5b755ebc970322567aa3894923de8c9c5fc97456133471c' => '菲律宾',
+  'c3812fc4acb861d5182fc2b8155f327f736fbe5e5eb86a7bd7afcb6dc5497282' => '删除',
+  'c3963aedaac6c83c04cf8fb997b479c61e66b3caeecfadd2f2d4bd5b0aef1778' => '内存',
+  'c6926e7662d1341c494e01b0d53693f9036a3a3008a9bb4706e98a7417cb6c82' => '收集器',
+  'c9046f7a37ad0ea7cee73355984fa5428982f8b37c8f7bcec91f7ac71a7cd104' => '说明',
+  'c10987bd7cf853f6ea92ddac1b6c95fa830e3aee160cc5d4ba2fea3743be1aa2' => '!=',
+  'c21648aa889f096abefbfc053bfa4ba68a88ac39402a6689969f1e7b2d331783' => '中学',
+  'c22638cd07b17c16350304944cd244d202b01373412986fb4b7b7817e7e82482' => '证书密钥',
+  'c27776f7835bfcc7359fe3b2ce8a306c2b5a0b8386aabaae1a1f0317fb6d1824' => '设备结果',
+  'c29602f4775797f9b2b0de2468274674c6f6c1bc850399284bb3d1f9afaa7fda' => '更多信息',
+  'c29682e56ad591d039199060976cedc7d414b3db5ac0d21e4561b074ec6874ad' => '改善机会',
+  'c65742ceb289d67f60f20eb78418c5f7c39ccc1096c5f17954065bd7248f18ac' => '巴布亚新几内亚',
+  'c65906dc7ccb24967cbcccc98473c90f6d7ba5a0ccc305e033dd2f1e228f5502' => '马提尼克语Name',
+  'c72199a85b5423d21edc30d37fb7b33687ff08dcc7ba41dd3c67f860e1e48528' => '津巴布韦',
+  'c79504cfddb44e4a8ad029b3a0eda8b1362b3e80d34a33a4d6dab3f1330e58df' => '您应该使用一个包含您想要填充的列名的页眉行, 然后使用下面的数据行 。',
+  'c86712ac5247d0bbbf439e9390ec197ef7e2240e8731a84007311b6a198aee23' => 'vm device id (中文(简体) ).',
+  'c88838e600d45ff1ec4362ebeed6cb1b4351152c5c411c0390eeb6aaa55835d9' => '删除  外部  从  内部',
+  'c91217be093ab3d9bc1ce3917ed89c8c74d60bada735eea6ca2fa9fb9c3931a3' => '责任',
+  'c95597eb1903043de0a1898fb6b055eebe7c62eabb7885d8bf1e6573075622d7' => '皮特凯恩群岛',
+  'c205924de0fe636ccdde4ed616fef66f75b78e98b03620637965c033fd161141' => '文档',
+  'c300113f12f68eb2cc4fad1dc698fd7e3ea7828dc1b2e2106a7cacdbf709a26b' => '服务识别器( S)',
+  'c358820b9289c00acf535d0ea30bc796bc39eb9303585a6c1fc39ce8d930face' => '使用   授权',
+  'c386964ffccd6abf3c4bc971384dfdc5cce8ae9540f8773f2c6e7867b1350f59' => '按政策导出',
+  'c427304cba9ba4311c2ef244d00d92bff74c97fe030b5c39a46cd397c1d3d17c' => 'TX 级别',
+  'c611981fab983bc648368eb81240f5a5a1eff07f40aa4c9fd155600a98eeb6af' => '政策',
+  'c763760cff87decec70ee5cdd0d4d701e7c2b0f47d951f13b083a1dc6a8c3daa' => '详情请见以下指南,其中包括录像。 使用',
+  'c853337c4ddbc910ceb44e0e550aeb8d35b4ae6fd93e16d364cf3885b34d616f' => '选择内部计数',
+  'c9054826f71c23b8eeb727b87d60b579c12b36bacdb42fc8f33d0a15e6eb23d1' => '莫桑比克',
+  'c9258872eae684490b976ac91d917295a3a700cdf33df8416760d25962ebd5ae' => 'CVE识别码.',
+  'c68529701a3ed9b67b10689bb84b1d1cdc4dc979f9da3ebbb7fcba84c6d42141' => '行表',
+  'c803710302d5769d8fcd51958c516ff27f2a3c5ad9373c348d1d180c04a74624' => '函数',
+  'c845152155bc3d06bf7399de766280f69ed61c5873f7106a1b2933ea961c376f' => '<p>证书用于访问设备。<br/> <br/>配置证书应该是您在安装 Open-AudIT 后首先做的事情之一.<br/> <br/></p>',
+  'c2186153227d7c733f79bf337b0293d2e718fdd9ae13f139a85919b5a79cc140' => '激活自由许可证',
+  'c25337055464f8d31fb1498bc94025cba5eae3b0e1cf07741f09f8b873d00103' => '角色',
+  'c45397979995c1755cf1405b4e01498e89696e08ac10f192739cd19f8af77c43' => '主题  key IDent',
+  'c527097577600a6726de99bd6f555fbfaf214da9b7d127d7dd4a807927422b98' => '丹麦',
+  'ca1fb2b0eb2b1933624bd6228bd017c461846bac85cc69542b62e121e49b4490' => '虚拟化',
+  'ca4aa70c5c09d4cb2f80ed00807a1aec2b9a36ba22846a84e806df7c0422439b' => 'Open-AudIT在其发现功能中使用Nmap. Nmap 探测器设备用于开放端口. 设备最好以打开工作端口的方式响应。 设备往往不以此响应. 下文详述了不同的答复。',
+  'ca4c37cb4476ae2b0cba406f2d2ba86941c15e9d3a169ed2feb37fd0b9fe07b7' => '文件名称',
+  'ca8b22d0db83a22db163b560b3e4e51527e533d31d067b614a0c33c4d2df8432' => '团队',
+  'ca15ebc05a3c5c1348753b209c4452c54022dbe565d9943b11c795e3af9eb0b0' => '对于',
+  'ca19aacdacb895b50e424d9b1d7685168bec5c7eee27a7416a4894d4d79727fb' => '软件版本',
+  'ca89bd6289b8333c60461ed9d75198f8efb37699a8c940f0313217b3bcfea845' => '维修期满',
+  'ca200b8d4e51bed4174329ef6e00f808dd9903e60241e4c34f70c1b50bbbd7c5' => '该软件被制造商终止的日期。 通常被较新的版本所取代. 仍可提供维修。',
+  'ca9993ed39a922235a410d6ccbf61517a7c7a2cc8b264516b51ebd9dd783e55b' => '从',
+  'ca84680e62cf5086e856ea08470fcad044119bcc07075f50e81a111d2fa6eafe' => '咨询、执行和其他服务可通过',
+  'ca822175fb7059546b0b32802e4c4df07f333f4112c6318857374d243ca6cff2' => 'ISO/IEC 27001认证程序及其关键要素。',
+  'ca7692088c383206596458c0e3cc6575c306bc91996cb0cbe73eb1d8ed6de310' => '获取标识',
+  'caa79af4db67695cce51988cda2f98423bb7420fbaee8968cd4aca151f55d3a2' => '会期',
+  'caa771089b3ff0a9002e4ae6b0a9b3f6936bc683e25dbc9d0561f897cd255464' => '以外部系统的额外数据作为JSON代表。',
+  'cab437d53ab34afc5942dcb9d831abd364998c7575153333cfe1c50d42bdb9c7' => '要使用此功能,必须在配置中启用 - 单击',
+  'cab2644828bcc1f220612fde559864da2c5bf0c6eebdcadbb4a4c88c9fcf3927' => '喜欢',
+  'cabd3d4c1689a9c9008098882f5e260390d716215dd72bd68bb9c1803e704892' => '动作uninstall',
+  'cabec311e6f1c4ca2c55f82bdb47f6880acb122052e452e943506db9962d313a' => '帮助文本',
+  'cad9bf96eef1d426acb3fd098c7a559764f710627ba55f88a699e4d53e4b890f' => '所有脆弱性',
+  'cad27ce26aaa8e77bf58065dff9b0b26a1fca00292e9036a1d88d53a303bab50' => '速度  b',
+  'cadd94290acc9c1f1bc0700f4612be3bb450142773075cd055823b892ee24446' => '切换端口',
+  'cae3a4fbe5222d2bce3e098df974240ae2a40edf07fc1895b90b600fd3f0d2d4' => 'nmap tcp 端口',
+  'caee8bcb310f0c86eab46c369a1a930beb8c6838dfcb683c1ce3fac77658efb8' => 'AWS 服务',
+  'caf9f906b16a91cb0160c50abdac8bd6db9a283fa9751f9801ef991554b46a8a' => '文档',
+  'cb0cca3a8a507b1a65e77551c80c0e903028cfb37c620dcf3dd94e65459572e6' => '要审核一台机器,您必须具备证书和管理员级别的访问权限.',
+  'cb1d2fdcc86ce72aae3a8d6c513a08b3a12069dba7e0d5b9987b0cdf456aa621' => '基准',
+  'cb2b17f710bffc3f5dbb3f12528e637b42b86ce092be6b623eae3721c97c1607' => '开关( d)',
+  'cb5b7885eb2bf622ecdb62a77ef136fd673cac1c760a0ea0cf63e7515d543a29' => '严重程度的整数.',
+  'cb6e50f40bdf26ac40c7ec38619668078b8649a00a01afba89ae2a6f96bceee8' => '<p>任务有对应 unix cron 时间表的时间表 。 分钟、小时、月日、月日、周日的属性都按照括号定义行事。 您可以使用逗号分隔的值( 无空格) 选择这些值的倍数 。 您可以使用 * 选择每个值。<br/> <br/>这个 <code>type</code> 任务可以是:基线、收集器、发现、查询、报告或摘要。<br/> <br/>如果您想要安排基线或发现, 您需要在创建任务前创建这些任务 。 您必须使用项目类型的标识 <code>sub_resource_id</code>。例如,如果您想要安排发现,请在 <code>sub_resource_id</code>。 。 。 。<br/> <br/>值为 <code>uuid</code> 指定每个 Open-AudIT 服务器。 您的独特价值可以在配置中找到 。<br/> <br/>这个 <code>options</code> 属性是一个 JSON 文档,其中包含任务运行所需的任何额外属性。 报告、查询和摘要的额外属性是: <code>email_address</code> 和 <code>format</code>。基线的额外属性是 <code>group_id</code>。 。 。 。<br/> <br/></p>',
+  'cb96bb2127aad27a7b2b5b99ca34ff636d00af10ea3b432b02dcc26d4b4697ee' => '如何利用脆弱性(例如网络、邻近、地方、物质)。',
+  'cb766bafd2aeace82cb125e469ac665dca8d89d8caa7720dc4f2d625e9bfd4e5' => '为示例设备创建基线',
+  'cb883e12b75af4beb6ab7b9402d451187aa80e976b20cc627cb9d80d4cc656af' => '目前支持的类型是 <code>snmp</code>, (中文). <code>snmp_v3</code>, (中文). <code>ssh</code>, (中文). <code>ssh_key</code> 或 <code>windows</code>。 。 。 。',
+  'cbba3ad20455cd5fe51c1e5a39178167332073ed14afa360332bfa6a943dc90c' => '最后结束( F)',
+  'cbfbca3dd3b4512e53bc67597ffdf1aa2af540aefc397b38a330556dc148a26a' => '服务 网络',
+  'cc07a12ecb4350ed597b7f12341ff365bcc94040ffefe21f85f9299367baf935' => '每周执行这项任务的当天(*每天)。',
+  'cc1ca159659a400202906bd54f9452ba78865b5e5dd61e8fc57582dcbe60c613' => '您确定要删除此输出项吗 ?',
+  'cc1d3b0234846714b0aeda6cc34b057b4305bb83dd447fb88f816efeb59a4e96' => '许可证',
+  'cc4a5aaed7054c947a695dcd684a5867cd5985f623a085b8422ec53e5ce2ad0d' => '电路计数',
+  'cc4aba78a89291309cf6772bc128e27d9f25ba919b45d0006e68a5cd423a475d' => 'Nmis 商业服务',
+  'cc5a68a037f6caa86e16ca8d2d9b13abd047bde7a93abe972a5bd3f3dc8a6ea2' => '您可能想要在电子邮件中复制并粘贴此 URL 。',
+  'cc9ea7f7c64e772c81eb80854c0e7db8f504943549c0675d893a983b8f545152' => '基线',
+  'cc22a5f706e2f9b1af9c60b4aecc47deed6dca8784b95229b18ab8227efd69ee' => '神经病',
+  'cc326bec99a83517d4653c799476866438ea3886ab3a48c0153fa943486d65b1' => '剥削',
+  'cc462cad9b99d5be787a2c77bbd571458d6ad8f22a559ed69868c5e227830a3b' => 'HP- UX 设备',
+  'cc817468a39e04169fa12f643888d79977768a74c69c71e52db6a1ef3d58e941' => '发现( D)',
+  'ccb3d246fa0c19def0d3bd10b69240e8118a38b96903ee844284bd8847569cd4' => '我们应该在哪个子菜单中显示此查询 。',
+  'ccbbfd24241539a1303db2e389677ee88e4312cd2d9da54abf97a41179cdb47b' => '审计 Linux',
+  'ccc6b9c829c58655fe108d040191db7f991bf47741d7cb2d148999a40d4b73ba' => '保证( S)',
+  'ccc19377da4336c89149f53b6dc75cd676eb9b9890096e7c9c0479d82c05bb3e' => '发行者名称',
+  'ccdcbe846f3da4eb044fbdf64bf6b57902388ab72fb0c852ba72280f8d478b40' => '大小',
+  'cce23ee4dba45154f4806f03ee897605370765e3b16ddf67128770f43e4d6baa' => '用于角色',
+  'cceab85349621329469513487a8c174893af86c117682c771f9f25a9b7b2ae2c' => '可能会 <code>high availability</code>, (中文). <code>load balancing</code>, (中文). <code>performance</code>, (中文). <code>storage</code>, (中文). <code>other</code> 或空白。',
+  'ccec498b53ac2cc063301671fee364703f5788b926e816d3549160f422efddb8' => '礼貌',
+  'ccf56a9cf381d26848f421b51f9ae7a71d6c2a5bb946666631c46275084f662d' => 'dns 主机名',
+  'ccfe8110594c976634313edab218370622b3145c4b5cd6afd8eaffb09f30f24a' => '此角色没有指定 AD 组 。 检查Open-AudIT内部的角色细节.',
+  'cd0a86c2bf2d97fb46ad4cd82f0b19ce971af5d603ca3126b680729c39c86ba6' => '<p>Open-AudIT提供盒外的多租位!<br/> <br/>Open-AudIT中的Orgs(组织)是一个关键项目. 用户有一个主 Org 以及可以访问的 Org 列表. 一个用户将它与一个被分配的"Roles"列表结合起来,该列表定义了他们可以对分配给他们可以访问的Orgs的项目采取什么行动. 一个用户"orgs"和"roles"的组合定义了他们在Open-AudIT内部能做什么和不能做什么.<br/> <br/>Open-AudIT中的大部分项目被分配到一个 Org. 设备,地点,网络等.<br/> <br/>兽人可以生孩子. 考虑组织图(树)结构. 如果用户可以访问特定的Org,他们也可以访问Orgs后裔. 详情请见此 <a href="/index.php/faq?name=Users, Roles and Orgs">财务问题</a>。 。 。 。</p>',
+  'cd19f16ce3685ab7e3a057b8e590d43c159afa0f60d689b52f010fd30191d14e' => '这可以是 varchar(文本字段),列表(可以选择的数值列表),也可以是日期.',
+  'cd559ea0abca085ef144273caaf7266183bba222f39d894e74966fc04b8fff18' => '9月 (中文(简体) ).',
+  'cd969bc986bd3812dbf1c66777a85b5355125a17cffca671d63908c5f646afff' => '探员? 发现? 证书?',
+  'cd6362b6534f50421b24bc9676fe009a9cbc16b4485672bcdf05dce6d9954c40' => '保持风险评估和治疗记录',
+  'cd42404d52ad55ccfa9aca4adc828aa5800ad9d385a0671fbcbf724118320619' => '价值',
+  'cd74053c54816e473883dede0ad3b152f38a41995409eade6b42704919bb1359' => '建筑',
+  'cda12075ff6c8ad16f42be7c2e322c09ec9dd2d68667077895a441b47852c75e' => 'ldap  base dn (中文(简体) ).',
+  'cdb2189f8a9df63f0da7f3f9a349df3241fd719f848ce36c23f4d43539c2054e' => '排除( P)',
+  'cdca2bee74245c2bf66ddca2285f08a1160f2ffc19b89f6a99d4e234696dff11' => '已过滤',
+  'cddb6f37fc0555a5c8c533ded19295f9b0cbf4a386b2b8e492bd6005ff153f8f' => '尚未设定',
+  'ce0aa5199d71ac35309b76270be0fa4167a136f191dc3f3c60dea86bb407d0b4' => 'tx 比特率',
+  'ce1ddb4ce0c7be289fbadc1339bd7d03a75338aa3141d090df4d379a0279543f' => '清除 LDAP 登录中的问题',
+  'ce1ddd20674fa79ae8860905b6c7576a299e487f327bc38a974a800a312fc852' => '可执行文件',
+  'ce2a93b0ff10d28eff6a3f6ec3107b900fd202a10ab1963839d7982cf424f79e' => '脆弱性( D)',
+  'ce2ef05eabd2b900520a302e50d261e4c04ecb5960ef01d560b610cb0bd442de' => '您必须删除已有的许可证, 然后再添加新的许可证 。',
+  'ce3c3a5bf7e34144858da13961747143787e05e7aebf2c18da70f9b458f82a86' => 'Open-AudIT专业. 世界最灵活的网络发现和审计解决方案。 " 社区+ " 的所有特征:互动的Dashboards、地理地图、基于时间安排的或历史报告、商业支助。',
+  'ce3e00b37320da4737b6bcdc27438f53db3da2e02d6bf721e8a3d85d00b9ef7f' => '服务类型',
+  'ce4fc7b9fb474c432be1d8099988c1b610994947556acc87d4df924206810b8c' => '打印机共享',
+  'ce9e10f88d7f6018349c3bbdbc1ee38b97027a377582a7c4bc95906d9b140eea' => 'cli 配置',
+  'ce54f0e22dbb39de8a6d9ae0b32b3ecac5bc749fddcb78e4f1e572212b338d63' => '构成部分',
+  'ce58bafbd4493066c418db2949740fc660bd3e748612014b175b95b05619117d' => '外部字段类型',
+  'ce71df4dc560de1e3e3d08a85db646710b493e3106c7af94ae10372d61f9eda8' => 'pid (英语).',
+  'ce88b5e693ca07055310f406785b017343639b5ae0ae334adcbf359d91db0d4c' => '审计脚本会使用文件[ ]阵列并检索文件细节.',
+  'ce635c4eabff5e4f56dba8fb1e39ca235530aa2b6b18533eef1af3862016c577' => '外壳',
+  'ce770e2c925fae0721bbf70b4a7905adc1edaa29c30e4704f2ba2d5d9d79dbc7' => '要么没有,要么现在。
+
+<strong>无</strong> - 攻击的成功不取决于脆弱系统的部署和执行条件。 攻击者可以期望能够达到脆弱性,并在所有或大多数脆弱性情况下实施剥削。
+
+<strong>现</strong> - 攻击成功与否,取决于脆弱系统的具体部署和执行条件,使攻击成为可能。 其中包括:
+
+必须赢得一个种族条件才能成功地利用脆弱性。 攻击成功与否取决于攻击者不完全控制的处决条件。 在成功之前,可能需要对单一目标进行多次攻击。
+
+网络注射. 攻击者必须在目标与受害者请求的资源之间注入逻辑网络路径(例如需要上路攻击者的弱点).',
+  'ce778f2b34ed139cb7c709cb62a209e17e8118bb8991eaca37d138b5bc5aaeeb' => '法律要求',
+  'ce108352268bc1ab7945c555434c0d7c9369e7e48feb82999a8f7c83dd4bf9e2' => '<p>在Open-AudIT中的角色是一个关键项目. 用户有一个主 Org 以及可以访问的 Org 列表. 一个用户将它与一个指定角色列表结合起来,该列表定义了他们可以对其可以访问的Orgs项目采取的行动. 一个用户"orgs"和"roles"的组合定义了他们在Open-AudIT内部能做什么和不能做什么.<br/> <br/>获得完整的Open-AudIT企业体验. 创建角色可以对用户在Open-AudIT内所能做的事情进行精细的控制.<br/> <br/>授权的主要方法(用户可以做什么)是基于用户角色. 默认角色被定义为管理员,org admin,记者和用户. 每个角色对每个端点都有一组权限(创建,读,更新,删除). Open-AudIT Entertainment中启用了定义额外角色和编辑现有角色的能力.<br/> <br/>角色也可以使用LDAP(主动目录和OpenLDAP)的授权. 企业许可的设施有能力为每个确定的角色定制LDAP组.<br/> <br/></p>',
+  'cec3a9b89b2e391393d0f68e4bc12a9fa6cf358b3cdf79496dc442d52b8dd528' => '数据',
+  'cec9f78389c9c9f4243502d8b8d8b3944f6fce3d2d59fbe0222ff2f881e5da98' => '2018年6月开始 Google为谷歌地图平台API实施了现收现付定价模式. 此前,大多数使用中度的用户都可以免费使用Google地图,这些地图嵌入了opCharts和Open-AudIT专业/企业. 谷歌的新政策在此概述,',
+  'cec29b4a6c5c8a9cc2a43ea3d203941e82d4a9ba878bcbe87bbc94f533cf9bf0' => '相关地点的数目。 链接到 <code>locations.cloud_id</code>。 。 。 。',
+  'ced2cd45d56af4935891a895079eb6655a2962b48d05876300f660a1ff6e1f35' => '是FRU吗?',
+  'cedc516df056195108208c53c37b1b3ba2b1f25b3e0772e954b98b9bc4ec76ec' => '计算',
+  'cee3e3c7ffd5633929180570f695adbfb8743f5e518c2ed9fcb27bcf70232795' => '匹配属性',
+  'cee7cadd2154b2cbf3391fc8d21ab7e8fd87490348ef88d4b524daac314f57fb' => '相关基准的名称。',
+  'cf0883343f4abef779b777c35764f86c9f1f4324e8b5490840245d02ad2f7c6f' => '议定书',
+  'cf2fa17395121a5201f31550c399fd8042130955231039d2664314a6b9a041a0' => '你可能已经注意到这些匹配规则 对于可能不是全球独有的项目。 一些例子:',
+  'cf18d7d7b624cfde1a2b3163d142488d158a0044925017b8a5a2fe8ede14be34' => '文件大小',
+  'cf530d8f694ece1511aff1d0f6c9a7371ec5fb1e2c0f4cc2ebd80f2421c5d196' => '<p>属性端点允许您在 Open-AudIT 中将定制值添加到不同的属性中,此时此功能在设备上的类,环境,状态和类型属性,位置和类的类型属性,以及查询的菜单类. 如果您查看了前一种类型的项目( 显示一个位置) , 您会注意到类型属性必须从下拉框中选择 。 这就是这些值被存储的地方。 因此,如果您想要为位置添加新类型,请使用属性特性添加该类型。</p>',
+  'cf835fc094349f22c2214fc8256cb895fcbcc01c77083c0f94114703d9e79a29' => '转动',
+  'cf4507c120854380c542887e75ab41a35724d7af716c1d62f405f7d16d810100' => '不断改进信息管理系统',
+  'cfa8291971d9904d416294ffd84179d491eeb5db8be68955df58c3e6fc5e72ea' => '不要再给我看',
+  'cfb24c7cd3e5a5136f083cbe247dcfff9db5b81999431320db6d4ab5eb1566dd' => 'nmis 组',
+  'cfd5de3f234612f995f3f6998dd50c81ef07762aedc8bed0e9b48f1932989301' => '圣巴瑟莱米',
+  'cff4c58de0baa1005e4b62c7330f70e34bb3cc4380d0023508f0b495e7b27ecc' => '所罗门群岛',
+  'd0be6c58ae63e8c9c225e6ecb6a189287f9363519f5452099139c33eadbbe9c5' => '逻辑单位',
+  'd0d54e66bc75ab93fb02db153e08cd345af5608d46dba5c0a0e9b248606bed20' => '也可以从',
+  'd0db8b5e364b6989e4b8f38a2b3846b87d99a51c1592ebf35d21cc66405a8e39' => '选项',
+  'd0f88855d0179a1d66e032fac598457b639ac3fa1133e288600349d3b96e8203' => '窗口软件包',
+  'd00eca1bae6742803906ab42a831e8b5396d15b6573ea13c139ec31631208ec1' => '开始',
+  'd01acdec3a3b87b33882a0fb8959ffda858a0642f7f54190f67aa230e04d1547' => '商业',
+  'd010baa5a213344f8c9d8bd8f996b86394c450f445658ac9cfb0de695cfe49c8' => '组查询只选择',
+  'd02b16a173230817e5488eb09babfd25700b6bbd253edc39217513ac375d2f94' => '审计窗口',
+  'd029f87e3d80f8fd9b1be67c7426b4cc1ff47b4a9d0a8461c826a59d8c5eb6cd' => '示例',
+  'd03b3bd7cee8dc8076c530749c6674caf3fe960a17cc907e4d737fdaad475062' => '派列',
+  'd04b98f48e8f8bcc15c6ae5ac050801cd6dcfd428fb5f9e65c4e16e7807340fa' => '散点',
+  'd04bdbc095f78dbc026d924ddcedf03e7d4088d8232dbf9dd92a28ee21835e0a' => '输入类型',
+  'd0452ef397630fde0e21b7206057607449ecc4348bb49531415c8ff444a77153' => '有多少政策导致失败。',
+  'd05e33994be9c386ec5a35dd85b47633c5d10d17927f1e2b3546177685e73a9d' => '瓦尔查尔',
+  'd0527e4b3d658351dae74be7b10c7531a7ac98493c6b257ab62774853bcc74b2' => '注销',
+  'd08b4a0f0dcdef118cc97197a1375764f4e3cfcda41954397ff082e906d18704' => '马约特',
+  'd090b87e4a3bbce3ea070db9f79b2f977132cf51e31de97d6378c2dd0e725467' => '海地',
+  'd093b090a7cce6316bf817fca56cd17f42018eb8982dd49367ecb839d6996466' => '覆盖',
+  'd1adb3b5414bd9e7be4b5fd8cbc2b9414999cb8bd680da30e2dfffc296b9772a' => '奥斯 Cpe',
+  'd1b0613ede30b6f5a613d8e6cc231e1f7943ffbc1bae33357e0a83442c3e0b1f' => '让我们设定日志以调试 。 复制文件 :',
+  'd1c8bd726dfbcac3c1cf09bcc3dded2b568ba97d1f1774a76abc6a339ba21d4b' => '共享名称',
+  'd1d6332085114485c8a27776e8ed6a66c296f4179e4220a75f1b1fead1ec54f3' => '塞舌尔',
+  'd1ec69e64b9609d089aae09f7adc5c566d2cd222f8d8325f0ab3b523f0ac2690' => '全部选择',
+  'd1f387bf3bfc88d423b965a95f7291c16cd2bd2d49798af32b0b6025a5db9cab' => '状态( S)',
+  'd2cb89fc224ee5e1828343192cf0f754783c8eacfe1a2fde3c10a40430f7b432' => '初步分析后更新了CVE. NVD浓缩数据可能已经修订.',
+  'd2cdbba992d9df8bd73a35369299991991d53e70ab46d11187ff476848f19478' => 'N+1 数据',
+  'd2d418e58982718269c12dcc310fef3d6c2791971ae360559cd596fd5670f9ac' => '内部审计和审查',
+  'd2e2adf7177b7a8afddbc12d1634cf23ea1a71020f6a1308070a16400fb68fde' => '_',
+  'd3a008ef1335692d9d045175ba9ea1dcd39ae48da9e2043a9baabad6c3818c28' => '地区',
+  'd3a71a5407735d79c6883d947de18e6afd04d692c651350abb940da8e7b34fa5' => '我们是否应该匹配仅基于其 SNMP sys 的设备Name',
+  'd3ad1f1f8c9c4f5a4a593571085513a467305094c2f345abc62a00df0bd23b90' => '政策',
+  'd3bc9bd14ff82827399ca2cf48a4cdfd19cc4a876f81f5c4969d0a70afa54756' => '抗病毒药',
+  'd3cf941c991f5a9fe564135c30661cee033292e5896b3f9279c8df22aae652c0' => '选择内部属性',
+  'd3ecd4d15c23d5de87272f53786c37331a4f29a8b1bb5276b3917d7123e02cd9' => '运行命令',
+  'd3ff7659c2a8ca91d9d46db698049d5958817c29487af36aedb70d7a71670da9' => 'OpenSCAP项目是用于实施和执行本标准的开源工具集,2014年被NIST授予SCAP 1.2认证.',
+  'd4a33d5b78bccebe3f16843dc30e6c0f73b4eb6efb4e7114ddfebde7fa2c9954' => '发现',
+  'd4dd964ce1ed2b2d5ab38633c2bd4adea4f54919c27e802fb6f14b1d83e41cf0' => '由审计衍生或用户手工设定.',
+  'd4e8830a71c73edffe0115b8abad16b0b5cb2e121047c64cd01995203cfad062' => '目的',
+  'd5aad9660002fbc9e8f5591f9a54dac109078475644134ea51d967b969d7d8d7' => '测试( O)',
+  'd5b67bc930cd33c0c62c478cb250387d18e05304ba7d0e02fd1acea699044d20' => '福利',
+  'd5b905ff629da372d3e24572360dbb3b5fa39a2d62329cf0e206f9587ba613db' => '成本代码',
+  'd5fe012c16487e9d880dcd7c8e5df7a059290fce52d5c2b44902d4bd3120f048' => '物理 CPU 软件',
+  'd6acf1c9e8f1b95bf93f77050f5795af0e0aeac0ac50ab3ae986ee4d8e0a1bf4' => '向集群添加设备',
+  'd6b898e39f8e815f87b2e88fde75952377cc28da5a4f75295c83fb0f899aa5ba' => '政策编号',
+  'd6c999e99f1b197ddcc94348ab5c4959b94999d89c1288a07480b548074a2fcf' => '打印机  共享  名称',
+  'd6eafe82359100423c93c5ce53c352c1b51ca1e699215fcec3f5c5dd9bf12d24' => '下载',
+  'd6ec2e02746f273ccb3e30174541bea922ca7a2654d671a3970b37e370ee1257' => 'LDAP 服务器无法连接 。 一点也不 请从 Open-AudIT 服务器中选中它 。 检查正确的端口对 Open-AudIT 服务器开放 。 来自 Open-AudIT 服务器的 Nmap 将显示此功能 。 用$ip替换您的 LDAP 服务器 IP 。 尝试 :<code>nmap -vv $ip</code>',
+  'd6f713e130d873ee0463da753be154a0029c53c597e73bc5c2de8d76fd557843' => '确定有关各方及其要求',
+  'd7d7acf18d47be4a0b98457853066ad2431c93d776b8d552404ef39d754fa10e' => '选择菜单 - > 管理 - > 基线 - > 列出基线。',
+  'd7d470e25962211a7c66f2c6d5d3bea5906081d16eda5cc1cfe4112f16d378b6' => '已采取行动',
+  'd7f7c99b5a858a514ae8044c1a652635fa10c1e625b9b35b201744fd90f02d81' => '拼图必须返回名称或我的 名称、描述或我的 描述和计数。',
+  'd8da2c49df39d91df7ecd199b92da7bf264f026242ccc69b08daeadfe587c45b' => '说明',
+  'd8ef398a49908e43c7403faa24bb908098dc04ffeb3bd6715696eaf79447d0e0' => '位置 id a',
+  'd8ff6d240bea3e2de52c2fe2bd23954d346b3b50670e030c8a4c53b9083bd467' => '约会时间Y-M-D H:M:S',
+  'd9aa43ead5f13974c86492cec6a4fd132cf312eb93c2255c4feb11e278485bc0' => '波多黎各',
+  'd9b50424f17cea4d5273b3053f6525ba88b9442df6ebb86baf3ff73995edb1fb' => '如果您在 Windows 或者您的 NMIS 服务器是远程的, 您需要提供访问该服务器的 URL、 用户名和密码 。',
+  'd9c6b92d96b9b1e3dfa33250587d48d38946f339dc9a951e75f77a07206e13ec' => 'SNMP 细节',
+  'd9f23845b746b8230897cf019c35323f682c6ba0af8cc636d2f2740c36eb83eb' => '设备基线比较',
+  'd16fe10147bfd55dd7bf2535d6a2bf89dc94b93f0c490fe6287f496c751812bc' => 'Vm 设备标识',
+  'd21f85ea38166303ce58e06134b5cc4a5c900c409ab2a500ff7c9225109a09bb' => '高级',
+  'd22f21be65437edacd940cde488a87b7b622f5d24c88bee27fdc0189c19e2264' => '通过点击启动和搜索调用命令提示 <code>command</code>',
+  'd26ffb6ba6b12d63c26570e9be79a6d82e42ebc832adc63a394dca02c18242f3' => '为了做出改变,只需遵循下面的步骤.',
+  'd35bf8b1e5060c1ff4618eaa4760ea1e585e8bb354d5bda0d570437893328ba3' => '设备没有被基准化 。',
+  'd42ec833482af34f218d481d3b5c7067cd20a058ac510d5a4f89ef7511646804' => '固件修订',
+  'd46e174d7fbd4196a5f078692ba820128d00a62ed8a7be75db8416c9b8564b3b' => '工具栏样式',
+  'd48a617c7da5163c44f117b9b23d8c920e69b4aa83d7b6570d71a66f3a857183' => '全权证书',
+  'd60dbba079223254d4c49c230a515bc107a997e69f811365da2387f8557b9cec' => '优先权',
+  'd61c6bbb1dadac8dc81ed4aeca425405b8da17c203015a27ee4abec8f5f19532' => '服务( V)',
+  'd63ab4711473b0398feb4b56622605d5d2ec7ecd3b1bb5070a7dd56de96aaf88' => '时间',
+  'd63df8e095ebd376ddb235a174e3aebdb5c8d5a025bf3cbc5cb899b1f10ed60e' => '平目标',
+  'd65dadf4de83ffadae5f0445cf422b6d60d94d562892cfbbb6b8cc8cb249766f' => '发现运行',
+  'd66e14828ca4afce1f7ed6b5418e6c1f834850f8527fc23d6293f196b749cd82' => '活动目录',
+  'd67e2e944994496c8d8ec76eed0cf9f09679448d584b532bebf941852a37f5ed' => '已更改',
+  'd73fccb1083d2086044ed41fabf6b36745f2878e120ab6233ac43a575960bb82' => '合同义务',
+  'd74db47cc444b796a543efa9e8107874539d428f6a950a853d447223841d4454' => '类文本',
+  'd80c9bf910f144738ef983724bc04bd6bd3f17c5c83ed57bedee1b1b9278e811' => '地址',
+  'd89dc506160f2690821ee54f31dcddfc9cd16681dafa1de7681b749d63088231' => '下一个运行',
+  'd89dca10994db69e3b09cadec3ab7af5761490aea6f2deb5ab857bda81ab14b8' => '打开AudIT 企业有能力从预定义的发现扫描选项列表中进行选择,也可以自定义每次发现的单个选项.',
+  'd91fbceb81acd4c15eb76721d08ae39fdb63ea9818b4c8043afc19d13dd4450c' => '服务器是',
+  'd93eccb1126384697572588b863b9ae4707798083a73599dc1f97f114ffdacd3' => '每个发现可自定义扫描选项',
+  'd105e5ba1422c143b0d0929f7d89a1b667146c8044cccb5bc08f4b6b64c6a6a1' => '绝对不需要手动编辑每个单个设备.',
+  'd123ab9a7abcca8bc6444a2fbc293130a0865fa4d5e1f0024ffb61b6a4e63782' => '这是一个取代这个旧应用程序的新应用程序.',
+  'd268c9c4492022ac5325036fee44b4627733a9c0c12d832c7a0627e3d43e0ff6' => '楼层',
+  'd299ea16814ddf362b77471978022280d97ca1de310ec60bd50b27d8976ca3d3' => '10分钟',
+  'd320f8ed10ce64262abb1b6a77614454400ff5750d5eb53f6eac68edf671925e' => '严重性失败',
+  'd528ca01dbb22c110b4f6c77aeb7685748681f3920fca0ce4062c7da1fe8da8d' => '比较运算符.',
+  'd600e62a6861fced191a07b0c7d80ca5f9a12bda85393e0acfe7c945a1660fba' => '过期日期',
+  'd643f00df5a7ee28f40be7802b0c97feabeb470abc8efd726eebc2d53c9bb0de' => '您可以在 URL 中提供格式选项来覆盖此选项 。',
+  'd689a9983a7ba4da4c9d43b764c4359537955d82bcb32834feea1f009ceab9cf' => '指派一个ISMS主管或团队',
+  'd696a35bdd1883da07a8d6c41bb7a3153381b23aa197629ee273479a6eaa5a9c' => '简介',
+  'd704d8af25bed5a588eaf0997d1fee9364b498c095ef3dedb7c14bd0c00b6ca4' => '算法',
+  'd799c8cabacfd2ebbcb069c3cc0ef9fb459580d16fc1628dbe726565fa2df559' => 'Dns 域名',
+  'd808b425dd43409b612cae0f7845b4d5dc08ebf6c998e00580ac5e6079d85af2' => '从 Open-AudIT 创建 NSIS 设备',
+  'd825be6ffd4c9a27a8cc2f26e4a3b95bc87a8f43289ca467d064d544c509f8eb' => '处理器',
+  'd850cd42a7d697ab808490d86c3ded64768e479b9fc82488c37570b2d5ad2727' => '批量编辑设备属性',
+  'd854f67288ed06597fbad6216148bcd4b0fba0741f91fe4be9570cf8614e34e1' => '购买发票',
+  'd874a06062de9af277c22497972b61de416dbaad7774cf11acb102dd739e6162' => 'Open-AudIT有一个JSON休息API,既用于网络界面,也通过JSON请求.',
+  'd889e2172a211a1df09723b11ff7cd0d9c0fefb4c0bac1cdea6aadb4e6ccc0b7' => '不丹',
+  'd991c7e55cb69d76e34e6a2fef9a98dcfdaa032eca14c40760b8dbfc02503250' => '瓦尔察',
+  'd1617b4e71232521ad1a7cccd493ac53e1470706625c0e2e05dc01479ed69943' => '保证类型',
+  'd1949bf197cb3e0975803ba1f0edfe5716d3a8b4a1671c130df8f3a5b295a936' => '我们是否应该使用UDP端口161测试SNMP.',
+  'd2991d0b89140770e6045cbd0971ad2a2206d5cdd0c2852591508bfd9f158305' => '事情发生了严重错误。 Open-AudIT 无法读取 <i>鸟类</i> 表单。',
+  'd5808c0e0a479813fafc659ded78dcd18372dd71f3d0d5d52efdc940e6a384e8' => '6月(半天)',
+  'd6039c9c58884c9508d10545d2a3a715b28a90c781a535703872f73f128e9a07' => '或 GitHub 页面',
+  'd7439bee24773bcbfa2d0a97947ee36227b10d1022b1a55847e928965bb6bfde' => '原样',
+  'd9019ff220a47ff8fc99a817e65ded92f7920f0a1e26acf02163d28d10b1f9f0' => '组织',
+  'd9488dac9bc047ea92d12f6574e27f36967eb751c84e328f50febb636746a8e3' => '本地主机',
+  'd27172f96224ea0383f05e9184acfe7492bfec85fa7e16ee408edf40109b7eb2' => '此云中已审计设备的数量 。 链接到 <code>devices.cloud_id</code> 和 <code>devices.serial</code>。 。 。 。',
+  'd56581ff69d85c458f4919b7aab3ac2d9e25879a8dfb6eec5121c09793bdf2a9' => '发现扫描选项',
+  'd65454c81c8fcd368629a6a7a3c8c83526ecdf7d9b46527e670673c36b20f98e' => '使用 SSH',
+  'd70835b5644add4370b1721c3af2b35f7bfb381d2d2a9dbbaf6815b90e4778eb' => '密克罗尼西亚',
+  'd73499e8668985eea7d672380f55b75126783d82594e24e6ce39a7dfdc5f288a' => '点击时间( T)',
+  'd74097aeca94dcf62eb4057a52e8bb19d9a7338e013fee2ccb37f01da62fa20d' => '家园区域网',
+  'd195606a05c8b987e2b09135852e0bbc85ef49a71877860d51cbe9c9f5816dfe' => '打开它',
+  'd434767cba68abf40a464fcdc446463e925d96f7ac0614f34a0a27fcacf48314' => '新行名称',
+  'd537295b75960d52bd6a1ca9d94516cdc6191d00eabdf12cf5bf3e52275025aa' => '第三方查询 ID',
+  'd598026a9cbc60505f138ce53ac78088d582100c196d0f70c7e2538d4a8d7e10' => '窗口',
+  'd757818e6dac4f277d4e3d5cedfda4d0b7c282a5f87245e6a26f276f408fe592' => '密码可更改',
+  'd979951c1b5e26933929651a32130b16553bc547d5be9e2a2e9eb78d55146c6b' => '选项、选项、选项',
+  'd2957004b9215dae5e02a1c8fe745205f78ec1d06288848c6bc460a6a992403e' => '选择内部( C)',
+  'd6705469bdbeb2ac5090ad19d2d924760ac846738c487efffb9490d35b630238' => '月数( O)',
+  'd6804464c5f44de8308cefd03beff616f2a9333ab628e4d190c0f944431cb216' => '马达加斯加',
+  'd9095082c6f38d6c54bf3b19cfc708c5fb4ab6a1faa277c9bda26e42da2fe681' => '当Nmap无法确定一个端口是关闭还是过滤时使用此状态. 它仅用于IPID闲置扫描.',
+  'd9803539c5696a7867cffbb8550ee3ddc5c22221f553a1513fd3165f972d87ca' => '可启动',
+  'd95520036fee1b410bdbe915da337d21168d4308279fbb2e0b622c6b81992a0a' => '使用过的( C)',
+  'd262171304cd2da5da6bb93611b6a992f4c493170642cc1854f8747f17a2a222' => '显示方向 。 由线,派,状态和交通部件使用.',
+  'd721825065cc840d8a9c18e38c09c0eefce969b6511f73a0a88f847d492d0093' => '精选,不是云',
+  'd6950429961aaf1b1831fa4d762a33d5b2464dbfc1692f0838e623ae2ea702ae' => 'CIDR 面具',
+  'd39283702753ceccf7bfa76119e996d302ac24c39968811972982aaddc1eaefb' => '域名 控制器 地址',
+  'da07d260c24b6b5f1c4bc3f77e8d529c23d119864c40e795de507abecc2510c8' => '外部链接',
+  'da4a849413f17f0e2f93d85506a26e3f26de328932040fef3ce7d0ff8e071870' => '二级描述( D)',
+  'da4bffa107be2dd0447f57aa0275465401ddbb6855e685dc71623ef3eed92b92' => '隐私密码句',
+  'da6a3d6432aa9048a756d7c98f90386f7832b783ab6e242a12d0bf8540140b70' => '执行的命令时间',
+  'da7b9ca9a2b5ccb10629c18575fdf109ed422f0fa61f5346a1737a6ae45629ab' => '由于资源限制或其他原因,目前没有优先进行浓缩。',
+  'da50d31a90fb22bb550f156d9ee64bbf8b7e799709cdf4beb0a3872bf08773f3' => '用 PHP 脚本语言编写 。',
+  'da89ee619834acc5e8debbc8e714511de821ecd1de5ce2e9f807acfd0934a4a9' => '地点 Rack 位置',
+  'da410d3ffc79ee072b93747c54a51920ef5284b9919fed17dd5b717d9330f716' => '我们发送什么?',
+  'da49746dc82d0f71018e5ddd75c8dde0be553fa6d1ce5f56bc3959fb9c3ab4dc' => 'BTU 马克斯',
+  'da327833ed4439656ab3db56f1b6a7a40d59aa0f56a1d78bc4bcdead64419fd4' => '物理计数',
+  'da670697bec08dc69c86e8328987778290303bdccb3168d142a8716b90806037' => '查询位置的识别码 。 链接到 <code>queries.id</code>。 。 。 。',
+  'daa59793c25c4715ee66cae58cfc98981a4f118db721e84a24d348f42ca38f07' => '一个JSON通过云层发现而聚集的物体。',
+  'dabd3aff769f07eb2965401eb029974ebba3407afd02b26ddb564ea5f8efae72' => '<',
+  'dac911e59f606a8450f07a802e0af4bd7f73c2b0c12a7f42040c6547a4021e09' => '用标准栏检索所有设备',
+  'dacca3cba3f346a40893112b8670f453650a81138e3705c0034d2392024b9797' => '报告',
+  'dae031235b0831d0ad07d35c6c9f971bc4cd01547bcb7811f31a72c57e789e22' => '但我不想每次更新语言文件!',
+  'dae50380caaf91795e4602eb7f574e948bdf525bb3cbef07712f0cc71775b657' => '实例提供者',
+  'daee7606b339f3c339076fe2c9f372a3ff40c8ee896005d829c7481b64ca5303' => '重设',
+  'daf4ff45811817c57366c34c6e5f4475541c3d1f83f0d9bcc0c64f4b7b0be806' => '设定',
+  'db1a21a0bc2ef8fbe13ac4cf044e8c9116d29137d5ed8b916ab63dcb2d4290df' => '贾森',
+  'db1fc89abea13ae7771c35e921b7116edd8ac19f145823468c4da9e8907c8923' => '以太网MAC',
+  'db5d17c816b083e853b39f281cebe780ad14e4c510a664f52cadc8abcab26882' => '技术细节',
+  'db7b1135f551f740af0c214dcbe00cb715cfaef2debb4ebaa035eadfdac361b1' => '在窗口下运行 Open-AudIT Apache 服务',
+  'db8d82fd9ff9028f21b9b6486944983543cf422a8ca9f3f2e8375d9e1e342f06' => '创造一体化',
+  'db9a0f93bdec0c556fa6b4f48559897ad070f720b33bf322885fab7584c0de3b' => '域名',
+  'db9a4c7d4c195ebf80068dd04120accce1cbfbef342bb43a53cbd651eb96e37b' => 'CPU 软件',
+  'db45b4f2c65403f04cff6b8d1b13cd40d54b1deb13eba59f419931675fe9e9b0' => '和另一个',
+  'db92a0b26939bedec775b156812c3ea2049923fb33af727a6ba2bab5678fd67c' => '当此队列项目开始处理时 。',
+  'db414eefe9cd47283baad282d4c55f22522933d9f11879110df258a5430bfd7f' => '通常不使用。 如果设定, 这需要设备有一个开放的端口( 根据扫描选项) 来考虑响应 。 认为MAC地址、ARP响应或ping响应不足以视为响应。 如果Open-AudIT服务器与目标IP之间的路由器或防火墙正代表IP响应端口扫描,则有用.',
+  'db85162c99df1e5cc78c5707b80cdb64291e4a2b12e23002fd67ead273503025' => '详见维基文库.',
+  'db544175508b84f83a649639af65ff9746d5de83269f817ebb589ebcc147f0ba' => '更多信息',
+  'dba03bae2c387e1e2c67b417888c7a2f62e68dcc8067a6f18424cf56bb732be0' => '在此链接页面的底部找到 Nmap 计时细节',
+  'dba55abc5bec0e942c60337f85722c8247a5d509a2e2d548559ef69382fbf128' => '管理状态',
+  'dbab41120f92e12716a999ebb41f891929c2b01b29c5822f96cb7d62a4f7c328' => '美利坚合众国',
+  'dbb20c64b4d4024aa123048a9f577b6cc902dd98549e93982f7a8142155d0fc7' => '接下来,右键单击 Apache2.4 服务并选择属性,然后单击日志标签。',
+  'dbc74a36d8e7439c45c64d856388506cc9b1218619cef979c3d605115a7a4546' => '印度尼西亚',
+  'dbc468a14b601d5d9240aeb72b9fcd2f8aed2f4e30932876edf8d16ec313846b' => '财务问题',
+  'dbd1b37d4de2bd4e29fc37321d9cf70218b55519ca3d89058f5bc890d9a5ac33' => 'Open-AudIT在其发现功能中使用Nmap. 如果没有 Nmap, Open-AudIT 将无法正确运行 。 每个Open-AudIT安装都假定Nmap安装完毕,并将在发现者网页上测试.',
+  'dbd7c54f728c4826d4fb3e97de314eb86fb54012411bc49559bcd53181e6331e' => '先决条件和试验',
+  'dbe35c7363c2f7ec747b902fb240907fc58ae00b98f107be2d4c7b9cd7f6226e' => '星期六( 星期六)',
+  'dbf1109d1df9be0ef7eee1e4ab63191326fe92c0032457e27e5f8942d4f147ac' => '这是用户可以确定的,因此,尽管它应该具有全球的独特性,但肯定不能保证这一点。',
+  'dc4b8fb179c154e488d8702497499d63ef68937306bd48ab4d108f17ca9e8c3a' => '物理宽度',
+  'dc5c930d284edb864f99921696eb86c2b4e90aca17083f7eb5efc532e2a524e1' => '与客户和伙伴建立信任',
+  'dc7a853d82b9d0c1a404f26f812fcb88e1801a7dad5a910e02c0c35e3d83fa13' => '影响保密性的脆弱性可能使攻击者能够读取敏感数据,如个人信息、证书或专有商业数据(None、Low、High)。',
+  'dc18fc6ecaa0d19f2f401552873c339bb8a23a79ac63cb45de61f47646d690a6' => '被利用的脆弱性只影响到与脆弱部分相同的安全当局内的资源。 换句话说,攻击者的行为不超出最初的信任界限。',
+  'dc49a5b0ac386186de4f0923acd1c71dc87d1258c0144173a49b4042e50b4afa' => '我们是否应该匹配基于其dbus id的设备.',
+  'dc674d9ae5b0a7c8287ec2e33b8c62c326095b47c6fec1b2924b1205225dfad1' => '各种',
+  'dc937b59892604f5a86ac96936cd7ff09e25f18ae6b758e8014a24c7fa039e91' => '无',
+  'dc97846c8afd6b876b874617827359cabbd17de047907c0cfe927cbabae44dfa' => '这个代码依赖于',
+  'dc287421e67ced1765bd48f3e4ad458a7a3a3405c410e171b5abb2c20a368203' => '相关发现',
+  'dc273117482b4429ada500ecd2e0c75532454194892cb901ca64cc7df369fdf6' => '连接',
+  'dcaf43aa3f141e05b32023fbe16f62fc733ccef73194d47515a5116be6254d83' => '初级文本',
+  'dcc4a2f2c47eccedb8a176c9c8681a8acd491adbb7f6149552270e7cd5dc5d75' => '巴西葡萄牙语',
+  'dcc839a4015c4b7dd9db959a8f757833b8adb92462a751b973386e453c6d58a3' => '视图',
+  'dcd1d5223f73b3a965c07e3ff5dbee3eedcfedb806686a05b9b3868a2c3d6d50' => '名称',
+  'dcd6693c44c470e04ef1868c3a43afbed94edfb6ed8cb1834734564dd2b46e8f' => '排除 理由',
+  'dceddf5833e305a2f9442125dec6245da79c7ff8dcc204b344d6e20aa59b805d' => '地点 ID A',
+  'dd0d55591209dc333264b5777a1f30a6eca970b4d8499efed8281b5acaee093b' => 'log 状态',
+  'dd05ed317b13cb1cd25f6a4523d5eaa6b54b4174900b38693516e97450fa6490' => '设备在子网中',
+  'dd1dfb59ebc6eef12b540da59cff42014d27566a25a7fb885310518f91b69388' => 'nmis 名称',
+  'dd2ed9d94674111d450b76748ea9c416ab2dc85dec7c9b2fd89f447a1dccafc9' => '叶地址外部 A',
+  'dd8ff21bb4466737cd09e1c82816cc2d817e9d565711c25d2b039d3c576d0909' => '过期( D)',
+  'dd56b91ab7f3508df4439fc8616822a421551c97602689b2bdf47dd354ed28e6' => '以上是所需物品。',
+  'dd62b7038e14042e8ba2c6379ee756341b335a3d2290702f90c6a08600a049ca' => '净工作',
+  'dd69e2a591524112ae508e17374ccce2e39eeaea7d14b27cf97b9bab5ccc1011' => '可能会 <code>user</code> 或 <code>collector</code>。 。 。 。',
+  'dd75a9d6fb309c4399fe425cd5f90ff95eba135d6924fb91766ee5d3726b168a' => '数字',
+  'dd76af196e2c77946edc42aeb0294d4d017a42aeb108fc9b5ed218c6955132bc' => '台湾',
+  'dd291cd6294bafef2a7e9c378eb320e87198d6dae214272addb569775750c802' => '升学时间',
+  'dd591d77ea53db0b8ca1653e61680228df0d7a2c93f4b168fd3cfff120e7d5b2' => '几内亚',
+  'dd625b32bb6908377d57f738ba020f7cf76a387f709571a55558a9b0203c67b5' => '网络域',
+  'dd5893f668b392c18b34f52036fd8f3630dd9a087260f2549d3322ce28a1245a' => 'Btu 共计',
+  'dd7822db3c4b49f6bac8b24049adccd8000b8d992fbc32a1d4d8af67a894d358' => '管理 (Oae)',
+  'dd9939b0217c3518bedefc67f4e11b6791fbe966fd78a77358faa731fa1c1c43' => '如果我们忽略无效的或自签名的 SSL 证书, 并且提交结果 。',
+  'dd29442deca69f52c50006b831cb216edf78a7da33748f0a80ff19f2ebe57ecd' => '声音',
+  'dd64913c8b91d76ca27b371f0b86fd30452370469b8cadf4e5a61d41d14e42ec' => '阿拉伯联合酋长国',
+  'dd121981fd918f01241490bc9bf23e22b69b78996ca8b7fb315903a613c471e8' => '每次发现被执行时都会更新.',
+  'dd167905de0defcaf72de673ee44c07431770d129ccffab286bd2edfdaf62396' => '版本',
+  'dd720587266ac4795cd1196000984f9776df4cd4a16c85e7a659429fb7b2a2c8' => '弱点缓存( C)',
+  'ddab0e843ca17fac316134d86cafa8a5332fd2c615f7e3ecdf576c12d06396a6' => '最后一个用户',
+  'ddd0c8df2ac571a7e12a40ed17efb10ca452681c8bd5333817949f83a1ffb497' => '其中分配,委托,规划,预留,未分配,未知,未管理. 默认分配 。',
+  'dde820a59604ae5f549ffff8202e4aaf0503091002e57fdf7dc2bce5cbfce2e6' => '来源于发现。',
+  'ddf46b887d59b95d5320c782233a2f10430b65948feaa0080a9cf82f77b9135d' => '已支付日期( P)',
+  'ddf21385bccbe7b83de8231c40e953ed4679443297e53c6bb78f7a64c29f2a9a' => '我们是否应该匹配基于其ip的设备.',
+  'de1f5fff34138660c31bd550e5da98b7674d852afbff6f517e0e222b2dbf09a9' => '租户身份证',
+  'de8e0bb68e9498ae9acc01f0c62e747b5d8b486206c0dbed471a0b1156db5e09' => '设备种子 IP',
+  'de4743c879734dc38cb3e270ecefcae077c3c2e626f9298115d5a03c8613f89b' => '企业',
+  'de5008d194a73211f2ef2ae0b0457c812545c65559c8a3bcc2458d0485e29fc0' => '伊拉克',
+  'deaad345f6b5c535196c7abadd5443f8ef75f96dffda421268700b92fbeeb102' => '加速 A',
+  'deab2b4182ca0e9279aac91e371cf269cac955b118639da4bf2fcd5248e90b9e' => '如何比较',
+  'dead2c4da7022ebe19698d05fb9638ef41c7a418d87d1daa04761761401ae956' => '点击日期',
+  'dec0f004eaa07c2a283ea326df8f00c2c3c60b002c9bb8d452b1dcff5ba795cb' => '宽度',
+  'decf897108d9b73e60a4fe06872678152c002e74a457d68b87db34b7a5845633' => '<strong>说明</strong> 您正在从本地的 Open- AudIT 服务器访问此 URL 。 下载的脚本在运行于任何其他机器时将无法提交 。 如果您需要审计其他机器,请从任何远程机器下载脚本,而不是在Open-AudIT服务器本身上使用浏览器.',
+  'dee43a26d952bee632df7788d0d5b99ca9537c745ee6ceff6ef1af38debb2f31' => '获取自由许可证',
+  'deed8c0ed262d5e0416af556480f1afa4d71860286a159892c6861b6bf54da22' => '访问我们的YouTube频道 教学视频。',
+  'def8857913144c18f11d893ac249d9a4596811701a155216951ddb653769daf1' => 'Azure 服务',
+  'df1c706a46ef116a95f4cd74e891a6627696bf5e20f5307816704f45c49eec3f' => '地点套件',
+  'df2dfffb515ad61eaa3190f531f4415224d30031fdeddd81bd88ef063c2ff9f4' => 'Wmi 超时',
+  'df7c643e577e7e264ad0c7bca52e497176c026bfe8d380c61a211d61d5a660f0' => '匹配按以下顺序进行',
+  'df7d9caf11ce8fc94c49b1f71a02b48fa09c1b7fd9467f369dd4d38b211e4255' => '请访问网站主页',
+  'df8ed4adc5f91da9e12fc2f3de4831051aa3b664180e6c463b3c6fb82cdb1f6a' => '指派设备到组织',
+  'df9fd0d93c0dbbd37b0d6cde1f4ddc94893549a27f7ad2760a639500d56b2b63' => '已安装( O)',
+  'df18a40ac99ea26cac9139546b1d505bf9de55c0b326d6dd43caf1731a30f0c2' => '星期日( O)',
+  'df59e10051dfeb352ce62a7a90da9f9ed1902f7fc3da7f5c5b00638501e3f127' => '提供说明,并选定期限。',
+  'df8113cd41efd115b1646e1e362d37539318798f0dba8d2dab441eabf694dea5' => 'OS 家庭',
+  'df19217581953e3f185cb8644076ffe609a30f6213955b425bc4ff24cd783986' => '启动设备',
+  'dfb97e5bc1272cc40350621979331f483d53f6d8cfd31cdc2daa92ad849b0d95' => '创建此结果的日期/ 时间 。',
+  'dfc3376b8266c66e8c24736645128a5f93ccf1df6f381286ffbda654fec8f21c' => '过滤器',
+  'dfca5da56b8cdb627309e2aa5a45e17b0e3e3e09e729209216b4fb0684ad8bae' => '节次',
+  'dfd60b9aa5ca29f45ecb59fef63499b9b0836dbe0e1150683b3290ddff6fec49' => '创建者',
+  'dfdb268ae4ce75514b28813eb713bf290b461fdc537af3e774fbf500a6ac9313' => '软件名称',
+  'e0cf4b65be29085713abafa45212611321a6d26477806af3d9384ea8106ad183' => '数据库司马',
+  'e0d1b68224bf0b31ef16b206c65b5f8f6b89d18161f4a7cdcb8d0ac8d952549a' => '当前',
+  'e0e31ce86d0b155cd6e872d0e687a19c447740ae92beb71d6ece4e30215f6fe2' => '联系人名称',
+  'e0ee8bb50685e05fa0f47ed04203ae953fdfd055f5bd2892ea186504254f8c3a' => '产出',
+  'e0159480e20557f623fc40a1d8c8eef7cfb55468035c774a4b236f857521bfbf' => '此软件的通用版本',
+  'e020e3c67bd0c31227720bd8eb2c3a777d162e0987e8fd8438b007c170266476' => '发布',
+  'e02415ca970ae099f2f05820589a42cda50167e580ae6a327267309725ff2b75' => '用户有一个主 Org 以及可以访问的 Org 列表. 一个用户将此与指定角色列表相结合,该列表定义了他们可以对其可以访问的Orgs项目采取的行动. 用户组合 <i>鸟类</i> 和 <i>角色</i> 定义它们在 Open-AudIT 中能够和不能做什么。',
+  'e02591fb187e94127488f5d84c15862801ad1dc5ed8cf9ae8f7dcfda292d7f74' => '用于发送邮件的格式 。',
+  'e04a327e5ea8247d73c4d34f6b74289633b4e3013daf25ddd1b684813fcac5a9' => '制定风险处理计划',
+  'e04b6b82cd66c5ddce2628c052cbfa6b4680e0ad7f7c3834c8937476199c6834' => '被许可使用',
+  'e04ce7c8b2009b7369572527cf93c198e3493dd6300f424591084e8b5f698fd2' => '非基线项目',
+  'e0467b83f3ab97314396f64869c86e67b919bf2fa63f0ca2a5ca890b2873cb92' => '密码( 存储为散列) , 可以在使用应用程序认证时登录 。',
+  'e0591152612350e52de2d6c75bee8e0cc8e7140f29eff1db5ac3b7fe971962f9' => '法国南部领地',
+  'e066d26c72e24d20dd74d7326b43b9d2bddb28c4ad68fa615cc1a75d71075eed' => '弗克当',
+  'e1c32645f2f85a25ae64e38f306ded9b82771ab8ac4595e769f9410e632584f4' => '全部显示',
+  'e1caa35ee24aea8b9f3adcfe949b000a60e96747e14242198cad177392d3344e' => '国家 代码',
+  'e1d87f66a9e33310a7a9d7544d478cc67fd9ccdac315830b392298b89c9d7078' => '需要 API 密钥 。',
+  'e1e6b54cb2652602a6a838bed90b79b977b64b49e5876a06c40f9dc461d88ce5' => '<p>Open-AudIT提供盒外的多租位!<br/> <br/>Open-AudIT中的Orgs(组织)是一个关键项目. 用户有一个主 Org 以及可以访问的 Org 列表. 一个用户将它与一个被分配的"Roles"列表结合起来,该列表定义了他们可以对分配给他们可以访问的Orgs的项目采取什么行动. 一个用户"orgs"和"roles"的组合定义了他们在Open-AudIT内部能做什么和不能做什么.<br/> <br/>Open-AudIT中的大部分项目被分配到一个 Org. 设备,地点,网络等.<br/> <br/>兽人可以生孩子. 考虑组织图(树)结构. 如果用户可以访问特定的Org,他们也可以访问Orgs后裔.</p>',
+  'e1fdd686df0189f8828937561510b5fa2262a77aa5f8030647ed1a0db9e7be41' => '地点区。',
+  'e2c6e9a8fb59b72c5d9c15d9ae5d1ebc2a82a0feebac1e44265e6cb066f4b59d' => '额外列',
+  'e2d0a54968ead24efc0dffa6ac78fc606dceec34a0f586177a74a54cc2272cf8' => '删除',
+  'e2df576ba7396d1698c7d174a7bc7ced672f63c684d11449ccfb925d5a618b77' => '集成类型(通常以外部系统命名).',
+  'e2e8ff0f8b8f9ed9804b3ce9f06d00b6302724dc25378bdc0c20e2ca8ce4d531' => '二级文本( T)',
+  'e2ef8579aa7f9f6d78ca05f370875f235bfaa37e9be2f8b1b6fa4453820d84c8' => '电子邮件地址',
+  'e3a00ae665cd3303c6dac1bcd9e9cfca7c4b7ec269d3c11265a17a8786bd8025' => '霍德岛和麦当劳群岛',
+  'e3a67d9540e9a204f7dc4aa9d44a0ec652856cfa932a21196bf9df23aa0e4cd1' => '执行',
+  'e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855' => '',
+  'e3b89e9d33f88e523083d8b4436adcc3726c89e97fd3179a2e102d765d1b16ed' => '用户名',
+  'e3c4b39d6d5013477c98cd58236fed455f37aa7017b7168ce1980a449aaf438a' => '共享',
+  'e3d11242200fe8f2f21c2e5334ba0e0a7aa4dcd2a4533f92f4ec921fa9ff16a4' => '方向',
+  'e3ecc6a42ae6e870c319b70fef1b8bc225975f71cd296d21558949af873b7bf6' => 'openldap user 会员身份 属性',
+  'e3f16ba44d52cbfb1d8ac0ac2cccd49761237dac59bb13c41223cce75f1ee04e' => '应用定义',
+  'e4af5342150f5245c579e804de64f6b84feb51197b8d169cfaa6710dec0064d1' => 'SNMPv3 上下文名称( 可选) 。',
+  'e4d2d8f90a842e6c8d550a0e90c1049cbe2569968ccad6dedfe4476bc4b63a33' => '行数',
+  'e4ea20ef135a6dc990cb3e18d29ae630e7674598e5e8d44e8f32c6e67b69daf7' => 'Nmap 无法确定一个端口是否打开或过滤时将端口置于此状态. 这对于打开的端口没有响应的扫描类型发生. 缺乏反应还可能意味着一个包过滤器掉了探测器或其引发的任何反应。 因此Nmap不确定端口是开放的还是被过滤的. UDP,IP协议,FIN,NULL,和Xmas扫描将端口这样分类.',
+  'e4fe446b362d2b75000dc5888dbeb9028420d4eea1aa62e0489dcb5fa6658efa' => '现在用于订阅ID,点击所有服务,订阅并复制.',
+  'e5b53649f73ad9c217b10b587a3fff969429d3634a4eb97d4ba07b55bc444de1' => '找回房客身份证 打开 Azure 门户网站点击 Azure Active Directory, 属性和租户ID 显示为您的 Directory ID - 不要怪我名字不匹配, 微软就是这样滚动的 。',
+  'e5c7fd58c408708dd741da76f6e33e95a4bd071efc8560789a2b23e2eb945979' => '内核转换',
+  'e5c9d7030bada2fe792ad7e4a26ca44379a73f3fe16805ac1359e46759a1571a' => '测试',
+  'e5d12ab5f3267be1d85a78fd2f03a5c5b45b2c8470092fb31d91f008f697aff3' => '注:您可以通过创建注册密钥来审计远程机器,而不使用实际管理员账户。 在将要审计的每台机器上创建以下密钥,并确保所使用的用户证书是管理员组的成员.',
+  'e5e049febc4fa2e5375a64da9039847cf5375407eb9976d3a002804e0198e8de' => '此云中具有运行状态的设备数量 。 链接到 <code>devices.cloud_id</code> 和 <code>devices.instance_state</code>。 。 。 。',
+  'e5ed6de522a27b2c202de98d7036b5867459d4ed6576b493d4c7f4088ce9b36e' => '数据导出 - CSV, XML, JSON',
+  'e5f2f40037c4f17221169fa44f49f0bd8241bd24834a9f49870976f5c30d6722' => '您可以使用自定义指定设备',
+  'e6c58b40cdbd7a348cae1907858d96ebb09c0e8dc3e44fc504294de5adab4727' => '更多信息见',
+  'e6eaea18e885e1078829b56df34896be5ab51439e8f0ba00cb1624b2c572c10e' => '地点',
+  'e6f694aa9aed3ad19828853286ef0a7a0a262e074aff48281a1724f089d445d1' => '不等于',
+  'e7a241debad56609ee660a5d2ef258a1aceb7357ff210ac66d7280b3add02a9a' => '網址',
+  'e7ad522ea327e5ba95534ef8355038ef7f7b86328c7cf9175886f60464c40d28' => '应用程序',
+  'e7c030e20247ba7224136845f1a25c6a78a068981925717f7f49724feb8eda67' => '行政资源',
+  'e7ce99764a2debd20909bfcf02693d2c1aa3c6b38e1edc86fe2604296fe5e868' => '产出',
+  'e7cf3ef4f17c3999a94f2c6f612e8a888e5b1026878e4e19398b23bd38ec221a' => '密码',
+  'e7dc1090a1c426b748e72827c10ab0d27c19e3239ae85b2aab7a3987cd52b059' => '选择。 如果检测到 WMI 、 SSH 或 SNMP 端口, 将使用此设备进行进一步查询 ',
+  'e7ed11168030462d5db2dccc52a0a0a442af02266930077dff1823c3bab636fe' => 'ip 已发现的 count',
+  'e7ff86fdb1f88b4ca9590dc9194001aa52fc578d85537bf3e5990a162b5071da' => '创建于 ',
+  'e8ae3a75d91e666a8606a27f9fe369bba0d2b9c7f2229736f8ab16be5e268b2d' => '派栏',
+  'e8b79310d179d3d0e0dc9a96b39dfebc0cdf5210ddfa45d12ccb841128589bf0' => '地点',
+  'e8b276256f820248a851ba3fbf0e862b750771b25f54c610dbae761a1d17c81b' => '当月执行这项任务之日(*每天)。',
+  'e8bfe1ed693510570ced8b5ee70049cc4b985a77ec066ee345892f685d72cca6' => '约旦',
+  'e8ce5dcaf408935ff76747226d2e8bee4319a2f593c1d7a838115e56183d1f37' => '已修改',
+  'e8e8b9e1f38c2d102e2cb1b1fea13b0a207afd098b0631c656940f0cf5beca9a' => '证书密码 如果证书是 SSH 密钥, 这是用于解锁密钥的密码, 是可选的 。',
+  'e9a6c32af5088182d234620df499fa64b376262249af9caf920be6c5a6cde920' => '初试 ID',
+  'e9b303989424576d1ce46e205ddaac0f7e2040ec6396d4c11b0b3111d4b5bdcb' => '服务人数',
+  'e9c40e5bb19699fab34612982d57a827dea1b4b8271061c2562c74d14c38aefb' => 'Active Directory的发现会查询Active Directory的网络列表,并像常规Subnet的发现一样扫描相关的IP.',
+  'e9cf7a1ca4a760843ff30e1fbb125e6a066c63e883c58523bdbe04c9daf5dbae' => '7月(半天会议)',
+  'e9da86d351cf9a7642d8c50195c3f466220911a15c177809bd1161a51e8c5f24' => '租户',
+  'e9da2505ed7e177379659118d5535439d2a90e6665577e7068f3afeaef92a4f6' => '审计 Win32 产品',
+  'e9fd79d46b0befe453e7f4e08e1b8346bab81d1ffb86fed2c81e724cda193231' => '本栏由 ',
+  'e11e5d8a5ea12727755baed098dcd775af4d80e27c172c80d64c6018c68e67c3' => '创建  外部  计数',
+  'e15a18aadcac09e6fa6469cee82b657d12915065b23be9f2c1a14685b08cb3d1' => '尼泊尔',
+  'e21f3f372a46d4be7b49f6809fc91baefeadae004af06485518e124a142c0271' => '星期五',
+  'e27b8a4fc8e34769b03aa64427054858ad0b6b41dbbb996cf369b2521a5a1d03' => '密码( R)',
+  'e31d4ed8333c6b76dbfa8c0f41a6adb12a9df291731d577530028160d29a01bb' => '<p>有效的Subnet属性的一些例子有:192.168.1.1(一个IP地址),192.168.1.0/24(一个子网),192.168.1-3.1-20(一个IP地址的范围).<br/> <br/><em>说明</em> - 当创建 <strong>种子</strong> 发现,只能使用有效的子网(192.168.1.0/24). 射程(192.168.1.10-20)将无法限制发现的IP. <br/> <br/><em>说明</em> - 只有子网(根据实例——192.168.1.0/24)才能自动为Open-AudIT创建一个有效的网络。 <br/> <br/>如果您使用活动目录类型, 请确保您有合适的证书可以和您的域控制器交谈 。 <a href="../credentials">全权证书</a>。 。 。 。<br/> <br/></p>',
+  'e34dd616b94ba2545547b9ca26b9b2847593d7161c17245634c155e390208b1f' => '黎巴嫩',
+  'e37d1541c8256d701d83eb521418100abf53be4dc3396ab112aaadd5d0df15fe' => '打印机  端口  名称',
+  'e39c65e2434ad0154bc296eab85a1a5796669ec9510ace31f79771eb13674876' => '用户政策',
+  'e40ffd47eb2dbd811d57ecd953a20c28f1fce6d393a5f95c7e20068addba0ba3' => '在 Open-AudIT 中,一个弱点项目可以被认为基本上是对您数据库的查询,以确定您是否可能接触到一个特定的 CVE 报告。 CVE报告以及FirstWave的浓缩数据构成脆弱性。 这两个项目合并产生一个从FirstWave自动下载的合适的查询.',
+  'e44ee7121ae25b62c6daf9a1fd5886d1a372f30145aa61e38bd6aea0e2f4df3c' => '等待它完成,然后粘贴在这下一行安装特工.',
+  'e46af612059a3ea57d2ae761a9d365817335bc86358e3d1da4b38254160eeaa5' => '条目来查看具体的表格及其列。 这将使你能够找到你需要的,而不是通过计划创建脚本的MySQL控制台拖网。',
+  'e47a2667bfb6fee30a3daf519bd126d34e2c761c2282cd686269f752383fd81f' => '偏移是您想要返回数据的设备数 。',
+  'e48ade009c1dda5d3b871c32397ca511dfee2fe361a3156885a758ad3166799d' => '内核版本',
+  'e49c2dc561765487f57d6c10ade7dbcb3bfba6194748ccf2afaab5fffb4db9de' => '有设备: 更新权限。',
+  'e52f6e6cc40b423d7f85f8d22b7c0681e77f695d222939703f13fca9d6076d03' => '您可以通过菜单将任何服务器变成收藏器 - > 管理员 - > 收集器 - > 使这个安装一个收集器。 您需要证书才能登录到服务器上 此安装将报告到 。',
+  'e56d6b4860acd0e805d076d819144c8bf53f52d3aa7c24a9ba70b62e3622ef20' => 'Tx 简介',
+  'e62ce498f25c0fc4b10f8de37a3e33b27f04757eac7208fee49476d1f9a760fb' => '数据库定义',
+  'e65a62e84720632be7788a498670d66a19992b8bf112004e91c10e0fa848d2e6' => '每次发现时都会更新 使用我们能够审计的设备',
+  'e68b36b17cbd990802f57741cb75cf3a73fa66a61999b0cd70e3cf7d26cfb25f' => '参数',
+  'e68ee04dff59551b7d1ae07a2f8a00dc61d841628948da3d2781630706a05e92' => '实例',
+  'e78aa0a33b1e0d3c89ec5d754b6ef11c78edd698a97d5f796cd21750c810adde' => '约会Y-M-D',
+  'e82dde57283cc1e5a378fb647075837f7a98ba6c1227b15cb06aeffdb87fae25' => '确保文件得到控制和查阅',
+  'e84a1471f9f72d8b44425e06c95c02b3b81ab2ad8654cda1c900f3f72df6d117' => '命令( T)',
+  'e88c3908c1994e9e9a7a017d56830fc55af3f0b659ce79ef511a8fea98ceed5d' => 'dns 服务器',
+  'e89b30aa1dc30a6ad8c34610689bede83b3ef645a24c3a84a0990826687fb735' => '资源',
+  'e90fd566f7a9cf982314390bd47d95ecab5395c17a27fcb70b98e093975638a8' => '东帝汶国防军',
+  'e93cb41d4a7d2395d9bdfe4d8616f9b52762523bb44e75bf7701cd9d2e0d1cb7' => '等于',
+  'e93e297b69e70d24b018312be796a076350cb5f9e8eb0468fd86c7055b7ba5ef' => '后端口停止',
+  'e99cbf0b931ec095afcca7ad5e1b5f5573cee9ceb896a29e8b1bf256f3f66506' => '逻辑核心 ',
+  'e151a91cdd8c5c2a9f905c948406570b994bd8ad0748e159997835af71d6b946' => '如果您正在运行一个 RedHat 或 Centos 系统, 您已经升级了 Nmap, 请在二进制上重置 SUID 。',
+  'e152ca5363cdb2e5208c9e8c3c8b6b75e5d72645204a13c3e9dfb8ab63f3eb87' => '发现名称',
+  'e265b6f564601a1fe8dc42785cd18a868bd8013eb5899560e79248767a683e6b' => '证书',
+  'e287a7103fc96198730f832f5abbcb31941fe698fcc6e20d48d1fe268fdf7281' => 'IP 设置为',
+  'e288bb7bd720d7b307a55937496fafba4defe350f2db38ef45a36b0322b0473f' => '需要多长时间',
+  'e393bb0d7ceb43d1b9ac3056b112777427eac726009ca72053b00241008ffb21' => 'POST 数据',
+  'e417d2b75e88b9afaa7662b52e3115c4e6b091d428abc8bded593c1acc5915e5' => '今天找到软件',
+  'e468bb47e881b746150bac61d4d50ef5d60ccb63dd3b09b3257a9943392c3f80' => '内部标识',
+  'e509cda4c4469cb8cf81ee15665b638a4b8c2e24b57890353227f0b60cd5a046' => '中非共和国',
+  'e568a340eff954c22f0ef3ffebd46314cc2c797bd1e2dc0428d36a8c1dc8f78e' => '如果你选择一个收集器,它将被安排在接下来的5分钟边界上执行.',
+  'e579a26fe83eade9648d8a9603cebc38c87d1a0d5d6fb4407e24c9ede8d02c6f' => '本项目更改或添加的日期(只读) 。 注 - 这是服务器上的时间戳 。',
+  'e904c9ccfa425ff0b055d2c533462314d35a529b055e8abe41d49bb46d827427' => '格式',
+  'e905a99d65ba55b2e2a69986ca1011a9c3276e2f8fdf770112e14b55bf823819' => '费用中心',
+  'e975a749020b4f684dcf5e59ee07d9765753ec13b91a3e0aa07819ecbe001dcd' => '进行风险评估',
+  'e981ddae45d8f4ca53f1ccbe613ad254a041dacf65a06026099a6302d332113b' => '3⁄4 ̄ ̧漯B',
+  'e1511bed2399755bdc888e468deb1ca1c8831de249629f571cbe7a22a4cdfedc' => '从外部更新内部',
+  'e2141e89ffdf251f20350167a87a6ced06c41df47747d49d178db6697d61ac8b' => '注意,可能需要使脚本可执行',
+  'e2155a57c8d13bbb7df5c48e1c3639cd11c0023652dcbb7a20be612c9bc45869' => '有效为 Raw',
+  'e3086d299b2c8e6cf0d1e80fa230d7858f36daf766b55ebb1dc87f885d3a7fee' => '状况',
+  'e3902ccd8385b9a877545b693b50d3a166bbad3ebc3889746089fdc9491904df' => '选择 外部 类型',
+  'e4989e797cc93b9b005aa4f39a3861548fd3028effc1771cfe613487194e36b3' => '要测试的事件。 由行图使用.',
+  'e5141b96a8f6bab71ed99ff9c0513a668797eb70ff6bdf1d8c84342e7fa89ac8' => '最佳实践',
+  'e5812a10ae5b2cb03cd875c187e116bec38348c6687df3d7ae88736f8d9ad66a' => '供应商',
+  'e5903c1af6db7a85ff3aaed8f3c21a93df57a0be515164b50b14adad36c4777f' => '昨天找到的设备',
+  'e5999b636348a9ec0fb633fbfe86536679854ee7e72be672d4a9f665c6409d02' => '用户交互',
+  'e6361a9f8645815c4d10f0a47a7092b7822d426be6090b1d54ce9d771b162f1b' => '跟踪下面的任何链接并发现如何使用 Open-AudIT 查找 <b>什麽?</b>',
+  'e6465cd44afbaf7ad78e67d6d5d406ef95d5bf8d2dcb87a097ba92f6473f3f50' => '我的抗病毒药正促使我 否认/保住东西',
+  'e7762e7c9bded294b1e837f13ae3075f9675ca9a7b30479f1a421e4d53e429c2' => '固件修改',
+  'e8508cbebea305abaa2c22ac882301fe67ca06580fbf9693666245b376f2ff3f' => '构成部分表',
+  'e8739c839576f7acbf1f190c8ac6b69e9bb11dda266a624abf1523460ac28106' => '塞尔维亚',
+  'e10953f7760d4310a99f8080fc43c280da7bef40eee726f6eeaf344d5387c55b' => '澳门',
+  'e16644e38632fd73f93d44c7aecf4bb1ef74fb91ef267e768ff713a3013bed10' => '一个子网的发现将扫描所提供的IP.',
+  'e18514dea05e0241e65c182a1792f8ea8e741d2204653eb8dd722fdc1b2d5d60' => 'vuln 状态',
+  'e23969d284c3424c8014c6e5b1b85ebc275bc5c74321e7677a21d023e6ea154c' => '租户',
+  'e26742d7cdd9fb287c344bfc4538d0c2b10c3dfcb85ede596af252c275492d47' => '哥斯达黎加',
+  'e31128e2cd10efd0e8d56f55d3122eed45267477e152bb5a81dd5d18bf755685' => '这一基线的重要性(尚未使用)。',
+  'e38080fdcf2fa06bb2ebe87d5ed1d4993a744dd7aba45eb532c16197b2de31f6' => '最后一个登录',
+  'e44498f8cd161b6fa4185fa41550eacb9a5d5e5c6e246a33df020c1bab730b0c' => '这个软件的通用名称',
+  'e44767c8dd4df6247e7148c700e337108de841f656aa33268ab472cfd483a924' => '如果出了问题呢?',
+  'e45347b019f0ac8f227b221b8baf7538742f1a4e7ffbf18ecbead92807b6d350' => '云层',
+  'e61683f8e8736b5a936ad7114097833f0d2a3915416ebe3a9985cd3a02cb929d' => '我们应如何选择要集成的设备(使用属性、查询或组)。',
+  'e64573f9cfc0fc565b4d0c12c29cc8569029b4844fd62a91081b3520e3f5683f' => '如果代理报称其主要IP在此子网中,则执行动作.',
+  'e72517effbcf3033065c69ade2bc9b21c92e067b658f2bab8597da14db0d55ef' => 'Open-AudIT的大部分都获得了GNU AGPL的许可.',
+  'e81935fb86434cdaaeee21ebe051cca827243ab4cccfdafeee8202004630924e' => '地质',
+  'e368929abd3614e92ad17e56175b67d1f6ba94aca92ab43b7f16f31764ff7447' => '遮罩',
+  'e605218e8d86e74514077ff28f3bd3babf7b15528e1e89ceb67b97e12ae2385b' => '在调查发现时,支持会请求输出发现日志. 要获取这些, 请访问菜单 - > 发现 - >',
+  'e614582a4b8f6ce7fdf8b3bd9ea1e2c2c9c8a2785506a4196a436a3965e486e1' => '重量当前',
+  'e792579a83827ab33e1d6441aa3ace4f129158047992aff77ef7e9ede3890e6e' => '转到 <i>证书和秘密</i> 菜单 <i>管理</i> 在中菜单中。',
+  'e970951cfb6b60b18418085390e962287c0234722262e048452d64cfa07b2634' => '结束日期',
+  'e2567312ec53232b5353c2798f8054759ee21b03af967265dd22b4cb4284bc49' => '巴基斯坦',
+  'e4484131c3e96a5c4159b2a2ce10f583ec067d9bcbba926e405f93dca2261855' => '获取运行 Windows 的所有设备 。',
+  'e9595243cb52dfe92503fdc84dab69f74d672ce3dd22b529062488b2cbd7f5cc' => '状态二级颜色',
+  'e70152254b4edceb496d1976e6702d0509e5b96dfb307c8f697b1caa7f8b9250' => '服务计划',
+  'e93372533f323b2f12783aa3a586135cf421486439c2cdcde47411b78f9839ec' => '节点',
+  'e6302232903a9f2fc6f7882b7c5ce521bf7d276bafddc0c33166612f4b443d38' => '当设定配置选项时,我们对配置项目已启用的某个定义的匹配规则子集的设备会考虑这一点. 这些规则是:',
+  'e7586475609a0481a4e66a3befa5b21f3a618b78ec8f5bc0791f1b23b60f96ef' => '查看发现',
+  'ea0b937ea317101ee2c26b03a4843a19ceced8a2b9673c3cf409a726ca2b0fd8' => '美国',
+  'ea021f89b628c5d2588fe53c21f8f3bbf6291d6e00e3d35247a71be626adefd0' => '执行从现在到这几分钟之间的时间',
+  'ea1f207f4a64ac97e65d9d6292b8b8f08817a79e43a636e2ee4d1b55be310a09' => '上一次执行这一基准。',
+  'ea3bfc26fa5ca39f2e3bc05cfbebbcd13ddbc03e5e86914542f0ead4a7e7df23' => '圭亚那',
+  'ea3e1c91c7320c4629c106941d8952e02f37174ef1da3b1e18ba67410268a3e2' => '软件包用于报告诸如: <i>被禁软件</i>,服务器上的AntiVirus等.<br/><br/>Open-AudIT提供基于也提供的 repots的部件,以确定抗病毒,防火墙和其他软件的状况.',
+  'ea5bd39848d8ae8b2d4313b815a7805002e512d1d0ce48bf205e9cb20ab444de' => '纳米比亚',
+  'ea7d0b7634355f44b9d8380584d66eac54061f00a6d89342a5175c07eaeb4e19' => '商业',
+  'ea2100dc89ae9fe21fa9b08ab1bf18662dca1e53a3eebd7d03afebcaf5d57515' => '日志',
+  'ea15100e35349e59fe49158944d163a3b870118a2a893a797ff3a05bb806b388' => '已执行',
+  'ea23726dd0fd4e4dd85eb695843fcdd3b6928ab5561fa959f1523bd36bb613fe' => '罗马尼亚',
+  'ea262329c16319025c260c1047c4a564c2d50d2c4463bbfcc1809d4e149fecc3' => '拥有此项目的组织 。 链接到 <code>orgs.id</code>。 。 。 。',
+  'eabea6c036ac2f216944a2ae0798d33acb974c715a1cabe443d74b63a65ba786' => '当Open-AudIT接收到关于设备的数据时,无论是通过在审计运行中发现设备还是由设备导入的用户来获取,它必须确定这个发现的设备是否与其数据库中已经存在的设备相匹配,或者它是否是一个应该添加的新设备. Open-AudIT使用一系列12个属性匹配来决定这一点. 匹配规则是作为OR比较,而不是和. 这意味着将已发现设备中的字段与dB解析中作为现有设备的字段匹配的第一个规则. 所有匹配规则都必须失败,这样一个设备才能成为新设备,并导致新记录的创建.',
+  'ead4ec6bafc3a3dc22ca27596843da74b12cc600b3165ca4e8f7f770fd9a1657' => 'dns 域 reg 启用',
+  'eb0b5ca6e8d240dc9318ac3608b22b75ca28ff5cbca7b6de9311cf32c92ce58a' => '现有房间',
+  'eb0d219b137db49922b090ce1388bb54caef047539aa1f952c35872e763b122a' => '外部标识( D)',
+  'eb1a70e39274bb762b5d7c1adb5debeea2b05e12af28207f21a375b596853273' => '丢弃',
+  'eb3f15fd72ef830dce8ad1310efe34e6c023424e9625d6fb92dc5f9597837b7b' => '不包括 UDP 端口',
+  'eb6b42f54c42d2832e296319f7fdad64d46aecd1ec19b0e9c80b85b7cfc6dcae' => '简历',
+  'eb7a842ff958c49c6bb5ac2610915c41b9625d8bb553a87deaff5d1884430f34' => '资源',
+  'eb7e1d753aa71fd7efd90159d5e4eda1f35f9963d6000ac9f4791be36d37a1e7' => '分组',
+  'eb56a93014ead8f1c8d90cf5753f05ce3746c5b380d86667e68cc5bb394f8480' => '任何发现的设备在运行审计脚本(如果设置)时都会被分配到此位置. 链接到 <code>locations.id</code>。 。 。 。',
+  'eb9509ee113fada32821abe2f8371f13962a6aeae5738c51d9d4c6c6894a3f32' => '购买数量( A)',
+  'eb88710de6f81ed5f5e666a4af50e215a8580de53a881eb393e09a6f74e3f05c' => '已发布日期( D)',
+  'eba1f2c035375d90bb5d382091d570d9d2d5b5cdeedf7a8adeb0ec8fe8503136' => '集群类型',
+  'ebaadb159202b8038e8760e0c30478c87106f963b4e234e964b8655d57088e31' => '指定给 Org 的动作设备',
+  'ebae7cca91fe64bf5a69b25706995e3b62903854eaa942e5a1b3012da218952d' => '奥斯文',
+  'ebb7b9c1f4b607034b2b6ed22b669337753590cfa5c4bf9912471788493738f0' => '如果 Open-AudIT 服务器有向它报告的收集器,则提供额外的减少。 您可以选择此选项来指定任务要运行的收集器 。 只支持收集器的发现任务 。',
+  'ebb57a260d58207c3cce2e12e8663ecdc0c74147d138655d6714bc577a0768f6' => '敏感性',
+  'ebd1690fc2544848668a410c5cc92bd799f6ca4430d60c4edeb83b0af55257fd' => '重新认证 : 每三年需要一次',
+  'ebda724e63c8cf697b793b039788717cef09c59b21b9e0ac4a75217481d54f78' => '队列限制',
+  'ebdad9ba4c5e3ce0078ad8e8fb31e4c76176834cd2370f05bd043e4baf8d6c5a' => '其他人员',
+  'ebdf8cc00bc4d9ceee633c56c63b49955769a92ca060825c9b08e4af61326e2b' => '过',
+  'ebe5bbae82d3d0b39639a96218e69bc08af8dd6116c712bd0611bf122bac2658' => '应用程序只是企业号的特性.',
+  'ebe6a11fe6db7a4d0d49105f0f2a3f100df5fe3dbaf8b390c543b87107b1d475' => '选择外部属性',
+  'ebe7d5c3b2513ffc0f287efd056a475c75d030c09e5dc04955f6a4b87078e451' => '所有实施伙伴',
+  'ebe80251db5dfd4bc064f143fc53928e245ab9662963d13db1614c3558b4add7' => '我们是否应该进行审计并提交(y/n)。',
+  'ec1d18bcbee2880eb4cd334ddaa97f501e06868c2e652df4d512f3688bec0151' => '可以通过发现或用户设定.',
+  'ec1eb904300b7d8b9a734eda7dffa2b0d219075ed748754226c9b65570105190' => '如果 Open-AudIT 设备已被更改, 我们是否应该更新外部系统 。',
+  'ec3e7333e8f413f61b1a45ce43f2e24f9c7b9e127d80969a001b112429a1bbbe' => '链接到 <code>discovery_scan_options.id</code>。 。 。 。',
+  'ec9c0ec624250effc8a53dfce05c0954f31b78bb3f674daca775dced3237e428' => '日记',
+  'ec9c14c591522c92a48a41a9e4764cf237530d212a4bfa260cba2c3e498f65ff' => '密码( L)',
+  'ec11b3d7a6dec66b6563a873abacdbafcf5aa0ee270aeff49f65e7f4c257c8de' => '基准得分',
+  'ec27dbf51263e1eb916f413afdded8c4c8324d643d1527df260f1b1172e55932' => '我们是否应该在目标机上安装Open-Scap.',
+  'ec35fc3a77b1fec675f76fb4b52b7a82ef3d60f6f41921adafc1745695d2c582' => '请尽快登录和更改这些',
+  'ec68ab930189f8108b01c25e7e2518de80b08f435ec00dc79aa12f38e6f98575' => '奥斯家庭',
+  'ec654fac9599f62e79e2706abef23dfb7c07c08185aa86db4d8695f0b718d1b3' => '无效',
+  'ecb3c9535453238d82338af984574bf278d92706716a7a08658881039cd2eb65' => '任何用户上传的图像都放在此处 。',
+  'ecb8196985514cb6fa146f7ec616d34f648acffc2aa9dae8941a177ff665fde2' => '保证期限',
+  'ecbeaf8dc7e4329696f0047ecdef112dc6680d554b6f926b267870dfbee7b4fe' => '剥削( M)',
+  'ecc124350fa825397d8946a4d56de0bf0b503b2cd853179f35ea1116fe928b51' => '这些参数只允许您审计对您有用和相关的内容,节省处理时间,并允许您有序地发现您的网络.',
+  'ecd3083a485bba5a52121414185284c65be3c5caf68df93da72a3872de2defb9' => '成熟( S)',
+  'ed01e7802fb75ab10abad6f46812fe1621869086758556b54f29d17237281a9e' => '云层细节',
+  'ed077f3d8125d60dca1979c7133601bd187d47c73ed9975028f677e49e709942' => '打开',
+  'ed4b1e4575854a0590278a7c0b12ef1f9aa3f33f70da0f35f14f77bd4aaaba5b' => '和大多数其他属性一样,附加字段可以进行批量编辑. 使用通常情况下的批量编辑功能,您将看到附加字段可供输入 。',
+  'ed5d5df47d8ecac14a0dcdc665dc681f9139840a23f5074ea6744b9ad9bdf15c' => 'CVE最后一次更新的日期和时间.',
+  'ed6b96a7e000bd3d3dbefbdf8709762f1cee7c25a092ec6fe5d070460289b3e1' => '顶级Nmap TCP端口. 前10,100,1000个端口可以按照Nmaps"顶端口"选项扫描.',
+  'ed9ad13611d7164839dd3feaf9a7f6a75a4138f389e0d45f8e07fa38da1116a2' => '沙特阿拉伯',
+  'ed61cc74bb15c60d736ca7422e2be592c68b4e6a05a1786b5187361dd2eaa017' => '通常应设为3级.',
+  'ed68d4def1af578d108ecdfbb1fe7ea1dfc8c023c24a1d7dbdbcbe1a9f21909c' => '苏丹',
+  'ed76f191621cf6ed77eab6a8013d1cb4bdfa89a75a24aa6a18f7f81dff91d5db' => '卢森堡',
+  'ed98d041f3723b00c3051ac5472893901fb69f42f5be4c2eca872c4fe1905e26' => '我们是否应该对选定的Org以及Orgs儿童发放这种许可证?',
+  'ed99f3d7076e620c57063dfe6624957d29012090e166b19f357680f523297ca6' => '然后在 Open-AudIT 中通过菜单创建新的 Auth 方法 - > Admin - > Auth方法 - > 创建 Auth. 提供名称并设置 <i>类型</i> 给恩特拉',
+  'ed99f4e13c587b921351dd673949818dbd0d1be31e6a70dbcdabff05c42cb470' => '重要性',
+  'ed628cbcc23d9371f1b22912c5f4ff55982966ff9f268734def860375792a880' => 'Ad 服务器',
+  'ed805f62bdbf790871b12fce0417b1e9336caabea944e5ac112695b4049debed' => '无结果',
+  'ed6108580ea6e5512ae7c4b811c7dce031dd5433f2765898eb0f05d0f547ae3b' => '端口顺序',
+  'ed609267907c8892c815b710cba45d63f85d8403d3e29d42ea26d5ccb4a1d995' => '<p>有了Open-AudIT专业和企业,您可以自动化和安排发现,报告生成,或基线检查,以便随时运行,并随时需要。 安排你的发现 晚上运行,报告 生成和电子邮件给关键人员 每天早上。 复杂或简单的调度,设备发现和报告生成只是一击即逝.<br/> <br/>为每个子网或AD控制器创建单独的发现时间表,在为目标受众创建的报告中添加。 制定简单或复杂的时间表,以支持公司需求,避免备份或对业务的影响,或只是分散负载和速度审计完成.<br/> <br/></p>',
+  'edac1c2e8641221c4e7e10f3e6af972687db6bd059afac06351de87849a83748' => '成熟分数',
+  'edd085fa9d2c8887d860277bc8bbf66149fed80b3cc3c14b0662faace01faa68' => '基准是通过提供操作系统和版本,结合具体的指南和可执行该指南的机器清单来创建的. 创建后,参照一个时间表上的机器列表执行基准.',
+  'edeaa1286dad8e77a3d341a2c7962ce830b149d37c6ca2eacc2d7d0eef0a7b54' => '一体化可以按需要安排。 这是留给用户的 。',
+  'edf6c2aca53b58a842bf46b35a8500b5e8b059c2029ff423fa7128efcc81b5c1' => '连接此端位置表( 位置. name 将显示) 的ID 。 链接到 <code>locations.id</code>B 位置通常为 <code>TO</code> 地点。',
+  'ee01b9df37f8b507592ac019514864e5fd860506458ec11b33de0efa893f0f8c' => '开始日期( D)',
+  'ee3c94668501e457465b8c78ae58dd8fd176852dd989b3b35097d4ad5cfec343' => '当前日期和时间是( T) ',
+  'ee237de4875d0841f39bd03d9381641bb171985f30329e7b34f3d2cd12229411' => '配置代理服务器侧以按时间表进行审计',
+  'ee5721a5a60b76256bb8f1d0692e488c02c7f54f56752602e8c8978f80b50867' => '马里',
+  'eec81fc3989db19d33589aa719077aa2e2631caa87b3727704552314240dd1fa' => 'IOS 版本',
+  'eeefa4cae35abf41b3c4e60f71bc1f669af346097b6afb7b59ae2d7697a1fbac' => '密钥',
+  'eef8b9fd5d437dd991ce2695fcce6c416ea3068e5b448963f0a7c3cbd9ad98eb' => '链接',
+  'eef61c467009dd77032e5f18ca98b7abd78e5a9506bf23659b1c29946fb6fe89' => 'r 高处',
+  'eef480e48ea9b29e562f32ed02c93349b1fc2cb9093dc27e36285b9e7050fa02' => '阿拉伯叙利亚共和国',
+  'eefa2abcd4d6a7ee5d366d06dffb9f7337d2d302bb0af87900b84a5187803b60' => 'btu 总计',
+  'ef0fb0bd18bc2b78ece796b121c6cba01b39cc3004f281907c1a060bc4899f8a' => '站点 小时 a',
+  'ef2ad51ab82f08bedfaf5c62f1c906a90f5f4b68256d1077895842879ad87e4b' => '最后点击 <i>提交</i> 为 Entra 创建您的 Open-AudIT Auth 方法。',
+  'ef6e69b5ed9d2ab6c47feffa25a7ef14824fe7daec808007778502490257fef4' => 'Wmi 失败',
+  'ef12b236a0e1b9feffc8423b14795ec0429561f184e40856eeb6d05e8e2e2762' => '使用授权',
+  'ef58d2d8985abdb21c53fd6804481c77acb7136eebe17306e87f5d3e26a047aa' => '点击启动和激活权限然后编辑默认',
+  'ef63f5eb30f3ed20c93c968770e07bdee0d5cfadbd3fc9358198ba57dda9bca7' => '制定项目计划和时间表',
+  'ef66b7e21cfd2c7d2b105e5b98440e8812b583f133bfb3cc3276cb12939606f9' => '简历',
+  'ef83ce6ed9b791d48007ac1bb2732870c73a9fccba30b88993f79990d9988b66' => 'Vm 组',
+  'ef371d9f72692d0c56c03932ff05239957a473d7240bddc601f56de6f1b9d0a8' => '加密( S)',
+  'ef6691545d2c5523efed00424407cb261aeb0037d165ca5792f7f8bac3381362' => '标准',
+  'efa9150afdeaa69ffcdefc990cb8db6e67ac2aed628d8c696da4e36ed649f39b' => '阿塞拜疆',
+  'efc1a0f046e9387a2307082e0f240c8c4e091dc568fd119de92ee21c643ec89a' => '欧格后裔',
+  'efc70885639193fe94e5446c95b44ba6459df2a65fc2293099ee4711cbdf84c9' => '相关云名称(如果需要).',
+  'efce58ffdd83b5aa7aa91e9ccbcd86e5ea2729a9d70a589de172d649656a5497' => '云号',
+  'efe10c80ec8a9f38624cbb47103010a8cf32488a503e4b4bfe4f92307a9cefa7' => '小学',
+  'efe58f2cefc5c751aaad83d13288fec6495f7d475559533ee4b1e21c2c92490b' => '认证程序',
+  'f0a1c7a355e60122666a222b595ff8384b39a77c1124f0832a9b810df15f8ad2' => '合并运行时计算,并包含该合并地点的JSON代表。 每个链接 <code>locations.id</code>。 。 。 。',
+  'f0a4b429ffaa98a318601d672a3b5bd71a67fcabb865cc9e1dff1feb089191e0' => '时间说明',
+  'f0a5e562723ae8c06e5d7d8e26295fec95c5b7cc0f1887a5e7b6ce8552dea30f' => '地点',
+  'f0baa202e736e2d8a15a4432c4a4ed3f1a49b3477f2f8fe640c8497e0aa907e4' => '首次执行云的发现时会自动完成此任务. 关于Open-AudITs匹配规则的更多信息,请参见 ',
+  'f0cc8f4b646f798af49c969309dfea671c0ba5607118a2077237495b7647fb1b' => '使用 CSV 导入多个 {收集} 。',
+  'f0cd574589557b2b7345e0aa7d63ce93a0f81ba1253104ed8cdf4da66679314f' => '密码( D)',
+  'f0d5a6a8606012c9c921544bbf730b7deb8f134acf5b582429b60dc90a1c2255' => '设备组件名称',
+  'f0d66a79c138e951c2f840fcd94ea9bdf399f745088a832a9ba49cf07f7125de' => '键',
+  'f0e31cb123ecc317a0907c861f979d3e2a6dd9dfdedabb54ab7d0a37bfdd104b' => '指派设备到组织',
+  'f00b239f4d3261ffe2bd12bccf2d374555b3113c4c89cd1c2e8dd5eedc158ca9' => '<p>如果选择列表类型,将启用“值”字段。 您应该在此设置一个可选择值的逗号分隔列表 。 当字段被编辑时,这些字段将显示在一个下拉框中 。<br/> <br/>与大多数其他属性一样,Fields可以被批量编辑. 使用通常情况下的批量编辑功能,您将看到字段可供输入 。<br/> <br/>查看设备细节屏幕,打开包含字段的部分,并且(如果你有足够的访问权限)可以点击字段值进行编辑.<br/> <br/></p>',
+  'f002261a5d7595693ae33777cc14394002410f2935d913f7348783a37e307ee9' => '开始模式',
+  'f0063b808736318d3f5038c3a6c3b6349183cc678ed93d2e7963248ae7ed7318' => '小时',
+  'f036bf6902f2140097db092dc4f1a4fbce60ccd4ebc04a4efe52d044b882ee50' => '中级外部服务',
+  'f04b5a4ccf5a58ee02c6c321580cb07791ed27bebfa637e28be68d09a1ee9656' => '新建筑名称',
+  'f04404cbe7959acb90c9d3b7e17c260b2ad2153e6469125cc7b9a89937e83a1d' => '完全合格表. 栏目. 可提供多个,用逗号分隔(无空格).',
+  'f051def7dcb5ceadcdb29a9076762a0b4af9cc9a053b12e342dfdf1b6241b0aa' => '值类型',
+  'f0630d2a7e30594252d0e71b9a635515f2cce5e9d7bc04742d3c0665a1a10acb' => '行动( B)',
+  'f0762c4f3bfcd695e32e7fcd087dc2a60bc26cda108b4fc0a643445b397168c7' => '你确定吗?',
+  'f09d7d332f60fac47627929dc2aeab7c1d3bd2137692509a1aa7c1a5293fb701' => '管理单位',
+  'f1b02141db90840a06e657667091bf9919d98cb6c9813bfa143cc0fb3f2a211f' => 'Web 服务器发现',
+  'f1b4db36f908e557e2321176b6d345f5a700d4fba979381605327fdc1c8adbf7' => '属性',
+  'f1b9cc537631f319e18f67320ab409658899c3094b15716fbfe99ed9e2ca0ceb' => '流量  ternary query id',
+  'f1d75f3f98ba68999f8343617e9ecebccb5baa0ed75d22f86171672cc77f98d4' => '线条 数字 b',
+  'f1eb5a8241e4bf269e7d3053421196aefed49fc9be46fcc5e283e11d7006a8a8' => '创建文件',
+  'f1efdbb2c59d481af03107df91890bf5b6e25e395a266d4fe1acc909afef133c' => '未检查',
+  'f1fc2ea422ed7bd39bf909db9b079512787c5fab887f1ab5e8c9c56ba40495e3' => '93项控制分为组织、人员、物质和技术类别',
+  'f2aceca77c81e5a2aa6b5228b2e39ce43c82606deeccc85ef692d748adc64e89' => 'Open-AudIT首次检索此设备的细节.',
+  'f2cd6c664266cd04b01238c2c0d3f0834d593d1af40a26c9fa7547c7ac424fdc' => '显示时使用标准安装选项并单击 <i>我同意这一点。</i>, (中文). <i>下一个</i> 和 <i>安装</i> 要安装 Nmap 按钮。',
+  'f2d3a6b0ce7529ef02b90bf1dd09f7ca6b315eb88701d88e58120229a9707530' => '请将所有三个文件发送到您在Opmantek的支持联系人,并描述您的问题.',
+  'f2e29aebb7e2c4ebcf67181052ce877a1747435c3db9c7853f12d8a693589250' => 'MAC 制造商',
+  'f2edd56b66b4970ff2ee0637eef8f9e1c4a4b65bcd4ed9e907ff9ed4b1e4ffa8' => '位置经度',
+  'f2fa42da50348da89d66905698905b3a40ccc6967ee03931b025ea0bfad4e4d4' => '在第二个标签或窗口上签名到您',
+  'f2fc2d2d216526cdd2458f839a500ddcd6177c24d622b29de67008b05cb8be68' => '由 Open-AudIT 服务器自动居住.',
+  'f2ff83860a4dc203988ed1a22ba1f21237f04abdbd0c4c951103cfbed121de78' => '域名',
+  'f3b96e66bb86f3750f423e24ad01d1cb07805dc0bf4d082a45ae25cd03ebd0bb' => '曝光',
+  'f3bb0f32c57fd5799238285334bab325f331688277f8cfac19d3b5f7d90be66f' => '本地端口( P)',
+  'f3dd0fbdf763baae393b04c640c676c061f48b963e783d0b19099e2b78009211' => ' 现在以语言文件支持。 要更改用户使用此语言,请单击 ',
+  'f3dff4b596da07ea5f99a72e2e48d45451d331af28b227171488712b0db08658' => '采购订单号',
+  'f3e783dd3dd5b036d111bbf5a695ed5f9c169b1614b4881bde2e173ed221a2c4' => '已装运是一组默认项目 。 这些可以通过菜单找到',
+  'f3ebb3c33c78eca06df55819a92da77f3f89826ce5fa9868015791ab03416169' => '没有设备返回',
+  'f3efd3e5531c7b16003d81bb5085288ace97366792c480484895fd2583ca5842' => '小于或等于',
+  'f3fc8f62cbfc3371a045edecd12f7c8d5ae36958437ce6c8e8cd7ea23c1e8dec' => '<p>证书在数据库中存储时会加密.<br/> <br/>当发现器运行时,设备会先检索其证书并测试其连接(从 <code>credential</code> 页:1 如果失败, 那么与给定 Org 相关的证书 <code>credentials.org_id</code> 也对该装置进行测试。 工作证书保存在证书表(注-表名中没有"s")中的单个设备级别.<br/> <br/>SSH密钥在SSH用户名/密码之前进行测试. 在测试 SSH 时, 证书也会被标记为与 sudo 合作或成为 root 。<br/> <br/>为方便使用,Windows密码不应包含单引号或双引号. 这是远程WMI限制,而不是Open-AudIT限制.<br/> <br/></p>',
+  'f3fd825de897aa35f1e84b98277895c23dd0f88ba351c982bb9a862077a27287' => '数据库版本和网页版本不一致.',
+  'f4b54c951226c2f9b388bcea7b410cf1f74c1549e2431e3a100c2f27aaa369b8' => '个人区域网',
+  'f4c402848833bf4e8b465400d80964045742294d46505d01a9f6994e1aea5133' => '许可证( L)',
+  'f4ccae29e1bb0c20a124570a1b43f4347ea94bba9f84ffdfddd9c7445b126128' => '运行',
+  'f4db3f4d63d36171ba14b71d8dd27b1b64c247634ea2b7c6059d6c1fdce6ab7b' => '这一结果来自整个相关基线。',
+  'f4db48afea8a052426f72762ea63fd837afa118e389fd22851d2f852df42b35c' => '视窗发现问题',
+  'f4e10c00528ae733135dc7deb7ceb989e12356b67e49ff2522d62d27b4edaabb' => '<p>这个 <code>type</code> 图标。<br/> <br/></p>',
+  'f4e780c6143fdd94677b27beb2b2b1251ef833d0d74b7682e2a6127384942cb0' => '单曲',
+  'f4ea9840b6921cf273e543932b7cd1e38813fd9d95914aa4c7e3ca5ef9c398c2' => '种子限制到子网',
+  'f5add9d8eab7bf6311621deb17aae812f95f6a08db9836d77107b2a80362b83d' => 'NMIS 作用',
+  'f5c61951e1780200f83de34a0d85bea8d6787af2dab92dfc07661f904e847813' => '额外列( C)',
+  'f5ca9cc99f7d8ebda81fa8815eea4a6ef65f4e958cedfed78ae8c18f575e408c' => '如果我们有一个没有数据的现有设备, 我们是否应该根据它的 ip来匹配一个设备 。',
+  'f5d61ead3eefbf5c0bfff31493eaa7af16b17479511bcf8ba4f73d4fc1e05f26' => '短数',
+  'f5f1c99b4c90ffb02deeb767aa27e7493d574f6040d40a6fd342c81c4e017350' => '重量最大值',
+  'f6a214f7a5fcda0c2cee9660b7fc29f5649e3c68aad48e20e950137c98913a68' => '结果',
+  'f6cfb8c3f101748fab3f98b775ae62e1b58891817d14477a2f4cc15e0e1bb9f8' => '时间',
+  'f6d4d1c6fd806da0f81bb8218eadaec32753e61722b41e0ead8b32d123bbeb11' => '重复一次,直到你完全发现并审核了你的Windows PC。',
+  'f6de8e135ee6ebc1114d69550b62a4b74d49b48f7153c7884ef00994d8c11930' => '这将大大减缓发现扫描的速度。',
+  'f6eac14784f2afc20d02ba2356a24b3faae71fdd208b7333ec0244df5addd3d9' => '斯瓦尔巴德和扬马延群岛',
+  'f6f9a7580d95eca26da60e58d254b6292aab7253cef810542619bd06bb7e1b52' => '国家标准与技术研究所是联邦技术机构. 它们推进官方技术,测量科学和标准.',
+  'f7c5ca93b74f0f4507e267bb0b43b568221e0cd5336e59d3b504984bc7678a48' => '资源名称',
+  'f7cc3574093934fbed6d5461133aa596192a6075493a2205cd5a6658965c76df' => '通用名称',
+  'f7db16a36102b4ccdf74accd63cdc6a7d7c6d665fdc8074466e7c52a69bb47e7' => '第一运行',
+  'f7e2fe1736f748e151d83779485ee90c973432f3023a6dae55698a811f5138be' => '基准类型。',
+  'f7e15a238b06495c9dfe8aef7c8268ae47b529befd558d3d18d971ce2416c478' => '运行状态中的设备',
+  'f7efa7bc1fc535ab733d92a56639bed62229ae3646bc9fd137e9cef2f6c1f1b2' => '边栏',
+  'f8aa82b42d07d108ed357335c9ac0d1a88cafb7292d61b30e0bdb224f20fd480' => '供应商',
+  'f8b1efa0d4edacfa7a687034061a87efa1e25509010c31361fd1efe91c6e4cd7' => 'RX 级别',
+  'f8b4629b32cb7556e19460758891cfb61ac831dc682545336f1ec21b88930907' => '假设有工作和客户的DNS',
+  'f8d397a33fcb9725db96501e653bf3cfa4455c5639482b9936c22b221634d659' => '端口',
+  'f8e4f17ece47355905db5406b596d7834bde5b9323fcd8b4bbf7563974ba04ac' => 'TX 弗莱克语Name',
+  'f8e30bb80b84d76c230a0dbde01cb3b32acb3f7a555eec6f65ef06f8cbd79cc8' => '服务提供方',
+  'f8ebd43dbef1f029bf4930c65c9b7c5cc76af476927cee861ff18fcc73bfc4ab' => '套间',
+  'f8f6555917e29a0c1d37de7045b1beebceeffb0c346f86b167765d0ec9b96afb' => '更新  内部  从  外部',
+  'f9b0078b5df596d2ea19010c001bbd009e651de2c57e8fb7e355f31eb9d3f739' => '简称',
+  'f9b1a616a00cdb8673ada891159550ae4c091e74f96b6cd412825c3ec0098198' => '到 URL,您将获得一个设备的全部数据库条目,包括所有组件表格。',
+  'f9b90766c8d54b3d4569f12a350ab0543a56be26a118d712472ec1a6b97210e3' => '选择内部  类型',
+  'f9c804823704ebc2f7692e7f645e1965eead5e70ab93bec078e7a842c26f9b3b' => 'SQL 创建语句',
+  'f9cd9d1092d900b6b9260e4a44459fc4f7bdc420a4c94c677a835d433b4fa3b1' => '如果用户账户在 Open-AudIT 和 <code>use_authorisation</code> ,将创建用户。 如果它确实存在,则会包含电子邮件,全名等细节.',
+  'f9db72ced1ee8bb9564ea2dbc84def6a15af5072e43f1647910e8d777d53aa0f' => '访问托肯',
+  'f9fd261455d1266bade59f19b700ab51048a69acbf7555903565b279b19fe870' => '现有行',
+  'f11ce2327ee94a192618c480d74a3022587b92154f4549ecde52ba38b719e5bd' => 'Tx 比特率',
+  'f12efc4df249bedf344f5c5e1c0200fa7227e5e01e0844090e4ed9f805f35cb0' => '防火墙',
+  'f15c890c0856ab399df652e4b99a84751e1bb1b9eb65a29494562d8d0b1badb5' => '美属维尔京群岛',
+  'f16a5385c5ebb73c9fd863b3f2c9316b2c8cbded763ca60b5f02a19cc4eefaa6' => '<p>一个网络来源于发现条目和设备属性.<br/> <br/></p>',
+  'f19def3fef4322c2b323dedf8d651f831fe3266c24a18feb7ae831b186d9b86d' => '额外的和更多的动词记录是用来排除故障的。',
+  'f28d43cbfdc37e4f3cd191c49f8d896514104c2eb619d0f110407d69e05a3e2a' => '应用程序 组件',
+  'f31f4fc85132d5bfbe0ab94986be8bc15eda6e694fdbbbc1f20a90fbf151e657' => '本地化',
+  'f37bf3de9df7c3d17a5fde10b43c3f9e181dc9d9b5894240b732a0e3aa14ad7a' => '上次执行此项目的日期和时间( 只读) 。',
+  'f38b0e27770cd08d7633868752890792785a5e497f7e5f04e32d79211aedf7a1' => '有效来源',
+  'f38d523fa63327043d0c1d02f6d0759535400256f598e7ced0384255370e3269' => 'SNMP社区字符串.',
+  'f45fa736844947cb60a6206e334f2d0fef0b151007ca5ab9466ca54c932878d5' => '以逗号分隔的可适用的 CVES 列表.',
+  'f47a331ceaa5953aa7b35a8d75e46a4c8ae01a16bcefc581a8293968afa34698' => '对于不是永久的许可证,许可证何时到期。',
+  'f47addef5eb06b20740055464f45fca0677358563ccae12ac81a5e8e6c2409ef' => 'Vuln 状态',
+  'f50d475be0180fe05c442d6d5f2971109226f1551291dc1235d10c1fb40c0141' => '内存 slot 计数',
+  'f53e10b866c8448716a8099df820cdf3fc9082de570ad96a87406cbcb61f8023' => '处理器计数',
+  'f53efbfb80188c0e1b3a329060ec20043f1bb91d778de3a48d94d966ebacce00' => '端口名称',
+  'f60d718a3c66f49ace8cce86327d848d679e2ffc779befb312f6cfa70c296e20' => '兰',
+  'f74bb49008e6746c498be9952b787944b1f3d6e37028107149252ff98500c9f0' => '字段属性为',
+  'f75bb936d6e9882d89f15df1ca1cd0f41264d5638d607d21a7fc84eedc1421fe' => '请有一个 Open-AudIT 管理员登录并升级数据库 。',
+  'f77d1bb58da886e3cbeebbf35a0b3d217b003506792268052c6a730fbc5ec9bc' => '超时',
+  'f78c06aa55a0e2d18b5653884184079a5e77f231af10d7cbdc121b5cb40ef187' => '证书',
+  'f80b62ee6596ec70eeaa43af660b101fcd293cda2a2a3af7cd0c84324489646d' => '是否应该解除代理(y/n).',
+  'f81b81fd4aeca42e191580ff395863d4387bfe790f2dba670755be4bf1a8ff33' => '双面',
+  'f83c9d60fe8aa2be08b9cd700644cf004f178327846419ec93526e1e4c94d34a' => 'PAExec 是 SysInternal/Microsoft\\ 的可自由分配的再执行',
+  'f89d6b6960453241bc5b09b4d0d8ad86d53769e051473350c2bf94e39077967b' => '用户编号',
+  'f91b2c334a4bb8ccb344d470d7d7d0ef32897a43ac4ea72d38fd1d4bee124544' => '激活密钥',
+  'f95dac581e9b439c58abf51a6c8c091f8e0aac8c0fb06f0cbca10fc8ac361330' => '可用性',
+  'f95de0f04d4de312bb394393559112ac7b5f267337541995251d963a7dc41d37' => '是否匹配基于其UUID的设备 。',
+  'f97d722ba8addf96726eaf6279679b6de05be260c4883f038bae0c84b67c2cb6' => '管理事件和不合规定之处',
+  'f97e9da0e3b879f0a9df979ae260a5f7e1371edb127c1862d4f861981166cdc1' => '其他人员',
+  'f196e55ef16d86d62bfc7dd9475f153ce9966d1745067850138381421d6b9fce' => '文莱达鲁萨兰国',
+  'f405b98d5ffcfb0519c1cdaa60216738c0adff1e60ad95191bb67633b55bdc6c' => '塞拉利昂',
+  'f411a1fb62758b4c54690d0a702b4955b54dd22115416fa7b1ce51b4a084818d' => '免费',
+  'f560bf89243009db7bbcd8de6482d38c8572aab18ec48db3d6d206cd885dd261' => '来源于主机名, sysName, dns 主机名和IP 按此顺序排列 。',
+  'f579cdca4ce2504a114acfa8c231aaec5fee8bb11ddf3987d3311945ee9b2c50' => '当将文本输入列标题时,可以简单地使用普通的单词。 例如,输入时 <code>computer</code> 输入上方的搜索框 <i>类型</i> 栏中,搜索将返回所有带有计算机类型的设备。 基本上,Open-AudIT请求使用URL这样的数据 <code>devices?devices.type=computer</code>。现在使用数据表搜索与标准有一个显著的区别。',
+  'f604b853b5d8b7b6ff1c9563a661741cd342a816b7d5efc9bb85b940f6aab959' => '系统对象',
+  'f641cad61af496f39fa39d0cce296a35df54958570377b9428f7267880c41af9' => '动作下载( D)',
+  'f700eccb4192ca5bc8b9fdc86d92de8f1001c96470b7cae9c647877f6c8b49fa' => '为了使Open-AudIT能够对项目应用用户权限,我们授权用户 <code>WHERE @filter</code>。如果您不使用此格式,查询CreateForm将发出警告。 仅允许具有管理员作用的用户创建缺少此属性的查询,即使如此,也只有在配置项之后 <i>高级( K)</i> 已启用。',
+  'f793de205ead5ac302c4a1627829dea41f176b1068b993a32373fc869918374b' => '低级',
+  'f935a46127259290c315ecd036b0c0f74ed7fcdc49160354706fe16bed7b6c05' => '命令( S)',
+  'f939ae3d30c69e332a36892f70d401d457e6993f056b8d0af3fe3d736821f5a1' => '等号',
+  'f974a07ea4988c92d27cf645c46bc533075d4dd5a8059c03fe460a4aa9d4dd5a' => '文件名',
+  'f1766cc4ec8d9f77a705fb038ed4a1bfcccf1230fb88c83e1b5cdd76b7fb9cec' => '缩放',
+  'f2258b8c1d17efab4087d69bd1725e8a1e87002c79b4ee5ac8e3b2e9b98d3f26' => 'NMIS 业务处',
+  'f2780c7036f3f45785c212f2fb2fcbd297dace9de0d2575464e5bddce557789f' => '动作下载',
+  'f3042aac5803ddb14e8613f7c516cf153a1f5fe64364097745c0da3202a406d2' => '输入中可以有下列值。',
+  'f4730c8af0f679034b606bb1a81aac976b09bc32212a8d8504177fb2b34d220c' => '发展、灾后恢复、评价、预生产、生产、测试、培训、用户接受测试',
+  'f4830a1dae2980447c716bd4b5779b7013575ef09f70ef4731457218792487b3' => '时间表',
+  'f5273e236d498c359c7a91edb712e28728d902bf6dd4f60984dfbc9501a9bf4c' => '地址',
+  'f6138fc699a03a456b9ec054a5d59201f69f1f130a5eae2b6f3cef648623e51d' => 'Ack 时间',
+  'f6294a68e163237c54e70f30246da6cb7982a9da83ff24aaa594cd4d4dd44f5c' => '此基准将执行的设备数量 。 来源 <code>benchmarks.devices</code>。 。 。 。',
+  'f6725f3af08a06a2804bf70e4493e6c78dd37ef533eebf9b419fc48b520ec753' => '过期',
+  'f6762d6b2f2533fbea17ed2209263d2c68f4b28b6bd4979734a8e3e222058c4e' => '业务要求',
+  'f6801ce62d6d6de3052036995ddbf5c39dc0fff2a7f9b27c825ac06f6656ad58' => '挂载点',
+  'f7800e8b7320c96ff43f4f03531f0bbefac1070969db48d5c1fbdcf33c3ed018' => '可用基准',
+  'f16474a9900a44186e87098f5fcb153a1fab2e401e1a6db587168b204761b276' => '==',
+  'f22052d948e7881a73f8447aed243d3f197d17ed3a6dfd0207e958df105ad426' => '您的 AWS EC2 API 密钥 。',
+  'f22682c2cee7cdd9de6445249057f2e62fc251769c87b591b7e3a917550e98cd' => '交通灯',
+  'f28862bd38e3dbc0f51275acb029e1e8ee01c4fba2e42a1342e2e6fa5cdead60' => '最佳实践',
+  'f37695a23c899c5215f84a9b8fd71359fc3dc3d1f33c363c3ac32deea88d4d8a' => '编辑',
+  'f40130cacade71c84e0ab0f5e2e9917c4b31d763c4a292741f2774774ab5683b' => '使用认证',
+  'f52274d0ea356f364c435b78923d9b7fca0af78c9d403729206ab56ce3c78344' => '以下列数值填充:',
+  'f55563b386a39dc3093ff86421fb665db03b571c36f17577d648da5d2a7cc245' => '姓',
+  'f59691da4eec0bcfbe0aa100050a8af87cc742e1d0e66b0841adf9ecb8e0ee0f' => '是否匹配基于主机名和UUID的设备 。',
+  'f177061afd0b1744a84efa9ac1513ff266519c7e059027f6b7cb07f8e3d53e08' => '布韦特岛(布韦托亚)',
+  'f222479afd60367ef06f7e8d035772c3a276e9ca1beb463c0c0c8613fd53034e' => 'Open-AudIT 应安装在 64bit Windows 上 <strong>服务器</strong> 仅限系统。 Windows 10和Windows 11分别是 <strong>没有</strong> 已支持 。',
+  'f350895acb597dcc8a039060a9ce12f0c9c6504f51c2bfc25034f04c4c786675' => '理由说明',
+  'f599523d304e1b1960ea9bb0f7406755feb5367d9c9b9f4c3a02d03a6c4bba57' => '基线标识',
+  'f718933d8b6a5aed0e7f513f0075dead9ac208da3fde987d248562fc0b38016e' => '数字',
+  'f792652c06ffa9d795e75118a7c8329290a516dfd060a9ee0163093db50664f1' => '大于',
+  'f5814190f3701713d34ee88f7438dd574be4e7aed36f24185ee5e38fd8a7903c' => '扫描选项( S)',
+  'f6017145f84258e0abdf48d483fac904b237c04b490068d125211ef1d156481e' => '页面。 从菜单导出您的 LDAP 服务器 - > 管理员 - > LDAP 服务器 - > 详细到JSON并保存和包含此数据.',
+  'f6696241bc279e041a5ac507496296902ba8d2cd1d1dd8d4dd698e8f8a5d2cd9' => '数据库动作',
+  'f8132246180c5710545af4963e881384cfbcd7310d9fa6529c75aea002f7d439' => '设备匹配的逻辑包含在设备  helper.php文件中,在 Linux 安装上可以在这里找到',
+  'f34527028629b4b51c64737410e00ad2ed4a583c88625894faefd8bde6a641af' => '种子发现是另一种发现, 在那里,你提供一个单一的IP <i>种子</i> 设备。 这个设备经过审计,它知道的任何IP随后都会被添加到被审计的IP列表中. 然后,这些设备经过审计,他们知道的任何实施伙伴也被列入实施伙伴审计名单。 然后在用户配置的参数范围内继续这一进程。',
+  'f271668090617af459f9d620ce5c78b6a23de92c3a7ac4281e424a32f1714069' => '带有过期保证的设备',
+  'f839161355091fcd9e33f571e0b11c60217a5009f9973e769c13d7858db162cc' => '使用过的',
+  'fa04ebc191e45369981e7b0c71b766c284e07382f39d6e5c862c7967e45da678' => '您确定要删除此输入项吗 ?',
+  'fa1ec17d63ad064c23e7b12d673d12ad136e5feb0efd16a075820889b8e48c16' => '系统组件',
+  'fa4b4a7beea06b8db58442cb025a3ee629ad49d035c1aea87758f8c66fae927c' => '发现选项',
+  'fa7fe67124e94375d97e50896e0c32f44b03bb7ed5e9fb026341b55da724126b' => '数据库',
+  'fa8a896d0ee03029f9ff9ebc5f274809ad2d5a9f1e4882894a0d464efab9b5a6' => '创建外部计数',
+  'fa64ea1e82e1206f828ab2a02917c7e92accb98e3b95881a1b4ad52b914b66e3' => '过期',
+  'fa961e59cfb23319db80b36a4dd436105903427e2365c6be682768893f3b071c' => '来自100个设备',
+  'fa2941c3cfa747a974c95a2e0ec3c8615f127cc932cf1f1a03454985b7b7ee9e' => '复制并粘贴到论坛、 Open-AudIT 或您需要提供该项目的任何地方。',
+  'fa8847b0c33183273f5945508b31c3208a9e4ece58ca47233a05628d8dba3799' => '创建',
+  'fa48363fe36ca35818509130e25a1bf372e53903d1d733d75a2943018762cd92' => '发现( S)',
+  'fa52249bb72ba18e05806e7417d430a9f0fb06526ae9146b04e4e6699e55ef6f' => 'CVE由NVD分析师排队浓缩. 还没有详细的元数据 。',
+  'fa73899dbac451336030cd45cfa7b03e894003f2daaa1d709533b49478e411ba' => '审计山点',
+  'fa666542c15f2e424e31922da77bd95506c0d808aa522c5bd4937ebe7d572b36' => '完成时计算出执行此项目所需的时间 。',
+  'fa4043818a8c30c2287d609eb1db0a2b77553bc9a6278eadfe71eaba9fd04c29' => '上次查看( S)',
+  'faa5a5fa6848723735263b39360bff285392af9c6d175d69f9cd06f0f5ba6627' => '执行选定的控制和程序',
+  'fab47968ee69bcc49bf39a8bc4bf646514d6b7a642c358fa4e548a6d64248f88' => '地点 ID B',
+  'fad6bd87e9d0191bda04747ceb6050421b07f026d93720cb122467acabba02bf' => '发现日志',
+  'fb1c5a1e1d400906ec78cde10ada0f001ae1e60f90d4d4c89511adfcb92efb8b' => '配置默认, 目前 ',
+  'fb3d57421a213fc4d8e4c39b5f96d811d8c5ebb3e429d423c95427d14b8b2e29' => '云号( D)',
+  'fb5f27d5457c464102286366ef3827b11923e7f3aa1faa7eea95249e36a39abf' => '细节',
+  'fb9cf75606b4070dd6a9705810906bba28d0e2ea74ff301b999a91dbb68c7d98' => '启用',
+  'fb761af5fd4ccf3f56e462b99ad1eddd970dd33e3cc8d45762e86715247cdd2c' => '对于每个产卵过程,以下发生.',
+  'fb843d0e25e359b420b47ca825ee391e72ddb1be69d2dfebc90874a7f1981cdc' => '实例( State)',
+  'fb8236f4e7f6e66670f9373f4f220961d7e5225fa75d5a2f228faad253501214' => '复制 <i>客户身份</i> 把它粘在公开的AudIT上 <i>客户身份</i> 字段。<br/>如果没有秘密,请点击 <i>生成新秘密</i>并粘贴到 Open-AudIT 中 <i>客户端机密</i> 字段。',
+  'fb6449601de5ae49e75810495ac14ea305758b7ab864674c7bac1775843c637e' => '<p>Open-AudIT可以在每个设备相关的自定义字段存储信息.<br/> <br/>一旦创建了附加字段,它就可以像数据库中任何其他属性一样用于查询和组中.<br/> <br/></p>',
+  'fb44523669fb5b56dca7ff74296d489c94e7bbdca1680e0bae32c3e75d14060d' => ',其中我们提供30多个作为默认集。 专业用户不能更改这些功能,但企业用户拥有完整的自定义能力——包括创建自己的功能.',
+  'fbacca5cf67dbf61e077f63607d78d6ce59f5e46fe31d1a832f5613cffa04ee1' => '复制并粘贴审计结果',
+  'fbbe46486e0f3d640a032d4bd094669bc7d45970c1602f7735a8f7ad97ef6f44' => '这种描述是自动流行的,最好保持原样。',
+  'fbbf3b185f219df3c5258e1fcd021f736138749d4368461d7a7036059620a5b1' => '制定信息安全政策',
+  'fbc7b5b86ecfb5764b672e795cf5e9b4f18fb118559ef74c4f5ed1534c131786' => '审计',
+  'fbec31728f6f7fb252b9915051d19f9ac0eba2cf8bd742b065d87caa2bff2fd1' => '风险分担结果',
+  'fc0dc3a9cc9cf46fefac9b6c040451ed481ba38d049347b644a028b212599fd1' => '你的SSH钥匙',
+  'fc4e84255a41a3a28fede3ebca9eb1130e112bc53d8371fa038bb953eb7326b8' => '时间安排',
+  'fc33f73246f48295702f404001e74d56f14d2f82689b2816422dc1a4c2ec4fb2' => '城市',
+  'fc538a4c21009755bf4c9a67112a6773252d8e4bfec37d002ac59083dda4fda2' => '字段类型',
+  'fc2662062ffdef9610020183ea2b087c21d71150d78a7c7463be8a9050bd3ac9' => '星期四',
+  'fcec91509759ad995c2cd14bcb26b2720993faf61c29d379b270d442d92290eb' => '这里',
+  'fd3dfa76050e048e229d35a01da6974ab0edd353520838235d499163d97df209' => '识别',
+  'fd7d5f3d96045c65fd4708d32cc855457043077baebaf54bac08d1c66d6ff350' => '服务器( R)',
+  'fd54e5a82e36d787abb29e938f337caa363e9f11d88331711c0932fca32d2875' => '应用程序',
+  'fd562d505ba3614c28a901c60ecb5cb54e6eed7856ef180daeea81ec86de28fb' => '当Windows上的 Open-AudIT 发现 Windows 机器时,为了执行远程命令,我们使用',
+  'fd96853304e45c99209bb21f6ff6c280972f3f2d19b9ab9daeddf2c7ed22bc40' => 'Tx 电源',
+  'fdb627efb86ba73e631686e916f746d4b946f5d2f1594109caf982ca2b694fe2' => '开源',
+  'fdc75fd716b994555fb0442e9d38efaaa4540b2bc8a4b824a683ec316e7f22cb' => '时间( C)',
+  'fdcf2dde629ea3796018c8028c108edaba661fc53fc6bb30a3da1c2672f8348a' => '地理地图',
+  'fdd791787b64d22386b9e4fe2fa037792bb86d9b2905f245626eda8e7450c4d4' => '10月(半天会议)',
+  'fde8baa4a8e290d7b5d4d9423a94c5cd0c80cf0abcb61ca084a894e5634a0e8e' => '采购订单',
+  'fdeb33892d1867626d6d2b06b5596653202e6a3ed9962cc4f542d86ba06837b1' => '权限',
+  'fe2f6e77ef49c48704bcfe7e1a673c60b39b124c62cbfe7ed0da06ba12645d28' => 'Windows 日志可能表示如下:',
+  'fe33c925ce220a0b7c8d84c4980652f4560d61d2d9f0f4fc3fc04f789aceba0c' => '马绍尔群岛',
+  'fe51ea7f70e177aaada6ac2d07914dd6e1a908b37556fad20fbd93b52360b638' => 'os 组',
+  'fe82d2dc5828a4e8ce303e5d25de62a69ddc39cd87fe3a177bf355a0b926a143' => '附 件 device id',
+  'fe518ea3e392b45182501171012b7cd0bd27644a0c2c503ff9f1e23feb70b5ce' => '远程地址',
+  'fe553c176c28a4536d8ddc9f239b152f50848304c9258420d6abc44468e42aab' => 'Open-AudIT中的标准功能允许您在完成ISO 27001认证时提前完成需要的问题审计员.',
+  'fe657d3f58f2b0b89089e17cce10d5ee405ad3b4edcc46bbccb36c95df270247' => '因为我们尽量做到透明 这是你们发送的数据',
+  'fe1315c92879fe36ac3d2b0785d539ecc19b7e2c114b7baf1706aa2bd64c1041' => '状态( S)',
+  'fe6352fd5448a326d521e474ac5373a9f60da0eeaef56d901c51cc922f594830' => '单击提交执行',
+  'fe33279d032e16399fdc18460a78f59a0ba6f6948c633a2a3fc7eb0a3f346534' => '您还不妨允许调试查看终端的进展 :',
+  'fe2044746cdb99ca93370a4adc7f25ae59fafa91e675c48e9542d4ed134e253b' => '影响( I)',
+  'fe199528850a4e24c14d9ece87a07b40bdcfa5fe504c175c117b997c29259ca6' => '卸载',
+  'fea7789141edbfa8f65752442ca0328a7b3d7ec44f91aa72ad5589bdecca0a9d' => '<p>组件是一个通用术语,用于存储设备属性的表格. 这些表格是: access point, arp, bios, 证书, cli config, 磁盘, dns, 文件, ip, 许可证, 日志, 内存, 模块, 显示器, 母板, netstat, 网络, nmap, 光学, 页面文件, 分区, 政策, print queue, 处理器, 收音机, 路由, san, scsi, 服务器, 服务器 项目, 服务, 共享, 软件, 软件  key, 声音, 任务, usb, 用户, 用户 组, 变量, 视频, vm, 窗口.</p><p> 此外,我们还将以下表格归类为设备相关:应用程序,附件,集群,证书,图像.</p>',
+  'febd0f495f2458238cb46725cba49681818037799117d959b78c85b1d90328b2' => '更新外部计数',
+  'fee09a1c44f10ccabe91141a1ca7e21fac771c8fc3bbbdca52281dbcde1a5cbd' => 'snmp 转换',
+  'fef223264c0e46320c4a70999bc836b19d5c10be3df3ddd223c20927484e0086' => '收集器 Uuid',
+  'ff02199636ee0eb7776618f91d4ec3d9b23b32c6fb13920fc446a72ae89ea3c0' => '标记 2',
+  'ff1a4e90f6d0eabefeb6a509f106984bdaf1680394094f77f09cfc6ce07b87c5' => '瓦兰',
+  'ff2ec7f526dcbc497afc326ba6f46c25ed092d2aca4bc4dacc254e04a7bf788c' => '删除示例设备',
+  'ff5e4debcf84f6d4aed6e2a272b44a956e00706638fe7509296bfdb78ec91057' => '斐济、斐济群岛',
+  'ff6bc1c9d1bb10b82f624c046df5bd5af8ca68f5390207bac785af4a3ba231c7' => '采购数',
+  'ff8fee51c1f32f65b26f5d931ab3f0e8d71709970f1b161b135347a11254f697' => '序列符号',
+  'ff9e49b5d59f9ff24d3b3be2c19058a877cb09387a1e27362f205bb737993358' => '鸟类',
+  'ff21e85e81d49eac2b266860506913498761a0798678544aa6f431fd8ca115d6' => '服务器代号',
+  'ff583a5540434436dfaa42173532a0ef73c010b2122faf9e40ef6f97dc86e5e9' => '大写',
+  'ff682b12711d40be4db968a4f170ddf02d0c44490abbd922d3d1d32a6aa2bd30' => '脆弱性',
+  'ff5573a6f2874c404b2a4739f47889b7d3eeba4cf72dea30a2ef09e1a2520f93' => '全部查看',
+  'ff8059dc6752afdd30d275932b1d5031a2ec854b387a8c57ecc6689915293a43' => '行动',
+  'ffa98e02f7ce33fc935f02b3b668f6ad57661814dade5f41453fbee2b70cdd95' => '远程',
+  'ffacb99d020977e9017cbdead1de56dde2343c2527a1a8729d90c444539d8c34' => '操作系统',
+  'ffdb4dbe771b395f7ec2622aa9e6d99720b09e54fb2ed8f21c52f10fd3d73a34' => 'vm 报应',
+  'ffdbf96d68ca42e2c1362f7b6f723477ba22c7aa9474a40509fde47756c1c297' => '我们的默认集成还能发现任何外部设备。 所以我们将默认的发现 用于默认集成 出盒子。 这些使用默认匹配规则,但也允许在IP地址上匹配.',
+  'fff4411e0f49e238e547523beddc3e7398fc807e7604db4e3e42c07c732cc6eb' => '与集成相关的字段作为JSON对象阵列存储在数据库中. 每个字段都有以下属性:',
+);

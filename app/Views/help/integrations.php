@@ -33,7 +33,7 @@ $body = '<br>
 <br>
 <h2>Our Default Integration</h2>
 
-<p>' . __('By default we integrate all devices with their nmis_manage attribute set to <i>y</i>. With 4.2.0 we also ship a Rule that says <i>If we discover a device and it has a valid SNMP OID, mark that device as managed by NMIS</i>. Obviously you can disable this if it is not what you want.') . '<br>
+<p>' . __('By default, we integrate all devices with their nmis_manage attribute set to <i>y</i>. With 4.2.0 we also ship a Rule that says <i>If we discover a device, and it has a valid SNMP OID, mark that device as managed by NMIS</i>. Obviously you can disable this if it is not what you want.') . '<br>
 
 <br>' . __('To select devices to be integrated, we use nmis_manage = y, but you might like (for example) type = router. You can also use a Group or Query if you prefer something more complex.') . '<br>
 
@@ -52,7 +52,7 @@ $body = '<br>
 
 <code>priority</code>: ' . __('When combining devices, which system is the authoritative source for information.') . '<br><br>
 
-<code>default_value</code>: ' . __('If no value is present, supply this value. EG: for system.nmis_group / configuraion.group we use') . ' Open-AudIT.<br><br>
+<code>default_value</code>: ' . __('If no value is present, supply this value. EG: for system.nmis_group / configuration.group we use') . ' Open-AudIT.<br><br>
 
 <code>matching_attribute</code>: ' . __('Should we use this value to match external and internal devices. Our default Integration uses IP and UUID here. If either of these match between external and internal device, we consider them to be the same device.') . '<br><br>
 

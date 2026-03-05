@@ -19,6 +19,11 @@ function &get_instance() # : \App\Controllers\BaseController
     return $CI_INSTANCE[0];
 }
 
+function word($word)
+{
+    $GLOBALS['lang'][hash('sha256', $word)] = $word;
+}
+
 function getSVG(string $baseDir): array
 {
     // $baseDir = '/usr/local/open-audit/public/azure_icons';

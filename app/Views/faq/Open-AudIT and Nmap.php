@@ -41,4 +41,4 @@ sudo dpkg-statoverride --list `which nmap`</code>
 
 <img src="' . base_url() . 'images/faq_04.png" alt="Nmap Install" style="padding-top:20px; padding-bottom:20px;">
 
-' . __('Use the standard install options when displayed and click the <i>I Agree</i>, <i>Next</i> and <i>Install</i> buttons to install Nmap.') . '</p>';
+' . __('Use the standard installation options when displayed and click the <i>I Agree</i>, <i>Next</i> and <i>Install</i> buttons to install Nmap.') . '</p>';
