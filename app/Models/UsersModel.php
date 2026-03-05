@@ -439,7 +439,7 @@ class UsersModel extends BaseModel
 
         $dictionary->about = '<p>Applications are defined by you, the user and stored for Open-AudIT to use and associate with devices.<br> <br></p>';
 
-        $dictionary->notes = 'If the following conditions are met:<br><ul><li>a Role has an assigned ad_group</li><li>an Org has an assigned ad_group</li><li>an LDAP Server has use_roles set to y</li><li>a user exists in LDAP (be it Active Directory or OpenLDAP) and is in the assigned ad_groups</li></ul>That user can log on to Open-AudIT without an account in Open-AudIT needing to be created. Open-AudIT will query the LDAP in question and if the user is in the required groups but not in Open-AudIT, their user attributes (name, full name, email,  roles, orgs, etc) within Open-AudIT will be automatically populated and they will be logged on.<br> <br>';
+        $dictionary->notes = 'If the following conditions are met:<br><ul><li>a Role has an assigned ad_group</li><li>an Org has an assigned ad_group</li><li>an LDAP Server has use_roles set to y</li><li>a user exists in LDAP (be it Active Directory or OpenLDAP) and is in the assigned ad_groups</li></ul>That user can log on to Open-AudIT without an account in Open-AudIT needing to be created. Open-AudIT will query the LDAP in question and if the user is in the required groups but not in Open-AudIT, their user attributes (name, full name, email,  roles, orgs, etc) within Open-AudIT will be automatically populated, and they will be logged on.<br> <br>';
 
         $dictionary->link = $instance->dictionary->link;
         $dictionary->product = 'community';
@@ -455,7 +455,7 @@ class UsersModel extends BaseModel
         $dictionary->columns->roles = 'A JSON document containing the roles assigned to this user. Role names taken from <code>roles.name</code>.';
         $dictionary->columns->orgs = 'A JSON document containing the Orgs assigned to this user. IDs taken from <code>orgs.id</code>. If a user has access to an Org, they have access to that Orgs descendants.';
         $dictionary->columns->dashboard_id = 'The dashboard that will be shown by default for this user. Links to <code>dashboards.id</code>.';
-        $dictionary->columns->active = 'Is this account active? If set to <code>n</code>, the user cannot logon.';
+        $dictionary->columns->active = 'Is this account active? If set to <code>n</code>, the user cannot log on.';
         $dictionary->columns->ldap = 'The LDAP OU of this user (if LDAP is used).';
         $dictionary->columns->type = 'Can be <code>user</code> or <code>collector</code>.';
         $dictionary->columns->devices_default_display_columns = 'If set, holds a JSON array of specific device columns this user has chosen to see, other than the configuration default. This should be set on the List Devices page.';

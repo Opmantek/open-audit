@@ -331,7 +331,7 @@ class AgentsModel extends BaseModel
         $dictionary->attributes->update = $this->updateFields($collection); # We MAY update any of these listed fields
         $dictionary->sentence = 'Think <code>if this, then that</code> for devices with an Agent installed.';
 
-        $dictionary->about = '<p>Agents let you audit PCs without a discovery. Install the agent and it will check-in with the server each day and audit itself. It does not matter if your computers are firewalled, audit data will still appear in Open-AudIT.</p><p>When testing <strong>if</strong> an agent should perform actions, all three tests must pass (if the test is set). <strong>Then</strong> the actions are taken.</p>';
+        $dictionary->about = '<p>Agents let you audit PCs without a discovery. Install the agent, and it will check in with the server each day and audit itself. It does not matter if your computers are firewalled, audit data will still appear in Open-AudIT.</p><p>When testing <strong>if</strong> an agent should perform actions, all three tests must pass (if the test is set). <strong>Then</strong> the actions are taken.</p>';
 
         $dictionary->notes = '';
 

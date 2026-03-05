@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Commands;
 
-use App\Libraries\TranslationExtractor;
 use App\Libraries\TranslationGenerator;
 use CodeIgniter\CLI\BaseCommand;
 use CodeIgniter\CLI\CLI;
@@ -14,22 +13,22 @@ use CodeIgniter\CLI\CLI;
  *   --api http://localhost:5000 \
  *   --timeout 30 \
  *   --concurrency 4 \
- *   --languages ar \
- *   --input /usr/local/open-audit/writable/translations/default.php
- *   --output /usr/local/open-audit/writable/translations
+ *   --languages ar,az,bg,cs,da,de,el,eo,es,et,fi,fr,ga,hi,hu,id,it,ja,ko,lt,lv,nl,pb,pl,ru,sq,tr,uk,zh \
+ *   --input /usr/local/open-audit/app/Views/lang/default.php
+ *   --output /usr/local/open-audit/app/Views/lang
  */
 class TranslationGenerateCommand extends BaseCommand
 {
     protected $group       = 'Translation';
     protected $name        = 'translation:generate';
-    protected $description = 'Generates individual translation files from a file containing extracted translation strings';
+    protected $description = 'Generates individual translation files from extracted translation strings';
     protected $options = [
-        '--api' => 'The base URI in which the translation service is accessible',
-        '--timeout' => 'The maximum duration of an API request',
-        '--concurrency' => 'The amount of translations processed at once',
-        '--languages' => 'A comma delimited list of language codes to filter by',
-        '--input' => 'The input file containing extracted translation strings',
-        '--output' => 'The path to output files',
+        '--api'         => 'The base URI in which the translation service is accessible (default=http://localhost:5000)',
+        '--timeout'     => 'The maximum duration of an API request (default=30.0)',
+        '--concurrency' => 'The amount of translations processed at once (default=4)',
+        '--languages'   => 'A comma delimited list of language codes to filter by (default=ar,az,bg,cs,da,de,el,eo,es,et,fi,fr,ga,hi,hu,id,it,ja,ko,lt,lv,nl,pb,pl,ru,sq,tr,uk,zh)',
+        '--input'       => 'The input file containing extracted translation strings (default=/usr/local/open-audit/app/Views/lang/default.php)',
+        '--output'      => 'The path to output generated files (default=/usr/local/open-audit/app/Views/lang)',
     ];
 
     public function run(array $params): void
@@ -41,6 +40,10 @@ class TranslationGenerateCommand extends BaseCommand
         $languages = array_filter(array_map('trim', explode(',', $languages)));
         $input = CLI::getOption('input');
         $output = CLI::getOption('output');
+
+        if ($input === null) {
+            $input = APPPATH . 'Views/lang/default.php';
+        }
 
         if (! is_file($input)) {
             CLI::error('Input file does not exist. Use --input "/path/translations.php"');
@@ -81,7 +84,7 @@ class TranslationGenerateCommand extends BaseCommand
             $generator->setOutputPath($output);
         }
 
-        $success = $generator->generate();
+        $success = $generator->execute();
 
         if ($success) {
             CLI::write('Translations generated successfully to ' . $generator->getOutputPath(), 'green');

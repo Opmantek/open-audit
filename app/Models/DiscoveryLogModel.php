@@ -722,9 +722,9 @@ class DiscoveryLogModel extends BaseModel
         $dictionary->columns->severity = 'The integer of severity.';
         $dictionary->columns->severity_text = 'Derived from the integer severity.';
         $dictionary->columns->pid = 'The Process Identifier of the running associated discovery.';
-        $dictionary->columns->ip = 'The target IP this log entry referers to (if any).';
-        $dictionary->columns->file = 'The Open-AudIT server code was exeucted within this file.';
-        $dictionary->columns->function = 'The Open-AudIT server code was exeucted within this function.';
+        $dictionary->columns->ip = 'The target IP this log entry referrers to (if any).';
+        $dictionary->columns->file = 'The Open-AudIT server code was executed within this file.';
+        $dictionary->columns->function = 'The Open-AudIT server code was executed within this function.';
         $dictionary->columns->message = 'A short description of the log entry.';
         $dictionary->columns->command = 'The command executed upon the target device or Open-AudIT server code executed during discovery.';
         $dictionary->columns->command_status = 'Did the command complete successfully and return expected data.';

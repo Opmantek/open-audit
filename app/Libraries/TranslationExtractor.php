@@ -95,7 +95,9 @@ final class TranslationExtractor
         $this->extractTableInformation();
         $this->extractModelDictionaries();
 
-        asort($this->translations);
+        // I think it is better to sort by key. Later when adding individual
+        // strings to translate, they can be re-sorted without causing havoc
+        ksort($this->translations, SORT_NATURAL);
 
         return $this->outputTranslationFiles();
     }
@@ -280,12 +282,22 @@ final class TranslationExtractor
             return;
         }
 
-        // Pattern matching: __('...') and __("...") including multiline strings
-        $pattern = '/(?<![\w"\'#\/])__\(\s*(?P<quote>[\'"])(.*?)\k<quote>\s*\)/s';
+        // Regex pattern to match __() function calls with any content inside the parentheses
+        $pattern = '/(?<![\w"\'#\/])__\(\s*(.*?)\s*\)/s';
 
+        // Find all matches of __() calls in the $content string
         if (preg_match_all($pattern, $content, $matches, PREG_SET_ORDER)) {
+            // Loop through each matched __() call
             foreach ($matches as $match) {
-                $this->addTranslation($match[2]);
+                // $match[1] contains the excerpt inside the __() parentheses
+                $excerpt = $match[1];
+                // Extract any string literals from the captured content
+                if (preg_match_all('/(?P<quote>[\'"])(.*?)\k<quote>/', $excerpt, $literals, PREG_SET_ORDER)) {
+                    // Loop through each string literal found inside the __() content
+                    foreach ($literals as $literal) {
+                        $this->addTranslation($literal[2]);
+                    }
+                }
             }
         }
     }

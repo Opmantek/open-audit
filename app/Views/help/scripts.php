@@ -7,7 +7,7 @@ $intro = '<p>' . __('You can create a script with all the options for any of the
 <br>
 <h2>' . __('How Does it Work?') . '</h2>
 
-<p>' . __('We initially setup the default list of scripts with the default options. The list of script is viewable at /scripts. These default scripts cannot be deleted. You can create additional scripts for use by you as required. Your script will be based on one of the existing scripts and have custom options applied. The scripts can then be downloaded from the list page at menu: Discover -> Audit Scripts -> List Audit Scripts.') . '</p>';
+<p>' . __('We initially set up the default list of scripts with the default options. The list of script is viewable at /scripts. These default scripts cannot be deleted. You can create additional scripts for use by you as required. Your script will be based on one of the existing scripts and have custom options applied. The scripts can then be downloaded from the list page at menu: Discover -> Audit Scripts -> List Audit Scripts.') . '</p>';
 
 $body = '<h2>' . __('Modifying an Existing Script') . '</h2>
 

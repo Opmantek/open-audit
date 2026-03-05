@@ -22,7 +22,7 @@ include 'shared/collection_functions.php';
                             <pre>chmod 777 <?= APPPATH ?>Attachments</pre><br>
                             <p><?= __('Our framework uploads files here for processing, then deletes them. Think submitted audit results, etc.') ?></p>
                             <pre>chmod 777 <?= ROOTPATH ?>writable/uploads</pre><br>
-                            <p><?= __('The application creates temporary audit scrtips here, copies them to the target machines, then deletes them.') ?></p>
+                            <p><?= __('The application creates temporary audit scripts here, copies them to the target machines, then deletes them.') ?></p>
                             <pre>chmod 777 <?= ROOTPATH ?>other/scripts</pre><br>
                             <p><?= __('Any user uploaded images are placed here.') ?></p>
                             <pre>chmod 777 <?= ROOTPATH ?>public/custom_images</pre><br>

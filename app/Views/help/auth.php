@@ -8,7 +8,7 @@ $intro = '<p>' . __('Open-AudIT can be configured to use LDAP servers (Microsoft
 <p>
 ' . __('To enable this, create a new Auth item by going to menu -> Admin -> Auth -> Create Auth Method.') . '<br>
 <br>
-' . __('Select the type of Auth Menthod to create and input the relevant details.') . '<br>
+' . __('Select the type of Auth Method to create and input the relevant details.') . '<br>
 <br>
 ' . __('As a reminder of how authorisations works in Open-AudIT, see') . ' <a href="' . url_to('helpFAQ') . '?name=Users, Roles and Orgs">' . __('Users, Roles and Orgs') . '</a>.<br>
 <br>

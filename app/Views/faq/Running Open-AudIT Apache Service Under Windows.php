@@ -21,7 +21,7 @@ $intro = '<p>
 
 <img src="' . base_url() . 'images/faq_02.png" style="padding-top:20px; padding-bottom:20px;">
 
-<br>' . __('Select the <i>This Account</i> checkbox and provide the account name and password.') . '<br>
+<br>' . __('Select <i>This Account</i> checkbox and provide the account name and password.') . '<br>
 
 <br>' . __('Next, click OK, then right click the Apache 2.4 service and click Restart. Done!') . '<br><br></p>';
 

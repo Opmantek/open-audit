@@ -1750,7 +1750,7 @@ class IntegrationsModel extends BaseModel
 
         $dictionary->sentence = 'Use Open-AudIT to integrate with external systems.';
 
-        $dictionary->about = '<p>Integrations allow you to setup device selection and schedules for Open-AudIT to talk to external systems.<br> <br></p>';
+        $dictionary->about = '<p>Integrations allow you to set up device selection and schedules for Open-AudIT to talk to external systems.<br> <br></p>';
 
         $dictionary->notes = '';
 
