@@ -12,7 +12,7 @@ $intro = '<p>' . __('News is our way of keeping you up-to-date with the latest f
 
 <p>' . __('In order to use this functionality, it must be enabled in the configuration - click') . ' <a href="' . url_to('configurationCollection') . '?configuration.name=feature_news">' . __('here') . '</a>.</p>
 
-<p>' . __('Along with this request for information, we send back to FirstWave datapoints that will give us some much needed information on feature use and your installation.') . '</p>';
+<p>' . __('Along with this request for information, we send back to FirstWave Datapoint\'s that will give us some much needed information on feature use and your installation.') . '</p>';
 
 $body = '
 <h2>' . __('What do we send?') . '</h2>

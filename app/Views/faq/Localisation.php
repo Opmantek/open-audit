@@ -7,7 +7,7 @@ $title = __('Localisation');
 $intro = '<p>' . __('Open-AudIT can show in one of several languages. How you can improve this?') . '</p>';
 
 $body = '
-<p>' . __('Open-AudIT was written by an English speaking Australian. Everything in the application uses English wording. However Open-AudIT has always supported multiple languages for display. These translations are not always correct, because the developers do not natively speak the language of every translation offered.<br><br>What can you do if something is not correct in the translation?') . '</p>
+<p>' . __('Open-AudIT was written by an English-speaking Australian. Everything in the application uses English wording. However, Open-AudIT has always supported multiple languages for display. These translations are not always correct, because the developers do not natively speak the language of every translation offered.<br><br>What can you do if something is not correct in the translation?') . '</p>
 
 <h2>' . __('Option #1 - Change the data') . '</h2>
 

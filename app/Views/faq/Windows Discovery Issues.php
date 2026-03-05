@@ -32,7 +32,7 @@ __('To run the test script on the target Windows PC') . ':</p><br>
 <p>' . __('On the target Windows PC, run the DCOM utility and verify (or set) the below attributes. Start -> Run, Enter DCOMCNFG and press OK. This will open the DCOMCNFG window.') .
 '<br>
 <br>' .
-__('Browse down the tree to Console Root -> Component Services -> Computers -> My Computer<br><br>Right click on <i>My Computer</i> and select properties<br><br>Select the <i>Default Properties</i> tab') .
+__('Browse down the tree to Console Root -> Component Services -> Computers -> My Computer<br><br>Right-click on <i>My Computer</i> and select properties<br><br>Select the <i>Default Properties</i> tab') .
 '<br>
 <ul>
     <li>' . __('Enable Distributed COM on this computer - Option is checked') . '</li>
