@@ -19,6 +19,13 @@ use function sprintf;
 
 final class EntraAuthenticator
 {
+    public const SCOPES = [
+        'openid', // Sign-in and ID token
+        'profile', // Basic profile info
+        'email', // User email address
+        'User.Read', // Read the profile of the signed-in user (/me)
+    ];
+
     private Session $session;
     private IncomingRequest $request;
     private BaseConnection $database;
@@ -36,19 +43,19 @@ final class EntraAuthenticator
 
     public function authenticate(object $authModel): string
     {
-        log_message('info', 'GET parameters: ' . json_encode($this->request->getGet(), JSON_PRETTY_PRINT));
+        log_message('info', 'Entra OAuth GET parameters: ' . json_encode($this->request->getGet(), JSON_PRETTY_PRINT));
 
         if ($this->request->getGet('error')) {
             if ($this->request->getGet('error_subcode') === 'cancel') {
                 $this->session->remove('oauth2state');
-                log_message('error', 'Auth cancelled by user');
+                log_message('error', 'Entra OAuth cancelled by user');
                 return site_url('logon');
             }
 
             $code = $this->request->getGet('error');
             $reason = $this->request->getGet('error_description') ?? 'Unknown error';
             $state = $this->request->getGet('state'); // 34ff392f4218977a26b84be84100ef9d
-            log_message('error', sprintf('Auth failed with Code: %s, Reason: %s', $code, $reason));
+            log_message('error', sprintf('Entra OAuth failed with Code: %s, Reason: %s', $code, $reason));
             return site_url('logon');
         }
 
@@ -58,18 +65,18 @@ final class EntraAuthenticator
         $storedState = $this->session->get('oauth2state');
 
         if (empty($authModel->client_ident) || empty($authModel->client_secret)) {
-            log_message('error', 'Auth client is misconfigured');
+            log_message('error', 'Entra OAuth client is misconfigured, check client_id and secret');
             return site_url('logon');
         }
 
         if (empty($code) || empty($state)) {
-            log_message('error', 'Missing OAuth parameters from ' . $ip);
+            log_message('error', 'Entra OAuth response is malformed, missing code, or state');
             $this->session->remove('oauth2state');
             return site_url('logon');
         }
 
         if (! $storedState || ! hash_equals($storedState, $state)) {
-            log_message('warning', 'Invalid OAuth state from ' . $ip);
+            log_message('error', 'Entra OAuth response is malformed, hash mismatched');
             $this->session->remove('oauth2state');
             return site_url('logon');
         }
@@ -79,14 +86,12 @@ final class EntraAuthenticator
         $useAuthorisation = strtolower($authModel->use_authorisation) === 'y';
         $redirectUri = !empty($authModel->redirect_uri) ? $authModel->redirect_uri : base_url('index.php/logon/entra/auth');
         $tenant = !empty($authModel->tenant) ? $authModel->tenant : 'common';
-        $scopes = $this->getScopes($useAuthorisation);
 
         $provider = $this->getProvider(
             $authModel->client_ident,
             $authModel->client_secret,
             $redirectUri,
             $tenant,
-            $scopes,
         );
 
         $accessToken = $this->getAccessToken($provider, $code);
@@ -101,20 +106,35 @@ final class EntraAuthenticator
             return site_url('logon');
         }
 
-        $resourceOwnerData = $resourceOwner->toArray();
+        $ownerDetails = $resourceOwner->toArray();
 
-        log_message('info', sprintf('ResourceOwner data: %s', json_encode($resourceOwnerData, JSON_PRETTY_PRINT)));
+        log_message('info', sprintf('Entra OAuth ResourceOwner details: %s', json_encode($ownerDetails, JSON_PRETTY_PRINT)));
 
-        if (! $useAuthorisation) {
-            // @todo Based on LDAP logic, a local user must exist
+        $username = $ownerDetails['preferred_username'] ?? null;
+
+        if (! $username) {
+            log_message('warning', 'Entra OAuth claim `preferred_username` is required');
             return site_url('logon');
         }
 
-        // @todo Need a successful request to determine data structure
-        $memberGroups = $this->getMemberGroups($provider, $accessToken);
+        if (str_contains($username, '@')) {
+            // @todo check whether this is needed
+            $username = explode('@', $username)[0];
+        }
 
-        if (empty($memberGroups)) {
-            return site_url('logon');
+        $localUser = $this->database->query(
+            'SELECT * FROM users WHERE name = ? ORDER BY id LIMIT 1',
+            [$username]
+        )->getRow();
+
+        if (! $useAuthorisation) {
+            if (! $localUser) {
+                log_message('warning', sprintf('Entra OAuth without authorisation, local user %s not found', $username));
+            }
+
+            $this->updateLocalUserDetails($localUser, $ownerDetails);
+            $this->session->set('user_id', $localUser->id);
+            return site_url('home');
         }
 
         // @todo Utility function for comparing roles against groups
@@ -133,14 +153,12 @@ final class EntraAuthenticator
         $useAuthorisation = strtolower($authModel->use_authorisation) === 'y';
         $redirectUri = !empty($authModel->redirect_uri) ? $authModel->redirect_uri : base_url('index.php/logon/entra/auth');
         $tenant = !empty($authModel->tenant) ? $authModel->tenant : 'common';
-        $scopes = $this->getScopes($useAuthorisation);
 
         $provider = $this->getProvider(
             $authModel->client_ident,
             $authModel->client_secret,
             $redirectUri,
             $tenant,
-            $scopes,
         );
 
         $authUrl = $provider->getAuthorizationUrl();
@@ -150,28 +168,12 @@ final class EntraAuthenticator
         return $authUrl;
     }
 
-    private function getScopes(bool $useAuthorisation): array
-    {
-        $scopes = [
-            'openid', // Sign-in and ID token
-            'profile', // Basic profile info
-            'email', // User email address
-            'User.Read', // Read the profile of the signed-in user (/me)
-        ];
-
-        if ($useAuthorisation) {
-            $scopes[] = 'GroupMember.Read.All';  // Read the groups the signed-in user belongs to (/me/memberOf)
-        }
-
-        return $scopes;
-    }
-
     private function getProvider(
         string $clientId,
         string $clientSecret,
         string $redirectUri,
         string $tenant,
-        array $scopes,
+        array $scopes = self::SCOPES,
     ): Azure {
         $provider = new Azure([
             'clientId'     => $clientId,
@@ -208,22 +210,22 @@ final class EntraAuthenticator
         return $resourceOwner;
     }
 
-    private function getMemberGroups(Azure $provider, AccessToken $accessToken): array
+    private function updateLocalUserDetails(object $user, array $details): void
     {
-        $memberGroups = [];
-        try {
-            $graphUri = $provider->getRootMicrosoftGraphUri($accessToken);
-            $endpoint = $graphUri . '/me/memberOf';
-            $response = $provider->get($endpoint, $accessToken);
-            log_message('info', sprintf('MemberGroups data: %s', json_encode($response, JSON_PRETTY_PRINT)));
-            if (isset($response['value'])) {
-                foreach ($response['value'] as $group) {
-                    $memberGroups[] = $group['displayName'] ?? $group['id'];
-                }
-            }
-        } catch (Throwable $error) {
-            log_message('warning', sprintf('Failed to get MemberGroups: %s', $error->getMessage()));
+        $updateData = [];
+
+        if (empty($user->full_name) && !empty($details['name'])) {
+            $updateData['full_name'] = $details['name'];
         }
-        return $memberGroups;
+
+        if (empty($user->email) && !empty($details['email'])) {
+            $updateData['email'] = $details['email'];
+        }
+
+        if (! empty($updateData)) {
+            $this->database->table('users')
+                ->where('id', $user->id)
+                ->update($updateData);
+        }
     }
 }
