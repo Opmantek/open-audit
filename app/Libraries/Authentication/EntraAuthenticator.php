@@ -141,7 +141,7 @@ final class EntraAuthenticator
 
             $this->updateLocalUserDetails($localUser, $ownerDetails);
             $this->session->set('user_id', $localUser->id);
-            return site_url('home');
+            return site_url();
         }
 
         $groups = $ownerDetails['groups'] ?? null;
@@ -150,7 +150,7 @@ final class EntraAuthenticator
             $message = 'Entra authentication with authorisation, no remote groups assigned';
             log_message('error', $message);
             $this->session->setFlashdata('error', $message);
-            return site_url();
+            return site_url('logon');
         }
 
         $organisations = $this->getOrganisationIdsForGroups($groups);
