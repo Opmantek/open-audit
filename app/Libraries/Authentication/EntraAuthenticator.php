@@ -11,6 +11,7 @@ use Config\Database;
 use Config\Services;
 use League\OAuth2\Client\Provider\ResourceOwnerInterface;
 use League\OAuth2\Client\Token\AccessTokenInterface;
+use stdClass;
 use TheNetworg\OAuth2\Client\Provider\Azure;
 use TheNetworg\OAuth2\Client\Token\AccessToken;
 use Throwable;
@@ -43,40 +44,45 @@ final class EntraAuthenticator
 
     public function authenticate(object $authModel): string
     {
-        log_message('info', 'Entra OAuth GET parameters: ' . json_encode($this->request->getGet(), JSON_PRETTY_PRINT));
-
         if ($this->request->getGet('error')) {
             if ($this->request->getGet('error_subcode') === 'cancel') {
                 $this->session->remove('oauth2state');
-                log_message('error', 'Entra OAuth cancelled by user');
+                $message = 'Entra authentication cancelled';
+                log_message('warning', $message);
+                $this->session->setFlashdata('warning', $message);
                 return site_url('logon');
             }
 
-            $code = $this->request->getGet('error');
             $reason = $this->request->getGet('error_description') ?? 'Unknown error';
-            $state = $this->request->getGet('state'); // 34ff392f4218977a26b84be84100ef9d
-            log_message('error', sprintf('Entra OAuth failed with Code: %s, Reason: %s', $code, $reason));
+            $message = sprintf('Entra authentication error: %s', $reason);
+            log_message('error', $message);
+            $this->session->setFlashdata('error', $message);
             return site_url('logon');
         }
 
-        $ip    = $this->request->getIPAddress();
         $code  = $this->request->getGet('code');
         $state = $this->request->getGet('state');
         $storedState = $this->session->get('oauth2state');
 
         if (empty($authModel->client_ident) || empty($authModel->client_secret)) {
-            log_message('error', 'Entra OAuth client is misconfigured, check client_id and secret');
+            $message = 'Entra authentication client is misconfigured, check `client_id` and `secret`';
+            log_message('error', $message);
+            $this->session->setFlashdata('error', $message);
             return site_url('logon');
         }
 
         if (empty($code) || empty($state)) {
-            log_message('error', 'Entra OAuth response is malformed, missing code, or state');
+            $message = 'Entra authentication response is malformed, missing `code`, or `state`';
+            log_message('error', $message);
+            $this->session->setFlashdata('error', $message);
             $this->session->remove('oauth2state');
             return site_url('logon');
         }
 
         if (! $storedState || ! hash_equals($storedState, $state)) {
-            log_message('error', 'Entra OAuth response is malformed, hash mismatched');
+            $message = 'Entra authentication response is malformed, hash mismatched';
+            log_message('error', $message);
+            $this->session->setFlashdata('error', $message);
             $this->session->remove('oauth2state');
             return site_url('logon');
         }
@@ -107,18 +113,16 @@ final class EntraAuthenticator
         }
 
         $ownerDetails = $resourceOwner->toArray();
-
-        log_message('info', sprintf('Entra OAuth ResourceOwner details: %s', json_encode($ownerDetails, JSON_PRETTY_PRINT)));
-
         $username = $ownerDetails['preferred_username'] ?? null;
 
         if (! $username) {
-            log_message('warning', 'Entra OAuth claim `preferred_username` is required');
+            $message = 'Entra authentication claim `preferred_username` is required';
+            log_message('error', $message);
+            $this->session->setFlashdata('error', $message);
             return site_url('logon');
         }
 
         if (str_contains($username, '@')) {
-            // @todo check whether this is needed
             $username = explode('@', $username)[0];
         }
 
@@ -129,7 +133,10 @@ final class EntraAuthenticator
 
         if (! $useAuthorisation) {
             if (! $localUser) {
-                log_message('warning', sprintf('Entra OAuth without authorisation, local user %s not found', $username));
+                $message = sprintf('Entra authentication without authorisation, user `%s` not found', $username);
+                log_message('error', $message);
+                $this->session->setFlashdata('error', $message);
+                return site_url('logon');
             }
 
             $this->updateLocalUserDetails($localUser, $ownerDetails);
@@ -137,20 +144,64 @@ final class EntraAuthenticator
             return site_url('home');
         }
 
-        // @todo Utility function for comparing roles against groups
+        $groups = $ownerDetails['groups'] ?? null;
 
-        // Bail out now whilst testing
-        return site_url('logon');
+        if (! is_array($groups) || empty($groups)) {
+            $message = 'Entra authentication with authorisation, no remote groups assigned';
+            log_message('error', $message);
+            $this->session->setFlashdata('error', $message);
+            return site_url();
+        }
+
+        $organisations = $this->getOrganisationIdsForGroups($groups);
+        $roles = $this->getRoleNamesForGroups($groups);
+
+        if (empty($organisations) || empty($roles)) {
+            $message = 'Entra authentication with authorisation, no associated organisations or roles';
+            log_message('error', $message);
+            $this->session->setFlashdata('error', $message);
+            return site_url('logon');
+        }
+
+        if (! $localUser) {
+            $userData = new stdClass();
+            $userData->org_id = 1;
+            $userData->orgs = $organisations;
+            $userData->roles = $roles;
+            $userData->name = $username;
+            $userData->email = $ownerDetails['email'] ?? '';
+            $userData->full_name = $ownerDetails['name'] ?? '';
+            $userData->password = '';
+            $userData->type = 'user';
+            $userData->lang = 'en';
+
+            $localUser = $this->createLocalUser($userData);
+
+            if (! $localUser) {
+                $message = 'Entra authentication with authorisation, failed to create user';
+                log_message('error', $message);
+                $this->session->setFlashdata('error', $message);
+                return site_url('logon');
+            }
+
+            log_message('info', sprintf('Entra authentication with authorisation, user `%s` created', $username));
+        }
+
+        $this->session->set('user_id', $localUser->id);
+        log_message('info', sprintf('Entra authentication with authorisation, user `%s` authenticated', $username));
+
+        return site_url();
     }
 
     public function redirect(object $authModel): string
     {
         if (empty($authModel->client_ident) || empty($authModel->client_secret)) {
-            log_message('error', 'Auth client is misconfigured');
+            $message = 'Entra authentication client is misconfigured, check `client_id` and `secret`';
+            log_message('error', $message);
+            $this->session->setFlashdata('error', $message);
             return site_url('logon');
         }
 
-        $useAuthorisation = strtolower($authModel->use_authorisation) === 'y';
         $redirectUri = !empty($authModel->redirect_uri) ? $authModel->redirect_uri : base_url('index.php/logon/entra/auth');
         $tenant = !empty($authModel->tenant) ? $authModel->tenant : 'common';
 
@@ -194,7 +245,7 @@ final class EntraAuthenticator
         try {
             $accessToken = $provider->getAccessToken('authorization_code', ['code' => $code]);
         } catch (Throwable $error) {
-            log_message('warning', sprintf('Failed to get AccessToken for: %s', $error->getMessage()));
+            log_message('warning', sprintf('Failed to get AccessToken: %s', $error->getMessage()));
         }
         return $accessToken;
     }
@@ -208,6 +259,25 @@ final class EntraAuthenticator
             log_message('warning', sprintf('Failed to get ResourceOwner: %s', $error->getMessage()));
         }
         return $resourceOwner;
+    }
+
+    private function createLocalUser(object $data): ?object
+    {
+        helper('utility');
+
+        register_workaround();
+
+        $model = model('App\Models\UsersModel');
+        $user = null;
+
+        if ($id = $model->create($data)) {
+            $result = $model->read($id);
+            $user = $result[0] ?? null;
+        }
+
+        deregister_workaround();
+
+        return $user;
     }
 
     private function updateLocalUserDetails(object $user, array $details): void
@@ -227,5 +297,35 @@ final class EntraAuthenticator
                 ->where('id', $user->id)
                 ->update($updateData);
         }
+    }
+
+    private function getOrganisationIdsForGroups(array $groups): array
+    {
+        $result = [];
+        $organisations = $this->database->query('SELECT * FROM orgs')->getResult();
+
+        foreach ($organisations as $organisation) {
+            if (empty($organisation->entra_group) || ! in_array($organisation->entra_group, $groups)) {
+                continue;
+            }
+            $result[] = (int) $organisation->id;
+        }
+
+        return $result;
+    }
+
+    private function getRoleNamesForGroups(array $groups): array
+    {
+        $result = [];
+        $roles = $this->database->query('SELECT * FROM roles')->getResult();
+
+        foreach ($roles as $role) {
+            if (empty($role->entra_group) || ! in_array($role->entra_group, $groups)) {
+                continue;
+            }
+            $result[] = $role->name;
+        }
+
+        return $result;
     }
 }
