@@ -3190,6 +3190,7 @@ CREATE TABLE `orgs` (
   `description` mediumtext NOT NULL,
   `type` varchar(100) NOT NULL DEFAULT 'organisation',
   `ad_group` varchar(100) NOT NULL DEFAULT '',
+  `entra_group` varchar(100) NOT NULL DEFAULT '',
   `edited_by` varchar(200) NOT NULL DEFAULT '',
   `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
   PRIMARY KEY (`id`)
@@ -3826,6 +3827,7 @@ CREATE TABLE `roles` (
   `description` mediumtext NOT NULL,
   `permissions` mediumtext NOT NULL,
   `ad_group` varchar(100) NOT NULL DEFAULT '',
+  `entra_group` varchar(100) NOT NULL DEFAULT '',
   `edited_by` varchar(200) NOT NULL DEFAULT '',
   `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
   PRIMARY KEY (`id`)
