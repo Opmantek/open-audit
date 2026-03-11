@@ -6,6 +6,7 @@
 declare(strict_types=1);
 
 $CI_INSTANCE = [];  # It keeps a ref to global CI instance
+$CI_RESTORE = null;
 
 function register_ci_instance(\App\Controllers\BaseController &$_ci)
 {
@@ -17,6 +18,45 @@ function &get_instance() # : \App\Controllers\BaseController
 {
     global $CI_INSTANCE;
     return $CI_INSTANCE[0];
+}
+
+function register_workaround(): void
+{
+    global $CI_INSTANCE;
+    global $CI_RESTORE;
+
+    if (isset($CI_INSTANCE[0])) {
+        $CI_RESTORE = $CI_INSTANCE[0];
+    }
+
+    $newDictionary = function() {
+        $dictionary = new stdClass();
+        $dictionary->id = 'The identifier column (integer) in the database (read only).';
+        $dictionary->name = 'The name given to this item. Ideally it should be unique.';
+        $dictionary->org_id = 'The Organisation that owns this item. Links to <code>orgs.id</code>.';
+        $dictionary->description = 'Your description of this item.';
+        $dictionary->options = 'A JSON object containing collection specific options.';
+        $dictionary->edited_by = 'The name of the user who last changed or added this item (read only).';
+        $dictionary->edited_date = 'The date this item was changed or added (read only). NOTE - This is the timestamp from the server.';
+        $dictionary->device_id = 'The id of the linked device. Links to <code>devices.id</code>';
+        $dictionary->link = 'For more detailed information, check the Open-AudIT Knowledge Base.';
+        return $dictionary;
+    };
+
+    $controller = new \App\Controllers\Workaround();
+    register_ci_instance($controller);
+    $instance = & get_instance();
+    $instance->dictionary = $newDictionary();
+}
+
+function deregister_workaround(): void
+{
+    global $CI_INSTANCE;
+    global $CI_RESTORE;
+
+    if ($CI_RESTORE !== null) {
+        $CI_INSTANCE[0] = $CI_RESTORE;
+    }
 }
 
 function word($word)
