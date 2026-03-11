@@ -56,6 +56,7 @@ function deregister_workaround(): void
 
     if ($CI_RESTORE !== null) {
         $CI_INSTANCE[0] = $CI_RESTORE;
+        $CI_RESTORE = null;
     }
 }
 
