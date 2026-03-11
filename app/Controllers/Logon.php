@@ -7,6 +7,7 @@
 
 namespace App\Controllers;
 
+use App\Libraries\Authentication\EntraAuthenticator;
 use CodeIgniter\Controller;
 use League\OAuth2\Client;
 
@@ -354,13 +355,8 @@ class Logon extends Controller
             return redirect()->to(site_url('logon'));
         }
         if ($type === 'entra' and $auth->type === 'entra') {
-            $authUrl = entra_redirect($auth);
-            if (empty($authUrl)) {
-                return redirect()->to(site_url('logon'));
-            }
-            $this->response->setStatusCode(302);
-            $this->response->setHeader('Location', $authUrl);
-            return;
+            $uri = (new EntraAuthenticator())->redirect($auth);
+            return redirect()->to($uri);
         }
         if ($type === 'github' and $auth->type === 'github') {
             $authUrl = github_redirect($auth);
@@ -398,14 +394,16 @@ class Logon extends Controller
         if (empty($auth)) {
             return redirect()->to(site_url('logon'));
         }
-        if (!empty($auth) and $type === 'entra') {
-            return redirect()->to(entra_auth($auth, @$this->request->getIPAddress()));
+        if ($type === 'entra') {
+            $uri = (new EntraAuthenticator())->authenticate($auth);
+            return redirect()->to($uri);
         }
-        if (!empty($auth) and $type === 'github') {
+        if ($type === 'github') {
             return redirect()->to(github_auth($auth, @$this->request->getIPAddress()));
         }
-        if (!empty($auth) and $type === 'okta') {
+        if ($type === 'okta') {
             return redirect()->to(okta_auth($auth, @$this->request->getIPAddress()));
         }
+        return redirect()->to(site_url('logon'));
     }
 }
