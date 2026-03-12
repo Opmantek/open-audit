@@ -46,6 +46,7 @@ if ($config->product === 'enterprise') {
                                     <?= read_field('name', $resource->name, $dictionary->columns->name, $update, '', '', '', '', $meta->collection) ?>
                                     <?= read_field('description', $resource->description, $dictionary->columns->description, $update, '', '', '', '', $meta->collection) ?>
                                     <?= read_field('ad_group', $resource->ad_group, $dictionary->columns->ad_group, $update_group, __('AD Group'), '', '', '', $meta->collection) ?>
+                                    <?= read_field('entra_group', $resource->entra_group, $dictionary->columns->entra_group, $update_group, __('Entra Group'), '', '', '', $meta->collection) ?>
                                     <?= read_field('edited_by', $resource->edited_by, $dictionary->columns->edited_by, false, '', '', '', '', $meta->collection) ?>
                                     <?= read_field('edited_date', $resource->edited_date, $dictionary->columns->edited_date, false, '', '', '', '', $meta->collection) ?>
                                 </div>
