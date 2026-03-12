@@ -180,6 +180,8 @@ final class TranslationExtractor
             new RecursiveDirectoryIterator(__DIR__ . '/../Models', FilesystemIterator::SKIP_DOTS)
         );
 
+        register_workaround();
+
         foreach ($iterator as $file) {
             if (! $file->isFile() || strtolower($file->getExtension()) !== 'php') {
                 continue;
@@ -190,24 +192,6 @@ final class TranslationExtractor
             }
 
             $modelName = str_replace('.php', '', $file->getBasename());
-            $controllerName = str_replace('Model', '', $modelName);
-            $controllerClass = 'App\\Controllers\\' . $controllerName;
-
-            if (! class_exists($controllerClass)) {
-                continue;
-            }
-
-            $controller = new $controllerClass();
-
-            if (! $controller instanceof BaseController) {
-                continue;
-            }
-
-            // Required due to models reliance on a controller instance
-            register_ci_instance($controller);
-            $instance = & get_instance();
-            $instance->dictionary = $newDictionary();
-
             $model = model('App\\Models\\' . $modelName);
 
             if (! method_exists($model, 'dictionary')) {
@@ -236,6 +220,8 @@ final class TranslationExtractor
                 $this->addTranslation($dictionary->notes);
             }
         }
+
+        deregister_workaround();
     }
 
     private function scanDirectory(string $directory): void
