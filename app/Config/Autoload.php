@@ -104,5 +104,7 @@ class Autoload extends AutoloadConfig
      * @phpstan-var list<string>
      */
     // @phpstan-ignore property.readOnlyByPhpDocDefaultValue
-    public $helpers = [];
+    public $helpers = [
+        'language'
+    ];
 }
