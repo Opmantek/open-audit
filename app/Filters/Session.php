@@ -2,6 +2,7 @@
 
 namespace App\Filters;
 
+use App\Libraries\Translator;
 use CodeIgniter\Filters\FilterInterface;
 use CodeIgniter\HTTP\RequestInterface;
 use CodeIgniter\HTTP\ResponseInterface;
@@ -11,8 +12,15 @@ class Session implements FilterInterface
     public function before(RequestInterface $request, $arguments = null)
     {
         $session = \Config\Services::session();
-        if (empty($session->get('user_id'))) {
-            \Config\Services::session()->setFlashdata('url', $_SERVER['REQUEST_URI']);
+        $userId = $session->get('user_id');
+        $userLanguage = $session->get('user_language');
+
+        if (! empty($userLanguage)) {
+            Translator::setLanguage($userLanguage);
+        }
+
+        if (empty($userId)) {
+            $session->setFlashdata('url', $_SERVER['REQUEST_URI']);
             return redirect()->to(site_url('logon'));
         }
     }
