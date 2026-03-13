@@ -1,7 +1,6 @@
 <?php
 # Copyright © 2023 FirstWave. All Rights Reserved.
 # SPDX-License-Identifier: AGPL-3.0-or-later
-include('lang.php');
 
 $news = new \stdClass();
 if (!empty($config->feature_news) and $config->feature_news === 'y') {
