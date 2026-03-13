@@ -71,7 +71,12 @@ final class TranslationGenerator extends AbstractTranslator
                     $data = json_decode($body, true);
                     if (! empty($data['translatedText'])) {
                         $hash = $hashes[$index];
-                        $translations[$hash] = $data['translatedText'];
+                        $text = $data['translatedText'];
+
+                        $text = $this->removeRepeatedWords($text);
+                        $text = $this->normalizeFixedWords($text);
+
+                        $translations[$hash] = $text;
                     }
                 },
                 'rejected' => function ($reason, $index) {
