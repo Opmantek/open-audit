@@ -39,7 +39,7 @@ abstract class AbstractTranslator
     ];
 
     private string $outputPath = APPPATH . 'Views/lang';
-    private string $baseUri = 'http://localhost:5000';
+    private string $baseUri = 'http://localhost:5003';
     private float $timeout = 30.0;
     private int $concurrency = 4;
     private array $languages = [];

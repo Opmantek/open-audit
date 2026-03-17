@@ -10,7 +10,7 @@ use CodeIgniter\CLI\CLI;
 
 /**
  * @example php spark translation:generate \
- *   --api http://localhost:5000 \
+ *   --api http://localhost:5003 \
  *   --timeout 30 \
  *   --concurrency 4 \
  *   --languages ar,az,bg,cs,da,de,el,eo,es,et,fi,fr,ga,hi,hu,id,it,ja,ko,lt,lv,nl,pb,pl,ru,sq,tr,uk,zh \
@@ -23,7 +23,7 @@ class TranslationGenerateCommand extends BaseCommand
     protected $name        = 'translation:generate';
     protected $description = 'Generates individual translation files from extracted translation strings';
     protected $options = [
-        '--api'         => 'The base URI in which the translation service is accessible (default=http://localhost:5000)',
+        '--api'         => 'The base URI in which the translation service is accessible (default=http://localhost:5003)',
         '--timeout'     => 'The maximum duration of an API request (default=30.0)',
         '--concurrency' => 'The amount of translations processed at once (default=4)',
         '--languages'   => 'A comma delimited list of language codes to filter by (default=ar,az,bg,cs,da,de,el,eo,es,et,fi,fr,ga,hi,hu,id,it,ja,ko,lt,lv,nl,pb,pl,ru,sq,tr,uk,zh)',
