@@ -20,7 +20,7 @@ final class TranslationGenerator extends AbstractTranslator
         ]);
 
         try {
-            $response = $client->request('HEAD', '/health');
+            $response = $client->request('GET', '/health');
             if ($response->getStatusCode() !== 200) {
                 log_message('error', 'Translation API is not accessible (non-200 response). Aborting.');
                 return false;
@@ -49,10 +49,9 @@ final class TranslationGenerator extends AbstractTranslator
                 }
 
                 $data = [
-                    'q' => $text,
                     'source' => 'en',
                     'target' => $code,
-                    'format' => 'html',
+                    'text' => $text,
                 ];
 
                 $hashes[] = $hash;
@@ -66,17 +65,21 @@ final class TranslationGenerator extends AbstractTranslator
 
             $pool = new Pool($client, $requests, [
                 'concurrency' => $this->getConcurrency(),
-                'fulfilled' => function ($response, $index) use (&$translations, $hashes) {
+                'fulfilled' => function ($response, $index) use (&$translations, $hashes, $code) {
                     $body = $response->getBody()->getContents();
                     $data = json_decode($body, true);
-                    if (! empty($data['translatedText'])) {
-                        $hash = $hashes[$index];
-                        $text = $data['translatedText'];
+                    $hash = $hashes[$index];
+                    if (! empty($data['translation'])) {
+                        $text = $data['translation'];
                         $translations[$hash] = $text;
+                        log_message('info', sprintf('Language %s generated: %s', $code, $hash));
+                    } else {
+                        log_message('error', sprintf('Language %s generated: %s - empty translation', $code, $hash));
                     }
                 },
-                'rejected' => function ($reason, $index) {
-                    log_message('info', "Translation {$index} failed: " . $reason->getMessage());
+                'rejected' => function ($reason, $index) use ($hashes, $code) {
+                    $hash = $hashes[$index];
+                    log_message('error', sprintf('Language %s generated: %s - %s', $code, $hash, $reason->getMessage()));
                 },
             ]);
 
