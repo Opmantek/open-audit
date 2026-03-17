@@ -20,7 +20,7 @@ final class TranslationUpdater extends AbstractTranslator
         ]);
 
         try {
-            $response = $client->request('HEAD', '/health');
+            $response = $client->request('GET', '/health');
             if ($response->getStatusCode() !== 200) {
                 log_message('error', 'Translation API is not accessible (non-200 response). Aborting.');
                 return false;
@@ -29,6 +29,8 @@ final class TranslationUpdater extends AbstractTranslator
             log_message('error', 'Translation API is not accessible: ' . $error->getMessage());
             return false;
         }
+
+        log_message('info', sprintf('Performing translation update for languages: %s', implode(', ', $this->getLanguages())));
 
         foreach (self::SUPPORTED_LANGUAGES as $code => $language) {
             if (! empty($this->getLanguages()) && ! in_array($code, $this->getLanguages(), true)) {
@@ -44,8 +46,18 @@ final class TranslationUpdater extends AbstractTranslator
             $languageTranslations = include $languageFile;
             $missingTranslations  = array_diff_key($this->getTranslations(), $languageTranslations);
             $removedTranslations  = array_diff_key($languageTranslations, $this->getTranslations());
+            $totalMissing = count($missingTranslations);
+            $totalRemoved = count($removedTranslations);
+
+            if ($totalMissing === 0 && $totalRemoved === 0) {
+                log_message('info', sprintf('Language %s is up to date', $code));
+                continue;
+            } else {
+                log_message('info', sprintf('Language %s requires updating: added=%s, removed=%s', $code, $totalMissing, $totalRemoved));
+            }
 
             foreach ($removedTranslations as $index => $value) {
+                log_message('info', sprintf('Language %s removed: %s', $code, $index));
                 unset($languageTranslations[$index]);
             }
 
@@ -64,10 +76,9 @@ final class TranslationUpdater extends AbstractTranslator
                 }
 
                 $data = [
-                    'q' => $text,
                     'source' => 'en',
                     'target' => $code,
-                    'format' => 'html',
+                    'text' => $text,
                 ];
 
                 $hashes[] = $hash;
@@ -81,17 +92,21 @@ final class TranslationUpdater extends AbstractTranslator
 
             $pool = new Pool($client, $requests, [
                 'concurrency' => $this->getConcurrency(),
-                'fulfilled' => function ($response, $index) use (&$translations, $hashes) {
+                'fulfilled' => function ($response, $index) use (&$translations, $hashes, $code) {
                     $body = $response->getBody()->getContents();
                     $data = json_decode($body, true);
-                    if (! empty($data['translatedText'])) {
-                        $hash = $hashes[$index];
-                        $text = $data['translatedText'];
+                    $hash = $hashes[$index];
+                    if (! empty($data['translation'])) {
+                        $text = $data['translation'];
                         $translations[$hash] = $text;
+                        log_message('info', sprintf('Language %s added: %s', $code, $hash));
+                    } else {
+                        log_message('error', sprintf('Language %s added: %s - empty translation', $code, $hash));
                     }
                 },
-                'rejected' => function ($reason, $index) {
-                    log_message('info', "Translation {$index} failed: " . $reason->getMessage());
+                'rejected' => function ($reason, $index) use ($hashes, $code) {
+                    $hash = $hashes[$index];
+                    log_message('error', sprintf('Language %s added: %s - %s', $code, $hash, $reason->getMessage()));
                 },
             ]);
 
