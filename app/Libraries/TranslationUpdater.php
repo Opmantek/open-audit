@@ -87,10 +87,6 @@ final class TranslationUpdater extends AbstractTranslator
                     if (! empty($data['translatedText'])) {
                         $hash = $hashes[$index];
                         $text = $data['translatedText'];
-
-                        $text = $this->removeRepeatedWords($text);
-                        $text = $this->normalizeFixedWords($text);
-
                         $translations[$hash] = $text;
                     }
                 },

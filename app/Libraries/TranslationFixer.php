@@ -28,8 +28,8 @@ final class TranslationFixer extends AbstractTranslator
                     continue;
                 }
 
-                $text = $this->removeRepeatedWords($text);
-                $text = $this->normalizeFixedWords($text);
+                //$text = $this->removeRepeatedWords($text);
+                //$text = $this->normalizeFixedWords($text);
 
                 $translations[$hash] = $text;
             }
