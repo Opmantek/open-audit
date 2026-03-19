@@ -247,7 +247,7 @@ class RolesModel extends BaseModel
         $dictionary->columns = new stdClass();
 
         $dictionary->attributes = new stdClass();
-        $dictionary->attributes->collection = array('id', 'name', 'description', 'ad_group', 'edited_by', 'edited_date');
+        $dictionary->attributes->collection = array('id', 'name', 'description', 'ad_group', 'entra_group', 'edited_by', 'edited_date');
         $dictionary->attributes->create = array('name','permissions'); # We MUST have each of these present and assigned a value
         $dictionary->attributes->fields = $this->db->getFieldNames($collection); # All field names for this table
         $dictionary->attributes->fieldsMeta = $this->db->getFieldData($collection); # The meta data about all fields - name, type, max_length, primary_key, nullable, default
@@ -267,6 +267,7 @@ class RolesModel extends BaseModel
         $dictionary->columns->name = $instance->dictionary->name;
         $dictionary->columns->description = $instance->dictionary->description;
         $dictionary->columns->ad_group = 'Used when LDAP servers have been configured to populate a users details - this includes the Roles which they are assigned. If a user is in this LDAP group, they are assigned this role.';
+        $dictionary->columns->entra_group = 'Used to associate an Entra Group ID with the Role.';
         $dictionary->columns->permissions = 'This attribute is stored as a JSON object. It is the list of all collections and contains the collection name along with <code>c</code>, <code>r</code>, <code>u</code> and,or <code>d</code> which represent create, read, update and delete. These are the actions a user can perform on items from that particular collection.';
         $dictionary->columns->edited_by = $instance->dictionary->edited_by;
         $dictionary->columns->edited_date = $instance->dictionary->edited_date;

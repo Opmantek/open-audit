@@ -21,6 +21,7 @@ if ($config->product === 'enterprise') {
                             <?= read_select('parent_id', $resource->parent_id, $dictionary->columns->parent_id, $update, __('Parent'), $orgs, $meta->collection) ?>
                             <?= read_select('type', $resource->type, $dictionary->columns->type, $update, __('Type'), $included['types'], $meta->collection) ?>
                             <?= read_field('ad_group', $resource->ad_group, $dictionary->columns->ad_group, $update_group, __('AD Group'), '', '', '', $meta->collection) ?>
+                            <?= read_field('entra_group', $resource->entra_group, $dictionary->columns->entra_group, $update_group, __('Entra Group'), '', '', '', $meta->collection) ?>
                             <?= read_field('edited_by', $resource->edited_by, $dictionary->columns->edited_by, false, '', '', '', '', $meta->collection) ?>
                             <?= read_field('edited_date', $resource->edited_date, $dictionary->columns->edited_date, false, '', '', '', '', $meta->collection) ?>
                         </div>
