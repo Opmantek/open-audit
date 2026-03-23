@@ -477,7 +477,7 @@ foreach ($included['discovery_scan_options'] as $item) {
                                         </div>
                                     </div>
                                     <?php $log_data_order = ['view', 'id', 'timestamp', 'ip', 'command_status', 'message']; ?>
-                                    <table class="table <?= $GLOBALS['table'] ?> table-striped table-hover dataTableAjax" data-order='[[1,"asc"]]'>
+                                    <table class="table <?= $GLOBALS['table'] ?> table-striped table-hover dataTableLog" data-order='[[1,"asc"]]'>
                                         <thead>
                                             <tr>
                                             <?php foreach ($log_data_order as $key) {
@@ -493,7 +493,7 @@ foreach ($included['discovery_scan_options'] as $item) {
                                                 <th>
                                                     <div class="input-group">
                                                         <?php if ($key !== 'id' and $key !== 'view') {
-                                                        echo '<input id="alllog' . $key . '" type="search" class="form-control form-control-sm dataTablesearchField" placeholder="Search ' . collection_column_name($key) . '">';
+                                                        echo '<input id="alllog' . $key . '" type="search" class="form-control form-control-sm dataTablesearchFieldLog" placeholder="Search ' . collection_column_name($key) . '">';
                                                         } ?>
                                                     </div>
                                                 </th>
@@ -648,7 +648,6 @@ window.onload = function () {
         if (hash == "") {
             hash = "#summary"
         }
-        hash && $('ul.nav.nav-pills a[href="' + hash + '"]').tab('show');
 
         $('ul.nav.nav-pills a').click(function (e) {
             e.preventDefault();
@@ -656,16 +655,43 @@ window.onload = function () {
             window.location.hash = this.hash;
         });
 
+        var activeTab = $('ul.nav.nav-pills a[href="' + hash + '"]');
+
+        if (activeTab.length) {
+            activeTab.click();
+        }
+
         $(".nav-link").click(function(e) {
             window.scrollTo(0, 0);
         });
 
         $(".page-title-middle").append('<?= $support_button ?>');
 
+        var tableState = {
+            "logs-tab": false,
+            "all_ips-tab": false,
+            "devices-tab": false,
+        }
 
+        $(document).on('shown.bs.tab', 'ul.nav.nav-pills a', function () {
+            var id = $(this).attr('id');
+
+            if (tableState[id] === false) {
+                tableState[id] = true;
+                if (id === 'logs-tab') {
+                    myDataTableLog.ajax.reload();
+                }
+                if (id === 'all_ips-tab') {
+                    myDataTableIP.ajax.reload();
+                }
+                if (id === 'devices-tab') {
+                    myDataTableDev.ajax.reload();
+                }
+            }
+        });
 
         let logSort = {};
-        var myDataTable = new DataTable('.dataTableAjax', {
+        var myDataTableLog = new DataTable('.dataTableLog', {
             lengthChange: true,
             lengthMenu: [ [25, 50, <?= $config->page_size ?>], [25, 50, 'All'] ],
             order: [[ 1, 'asc' ]],
@@ -676,6 +702,7 @@ window.onload = function () {
                 return: true
             },
             serverSide: true,
+            deferLoading: 0,
             ajax: {
                 url: '<?= base_url() ?>index.php/discovery_log?discovery_id=<?= $meta->id ?>&format=json',
                 dataSrc: 'data',
@@ -843,16 +870,16 @@ window.onload = function () {
         });
 
         /* This stops the sort when clicking in a search text box in the table header */
-        $('.dataTablesearchField').on('click', function(e) { e.stopPropagation() });
+        $('.dataTablesearchFieldLog').on('click', function(e) { e.stopPropagation() });
 
         /* And don't automatically send the result - wait for the user to press <enter> / <return> */
-        $(".dataTablesearchField").on("keypress", function (evtObj) {
+        $(".dataTablesearchFieldLog").on("keypress", function (evtObj) {
             if (evtObj.keyCode == 13) {
-                myDataTable.ajax.reload();
+                myDataTableLog.ajax.reload();
             }
         });
 
-        myDataTable.on('xhr', function (e, settings, json) {
+        myDataTableLog.on('xhr', function (e, settings, json) {
             if (json.warning) {
                 $("#logs_notice").show();
                 $("#logs_alert").html(json.warning + '<button id="logs_button" type="button" class="btn-close" aria-label="Close"></button>');
@@ -861,12 +888,10 @@ window.onload = function () {
                 $("#logs_alert").hide();
             }
         });
+
         $(document).on('click', '#logs_button', function() {
             $(this).parent().hide();
         });
-
-
-
 
         let ipSort = {};
         var myDataTableIP = new DataTable('.dataTableIP', {
@@ -881,6 +906,7 @@ window.onload = function () {
                 return: true
             },
             serverSide: true,
+            deferLoading: 0,
             ajax: {
                 url: '<?= base_url() ?>index.php/discovery_log?discovery_id=<?= $meta->id ?>&groupby=discovery_log.ip&format=json',
                 dataSrc: 'data',
@@ -1038,7 +1064,7 @@ window.onload = function () {
         myDataTableIP.on('xhr', function (e, settings, json) {
             if (json.warning) {
                 $("#ip_notice").show();
-                $("#ip_alert").html(json.warning + '<button id="dev_button" type="button" class="btn-close" aria-label="Close"></button>');
+                $("#ip_alert").html(json.warning + '<button id="ip_button" type="button" class="btn-close" aria-label="Close"></button>');
                 $("#ip_alert").show();
             } else {
                 $("#ip_alert").hide();
@@ -1065,6 +1091,7 @@ window.onload = function () {
                 return: true
             },
             serverSide: true,
+            deferLoading: 0,
             devSort: {},
             ajax: {
                 url: '<?= base_url() ?>index.php/discovery_log?discovery_id=<?= $meta->id ?>&groupby=discovery_log.device_id&format=json',
