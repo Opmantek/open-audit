@@ -91,137 +91,136 @@ foreach ($included['discovery_scan_options'] as $item) {
     }
 }
 ?>
-        <main class="container-fluid">
-            <div class="card">
-                <div class="card-header">
-                    <?= read_card_header($meta->collection, $meta->id, $meta->icon, $user, $resource->name) ?>
+<main class="container-fluid">
+    <div class="card">
+        <div class="card-header">
+            <?= read_card_header($meta->collection, $meta->id, $meta->icon, $user, $resource->name) ?>
+        </div>
+        <div class="card-body">
+            <div class="row text-center">
+                <div class="col-8 offset-2" style="background-color: rgba(var(--bs-body-color-rgb), 0.03);">
+                    <ul class="nav nav-pills nav-fill" id="myTab" role="tablist">
+                        <?= $summary_button ?>
+                        <?= $details_button ?>
+                        <?= $scan_op_button ?>
+                        <?= $match_o_button ?>
+                        <?= $logs_button ?>
+                        <?= $all_ips_button ?>
+                        <?= $devices_button ?>
+                        <?= $issues_button ?>
+                    </ul>
                 </div>
-                <div class="card-body">
-                    <div class="row text-center">
-                        <div class="col-8 offset-2" style="background-color: rgba(var(--bs-body-color-rgb), 0.03);">
-                            <ul class="nav nav-pills nav-fill" id="myTab" role="tablist">
-                                <?= $summary_button ?>
-                                <?= $details_button ?>
-                                <?= $scan_op_button ?>
-                                <?= $match_o_button ?>
-                                <?= $logs_button ?>
-                                <?= $all_ips_button ?>
-                                <?= $devices_button ?>
-                                <?= $issues_button ?>
-                            </ul>
+            </div>
+            <br>
+
+
+            <div class="tab-content">
+                <div class="tab-pane" id="summary" role="tabpanel" tabindex="0" aria-labelledby="summary">
+                    <div class="row">
+                        <div class="col-6">
+                            <?= read_field('status', $resource->status, $dictionary->columns->status, false, '', '', '', '', $meta->collection) ?>
+                            <?= read_field('last_run', $resource->last_run, $dictionary->columns->last_run, false, '', '', '', '', $meta->collection) ?>
+                            <?= read_field('duration', $resource->duration, $dictionary->columns->duration, false, '', '', '', '', $meta->collection) ?>
+                            <?= read_field('last_finished', $resource->last_finished, $dictionary->columns->last_finished, false, '', '', '', '', $meta->collection) ?>
+                        </div>
+                        <div class="col-6">
+                            <?= read_field('ip_all_count', $resource->ip_all_count, $dictionary->columns->ip_all_count, false, '', '', '', '', $meta->collection) ?>
+                            <?= read_field('ip_responding_count', $resource->ip_responding_count, $dictionary->columns->ip_responding_count, false, '', '', '', '', $meta->collection) ?>
+                            <?= read_field('ip_scanned_count', $resource->ip_scanned_count, $dictionary->columns->ip_scanned_count, false, '', '', '', '', $meta->collection) ?>
+                            <?= read_field('ip_audited_count', $resource->ip_audited_count, $dictionary->columns->ip_audited_count, false, '', '', '', '', $meta->collection) ?>
+                            <!--
+                                    <?= read_field('device_count', $resource->ip_discovered_count, $dictionary->columns->device_count, false, '', '', '', '', $meta->collection) ?>
+                                    -->
                         </div>
                     </div>
                     <br>
-
-
-                    <div class="tab-content">
-                        <div class="tab-pane" id="summary" role="tabpanel" tabindex="0" aria-labelledby="summary">
-                            <div class="row">
-                                <div class="col-6">
-                                    <?= read_field('status', $resource->status, $dictionary->columns->status, false, '', '', '', '', $meta->collection) ?>
-                                    <?= read_field('last_run', $resource->last_run, $dictionary->columns->last_run, false, '', '', '', '', $meta->collection) ?>
-                                    <?= read_field('duration', $resource->duration, $dictionary->columns->duration, false, '', '', '', '', $meta->collection) ?>
-                                    <?= read_field('last_finished', $resource->last_finished, $dictionary->columns->last_finished, false, '', '', '', '', $meta->collection) ?>
-                                </div>
-                                <div class="col-6">
-                                    <?= read_field('ip_all_count', $resource->ip_all_count, $dictionary->columns->ip_all_count, false, '', '', '', '', $meta->collection) ?>
-                                    <?= read_field('ip_responding_count', $resource->ip_responding_count, $dictionary->columns->ip_responding_count, false, '', '', '', '', $meta->collection) ?>
-                                    <?= read_field('ip_scanned_count', $resource->ip_scanned_count, $dictionary->columns->ip_scanned_count, false, '', '', '', '', $meta->collection) ?>
-                                    <?= read_field('ip_audited_count', $resource->ip_audited_count, $dictionary->columns->ip_audited_count, false, '', '', '', '', $meta->collection) ?>
-                                    <!--
-                                    <?= read_field('device_count', $resource->ip_discovered_count, $dictionary->columns->device_count, false, '', '', '', '', $meta->collection) ?>
-                                    -->
-                                </div>
-                            </div>
-                            <br>
-                            <div class="row">
-                                <div class="col-6">
-                                    <div class="offset-2 col-8">
-                                        <div class="card">
-                                            <div class="card-header">
-                                                <div class="row">
-                                                    <div class="col-4 clearfix">
-                                                        <h6 style="padding-top:10px;"><span class="icon-router oa-icon"></span><?= __('Devices') ?></h6>
-                                                    </div>
-                                                </div>
+                    <div class="row">
+                        <div class="col-6">
+                            <div class="offset-2 col-8">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <div class="row">
+                                            <div class="col-4 clearfix">
+                                                <h6 style="padding-top:10px;"><span class="icon-router oa-icon"></span><?= __('Devices') ?></h6>
                                             </div>
-                                            <div class="card-body">
-                                                <div class="row" style="min-height:100px;">
-                                                <?php
-                                                $i = 0;
-                                                foreach ($included['devices'] as $os) {
-                                                    $i++;
-                                                    if ($os->attributes->type === 'computer') {
-                                                        $os->attributes->icon = 'computer';
-                                                    }
-                                                    if ($i === 5 or $i === 9 or $i === 13 or $i === 17 or $i === 21 or $i === 25) {
-                                                        echo "</div><br><div class=\"row\">";
-                                                    }
-                                                    ?>
-                                                    <div class="col-lg-3 text-center">
-                                                        <div>
-                                                            <a href="<?= url_to('devicesCollection') ?>?devices.type=<?= $os->attributes->type ?>&devices.discovery_id=<?= $resource->id ?>" class="position-relative">
-                                                                <img style="width:4rem;" class="img-responsive center-block" src="<?= $meta->baseurl ?>device_images/<?= $os->attributes->icon ?>.svg" alt="<?= $os->attributes->icon ?>">
-                                                                <br><?= $os->attributes->type ?>
-                                                                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill" style="background:#3bafda"><?= $os->attributes->count ?></span>
-                                                            </a>
-                                                        </div>
-                                                    </div>
-                                                    <?php
+                                        </div>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="row" style="min-height:100px;">
+                                            <?php
+                                            $i = 0;
+                                            foreach ($included['devices'] as $os) {
+                                                $i++;
+                                                if ($os->attributes->type === 'computer') {
+                                                    $os->attributes->icon = 'computer';
+                                                }
+                                                if ($i === 5 or $i === 9 or $i === 13 or $i === 17 or $i === 21 or $i === 25) {
+                                                    echo "</div><br><div class=\"row\">";
                                                 }
                                                 ?>
+                                                <div class="col-lg-3 text-center">
+                                                    <div>
+                                                        <a href="<?= url_to('devicesCollection') ?>?devices.type=<?= $os->attributes->type ?>&devices.discovery_id=<?= $resource->id ?>" class="position-relative">
+                                                            <img style="width:4rem;" class="img-responsive center-block" src="<?= $meta->baseurl ?>device_images/<?= $os->attributes->icon ?>.svg" alt="<?= $os->attributes->icon ?>">
+                                                            <br><?= $os->attributes->type ?>
+                                                            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill" style="background:#3bafda"><?= $os->attributes->count ?></span>
+                                                        </a>
+                                                    </div>
                                                 </div>
-                                            </div>
+                                                <?php
+                                            }
+                                            ?>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-6">
-                                    <div class="offset-2 col-8">
-                                    <div class="card">
-                                        <div class="card-header">
-                                            <div class="row">
-                                                <div class="col-4 clearfix">
-                                                    <h6 style="padding-top:10px;"><span class="icon-layers-2 oa-icon"></span><?= __('Resources') ?></h6>
-                                                </div>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="offset-2 col-8">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <div class="row">
+                                            <div class="col-4 clearfix">
+                                                <h6 style="padding-top:10px;"><span class="icon-layers-2 oa-icon"></span><?= __('Resources') ?></h6>
                                             </div>
                                         </div>
-                                        <div class="card-body">
-                                            <div class="row" style="min-height:100px;">
-                                                <div class="col-lg-3 text-center">
-                                                    <div>
-                                                        <a href="<?= url_to('devicesCollection') ?>?devices.discovery_id=<?= $resource->id ?>" class="position-relative">
-                                                            <img style="width:4rem;" class="img-responsive center-block" src="<?= $meta->baseurl ?>icons/devices.svg" alt="<?= __('Devices') ?>">
-                                                            <br><?= __('Devices') ?>
-                                                            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill" style="background:#3bafda"><?= count($included['devices_count']) ?></span>
-                                                        </a>
-                                                    </div>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="row" style="min-height:100px;">
+                                            <div class="col-lg-3 text-center">
+                                                <div>
+                                                    <a href="<?= url_to('devicesCollection') ?>?devices.discovery_id=<?= $resource->id ?>" class="position-relative">
+                                                        <img style="width:4rem;" class="img-responsive center-block" src="<?= $meta->baseurl ?>icons/devices.svg" alt="<?= __('Devices') ?>">
+                                                        <br><?= __('Devices') ?>
+                                                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill" style="background:#3bafda"><?= count($included['devices_count']) ?></span>
+                                                    </a>
                                                 </div>
-                                                <div class="col-lg-3 text-center">
-                                                    <div>
-                                                        <a href="<?= url_to('locationsCollection') ?>?locations.id=in(<?= $included['locations_url'] ?>)" class="position-relative">
-                                                            <img style="width:4rem;" class="img-responsive center-block" src="<?= $meta->baseurl ?>icons/locations.svg" alt="<?= __('Locations') ?>">
-                                                            <br><?= __('Locations') ?>
-                                                            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill" style="background:#3bafda"><?= $included['locations_count'] ?></span>
-                                                        </a>
-                                                    </div>
+                                            </div>
+                                            <div class="col-lg-3 text-center">
+                                                <div>
+                                                    <a href="<?= url_to('locationsCollection') ?>?locations.id=in(<?= $included['locations_url'] ?>)" class="position-relative">
+                                                        <img style="width:4rem;" class="img-responsive center-block" src="<?= $meta->baseurl ?>icons/locations.svg" alt="<?= __('Locations') ?>">
+                                                        <br><?= __('Locations') ?>
+                                                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill" style="background:#3bafda"><?= $included['locations_count'] ?></span>
+                                                    </a>
                                                 </div>
-                                                <div class="col-lg-3 text-center">
-                                                    <div>
-                                                        <a href="<?= url_to('networksCollection') ?>?networks.id=in(<?= $included['networks_url'] ?>)" class="position-relative">
-                                                            <img style="width:4rem;" class="img-responsive center-block" src="<?= $meta->baseurl ?>icons/networks.svg" alt="<?= __('Networks') ?>">
-                                                            <br><?= __('Networks') ?>
-                                                            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill" style="background:#3bafda"><?= $included['networks_count'] ?></span>
-                                                        </a>
-                                                    </div>
+                                            </div>
+                                            <div class="col-lg-3 text-center">
+                                                <div>
+                                                    <a href="<?= url_to('networksCollection') ?>?networks.id=in(<?= $included['networks_url'] ?>)" class="position-relative">
+                                                        <img style="width:4rem;" class="img-responsive center-block" src="<?= $meta->baseurl ?>icons/networks.svg" alt="<?= __('Networks') ?>">
+                                                        <br><?= __('Networks') ?>
+                                                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill" style="background:#3bafda"><?= $included['networks_count'] ?></span>
+                                                    </a>
                                                 </div>
-                                                <div class="col-lg-3 text-center">
-                                                    <div>
-                                                        <a href="<?= url_to('orgsCollection') ?>?orgs.id=in(<?= $included['orgs_url'] ?>)" class="position-relative">
-                                                            <img style="width:4rem;" class="img-responsive center-block" src="<?= $meta->baseurl ?>icons/orgs.svg" alt="<?= __('Orgs') ?>">
-                                                            <br><?= __('Orgs') ?>
-                                                            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill" style="background:#3bafda"><?= $included['orgs_count'] ?></span>
-                                                        </a>
-                                                    </div>
+                                            </div>
+                                            <div class="col-lg-3 text-center">
+                                                <div>
+                                                    <a href="<?= url_to('orgsCollection') ?>?orgs.id=in(<?= $included['orgs_url'] ?>)" class="position-relative">
+                                                        <img style="width:4rem;" class="img-responsive center-block" src="<?= $meta->baseurl ?>icons/orgs.svg" alt="<?= __('Orgs') ?>">
+                                                        <br><?= __('Orgs') ?>
+                                                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill" style="background:#3bafda"><?= $included['orgs_count'] ?></span>
+                                                    </a>
                                                 </div>
                                             </div>
                                         </div>
@@ -230,1005 +229,1033 @@ foreach ($included['discovery_scan_options'] as $item) {
                             </div>
                         </div>
                     </div>
+                </div>
 
-                    <div class="tab-content">
-                        <div class="tab-pane" id="details" role="tabpanel" tabindex="0" aria-labelledby="details">
-                            <div class="row">
-                                <div class="col-6">
-                                    <?= read_field('name', $resource->name, $dictionary->columns->name, $update, '', '', '', '', $meta->collection) ?>
-                                    <?= read_select('org_id', $resource->org_id, $dictionary->columns->org_id, $update, '', $orgs, $meta->collection) ?>
-                                    <?= read_field('description', $resource->description, $dictionary->columns->description, $update, '', '', '', '', $meta->collection) ?>
-                                    <?= read_field('type', $resource->type, $dictionary->columns->type, false, '', '', '', '', $meta->collection) ?>
-                                    <?php if ($resource->type === 'subnet' or $resource->type === 'seed') { ?>
-                                        <?= read_field('subnet', $resource->subnet, $dictionary->columns->subnet, $update, '', '', '', '', $meta->collection) ?>
-                                    <?php } ?>
-                                    <?php if ($resource->type === 'seed') { ?>
-                                        <?= read_select('seed_restrict_to_subnet', $resource->seed_restrict_to_subnet, $dictionary->columns->seed_restrict_to_subnet, $update, __('Restrict to Subnet'), [], $meta->collection) ?>
-                                        <?= read_select('seed_restrict_to_private', $resource->seed_restrict_to_private, $dictionary->columns->seed_restrict_to_private, $update, __('Restrict to Private'), [], $meta->collection) ?>
-                                    <?php } ?>
-                                    <?php if ($resource->type === 'active directory') { ?>
-                                        <?= read_field('ad_domain', $resource->ad_domain, $dictionary->columns->ad_domain, $update, '', '', '', '', $meta->collection) ?>
-                                        <?= read_field('ad_server', $resource->ad_server, $dictionary->columns->ad_server, $update, '', '', '', '', $meta->collection) ?>
-                                    <?php } ?>
-                                    <?= read_select('require_port', $resource->require_port, $dictionary->columns->require_port, $update, __('Require an Open Port'), [], $meta->collection) ?>
-                                    <?= read_select('devices_assigned_to_org', $resource->devices_assigned_to_org, $dictionary->columns->devices_assigned_to_org, $update, __('Assign Devices to Organisation'), $orgs, $meta->collection) ?>
-                                    <?= read_select('devices_assigned_to_location', $resource->devices_assigned_to_location, $dictionary->columns->devices_assigned_to_location, $update, __('Assign Devices to Location'), $included['locations'], $meta->collection) ?>
-                                    <?= read_field('edited_by', $resource->edited_by, $dictionary->columns->edited_by, false, '', '', '', '', $meta->collection) ?>
-                                    <?= read_field('edited_date', $resource->edited_date, $dictionary->columns->edited_date, false, '', '', '', '', $meta->collection) ?>
-                                </div>
-                                <div class="col-6">
-                                    <?= aboutNotesDiv ($meta->collection, $dictionary) ?>
-                                </div>
+                <div class="tab-content">
+                    <div class="tab-pane" id="details" role="tabpanel" tabindex="0" aria-labelledby="details">
+                        <div class="row">
+                            <div class="col-6">
+                                <?= read_field('name', $resource->name, $dictionary->columns->name, $update, '', '', '', '', $meta->collection) ?>
+                                <?= read_select('org_id', $resource->org_id, $dictionary->columns->org_id, $update, '', $orgs, $meta->collection) ?>
+                                <?= read_field('description', $resource->description, $dictionary->columns->description, $update, '', '', '', '', $meta->collection) ?>
+                                <?= read_field('type', $resource->type, $dictionary->columns->type, false, '', '', '', '', $meta->collection) ?>
+                                <?php if ($resource->type === 'subnet' or $resource->type === 'seed') { ?>
+                                    <?= read_field('subnet', $resource->subnet, $dictionary->columns->subnet, $update, '', '', '', '', $meta->collection) ?>
+                                <?php } ?>
+                                <?php if ($resource->type === 'seed') { ?>
+                                    <?= read_select('seed_restrict_to_subnet', $resource->seed_restrict_to_subnet, $dictionary->columns->seed_restrict_to_subnet, $update, __('Restrict to Subnet'), [], $meta->collection) ?>
+                                    <?= read_select('seed_restrict_to_private', $resource->seed_restrict_to_private, $dictionary->columns->seed_restrict_to_private, $update, __('Restrict to Private'), [], $meta->collection) ?>
+                                <?php } ?>
+                                <?php if ($resource->type === 'active directory') { ?>
+                                    <?= read_field('ad_domain', $resource->ad_domain, $dictionary->columns->ad_domain, $update, '', '', '', '', $meta->collection) ?>
+                                    <?= read_field('ad_server', $resource->ad_server, $dictionary->columns->ad_server, $update, '', '', '', '', $meta->collection) ?>
+                                <?php } ?>
+                                <?= read_select('require_port', $resource->require_port, $dictionary->columns->require_port, $update, __('Require an Open Port'), [], $meta->collection) ?>
+                                <?= read_select('devices_assigned_to_org', $resource->devices_assigned_to_org, $dictionary->columns->devices_assigned_to_org, $update, __('Assign Devices to Organisation'), $orgs, $meta->collection) ?>
+                                <?= read_select('devices_assigned_to_location', $resource->devices_assigned_to_location, $dictionary->columns->devices_assigned_to_location, $update, __('Assign Devices to Location'), $included['locations'], $meta->collection) ?>
+                                <?= read_field('edited_by', $resource->edited_by, $dictionary->columns->edited_by, false, '', '', '', '', $meta->collection) ?>
+                                <?= read_field('edited_date', $resource->edited_date, $dictionary->columns->edited_date, false, '', '', '', '', $meta->collection) ?>
+                            </div>
+                            <div class="col-6">
+                                <?= aboutNotesDiv ($meta->collection, $dictionary) ?>
                             </div>
                         </div>
                     </div>
+                </div>
 
-                    <div class="tab-content">
-                        <div class="tab-pane" id="scan" role="tabpanel" tabindex="0" aria-labelledby="scan">
-                            <div class="row">
-                                <div class="col-6">
-                                    <?php if ($config->product === 'professional' or $config->product === 'enterprise') { ?>
-                                        <?= read_select('scan_options.id', $resource->scan_options->id, $dictionary->columns->{'scan_options.id'}, $update, __('Scan Options'), $included['discovery_scan_options'], $meta->collection) ?>
-                                    <?php } else { ?>
-                                        <?= read_field('scan_options_orig', $resource->scan_options->{'discovery_scan_options.name'}, $dictionary->columns->{'scan_options.id'}, false, '', '', '', '', $meta->collection) ?>
-                                    <?php }
+                <div class="tab-content">
+                    <div class="tab-pane" id="scan" role="tabpanel" tabindex="0" aria-labelledby="scan">
+                        <div class="row">
+                            <div class="col-6">
+                                <?php if ($config->product === 'professional' or $config->product === 'enterprise') { ?>
+                                    <?= read_select('scan_options.id', $resource->scan_options->id, $dictionary->columns->{'scan_options.id'}, $update, __('Scan Options'), $included['discovery_scan_options'], $meta->collection) ?>
+                                <?php } else { ?>
+                                    <?= read_field('scan_options_orig', $resource->scan_options->{'discovery_scan_options.name'}, $dictionary->columns->{'scan_options.id'}, false, '', '', '', '', $meta->collection) ?>
+                                <?php }
 
-                                    $scan_options = array();
-                                    $scan_options['ping'] = 'Must Respond to Ping';
-                                    $scan_options['service_version'] = 'Use Service Version Detection';
-                                    $scan_options['open|filtered'] = 'Consider Open|Filtered Ports Open';
-                                    $scan_options['filtered'] = 'Consider Filtered Ports Open';
+                                $scan_options = array();
+                                $scan_options['ping'] = 'Must Respond to Ping';
+                                $scan_options['service_version'] = 'Use Service Version Detection';
+                                $scan_options['open|filtered'] = 'Consider Open|Filtered Ports Open';
+                                $scan_options['filtered'] = 'Consider Filtered Ports Open';
 
-                                    foreach ($scan_options as $key => $value) {
-                                        $default = new stdClass();
-                                        $default->id = '';
-                                        $default->type = 'discovery_scan_options';
-                                        $default->attributes = new stdClass();
-                                        $default->attributes->id = '';
-                                        if (empty($resource->scan_options->{$key}) and $resource->scan_options->{'discovery_scan_options.name'} !== 'Custom') {
-                                            $default->attributes->name = $resource->scan_options->{'discovery_scan_options.name'} . __(' Default, currently ') . $scan_options_default->{$key};
-                                        } else {
-                                            $default->attributes->name = 'Not Set';
-                                        }
-                                        $new_options = $options;
-                                        $new_options[] = $default;
-                                        if ($config->product === 'enterprise') {
-                                            echo read_select('scan_options.' . $key, $resource->scan_options->{$key}, $dictionary->columns->{'scan_options.' . $key}, $update, __($value), $new_options, $meta->collection);
-                                        } else {
-                                            echo read_field('scan_options.' . $key, $default->attributes->name, '', false, __($value), '', $meta->collection);
-                                        }
-                                    } ?>
+                                foreach ($scan_options as $key => $value) {
+                                    $default = new stdClass();
+                                    $default->id = '';
+                                    $default->type = 'discovery_scan_options';
+                                    $default->attributes = new stdClass();
+                                    $default->attributes->id = '';
+                                    if (empty($resource->scan_options->{$key}) and $resource->scan_options->{'discovery_scan_options.name'} !== 'Custom') {
+                                        $default->attributes->name = $resource->scan_options->{'discovery_scan_options.name'} . __(' Default, currently ') . $scan_options_default->{$key};
+                                    } else {
+                                        $default->attributes->name = 'Not Set';
+                                    }
+                                    $new_options = $options;
+                                    $new_options[] = $default;
+                                    if ($config->product === 'enterprise') {
+                                        echo read_select('scan_options.' . $key, $resource->scan_options->{$key}, $dictionary->columns->{'scan_options.' . $key}, $update, __($value), $new_options, $meta->collection);
+                                    } else {
+                                        echo read_field('scan_options.' . $key, $default->attributes->name, '', false, __($value), '', $meta->collection);
+                                    }
+                                } ?>
 
-                                    <div class="row" style="padding-top:16px;">
-                                        <div class="offset-2 col-8" style="position:relative;">
-                                            <?= read_field_header($meta->collection, 'scan_options.timing', $dictionary->columns->{'scan_options.timing'}) ?>
-                                            <div class="input-group">
-                                                <select class="form-select" id="scan_options.timing" name="scan_options.timing" data-original-value="<?= $resource->scan_options->timing ?>" disabled>
-                                                    <?php if (empty($resource->scan_options->timing) and $resource->scan_options->{'discovery_scan_options.name'} !== 'Custom') { ?>
+                                <div class="row" style="padding-top:16px;">
+                                    <div class="offset-2 col-8" style="position:relative;">
+                                        <?= read_field_header($meta->collection, 'scan_options.timing', $dictionary->columns->{'scan_options.timing'}) ?>
+                                        <div class="input-group">
+                                            <select class="form-select" id="scan_options.timing" name="scan_options.timing" data-original-value="<?= $resource->scan_options->timing ?>" disabled>
+                                                <?php if (empty($resource->scan_options->timing) and $resource->scan_options->{'discovery_scan_options.name'} !== 'Custom') { ?>
                                                     <option value="" selected><?= $resource->scan_options->{'discovery_scan_options.name'} . __(' Default, currently ') . $scan_options_default->timing ?></option>
-                                                    <?php } else { ?>
+                                                <?php } else { ?>
                                                     <option value=""><?= __('Not Set') ?></option>
-                                                    <?php } ?>
-                                                    <option value="0" <?php if (!empty($resource->scan_options->timing) and $resource->scan_options->timing == '0') { echo "selected"; } ?>><?= __('Paranoid') ?></option>
-                                                    <option value="1" <?php if (!empty($resource->scan_options->timing) and $resource->scan_options->timing == '1') { echo "selected"; } ?>><?= __('Sneaky') ?></option>
-                                                    <option value="2" <?php if (!empty($resource->scan_options->timing) and $resource->scan_options->timing == '2') { echo "selected"; } ?>><?= __('Polite') ?></option>
-                                                    <option value="3" <?php if (!empty($resource->scan_options->timing) and $resource->scan_options->timing == '3') { echo "selected"; } ?>><?= __('Normal') ?></option>
-                                                    <option value="4" <?php if (!empty($resource->scan_options->timing) and $resource->scan_options->timing == '4') { echo "selected"; } ?>><?= __('Aggressive') ?></option>
-                                                    <option value="5" <?php if (!empty($resource->scan_options->timing) and $resource->scan_options->timing == '5') { echo "selected"; } ?>><?= __('Insane') ?></option>
-                                                </select>
-                                                <?php if ($update and $config->product === 'enterprise') { ?>
+                                                <?php } ?>
+                                                <option value="0" <?php if (!empty($resource->scan_options->timing) and $resource->scan_options->timing == '0') { echo "selected"; } ?>><?= __('Paranoid') ?></option>
+                                                <option value="1" <?php if (!empty($resource->scan_options->timing) and $resource->scan_options->timing == '1') { echo "selected"; } ?>><?= __('Sneaky') ?></option>
+                                                <option value="2" <?php if (!empty($resource->scan_options->timing) and $resource->scan_options->timing == '2') { echo "selected"; } ?>><?= __('Polite') ?></option>
+                                                <option value="3" <?php if (!empty($resource->scan_options->timing) and $resource->scan_options->timing == '3') { echo "selected"; } ?>><?= __('Normal') ?></option>
+                                                <option value="4" <?php if (!empty($resource->scan_options->timing) and $resource->scan_options->timing == '4') { echo "selected"; } ?>><?= __('Aggressive') ?></option>
+                                                <option value="5" <?php if (!empty($resource->scan_options->timing) and $resource->scan_options->timing == '5') { echo "selected"; } ?>><?= __('Insane') ?></option>
+                                            </select>
+                                            <?php if ($update and $config->product === 'enterprise') { ?>
                                                 <div class="pull-right" style="padding-left:4px;">
                                                     <div data-attribute="scan_options.timing" class="btn btn-outline-secondary edit"><span style="font-size: 1.2rem;" class="icon-pencil"></span></div>
                                                     <div data-attribute="scan_options.timing" class="btn btn-outline-success submit" style="display: none;"><span style="font-size: 1.2rem;" class="icon-check"></span></div>
                                                     <div data-attribute="scan_options.timing" class="btn btn-outline-danger cancel" style="display: none;"><span style="font-size: 1.2rem;" class="icon-x"></span></div>
                                                 </div>
-                                                <?php } ?>
-                                            </div>
+                                            <?php } ?>
                                         </div>
                                     </div>
+                                </div>
 
-                                    <div class="row" style="padding-top:16px;">
-                                        <div class="offset-2 col-8" style="position:relative;">
-                                            <?= read_field_header($meta->collection, 'scan_options.nmap_tcp_ports', $dictionary->columns->{'scan_options.nmap_tcp_ports'}) ?>
-                                            <div class="input-group">
-                                                <select class="form-select" id="scan_options.nmap_tcp_ports" name="scan_options.nmap_tcp_ports" data-original-value="<?= $resource->scan_options->nmap_tcp_ports ?>" disabled>
-                                                    <?php if (empty($resource->scan_options->nmap_tcp_ports) and $resource->scan_options->{'discovery_scan_options.name'} !== 'Custom') { ?>
+                                <div class="row" style="padding-top:16px;">
+                                    <div class="offset-2 col-8" style="position:relative;">
+                                        <?= read_field_header($meta->collection, 'scan_options.nmap_tcp_ports', $dictionary->columns->{'scan_options.nmap_tcp_ports'}) ?>
+                                        <div class="input-group">
+                                            <select class="form-select" id="scan_options.nmap_tcp_ports" name="scan_options.nmap_tcp_ports" data-original-value="<?= $resource->scan_options->nmap_tcp_ports ?>" disabled>
+                                                <?php if (empty($resource->scan_options->nmap_tcp_ports) and $resource->scan_options->{'discovery_scan_options.name'} !== 'Custom') { ?>
                                                     <option value="" selected><?= $resource->scan_options->{'discovery_scan_options.name'} . __(' Default, currently ') . $scan_options_default->nmap_tcp_ports ?></option>
-                                                    <?php } else { ?>
+                                                <?php } else { ?>
                                                     <option value=""><?= __('Not Set') ?></option>
-                                                    <?php } ?>
-                                                    <option value="0" <?php if (!empty($resource->scan_options->nmap_tcp_ports) and $resource->scan_options->nmap_tcp_ports == '0') { echo "selected"; } ?>><?= __('None') ?></option>
-                                                    <option value="10" <?php if (!empty($resource->scan_options->nmap_tcp_ports) and $resource->scan_options->nmap_tcp_ports == '1') { echo "selected"; } ?>>10</option>
-                                                    <option value="100" <?php if (!empty($resource->scan_options->nmap_tcp_ports) and $resource->scan_options->nmap_tcp_ports == '100') { echo "selected"; } ?>>100</option>
-                                                    <option value="1000" <?php if (!empty($resource->scan_options->nmap_tcp_ports) and $resource->scan_options->nmap_tcp_ports == '1000') { echo "selected"; } ?>>1000</option>
-                                                </select>
-                                                <?php if ($update and $config->product === 'enterprise') { ?>
+                                                <?php } ?>
+                                                <option value="0" <?php if (!empty($resource->scan_options->nmap_tcp_ports) and $resource->scan_options->nmap_tcp_ports == '0') { echo "selected"; } ?>><?= __('None') ?></option>
+                                                <option value="10" <?php if (!empty($resource->scan_options->nmap_tcp_ports) and $resource->scan_options->nmap_tcp_ports == '1') { echo "selected"; } ?>>10</option>
+                                                <option value="100" <?php if (!empty($resource->scan_options->nmap_tcp_ports) and $resource->scan_options->nmap_tcp_ports == '100') { echo "selected"; } ?>>100</option>
+                                                <option value="1000" <?php if (!empty($resource->scan_options->nmap_tcp_ports) and $resource->scan_options->nmap_tcp_ports == '1000') { echo "selected"; } ?>>1000</option>
+                                            </select>
+                                            <?php if ($update and $config->product === 'enterprise') { ?>
                                                 <div class="pull-right" style="padding-left:4px;">
                                                     <div data-attribute="scan_options.nmap_tcp_ports" class="btn btn-outline-secondary edit"><span style="font-size: 1.2rem;" class="icon-pencil"></span></div>
                                                     <div data-attribute="scan_options.nmap_tcp_ports" class="btn btn-outline-success submit" style="display: none;"><span style="font-size: 1.2rem;" class="icon-check"></span></div>
                                                     <div data-attribute="scan_options.nmap_tcp_ports" class="btn btn-outline-danger cancel" style="display: none;"><span style="font-size: 1.2rem;" class="icon-x"></span></div>
                                                 </div>
-                                                <?php } ?>
-                                            </div>
+                                            <?php } ?>
                                         </div>
                                     </div>
+                                </div>
 
-                                    <div class="row" style="padding-top:16px;">
-                                        <div class="offset-2 col-8" style="position:relative;">
-                                            <?= read_field_header($meta->collection, 'scan_options.nmap_udp_ports', $dictionary->columns->{'scan_options.nmap_udp_ports'}) ?>
-                                            <div class="input-group">
-                                                <select class="form-select" id="scan_options.nmap_udp_ports" name="scan_options.nmap_udp_ports" data-original-value="<?= $resource->scan_options->nmap_udp_ports ?>" disabled>
-                                                    <?php if (empty($resource->scan_options->nmap_udp_ports) and $resource->scan_options->{'discovery_scan_options.name'} !== 'Custom') { ?>
+                                <div class="row" style="padding-top:16px;">
+                                    <div class="offset-2 col-8" style="position:relative;">
+                                        <?= read_field_header($meta->collection, 'scan_options.nmap_udp_ports', $dictionary->columns->{'scan_options.nmap_udp_ports'}) ?>
+                                        <div class="input-group">
+                                            <select class="form-select" id="scan_options.nmap_udp_ports" name="scan_options.nmap_udp_ports" data-original-value="<?= $resource->scan_options->nmap_udp_ports ?>" disabled>
+                                                <?php if (empty($resource->scan_options->nmap_udp_ports) and $resource->scan_options->{'discovery_scan_options.name'} !== 'Custom') { ?>
                                                     <option value="" selected><?= $resource->scan_options->{'discovery_scan_options.name'} . __(' Default, currently ') . $scan_options_default->nmap_udp_ports ?></option>
-                                                    <?php } else { ?>
+                                                <?php } else { ?>
                                                     <option value=""><?= __('Not Set') ?></option>
-                                                    <?php } ?>
-                                                    <option value="0" <?php if (!empty($resource->scan_options->nmap_udp_ports) and $resource->scan_options->nmap_udp_ports == '0') { echo "selected"; } ?>><?= __('None') ?></option>
-                                                    <option value="10" <?php if (!empty($resource->scan_options->nmap_udp_ports) and $resource->scan_options->nmap_udp_ports == '10') { echo "selected"; } ?>>10</option>
-                                                    <option value="100" <?php if (!empty($resource->scan_options->nmap_udp_ports) and $resource->scan_options->nmap_udp_ports == '100') { echo "selected"; } ?>>100</option>
-                                                    <option value="1000" <?php if (!empty($resource->scan_options->nmap_udp_ports) and $resource->scan_options->nmap_udp_ports == '1000') { echo "selected"; } ?>>1000</option>
-                                                </select>
-                                                <?php if ($update and $config->product === 'enterprise') { ?>
+                                                <?php } ?>
+                                                <option value="0" <?php if (!empty($resource->scan_options->nmap_udp_ports) and $resource->scan_options->nmap_udp_ports == '0') { echo "selected"; } ?>><?= __('None') ?></option>
+                                                <option value="10" <?php if (!empty($resource->scan_options->nmap_udp_ports) and $resource->scan_options->nmap_udp_ports == '10') { echo "selected"; } ?>>10</option>
+                                                <option value="100" <?php if (!empty($resource->scan_options->nmap_udp_ports) and $resource->scan_options->nmap_udp_ports == '100') { echo "selected"; } ?>>100</option>
+                                                <option value="1000" <?php if (!empty($resource->scan_options->nmap_udp_ports) and $resource->scan_options->nmap_udp_ports == '1000') { echo "selected"; } ?>>1000</option>
+                                            </select>
+                                            <?php if ($update and $config->product === 'enterprise') { ?>
                                                 <div class="pull-right" style="padding-left:4px;">
                                                     <div data-attribute="scan_options.nmap_udp_ports" class="btn btn-outline-secondary edit"><span style="font-size: 1.2rem;" class="icon-pencil"></span></div>
                                                     <div data-attribute="scan_options.nmap_udp_ports" class="btn btn-outline-success submit" style="display: none;"><span style="font-size: 1.2rem;" class="icon-check"></span></div>
                                                     <div data-attribute="scan_options.nmap_udp_ports" class="btn btn-outline-danger cancel" style="display: none;"><span style="font-size: 1.2rem;" class="icon-x"></span></div>
                                                 </div>
-                                                <?php } ?>
-                                            </div>
-                                        </div>
-                                    </div>
-
-
-                                </div>
-                                <div class="col-6">
-                                    <?php
-                                    unset($scan_options);
-                                    $scan_options = array();
-                                    $scan_options['tcp_ports'] = 'Custom TCP Ports';
-                                    $scan_options['udp_ports'] = 'Custom UDP Ports';
-                                    $scan_options['timeout'] = 'Nmap Timeout Per Target';
-                                    $scan_options['exclude_tcp_ports'] = 'Exclude TCP Ports';
-                                    $scan_options['exclude_udp_ports'] = 'Exclude UDP Ports';
-                                    $scan_options['exclude_ip'] = 'Exclude IP Addresses';
-                                    $scan_options['ssh_ports'] = 'SSH Running on Ports';
-                                    foreach ($scan_options as $key => $value) {
-                                        if (empty($resource->scan_options->{$key}) and $resource->scan_options->{'discovery_scan_options.name'} !== 'Custom') {
-                                            $placeholder = $resource->scan_options->{'discovery_scan_options.name'} . __(' Default, currently ') . $scan_options_default->{$key};
-                                        } else {
-                                            $placeholder = 'Not Set';
-                                        }
-                                        if ($config->product === 'enterprise') {
-                                            echo read_field('scan_options.' . $key, $resource->scan_options->{$key}, $dictionary->columns->{'scan_options.' . $key}, $update, $value, '', $placeholder, '', $meta->collection);
-                                        } else {
-                                            echo read_field('scan_options.' . $key, $resource->scan_options->{$key}, $dictionary->columns->{'scan_options.' . $key}, false, $value, '', $placeholder, '', $meta->collection);
-                                        }
-                                    } ?>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="tab-content">
-                        <div class="tab-pane" id="match" role="tabpanel" tabindex="0" aria-labelledby="match">
-                            <div class="row">
-                                <div class="col-6">
-                                    <?php $matches = array('match_dbus', 'match_fqdn', 'match_dns_fqdn', 'match_dns_hostname', 'match_hostname', 'match_hostname_dbus', 'match_hostname_serial', 'match_hostname_uuid', 'match_ip');
-                                    foreach ($matches as $match) {
-                                        $field = (!empty($resource->match_options->{$match})) ? $resource->match_options->{$match} : ''; ?>
-                                    <div class="row" style="padding-top:16px;">
-                                        <div class="offset-2 col-8" style="position:relative;">
-                                            <!-- <label for="match_options.<?= $match ?>" class="form-label"><?= ucwords(str_replace('_', ' ', $match)) ?></label> -->
-                                            <?= read_field_header($meta->collection, 'match_options.' . $match, $dictionary->columns->{'match_options.' . $match}) ?>
-                                            <div class="input-group">
-                                                <select class="form-select" id="match_options.<?= $match ?>" name="match_options.<?= $match ?>" data-original-value="<?= $field ?>" disabled>
-                                                    <option value="y" <?php if ($field === 'y') { echo 'selected'; } ?>><?= __('Yes') ?></option>
-                                                    <option value="n" <?php if ($field === 'n') { echo 'selected'; } ?>><?= __('No')  ?></option>
-                                                    <option value=""  <?php if ($field === '') { echo 'selected'; } ?>><?= __('Config Default, currently ') . $config->{$match} ?></option>
-                                                </select>
-                                                <?php if ($update and $config->product === 'enterprise') { ?>
-                                                <div class="pull-right" style="padding-left:4px;">
-                                                    <div data-attribute="match_options.<?= $match ?>" class="btn btn-outline-secondary edit"><span style="font-size: 1.2rem;" class="icon-pencil"></span></div>
-                                                    <div data-attribute="match_options.<?= $match ?>" class="btn btn-outline-success submit" style="display: none;"><span style="font-size: 1.2rem;" class="icon-check"></span></div>
-                                                    <div data-attribute="match_options.<?= $match ?>" class="btn btn-outline-danger cancel" style="display: none;"><span style="font-size: 1.2rem;" class="icon-x"></span></div>
-                                                </div>
-                                                <?php } ?>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <?php } ?>
-                                </div>
-                                <div class="col-6">
-                                    <?php $matches = array('match_ip_no_data', 'match_mac', 'match_mac_vmware', 'match_serial', 'match_serial_type', 'match_sysname', 'match_sysname_serial', 'match_uuid');
-                                    foreach ($matches as $match) {
-                                        $field = (!empty($resource->match_options->{$match})) ? $resource->match_options->{$match} : ''; ?>
-                                    <div class="row" style="padding-top:16px;">
-                                        <div class="offset-2 col-8" style="position:relative;">
-                                            <!-- <label for="match_options.<?= $match ?>" class="form-label"><?= ucwords(str_replace('_', ' ', $match)) ?></label> -->
-                                            <?= read_field_header($meta->collection, 'match_options.' . $match, $dictionary->columns->{'match_options.' . $match}) ?>
-                                            <div class="input-group">
-                                                <select class="form-select" id="match_options.<?= $match ?>" name="match_options.<?= $match ?>" data-original-value="<?= $field ?>" disabled>
-                                                    <option value="y" <?php if ($field === 'y') { echo 'selected'; } ?>><?= __('Yes') ?></option>
-                                                    <option value="n" <?php if ($field === 'n') { echo 'selected'; } ?>><?= __('No')  ?></option>
-                                                    <option value=""  <?php if ($field === '') { echo 'selected'; } ?>><?= __('Config Default, currently ') . $config->{$match} ?></option>
-                                                </select>
-                                                <?php if ($update and $config->product === 'enterprise') { ?>
-                                                <div class="pull-right" style="padding-left:4px;">
-                                                    <div data-attribute="match_options.<?= $match ?>" class="btn btn-outline-secondary edit"><span style="font-size: 1.2rem;" class="icon-pencil"></span></div>
-                                                    <div data-attribute="match_options.<?= $match ?>" class="btn btn-outline-success submit" style="display: none;"><span style="font-size: 1.2rem;" class="icon-check"></span></div>
-                                                    <div data-attribute="match_options.<?= $match ?>" class="btn btn-outline-danger cancel" style="display: none;"><span style="font-size: 1.2rem;" class="icon-x"></span></div>
-                                                </div>
-                                                <?php } ?>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <?php } ?>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="tab-content">
-                        <div class="tab-pane" id="logs" role="tabpanel" tabindex="0" aria-labelledby="logs">
-                            <div class="row">
-                                <div class="col-12">
-                                    <div id="logs_notice" class="container-fluid" style="display:none;">
-                                        <div id="logs_alert" class="alert alert-warning alert-dismissible fade show" role="alert">
-                                        </div>
-                                    </div>
-                                    <?php $log_data_order = ['view', 'id', 'timestamp', 'ip', 'command_status', 'message']; ?>
-                                    <table class="table <?= $GLOBALS['table'] ?> table-striped table-hover dataTableAjax" data-order='[[1,"asc"]]'>
-                                        <thead>
-                                            <tr>
-                                            <?php foreach ($log_data_order as $key) {
-                                                $align = '';
-                                                if ($key === 'id' or $key === 'view' or str_contains($key, '_id')) {
-                                                    $align = 'text-center dt-body-center';
-                                                } ?>
-                                                <th class="<?= $align ?>"><?= collection_column_name($key) ?></th>
                                             <?php } ?>
-                                            </tr>
-                                            <tr>
-                                            <?php foreach ($log_data_order as $key) { ?>
-                                                <th>
-                                                    <div class="input-group">
-                                                        <?php if ($key !== 'id' and $key !== 'view') {
-                                                        echo '<input id="alllog' . $key . '" type="search" class="form-control form-control-sm dataTablesearchField" placeholder="Search ' . collection_column_name($key) . '">';
-                                                        } ?>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                            </div>
+                            <div class="col-6">
+                                <?php
+                                unset($scan_options);
+                                $scan_options = array();
+                                $scan_options['tcp_ports'] = 'Custom TCP Ports';
+                                $scan_options['udp_ports'] = 'Custom UDP Ports';
+                                $scan_options['timeout'] = 'Nmap Timeout Per Target';
+                                $scan_options['exclude_tcp_ports'] = 'Exclude TCP Ports';
+                                $scan_options['exclude_udp_ports'] = 'Exclude UDP Ports';
+                                $scan_options['exclude_ip'] = 'Exclude IP Addresses';
+                                $scan_options['ssh_ports'] = 'SSH Running on Ports';
+                                foreach ($scan_options as $key => $value) {
+                                    if (empty($resource->scan_options->{$key}) and $resource->scan_options->{'discovery_scan_options.name'} !== 'Custom') {
+                                        $placeholder = $resource->scan_options->{'discovery_scan_options.name'} . __(' Default, currently ') . $scan_options_default->{$key};
+                                    } else {
+                                        $placeholder = 'Not Set';
+                                    }
+                                    if ($config->product === 'enterprise') {
+                                        echo read_field('scan_options.' . $key, $resource->scan_options->{$key}, $dictionary->columns->{'scan_options.' . $key}, $update, $value, '', $placeholder, '', $meta->collection);
+                                    } else {
+                                        echo read_field('scan_options.' . $key, $resource->scan_options->{$key}, $dictionary->columns->{'scan_options.' . $key}, false, $value, '', $placeholder, '', $meta->collection);
+                                    }
+                                } ?>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tab-content">
+                    <div class="tab-pane" id="match" role="tabpanel" tabindex="0" aria-labelledby="match">
+                        <div class="row">
+                            <div class="col-6">
+                                <?php $matches = array('match_dbus', 'match_fqdn', 'match_dns_fqdn', 'match_dns_hostname', 'match_hostname', 'match_hostname_dbus', 'match_hostname_serial', 'match_hostname_uuid', 'match_ip');
+                                foreach ($matches as $match) {
+                                    $field = (!empty($resource->match_options->{$match})) ? $resource->match_options->{$match} : ''; ?>
+                                    <div class="row" style="padding-top:16px;">
+                                        <div class="offset-2 col-8" style="position:relative;">
+                                            <!-- <label for="match_options.<?= $match ?>" class="form-label"><?= ucwords(str_replace('_', ' ', $match)) ?></label> -->
+                                            <?= read_field_header($meta->collection, 'match_options.' . $match, $dictionary->columns->{'match_options.' . $match}) ?>
+                                            <div class="input-group">
+                                                <select class="form-select" id="match_options.<?= $match ?>" name="match_options.<?= $match ?>" data-original-value="<?= $field ?>" disabled>
+                                                    <option value="y" <?php if ($field === 'y') { echo 'selected'; } ?>><?= __('Yes') ?></option>
+                                                    <option value="n" <?php if ($field === 'n') { echo 'selected'; } ?>><?= __('No')  ?></option>
+                                                    <option value=""  <?php if ($field === '') { echo 'selected'; } ?>><?= __('Config Default, currently ') . $config->{$match} ?></option>
+                                                </select>
+                                                <?php if ($update and $config->product === 'enterprise') { ?>
+                                                    <div class="pull-right" style="padding-left:4px;">
+                                                        <div data-attribute="match_options.<?= $match ?>" class="btn btn-outline-secondary edit"><span style="font-size: 1.2rem;" class="icon-pencil"></span></div>
+                                                        <div data-attribute="match_options.<?= $match ?>" class="btn btn-outline-success submit" style="display: none;"><span style="font-size: 1.2rem;" class="icon-check"></span></div>
+                                                        <div data-attribute="match_options.<?= $match ?>" class="btn btn-outline-danger cancel" style="display: none;"><span style="font-size: 1.2rem;" class="icon-x"></span></div>
                                                     </div>
-                                                </th>
-                                            <?php } ?>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                        </tbody>
-                                    </table>
-                                </div>
+                                                <?php } ?>
+                                            </div>
+                                        </div>
+                                    </div>
+                                <?php } ?>
+                            </div>
+                            <div class="col-6">
+                                <?php $matches = array('match_ip_no_data', 'match_mac', 'match_mac_vmware', 'match_serial', 'match_serial_type', 'match_sysname', 'match_sysname_serial', 'match_uuid');
+                                foreach ($matches as $match) {
+                                    $field = (!empty($resource->match_options->{$match})) ? $resource->match_options->{$match} : ''; ?>
+                                    <div class="row" style="padding-top:16px;">
+                                        <div class="offset-2 col-8" style="position:relative;">
+                                            <!-- <label for="match_options.<?= $match ?>" class="form-label"><?= ucwords(str_replace('_', ' ', $match)) ?></label> -->
+                                            <?= read_field_header($meta->collection, 'match_options.' . $match, $dictionary->columns->{'match_options.' . $match}) ?>
+                                            <div class="input-group">
+                                                <select class="form-select" id="match_options.<?= $match ?>" name="match_options.<?= $match ?>" data-original-value="<?= $field ?>" disabled>
+                                                    <option value="y" <?php if ($field === 'y') { echo 'selected'; } ?>><?= __('Yes') ?></option>
+                                                    <option value="n" <?php if ($field === 'n') { echo 'selected'; } ?>><?= __('No')  ?></option>
+                                                    <option value=""  <?php if ($field === '') { echo 'selected'; } ?>><?= __('Config Default, currently ') . $config->{$match} ?></option>
+                                                </select>
+                                                <?php if ($update and $config->product === 'enterprise') { ?>
+                                                    <div class="pull-right" style="padding-left:4px;">
+                                                        <div data-attribute="match_options.<?= $match ?>" class="btn btn-outline-secondary edit"><span style="font-size: 1.2rem;" class="icon-pencil"></span></div>
+                                                        <div data-attribute="match_options.<?= $match ?>" class="btn btn-outline-success submit" style="display: none;"><span style="font-size: 1.2rem;" class="icon-check"></span></div>
+                                                        <div data-attribute="match_options.<?= $match ?>" class="btn btn-outline-danger cancel" style="display: none;"><span style="font-size: 1.2rem;" class="icon-x"></span></div>
+                                                    </div>
+                                                <?php } ?>
+                                            </div>
+                                        </div>
+                                    </div>
+                                <?php } ?>
                             </div>
                         </div>
                     </div>
+                </div>
 
-                    <div class="tab-content">
-                        <div class="tab-pane" id="devices" role="tabpanel" tabindex="0" aria-labelledby="devices">
-                            <div class="row">
-                                <div class="col-12">
-                                    <div id="dev_notice" class="container-fluid" style="display:none;">
-                                        <div id="dev_alert" class="alert alert-warning alert-dismissible fade show" role="alert">
-                                        </div>
+                <div class="tab-content">
+                    <div class="tab-pane" id="logs" role="tabpanel" tabindex="0" aria-labelledby="logs">
+                        <div class="row">
+                            <div class="col-12">
+                                <div id="logs_notice" class="container-fluid" style="display:none;">
+                                    <div id="logs_alert" class="alert alert-warning alert-dismissible fade show" role="alert">
                                     </div>
-                                    <?php $device_data_order = ['view', 'icon', 'ip', 'name', 'message', 'command_time_to_execute']; ?>
-                                    <table class="table <?= $GLOBALS['table'] ?> table-striped table-hover dataTableDev" data-order='[[2,"desc"]]'>
-                                        <thead>
-                                            <tr>
-                                            <?php foreach ($device_data_order as $key) {
-                                                $align = '';
-                                                if ($key === 'id' or $key === 'view' or str_contains($key, '_id')) {
-                                                    $align = 'text-center dt-body-center';
-                                                } ?>
-                                                <th class="<?= $align ?>"><?= collection_column_name($key) ?></th>
-                                            <?php } ?>
-                                            </tr>
-                                            <tr>
-                                            <?php foreach ($device_data_order as $key) { ?>
-                                                <th>
-                                                    <div class="input-group">
-                                                        <?php if ($key !== 'icon' and $key !== 'view' and $key !== 'command_time_to_execute') { ?>
+                                </div>
+                                <?php $log_data_order = ['view', 'id', 'timestamp', 'ip', 'command_status', 'message']; ?>
+                                <table class="table <?= $GLOBALS['table'] ?> table-striped table-hover dataTableLog" data-order='[[1,"asc"]]'>
+                                    <thead>
+                                    <tr>
+                                        <?php foreach ($log_data_order as $key) {
+                                            $align = '';
+                                            if ($key === 'id' or $key === 'view' or str_contains($key, '_id')) {
+                                                $align = 'text-center dt-body-center';
+                                            } ?>
+                                            <th class="<?= $align ?>"><?= collection_column_name($key) ?></th>
+                                        <?php } ?>
+                                    </tr>
+                                    <tr>
+                                        <?php foreach ($log_data_order as $key) { ?>
+                                            <th>
+                                                <div class="input-group">
+                                                    <?php if ($key !== 'id' and $key !== 'view') {
+                                                        echo '<input id="alllog' . $key . '" type="search" class="form-control form-control-sm dataTablesearchFieldLog" placeholder="Search ' . collection_column_name($key) . '">';
+                                                    } ?>
+                                                </div>
+                                            </th>
+                                        <?php } ?>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tab-content">
+                    <div class="tab-pane" id="devices" role="tabpanel" tabindex="0" aria-labelledby="devices">
+                        <div class="row">
+                            <div class="col-12">
+                                <div id="dev_notice" class="container-fluid" style="display:none;">
+                                    <div id="dev_alert" class="alert alert-warning alert-dismissible fade show" role="alert">
+                                    </div>
+                                </div>
+                                <?php $device_data_order = ['view', 'icon', 'ip', 'name', 'message', 'command_time_to_execute']; ?>
+                                <table class="table <?= $GLOBALS['table'] ?> table-striped table-hover dataTableDev" data-order='[[2,"desc"]]'>
+                                    <thead>
+                                    <tr>
+                                        <?php foreach ($device_data_order as $key) {
+                                            $align = '';
+                                            if ($key === 'id' or $key === 'view' or str_contains($key, '_id')) {
+                                                $align = 'text-center dt-body-center';
+                                            } ?>
+                                            <th class="<?= $align ?>"><?= collection_column_name($key) ?></th>
+                                        <?php } ?>
+                                    </tr>
+                                    <tr>
+                                        <?php foreach ($device_data_order as $key) { ?>
+                                            <th>
+                                                <div class="input-group">
+                                                    <?php if ($key !== 'icon' and $key !== 'view' and $key !== 'command_time_to_execute') { ?>
                                                         <input id="alldev<?= $key ?>" type="search" class="form-control form-control-sm dataTablesearchFieldDev" placeholder="Search <?= collection_column_name($key) ?>">
-                                                        <?php } ?>
-                                                    </div>
-                                                </th>
-                                            <?php } ?>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                        </tbody>
-                                    </table>
-                                    <?php if ($resource->status === 'running' and empty($included['devices'])) {
-                                        echo "<p class=\"text-center\">Your discovery is running, however no devices have been interogated yet. Click the Refresh button in your browser to update this page and check the Logs tab for more detailed information.</p>";
-                                    } ?>
-                                </div>
+                                                    <?php } ?>
+                                                </div>
+                                            </th>
+                                        <?php } ?>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    </tbody>
+                                </table>
+                                <?php if ($resource->status === 'running' and empty($included['devices'])) {
+                                    echo "<p class=\"text-center\">Your discovery is running, however no devices have been interogated yet. Click the Refresh button in your browser to update this page and check the Logs tab for more detailed information.</p>";
+                                } ?>
                             </div>
                         </div>
                     </div>
+                </div>
 
-                    <div class="tab-content">
-                        <div class="tab-pane" id="all_ips" role="tabpanel" tabindex="0" aria-labelledby="all_ips">
-                            <div class="row">
-                                <div class="col-12">
-                                    <div id="ip_notice" class="container-fluid" style="display:none;">
-                                        <div id="ip_alert" class="alert alert-warning alert-dismissible fade show" role="alert">
-                                        </div>
+                <div class="tab-content">
+                    <div class="tab-pane" id="all_ips" role="tabpanel" tabindex="0" aria-labelledby="all_ips">
+                        <div class="row">
+                            <div class="col-12">
+                                <div id="ip_notice" class="container-fluid" style="display:none;">
+                                    <div id="ip_alert" class="alert alert-warning alert-dismissible fade show" role="alert">
                                     </div>
-                                    <?php $ip_data_order = ['view', 'icon', 'ip', 'name', 'message', 'command_time_to_execute']; ?>
-                                    <table class="table <?= $GLOBALS['table'] ?> table-striped table-hover dataTableIP" data-order='[[2,"desc"]]'>
-                                        <thead>
-                                            <tr>
-                                            <?php foreach ($ip_data_order as $key) {
-                                                $align = '';
-                                                if ($key === 'icon' or $key === 'view' or str_contains($key, '_id')) {
-                                                    $align = 'text-center dt-body-center';
-                                                } ?>
-                                                <th class="<?= $align ?>"><?= collection_column_name($key) ?></th>
-                                            <?php } ?>
-                                            </tr>
-                                            <tr>
-                                            <?php foreach ($ip_data_order as $key) { ?>
-                                                <th>
-                                                    <div class="input-group">
-                                                        <?php if ($key !== 'icon' and $key !== 'view' and $key !== 'command_time_to_execute') { ?>
-                                                        <input id="allip<?= $key ?>" type="search" class="form-control form-control-sm dataTablesearchFieldIP" placeholder="Search <?= collection_column_name($key) ?>">
-                                                        <?php } ?>
-                                                    </div>
-                                                </th>
-                                            <?php } ?>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                        </tbody>
-                                    </table>
-
                                 </div>
+                                <?php $ip_data_order = ['view', 'icon', 'ip', 'name', 'message', 'command_time_to_execute']; ?>
+                                <table class="table <?= $GLOBALS['table'] ?> table-striped table-hover dataTableIP" data-order='[[2,"desc"]]'>
+                                    <thead>
+                                    <tr>
+                                        <?php foreach ($ip_data_order as $key) {
+                                            $align = '';
+                                            if ($key === 'icon' or $key === 'view' or str_contains($key, '_id')) {
+                                                $align = 'text-center dt-body-center';
+                                            } ?>
+                                            <th class="<?= $align ?>"><?= collection_column_name($key) ?></th>
+                                        <?php } ?>
+                                    </tr>
+                                    <tr>
+                                        <?php foreach ($ip_data_order as $key) { ?>
+                                            <th>
+                                                <div class="input-group">
+                                                    <?php if ($key !== 'icon' and $key !== 'view' and $key !== 'command_time_to_execute') { ?>
+                                                        <input id="allip<?= $key ?>" type="search" class="form-control form-control-sm dataTablesearchFieldIP" placeholder="Search <?= collection_column_name($key) ?>">
+                                                    <?php } ?>
+                                                </div>
+                                            </th>
+                                        <?php } ?>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    </tbody>
+                                </table>
+
                             </div>
                         </div>
                     </div>
+                </div>
 
-                    <div class="tab-content">
-                        <div class="tab-pane" id="issues" role="tabpanel" tabindex="0" aria-labelledby="issues">
-                            <div class="row">
-                                <div class="col-12">
-                                    <table class="table <?= $GLOBALS['table'] ?> table-striped table-hover dataTable" data-order='[[2,"asc"]]'>
-                                        <thead>
-                                            <tr>
-                                                <th style="min-width:6rem;" data-orderable="false" class="text-center"><?= __('View') ?></th>
-                                                <th style="min-width:6rem;" data-orderable="false" class="text-center"></th>
-                                                <th style="min-width:6rem;"><?= __('IP') ?></th>
-                                                <th style="min-width:6rem;"><?= __('Name') ?></th>
-                                                <th><?= __('Issue') ?></th>
-                                                <th style="min-width:6rem;"><?= __('Action') ?></th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <?php foreach ($included['issues'] as $issue) { ?>
-                                                <?php
-                                                $link = url_to('devicesCollection');
-                                                if (!empty($issue->{'devices.id'})) {
-                                                    $link = url_to('devicesRead', $issue->{'devices.id'});
-                                                } ?>
-                                                <tr>
-                                                    <td class="text-center"><a title=" <?= __('Devices') ?>" role="button" class="btn btn-sm btn-devices" href="<?= $link ?>"><span style="width:1rem;" title="<?= __('Devices') ?>" class="icon-computer" aria-hidden="true"></span></a></td>
-                                                    <td class="text-center"><img style="width:30px;" src="<?= $meta->baseurl ?>device_images/<?= $issue->{'devices.icon'} ?>.svg" alt=""></td>
-                                                    <td><span style="display:none;"><?= @$issue->{'devices.ip_padded'} ?></span><?= $issue->{'devices.ip'} . '<br>' . $issue->{'devices.type'} ?></td>
-                                                    <td><?= $issue->{'devices.name'} ?></td>
-                                                    <td><?= $issue->{'output'} . '<br>' . html_entity_decode($issue->{'description'}) ?></td>
-                                                    <td><?php if ($issue->action === 'add credentials') { ?>
-                                                        <a role="button" class="btn btn-default btn-sm" href="<?= url_to('credentialsCreateForm') ?>"><?= __('Add Credentials') ?></a>
-                                                        <?php } ?>
-                                                    </td>
-                                                </tr>
-                                            <?php } ?>
-                                        </tbody>
-                                    </table>
-                                </div>
+                <div class="tab-content">
+                    <div class="tab-pane" id="issues" role="tabpanel" tabindex="0" aria-labelledby="issues">
+                        <div class="row">
+                            <div class="col-12">
+                                <table class="table <?= $GLOBALS['table'] ?> table-striped table-hover dataTable" data-order='[[2,"asc"]]'>
+                                    <thead>
+                                    <tr>
+                                        <th style="min-width:6rem;" data-orderable="false" class="text-center"><?= __('View') ?></th>
+                                        <th style="min-width:6rem;" data-orderable="false" class="text-center"></th>
+                                        <th style="min-width:6rem;"><?= __('IP') ?></th>
+                                        <th style="min-width:6rem;"><?= __('Name') ?></th>
+                                        <th><?= __('Issue') ?></th>
+                                        <th style="min-width:6rem;"><?= __('Action') ?></th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <?php foreach ($included['issues'] as $issue) { ?>
+                                        <?php
+                                        $link = url_to('devicesCollection');
+                                        if (!empty($issue->{'devices.id'})) {
+                                            $link = url_to('devicesRead', $issue->{'devices.id'});
+                                        } ?>
+                                        <tr>
+                                            <td class="text-center"><a title=" <?= __('Devices') ?>" role="button" class="btn btn-sm btn-devices" href="<?= $link ?>"><span style="width:1rem;" title="<?= __('Devices') ?>" class="icon-computer" aria-hidden="true"></span></a></td>
+                                            <td class="text-center"><img style="width:30px;" src="<?= $meta->baseurl ?>device_images/<?= $issue->{'devices.icon'} ?>.svg" alt=""></td>
+                                            <td><span style="display:none;"><?= @$issue->{'devices.ip_padded'} ?></span><?= $issue->{'devices.ip'} . '<br>' . $issue->{'devices.type'} ?></td>
+                                            <td><?= $issue->{'devices.name'} ?></td>
+                                            <td><?= $issue->{'output'} . '<br>' . html_entity_decode($issue->{'description'}) ?></td>
+                                            <td><?php if ($issue->action === 'add credentials') { ?>
+                                                    <a role="button" class="btn btn-default btn-sm" href="<?= url_to('credentialsCreateForm') ?>"><?= __('Add Credentials') ?></a>
+                                                <?php } ?>
+                                            </td>
+                                        </tr>
+                                    <?php } ?>
+                                    </tbody>
+                                </table>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </main>
+        </div>
+</main>
 
 <script {csp-script-nonce}>
-window.onload = function () {
-    $(document).ready(function () {
-        $("#devices_assigned_to_org").append($('<option>', { value: '', text: ''}));
-        $("#devices_assigned_to_location").append($('<option>', { value: '', text: ''}));
-        $("#devices_assigned_to_org").val("<?= $resource->devices_assigned_to_org ?>");
-        $("#devices_assigned_to_location").val("<?= $resource->devices_assigned_to_location ?>");
+    window.onload = function () {
+        $(document).ready(function () {
+            $("#devices_assigned_to_org").append($('<option>', { value: '', text: ''}));
+            $("#devices_assigned_to_location").append($('<option>', { value: '', text: ''}));
+            $("#devices_assigned_to_org").val("<?= $resource->devices_assigned_to_org ?>");
+            $("#devices_assigned_to_location").val("<?= $resource->devices_assigned_to_location ?>");
 
-        var hash = window.location.hash;
-        if (hash == "") {
-            hash = "#summary"
-        }
-        hash && $('ul.nav.nav-pills a[href="' + hash + '"]').tab('show');
+            var hash = window.location.hash;
+            if (hash == "") {
+                hash = "#summary"
+            }
 
-        $('ul.nav.nav-pills a').click(function (e) {
-            e.preventDefault();
-            $(this).tab('show');
-            window.location.hash = this.hash;
-        });
+            $('ul.nav.nav-pills a').click(function (e) {
+                e.preventDefault();
+                $(this).tab('show');
+                window.location.hash = this.hash;
+            });
 
-        $(".nav-link").click(function(e) {
-            window.scrollTo(0, 0);
-        });
+            var activeTab = $('ul.nav.nav-pills a[href="' + hash + '"]');
 
-        $(".page-title-middle").append('<?= $support_button ?>');
+            if (activeTab.length) {
+                activeTab.click();
+            }
 
+            $(".nav-link").click(function(e) {
+                window.scrollTo(0, 0);
+            });
 
+            $(".page-title-middle").append('<?= $support_button ?>');
 
-        let logSort = {};
-        var myDataTable = new DataTable('.dataTableAjax', {
-            lengthChange: true,
-            lengthMenu: [ [25, 50, <?= $config->page_size ?>], [25, 50, 'All'] ],
-            order: [[ 1, 'asc' ]],
-            pageLength: 25,
-            processing: true,
-            searching: true,
-            search: {
-                return: true
-            },
-            serverSide: true,
-            ajax: {
-                url: '<?= base_url() ?>index.php/discovery_log?discovery_id=<?= $meta->id ?>&format=json',
-                dataSrc: 'data',
-                data: function (d) {
-                    d.limit = d.length;
-                    d.offset = d.start;
-<?php foreach ($log_data_order as $key) { ?>
-                    if ($("#alllog<?= $key ?>").val() != '') {
-                        d["<?= $key ?>"] = $("#alllog<?= $key ?>").val();
+            var tableState = {
+                "logs-tab": false,
+                "all_ips-tab": false,
+                "devices-tab": false,
+            }
+
+            $(document).on('shown.bs.tab', 'ul.nav.nav-pills a', function () {
+                var id = $(this).attr('id');
+
+                if (tableState[id] === false) {
+                    tableState[id] = true;
+                    if (id === 'logs-tab') {
+                        myDataTableLog.ajax.reload();
                     }
-<?php } ?>
-                    if (d.order[0]) {
-                        if (d.columns[d.order[0].column].data == 'attributes.id') {
-                            // d.sort = 'discovery_log.id ' + d.order[0].dir;
-                            logSort.column = 'discovery_log.id';
-                            logSort.direction = d.order[0].dir;
-                            if (d.order[0].dir == 'asc') {
-                                d.sort = 'discovery_log.id';
-                            } else {
-                                d.sort = '-discovery_log.id';
-                            }
+                    if (id === 'all_ips-tab') {
+                        myDataTableIP.ajax.reload();
+                    }
+                    if (id === 'devices-tab') {
+                        myDataTableDev.ajax.reload();
+                    }
+                }
+            });
+
+            let logSort = {};
+            var myDataTableLog = new DataTable('.dataTableLog', {
+                lengthChange: true,
+                lengthMenu: [ [25, 50, <?= $config->page_size ?>], [25, 50, 'All'] ],
+                order: [[ 1, 'asc' ]],
+                pageLength: 25,
+                processing: true,
+                searching: true,
+                search: {
+                    return: true
+                },
+                serverSide: true,
+                deferLoading: 0,
+                ajax: {
+                    url: '<?= base_url() ?>index.php/discovery_log?discovery_id=<?= $meta->id ?>&format=json',
+                    dataSrc: 'data',
+                    data: function (d) {
+                        d.limit = d.length;
+                        d.offset = d.start;
+                        <?php foreach ($log_data_order as $key) { ?>
+                        if ($("#alllog<?= $key ?>").val() != '') {
+                            d["<?= $key ?>"] = $("#alllog<?= $key ?>").val();
                         }
-                        if (d.columns[d.order[0].column].data == 'attributes.timestamp') {
-                            // d.sort = 'discovery_log.timestamp ' + d.order[0].dir;
-                            logSort.column = 'discovery_log.timestamp';
-                            logSort.direction = d.order[0].dir;
-                            if (d.order[0].dir == 'asc') {
-                                d.sort = 'discovery_log.timestamp';
-                            } else {
-                                d.sort = '-discovery_log.timestamp';
+                        <?php } ?>
+                        if (d.order[0]) {
+                            if (d.columns[d.order[0].column].data == 'attributes.id') {
+                                // d.sort = 'discovery_log.id ' + d.order[0].dir;
+                                logSort.column = 'discovery_log.id';
+                                logSort.direction = d.order[0].dir;
+                                if (d.order[0].dir == 'asc') {
+                                    d.sort = 'discovery_log.id';
+                                } else {
+                                    d.sort = '-discovery_log.id';
+                                }
                             }
-                        }
-                        if (d.columns[d.order[0].column].data == 'attributes.ip') {
-                            // d.sort = 'discovery_log.ip ' + d.order[0].dir;
-                            logSort.column = 'discovery_log.ip';
-                            logSort.direction = d.order[0].dir;
-                            if (d.order[0].dir == 'asc') {
-                                d.sort = 'discovery_log.ip';
-                            } else {
-                                d.sort = '-discovery_log.ip';
+                            if (d.columns[d.order[0].column].data == 'attributes.timestamp') {
+                                // d.sort = 'discovery_log.timestamp ' + d.order[0].dir;
+                                logSort.column = 'discovery_log.timestamp';
+                                logSort.direction = d.order[0].dir;
+                                if (d.order[0].dir == 'asc') {
+                                    d.sort = 'discovery_log.timestamp';
+                                } else {
+                                    d.sort = '-discovery_log.timestamp';
+                                }
                             }
-                        }
-                        if (d.columns[d.order[0].column].data == 'attributes.command_status') {
-                            // d.sort = 'discovery_log.command_status ' + d.order[0].dir;
-                            logSort.column = 'discovery_log.command_status';
-                            logSort.direction = d.order[0].dir;
-                            if (d.order[0].dir == 'asc') {
-                                d.sort = 'discovery_log.command_status';
-                            } else {
-                                d.sort = '-discovery_log.command_status';
+                            if (d.columns[d.order[0].column].data == 'attributes.ip') {
+                                // d.sort = 'discovery_log.ip ' + d.order[0].dir;
+                                logSort.column = 'discovery_log.ip';
+                                logSort.direction = d.order[0].dir;
+                                if (d.order[0].dir == 'asc') {
+                                    d.sort = 'discovery_log.ip';
+                                } else {
+                                    d.sort = '-discovery_log.ip';
+                                }
                             }
-                        }
-                        if (d.columns[d.order[0].column].data == 'attributes.message') {
-                            // d.sort = 'discovery_log.message ' + d.order[0].dir;
-                            logSort.column = 'discovery_log.message';
-                            logSort.direction = d.order[0].dir;
-                            if (d.order[0].dir == 'asc') {
-                                d.sort = 'discovery_log.message';
-                            } else {
-                                d.sort = '-discovery_log.message';
+                            if (d.columns[d.order[0].column].data == 'attributes.command_status') {
+                                // d.sort = 'discovery_log.command_status ' + d.order[0].dir;
+                                logSort.column = 'discovery_log.command_status';
+                                logSort.direction = d.order[0].dir;
+                                if (d.order[0].dir == 'asc') {
+                                    d.sort = 'discovery_log.command_status';
+                                } else {
+                                    d.sort = '-discovery_log.command_status';
+                                }
                             }
-                        }
-                    } else {
-                        if (logSort.direction == 'asc') {
-                            // d.sort = logSort.column + ' desc';
-                            d.sort = '-' + logSort.column;
-                            logSort.direction = 'desc';
+                            if (d.columns[d.order[0].column].data == 'attributes.message') {
+                                // d.sort = 'discovery_log.message ' + d.order[0].dir;
+                                logSort.column = 'discovery_log.message';
+                                logSort.direction = d.order[0].dir;
+                                if (d.order[0].dir == 'asc') {
+                                    d.sort = 'discovery_log.message';
+                                } else {
+                                    d.sort = '-discovery_log.message';
+                                }
+                            }
                         } else {
-                            // d.sort = logSort.column + ' asc';
-                            d.sort = logSort.column;
-                            logSort.direction = 'asc';
+                            if (logSort.direction == 'asc') {
+                                // d.sort = logSort.column + ' desc';
+                                d.sort = '-' + logSort.column;
+                                logSort.direction = 'desc';
+                            } else {
+                                // d.sort = logSort.column + ' asc';
+                                d.sort = logSort.column;
+                                logSort.direction = 'asc';
+                            }
+                        }
+                        delete d.start;
+                        delete d.length;
+                        delete d.order;
+                        delete d.columns;
+                    }
+                },
+                autoWidth: false,
+                columns: [
+                    { data: 'attributes.view',
+                        render: function (data, type, row, meta) {
+                            return "<a title=\"View\" role=\"button\" class=\"btn btn-sm btn-primary\" href=\"<?= base_url() ?>index.php/components/" + row.attributes.id + "?components.type=discovery_log\"><span style=\"width:1rem;\" title=\"View\" class=\"icon-eye\" aria-hidden=\"true\"></span></a>";
+                        }
+                    },
+                    { data: 'attributes.id' },
+                    { data: 'attributes.timestamp',
+                        render: function (data, type, row, meta) {
+                            return data;
+                        }
+                    },
+                    { data: 'attributes.ip' },
+                    { data: 'attributes.command_status',
+                        render: function (data, type, row, meta) {
+                            if (row.attributes.command_status == 'success') {
+                                data = '<span class="text-success"><strong>' + data + '</strong></span>';
+                            } else if (row.attributes.command_status == 'fail') {
+                                data = '<span class="text-danger"><strong>' + data + '</strong></span>';
+                            } else if (row.attributes.command_status == 'warning') {
+                                data = '<span class="text-warning"><strong>' + data + '</strong></span>';
+                            } else if (row.attributes.command_status == 'notice') {
+                                data = '<span class="text-info"><strong>' + data + '</strong></span>';
+                            } else {
+                                data = '<span class="text- "><strong>' + data + '</strong></span>';
+                            }
+                            return data;
+                        }
+                    },
+                    { data: 'attributes.message',
+                        render: function (message, type, row, meta) {
+                            if (row.attributes.command != '') {
+                                message = message + '<br><strong><em><?= __('Command') ?>: </em></strong><code>' + row.attributes.command + '</code>';
+                            }
+                            if (row.attributes.command_output != '') {
+                                if (row.attributes.message == 'Nmap Command (Custom TCP Ports)' || row.attributes.message == 'Nmap Command (Custom UDP Ports)') {
+                                    /* Open */
+                                    row.attributes.command_output = row.attributes.command_output.replace(/ open /g, ' <a href="<?= url_to('helpFAQ') . '?name=Nmap Port Scanning Responses' ?>">open</a> ');
+                                    /* Closed */
+                                    row.attributes.command_output = row.attributes.command_output.replace(/ closed /g, ' <a href="<?= url_to('helpFAQ') . '?name=Nmap Port Scanning Responses' ?>">closed</a> ');
+                                    /* Filterred */
+                                    row.attributes.command_output = row.attributes.command_output.replace(/ filtered /g, ' <a href="<?= url_to('helpFAQ') . '?name=Nmap Port Scanning Responses' ?>">filtered</a> ');
+                                    /* Unfiltered */
+                                    row.attributes.command_output = row.attributes.command_output.replace(/ uniltered /g, ' <a href="<?= url_to('helpFAQ') . '?name=Nmap Port Scanning Responses' ?>">unfiltered</a> ');
+                                    /* Open|Filtered */
+                                    row.attributes.command_output = row.attributes.command_output.replace(/ open\|filtered /g, ' <a href="<?= url_to('helpFAQ') . '?name=Nmap Port Scanning Responses' ?>">open|filtered</a> ');
+                                    /* Closed|Filtered */
+                                    row.attributes.command_output = row.attributes.command_output.replace(/ closed\|filtered /g, ' <a href="<?= url_to('helpFAQ') . '?name=Nmap Port Scanning Responses' ?>">closed|filtered</a> ');
+                                }
+                                message = message + '<br><strong><em><?= __('Output') ?>: </em></strong><span class="output">' + row.attributes.command_output + '</span>';
+                            }
+                            if (row.attributes.message.includes('Nmap Command') || row.attributes.message.includes('IP Scan finish') || row.attributes.message.includes('IP Audit finish') || row.attributes.message.includes('Updating discovery log with non-responding IPs') || row.attributes.message.includes('Nmap response scanning completed')) {
+                                if (row.attributes.command_time_to_execute != '0.000000') {
+                                    message = message + '<br><strong><em><?= __('Time to Execute') ?>: </em></strong><span class="output">' + row.attributes.command_time_to_execute + '</span>';
+                                }
+                            }
+                            return message;
+                        }
+                    },
+                ],
+                columnDefs: [
+                    {className: "text-center", target: 0, width: "10em"},
+                    {className: "text-center", target: 1, width: "10em"},
+                    {className: "text-start", target: 2},
+                    {className: "text-start", target: 3, width: "10em"},
+                    {className: "text-start", title: "Status", target: 4, width: "10em"},
+                    {className: "text-start", target: 5}
+                ],
+                info: true,
+                language: {
+                    infoFiltered: ""
+                },
+                layout: {
+                    bottomStart: {
+                        info: {
+                            text: 'Showing _START_ to _END_ of _TOTAL_ entries'
+                        }
+                    },
+                    bottomEnd: {
+                        paging: {
+                            type: 'full_numbers'
                         }
                     }
-                    delete d.start;
-                    delete d.length;
-                    delete d.order;
-                    delete d.columns;
                 }
-            },
-            autoWidth: false,
-            columns: [
-                { data: 'attributes.view', 
-                    render: function (data, type, row, meta) {
-                        return "<a title=\"View\" role=\"button\" class=\"btn btn-sm btn-primary\" href=\"<?= base_url() ?>index.php/components/" + row.attributes.id + "?components.type=discovery_log\"><span style=\"width:1rem;\" title=\"View\" class=\"icon-eye\" aria-hidden=\"true\"></span></a>";
-                    }
+            });
+
+            /* This stops the sort when clicking in a search text box in the table header */
+            $('.dataTablesearchFieldLog').on('click', function(e) { e.stopPropagation() });
+
+            /* And don't automatically send the result - wait for the user to press <enter> / <return> */
+            $(".dataTablesearchFieldLog").on("keypress", function (evtObj) {
+                if (evtObj.keyCode == 13) {
+                    myDataTableLog.ajax.reload();
+                }
+            });
+
+            myDataTableLog.on('xhr', function (e, settings, json) {
+                if (json.warning) {
+                    $("#logs_notice").show();
+                    $("#logs_alert").html(json.warning + '<button id="logs_button" type="button" class="btn-close" aria-label="Close"></button>');
+                    $("#logs_alert").show();
+                } else {
+                    $("#logs_alert").hide();
+                }
+            });
+
+            $(document).on('click', '#logs_button', function() {
+                $(this).parent().hide();
+            });
+
+            let ipSort = {};
+            var myDataTableIP = new DataTable('.dataTableIP', {
+                lengthChange: true,
+                lengthMenu: [ [25, 50, <?= $config->page_size ?>], [25, 50, 'All'] ],
+                order: [[ 1, 'asc' ]],
+                pageLength: 25,
+                paging: true,
+                processing: true,
+                searching: true,
+                search: {
+                    return: true
                 },
-                { data: 'attributes.id' },
-                { data: 'attributes.timestamp',
-                    render: function (data, type, row, meta) {
-                        return data;
-                    }
-                },
-                { data: 'attributes.ip' },
-                { data: 'attributes.command_status',
-                    render: function (data, type, row, meta) {
-                        if (row.attributes.command_status == 'success') {
-                            data = '<span class="text-success"><strong>' + data + '</strong></span>';
-                        } else if (row.attributes.command_status == 'fail') {
-                            data = '<span class="text-danger"><strong>' + data + '</strong></span>';
-                        } else if (row.attributes.command_status == 'warning') {
-                            data = '<span class="text-warning"><strong>' + data + '</strong></span>';
-                        } else if (row.attributes.command_status == 'notice') {
-                            data = '<span class="text-info"><strong>' + data + '</strong></span>';
+                serverSide: true,
+                deferLoading: 0,
+                ajax: {
+                    url: '<?= base_url() ?>index.php/discovery_log?discovery_id=<?= $meta->id ?>&groupby=discovery_log.ip&format=json',
+                    dataSrc: 'data',
+                    data: function (d) {
+                        d.limit = d.length;
+                        d.offset = d.start;
+                        <?php foreach ($ip_data_order as $key) { ?>
+                        if ($("#allip<?= $key ?>").val() != '') {
+                            d.<?= $key ?> = $("#allip<?= $key ?>").val();
+                        }
+                        <?php } ?>
+                        if (d.order[0]) {
+                            if (d.columns[d.order[0].column].data == 'attributes.ip') {
+                                // d.sort = 'discovery_log.ip ' + d.order[0].dir;
+                                ipSort.column = 'discovery_log.ip';
+                                ipSort.direction = d.order[0].dir;
+                                if (d.order[0].dir == 'asc') {
+                                    d.sort = 'discovery_log.ip';
+                                } else {
+                                    d.sort = '-discovery_log.ip';
+                                }
+                            }
+                            if (d.columns[d.order[0].column].data == 'attributes.name') {
+                                // d.sort = 'devices.name ' + d.order[0].dir;
+                                ipSort.column = 'devices.name';
+                                ipSort.direction = d.order[0].dir;
+                                if (d.order[0].dir == 'asc') {
+                                    d.sort = 'devices.name';
+                                } else {
+                                    d.sort = '-devices.name';
+                                }
+                            }
+                            if (d.columns[d.order[0].column].data == 'attributes.message') {
+                                // d.sort = 'discovery_log.message ' + d.order[0].dir;
+                                ipSort.column = 'discovery_log.message';
+                                ipSort.direction = d.order[0].dir;
+                                if (d.order[0].dir == 'asc') {
+                                    d.sort = 'discovery_log.message';
+                                } else {
+                                    d.sort = '-discovery_log.message';
+                                }
+                            }
+                            if (d.columns[d.order[0].column].data == 'attributes.command_time_to_execute') {
+                                // d.sort = 'discovery_log.command_time_to_execute ' + d.order[0].dir;
+                                ipSort.column = 'discovery_log.command_time_to_execute';
+                                ipSort.direction = d.order[0].dir;
+                                if (d.order[0].dir == 'asc') {
+                                    d.sort = 'discovery_log.command_time_to_execute';
+                                } else {
+                                    d.sort = '-discovery_log.command_time_to_execute';
+                                }
+                            }
                         } else {
-                            data = '<span class="text- "><strong>' + data + '</strong></span>';
-                        }
-                        return data;
-                    }
-                },
-                { data: 'attributes.message',
-                    render: function (message, type, row, meta) {
-                        if (row.attributes.command != '') {
-                            message = message + '<br><strong><em><?= __('Command') ?>: </em></strong><code>' + row.attributes.command + '</code>';
-                        }
-                        if (row.attributes.command_output != '') {
-                            if (row.attributes.message == 'Nmap Command (Custom TCP Ports)' || row.attributes.message == 'Nmap Command (Custom UDP Ports)') {
-                                /* Open */
-                                row.attributes.command_output = row.attributes.command_output.replace(/ open /g, ' <a href="<?= url_to('helpFAQ') . '?name=Nmap Port Scanning Responses' ?>">open</a> ');
-                                /* Closed */
-                                row.attributes.command_output = row.attributes.command_output.replace(/ closed /g, ' <a href="<?= url_to('helpFAQ') . '?name=Nmap Port Scanning Responses' ?>">closed</a> ');
-                                /* Filterred */
-                                row.attributes.command_output = row.attributes.command_output.replace(/ filtered /g, ' <a href="<?= url_to('helpFAQ') . '?name=Nmap Port Scanning Responses' ?>">filtered</a> ');
-                                /* Unfiltered */
-                                row.attributes.command_output = row.attributes.command_output.replace(/ uniltered /g, ' <a href="<?= url_to('helpFAQ') . '?name=Nmap Port Scanning Responses' ?>">unfiltered</a> ');
-                                /* Open|Filtered */
-                                row.attributes.command_output = row.attributes.command_output.replace(/ open\|filtered /g, ' <a href="<?= url_to('helpFAQ') . '?name=Nmap Port Scanning Responses' ?>">open|filtered</a> ');
-                                /* Closed|Filtered */
-                                row.attributes.command_output = row.attributes.command_output.replace(/ closed\|filtered /g, ' <a href="<?= url_to('helpFAQ') . '?name=Nmap Port Scanning Responses' ?>">closed|filtered</a> ');
-                            }
-                            message = message + '<br><strong><em><?= __('Output') ?>: </em></strong><span class="output">' + row.attributes.command_output + '</span>';
-                        }
-                        if (row.attributes.message.includes('Nmap Command') || row.attributes.message.includes('IP Scan finish') || row.attributes.message.includes('IP Audit finish') || row.attributes.message.includes('Updating discovery log with non-responding IPs') || row.attributes.message.includes('Nmap response scanning completed')) {
-                            if (row.attributes.command_time_to_execute != '0.000000') {
-                                message = message + '<br><strong><em><?= __('Time to Execute') ?>: </em></strong><span class="output">' + row.attributes.command_time_to_execute + '</span>';
+                            if (ipSort.direction == 'asc') {
+                                // d.sort = ipSort.column + ' desc';
+                                d.sort = '-' + ipSort.column;
+                                ipSort.direction = 'desc';
+                            } else {
+                                // d.sort = ipSort.column + ' asc';
+                                d.sort = ipSort.column;
+                                ipSort.direction = 'asc';
                             }
                         }
-                        return message;
+                        delete d.start;
+                        delete d.length;
+                        delete d.order;
+                        delete d.columns;
                     }
                 },
-            ],
-            columnDefs: [
-                {className: "text-center", target: 0, width: "10em"},
-                {className: "text-center", target: 1, width: "10em"},
-                {className: "text-start", target: 2},
-                {className: "text-start", target: 3, width: "10em"},
-                {className: "text-start", title: "Status", target: 4, width: "10em"},
-                {className: "text-start", target: 5}
-            ],
-            info: true,
-            language: {
-                infoFiltered: ""
-            },
-            layout: {
-                bottomStart: {
-                    info: {
-                        text: 'Showing _START_ to _END_ of _TOTAL_ entries'
-                    }
+                autoWidth: false,
+                columns: [
+                    { data: 'attributes.view',
+                        render: function (data, type, row, meta) {
+                            if (row.attributes.device_id > 0) {
+                                return "<a title=\"View\" role=\"button\" class=\"btn btn-sm btn-primary\" href=\"<?= base_url() ?>index.php/devices/" + row.attributes.device_id + "\"><span style=\"width:1rem;\" title=\"View\" class=\"icon-eye\" aria-hidden=\"true\"></span></a>";
+                            } else {
+                                return "";
+                            }
+                        }
+                    },
+                    { data: 'attributes.icon',
+                        render: function (icon) {
+                            return icon
+                                ? '<img style="width:30px;" src="<?= base_url() ?>device_images/' + icon + '.svg">'
+                                : '';
+                        }
+                    },
+                    { data: 'attributes.ip',
+                        render: function (data, type, row, meta) {
+                            if (row.attributes.ip_padded) {
+                                data = '<span style="display:none;">' + row.attributes.ip_padded + '</span>' + data;
+                            }
+                            if (row.attributes.type) {
+                                if (row.attributes.type == 'unknown') {
+                                    data = data + '<br><span class="text-danger"><i>' + row.attributes.type + '</i></span>';
+                                } else if (row.attributes.type == 'unclassified') {
+                                    data = data + '<br><span class="text-warning"><i>' + row.attributes.type + '</i></span>';
+                                } else {
+                                    data = data + '<br><span class="text-success"><i>' + row.attributes.type + '</i></span>';
+                                }
+                            }
+                            return data;
+                        }
+                    },
+                    { data: 'attributes.name',
+                        render: function (data, type, row, meta) {
+                            return data
+                                ? data + '<br><span class="text-primary"><i>' + row.attributes.domain + '</i></span>'
+                                : data;
+                        }
+                    },
+                    { data: 'attributes.message' },
+                    { data: 'attributes.command_time_to_execute',
+                        render: function (data, type, row, meta) {
+                            return data + ' seconds';
+                        }
+                    },
+                ],
+                columnDefs: [
+                    {className: "text-center", target: 0, width: "10em"},
+                    {className: "text-center", target: 1, width: "10em"},
+                    {className: "text-start", target: 2},
+                    {className: "text-start", target: 3},
+                    {className: "text-start", target: 4},
+                    {className: "text-start", target: 5, width: "15em", title: "Duration"}
+                ],
+                info: true,
+                language: {
+                    infoFiltered: ""
                 },
-                bottomEnd: {
-                    paging: {
-                        type: 'full_numbers'
+                layout: {
+                    bottomStart: {
+                        info: {
+                            text: 'Showing _START_ to _END_ of _TOTAL_ entries'
+                        }
+                    },
+                    bottomEnd: {
+                        paging: {
+                            type: 'full_numbers'
+                        }
                     }
                 }
-            }
-        });
+            });
 
-        /* This stops the sort when clicking in a search text box in the table header */
-        $('.dataTablesearchField').on('click', function(e) { e.stopPropagation() });
+            /* This stops the sort when clicking in a search text box in the table header */
+            $('.dataTablesearchFieldIP').on('click', function(e) { e.stopPropagation() });
 
-        /* And don't automatically send the result - wait for the user to press <enter> / <return> */
-        $(".dataTablesearchField").on("keypress", function (evtObj) {
-            if (evtObj.keyCode == 13) {
-                myDataTable.ajax.reload();
-            }
-        });
+            /* And don't automatically send the result - wait for the user to press <enter> / <return> */
+            $(".dataTablesearchFieldIP").on("keypress", function (evtObj) {
+                if (evtObj.keyCode == 13) {
+                    myDataTableIP.ajax.reload();
+                }
+            });
 
-        myDataTable.on('xhr', function (e, settings, json) {
-            if (json.warning) {
-                $("#logs_notice").show();
-                $("#logs_alert").html(json.warning + '<button id="logs_button" type="button" class="btn-close" aria-label="Close"></button>');
-                $("#logs_alert").show();
-            } else {
-                $("#logs_alert").hide();
-            }
-        });
-        $(document).on('click', '#logs_button', function() {
-            $(this).parent().hide();
-        });
-
+            myDataTableIP.on('xhr', function (e, settings, json) {
+                if (json.warning) {
+                    $("#ip_notice").show();
+                    $("#ip_alert").html(json.warning + '<button id="ip_button" type="button" class="btn-close" aria-label="Close"></button>');
+                    $("#ip_alert").show();
+                } else {
+                    $("#ip_alert").hide();
+                }
+            });
+            $(document).on('click', '#ip_button', function() {
+                $(this).parent().hide();
+            });
 
 
 
-        let ipSort = {};
-        var myDataTableIP = new DataTable('.dataTableIP', {
-            lengthChange: true,
-            lengthMenu: [ [25, 50, <?= $config->page_size ?>], [25, 50, 'All'] ],
-            order: [[ 1, 'asc' ]],
-            pageLength: 25,
-            paging: true,
-            processing: true,
-            searching: true,
-            search: {
-                return: true
-            },
-            serverSide: true,
-            ajax: {
-                url: '<?= base_url() ?>index.php/discovery_log?discovery_id=<?= $meta->id ?>&groupby=discovery_log.ip&format=json',
-                dataSrc: 'data',
-                data: function (d) {
-                    d.limit = d.length;
-                    d.offset = d.start;
-<?php foreach ($ip_data_order as $key) { ?>
-                    if ($("#allip<?= $key ?>").val() != '') {
-                        d.<?= $key ?> = $("#allip<?= $key ?>").val();
-                    }
-<?php } ?>
-                    if (d.order[0]) {
-                        if (d.columns[d.order[0].column].data == 'attributes.ip') {
-                            // d.sort = 'discovery_log.ip ' + d.order[0].dir;
-                            ipSort.column = 'discovery_log.ip';
-                            ipSort.direction = d.order[0].dir;
-                            if (d.order[0].dir == 'asc') {
-                                d.sort = 'discovery_log.ip';
-                            } else {
-                                d.sort = '-discovery_log.ip';
-                            }
+
+
+            let devSort = {};
+            var myDataTableDev = new DataTable('.dataTableDev', {
+                lengthChange: true,
+                lengthMenu: [ [25, 50, <?= $config->page_size ?>], [25, 50, 'All'] ],
+                order: [[ 1, 'asc' ]],
+                pageLength: 25,
+                paging: true,
+                processing: true,
+                searching: true,
+                search: {
+                    return: true
+                },
+                serverSide: true,
+                deferLoading: 0,
+                devSort: {},
+                ajax: {
+                    url: '<?= base_url() ?>index.php/discovery_log?discovery_id=<?= $meta->id ?>&groupby=discovery_log.device_id&format=json',
+                    dataSrc: 'data',
+                    data: function (d) {
+                        d.limit = d.length;
+                        d.offset = d.start;
+                        <?php foreach ($device_data_order as $key) { ?>
+                        if ($("#alldev<?= $key ?>").val() != '') {
+                            d.<?= $key ?> = $("#alldev<?= $key ?>").val();
                         }
-                        if (d.columns[d.order[0].column].data == 'attributes.name') {
-                            // d.sort = 'devices.name ' + d.order[0].dir;
-                            ipSort.column = 'devices.name';
-                            ipSort.direction = d.order[0].dir;
-                            if (d.order[0].dir == 'asc') {
-                                d.sort = 'devices.name';
-                            } else {
-                                d.sort = '-devices.name';
+                        <?php } ?>
+
+                        if (d.order[0]) {
+                            if (d.columns[d.order[0].column].data == 'attributes.ip') {
+                                // d.sort = 'discovery_log.ip ' + d.order[0].dir;
+                                devSort.column = 'discovery_log.ip';
+                                devSort.direction = d.order[0].dir;
+                                if (d.order[0].dir == 'asc') {
+                                    d.sort = 'discovery_log.ip';
+                                } else {
+                                    d.sort = '-discovery_log.ip';
+                                }
                             }
-                        }
-                        if (d.columns[d.order[0].column].data == 'attributes.message') {
-                            // d.sort = 'discovery_log.message ' + d.order[0].dir;
-                            ipSort.column = 'discovery_log.message';
-                            ipSort.direction = d.order[0].dir;
-                            if (d.order[0].dir == 'asc') {
-                                d.sort = 'discovery_log.message';
-                            } else {
-                                d.sort = '-discovery_log.message';
+                            if (d.columns[d.order[0].column].data == 'attributes.name') {
+                                // d.sort = 'devices.name ' + d.order[0].dir;
+                                devSort.column = 'devices.name';
+                                devSort.direction = d.order[0].dir;
+                                if (d.order[0].dir == 'asc') {
+                                    d.sort = 'devices.name';
+                                } else {
+                                    d.sort = '-devices.name';
+                                }
                             }
-                        }
-                        if (d.columns[d.order[0].column].data == 'attributes.command_time_to_execute') {
-                            // d.sort = 'discovery_log.command_time_to_execute ' + d.order[0].dir;
-                            ipSort.column = 'discovery_log.command_time_to_execute';
-                            ipSort.direction = d.order[0].dir;
-                            if (d.order[0].dir == 'asc') {
-                                d.sort = 'discovery_log.command_time_to_execute';
-                            } else {
-                                d.sort = '-discovery_log.command_time_to_execute';
+                            if (d.columns[d.order[0].column].data == 'attributes.message') {
+                                // d.sort = 'discovery_log.message ' + d.order[0].dir;
+                                devSort.column = 'discovery_log.message';
+                                devSort.direction = d.order[0].dir;
+                                if (d.order[0].dir == 'asc') {
+                                    d.sort = 'discovery_log.message';
+                                } else {
+                                    d.sort = '-discovery_log.message';
+                                }
                             }
-                        }
-                    } else {
-                        if (ipSort.direction == 'asc') {
-                            // d.sort = ipSort.column + ' desc';
-                            d.sort = '-' + ipSort.column;
-                            ipSort.direction = 'desc';
+                            if (d.columns[d.order[0].column].data == 'attributes.command_time_to_execute') {
+                                // d.sort = 'discovery_log.command_time_to_execute ' + d.order[0].dir;
+                                devSort.column = 'discovery_log.command_time_to_execute';
+                                devSort.direction = d.order[0].dir;
+                                if (d.order[0].dir == 'asc') {
+                                    d.sort = 'discovery_log.command_time_to_execute';
+                                } else {
+                                    d.sort = '-discovery_log.command_time_to_execute';
+                                }
+                            }
                         } else {
-                            // d.sort = ipSort.column + ' asc';
-                            d.sort = ipSort.column;
-                            ipSort.direction = 'asc';
-                        }
-                    }
-                    delete d.start;
-                    delete d.length;
-                    delete d.order;
-                    delete d.columns;
-                }
-            },
-            autoWidth: false,
-            columns: [
-                { data: 'attributes.view', 
-                    render: function (data, type, row, meta) {
-                        if (row.attributes.device_id > 0) {
-                            return "<a title=\"View\" role=\"button\" class=\"btn btn-sm btn-primary\" href=\"<?= base_url() ?>index.php/devices/" + row.attributes.device_id + "\"><span style=\"width:1rem;\" title=\"View\" class=\"icon-eye\" aria-hidden=\"true\"></span></a>";
-                        } else {
-                            return "";
-                        }
-                    }
-                },
-                { data: 'attributes.icon',
-                    render: function (icon) {
-                        return icon
-                            ? '<img style="width:30px;" src="<?= base_url() ?>device_images/' + icon + '.svg">'
-                            : '';
-                    }
-                },
-                { data: 'attributes.ip',
-                    render: function (data, type, row, meta) {
-                        if (row.attributes.ip_padded) {
-                            data = '<span style="display:none;">' + row.attributes.ip_padded + '</span>' + data;
-                        }
-                        if (row.attributes.type) {
-                            if (row.attributes.type == 'unknown') {
-                                data = data + '<br><span class="text-danger"><i>' + row.attributes.type + '</i></span>';
-                            } else if (row.attributes.type == 'unclassified') {
-                                data = data + '<br><span class="text-warning"><i>' + row.attributes.type + '</i></span>';
+                            if (devSort.direction == 'asc') {
+                                // d.sort = devSort.column + ' desc';
+                                d.sort = '-' + devSort.column;
+                                devSort.direction = 'desc';
                             } else {
-                                data = data + '<br><span class="text-success"><i>' + row.attributes.type + '</i></span>';
+                                // d.sort = devSort.column + ' asc';
+                                d.sort = devSort.column;
+                                devSort.direction = 'asc';
                             }
                         }
-                        return data;
+                        delete d.start;
+                        delete d.length;
+                        delete d.order;
+                        delete d.columns;
                     }
                 },
-                { data: 'attributes.name',
-                    render: function (data, type, row, meta) {
-                        return data
-                            ? data + '<br><span class="text-primary"><i>' + row.attributes.domain + '</i></span>'
-                            : data;
-                    }
-                },
-                { data: 'attributes.message' },
-                { data: 'attributes.command_time_to_execute',
-                    render: function (data, type, row, meta) {
-                        return data + ' seconds';
-                    }
-                },
-            ],
-            columnDefs: [
-                {className: "text-center", target: 0, width: "10em"},
-                {className: "text-center", target: 1, width: "10em"},
-                {className: "text-start", target: 2},
-                {className: "text-start", target: 3},
-                {className: "text-start", target: 4},
-                {className: "text-start", target: 5, width: "15em", title: "Duration"}
-            ],
-            info: true,
-            language: {
-                infoFiltered: ""
-            },
-            layout: {
-                bottomStart: {
-                    info: {
-                        text: 'Showing _START_ to _END_ of _TOTAL_ entries'
-                    }
-                },
-                bottomEnd: {
-                    paging: {
-                        type: 'full_numbers'
-                    }
-                }
-            }
-        });
-
-        /* This stops the sort when clicking in a search text box in the table header */
-        $('.dataTablesearchFieldIP').on('click', function(e) { e.stopPropagation() });
-
-        /* And don't automatically send the result - wait for the user to press <enter> / <return> */
-        $(".dataTablesearchFieldIP").on("keypress", function (evtObj) {
-            if (evtObj.keyCode == 13) {
-                myDataTableIP.ajax.reload();
-            }
-        });
-
-        myDataTableIP.on('xhr', function (e, settings, json) {
-            if (json.warning) {
-                $("#ip_notice").show();
-                $("#ip_alert").html(json.warning + '<button id="dev_button" type="button" class="btn-close" aria-label="Close"></button>');
-                $("#ip_alert").show();
-            } else {
-                $("#ip_alert").hide();
-            }
-        });
-        $(document).on('click', '#ip_button', function() {
-            $(this).parent().hide();
-        });
-
-
-
-
-
-        let devSort = {};
-        var myDataTableDev = new DataTable('.dataTableDev', {
-            lengthChange: true,
-            lengthMenu: [ [25, 50, <?= $config->page_size ?>], [25, 50, 'All'] ],
-            order: [[ 1, 'asc' ]],
-            pageLength: 25,
-            paging: true,
-            processing: true,
-            searching: true,
-            search: {
-                return: true
-            },
-            serverSide: true,
-            devSort: {},
-            ajax: {
-                url: '<?= base_url() ?>index.php/discovery_log?discovery_id=<?= $meta->id ?>&groupby=discovery_log.device_id&format=json',
-                dataSrc: 'data',
-                data: function (d) {
-                    d.limit = d.length;
-                    d.offset = d.start;
-<?php foreach ($device_data_order as $key) { ?>
-                    if ($("#alldev<?= $key ?>").val() != '') {
-                        d.<?= $key ?> = $("#alldev<?= $key ?>").val();
-                    }
-<?php } ?>
-
-                    if (d.order[0]) {
-                        if (d.columns[d.order[0].column].data == 'attributes.ip') {
-                            // d.sort = 'discovery_log.ip ' + d.order[0].dir;
-                            devSort.column = 'discovery_log.ip';
-                            devSort.direction = d.order[0].dir;
-                            if (d.order[0].dir == 'asc') {
-                                d.sort = 'discovery_log.ip';
-                            } else {
-                                d.sort = '-discovery_log.ip';
+                autoWidth: false,
+                columns: [
+                    { data: 'attributes.view',
+                        render: function (data, type, row, meta) {
+                            return "<a title=\"View\" role=\"button\" class=\"btn btn-sm btn-primary\" href=\"<?= base_url() ?>index.php/devices/" + row.attributes.id + "\"><span style=\"width:1rem;\" title=\"View\" class=\"icon-eye\" aria-hidden=\"true\"></span></a>";
+                        }
+                    },
+                    { data: 'attributes.icon',
+                        render: function (icon) {
+                            return icon
+                                ? '<img style="width:42px;" src="<?= base_url() ?>device_images/' + icon + '.svg">'
+                                : '';
+                        }
+                    },
+                    { data: 'attributes.ip',
+                        render: function (data, type, row, meta) {
+                            if (row.attributes.ip_padded) {
+                                data = '<span style="display:none;">' + row.attributes.ip_padded + '</span>' + data;
                             }
-                        }
-                        if (d.columns[d.order[0].column].data == 'attributes.name') {
-                            // d.sort = 'devices.name ' + d.order[0].dir;
-                            devSort.column = 'devices.name';
-                            devSort.direction = d.order[0].dir;
-                            if (d.order[0].dir == 'asc') {
-                                d.sort = 'devices.name';
-                            } else {
-                                d.sort = '-devices.name';
+                            if (row.attributes.type) {
+                                if (row.attributes.type == 'unknown') {
+                                    data = data + '<br><span class="text-danger"><i>' + row.attributes.type + '</i></span>';
+                                } else if (row.attributes.type == 'unclassified') {
+                                    data = data + '<br><span class="text-warning"><i>' + row.attributes.type + '</i></span>';
+                                } else {
+                                    data = data + '<br><span class="text-success"><i>' + row.attributes.type + '</i></span>';
+                                }
                             }
+                            return data;
                         }
-                        if (d.columns[d.order[0].column].data == 'attributes.message') {
-                            // d.sort = 'discovery_log.message ' + d.order[0].dir;
-                            devSort.column = 'discovery_log.message';
-                            devSort.direction = d.order[0].dir;
-                            if (d.order[0].dir == 'asc') {
-                                d.sort = 'discovery_log.message';
-                            } else {
-                                d.sort = '-discovery_log.message';
-                            }
+                    },
+                    { data: 'attributes.name',
+                        render: function (data, type, row, meta) {
+                            return data
+                                ? data + '<br><span class="text-primary"><i>' + row.attributes.domain + '</i></span>'
+                                : data;
                         }
-                        if (d.columns[d.order[0].column].data == 'attributes.command_time_to_execute') {
-                            // d.sort = 'discovery_log.command_time_to_execute ' + d.order[0].dir;
-                            devSort.column = 'discovery_log.command_time_to_execute';
-                            devSort.direction = d.order[0].dir;
-                            if (d.order[0].dir == 'asc') {
-                                d.sort = 'discovery_log.command_time_to_execute';
-                            } else {
-                                d.sort = '-discovery_log.command_time_to_execute';
-                            }
+                    },
+                    { data: 'attributes.message' },
+                    { data: 'attributes.command_time_to_execute',
+                        render: function (data, type, row, meta) {
+                            return data;
                         }
-                    } else {
-                        if (devSort.direction == 'asc') {
-                            // d.sort = devSort.column + ' desc';
-                            d.sort = '-' + devSort.column;
-                            devSort.direction = 'desc';
-                        } else {
-                            // d.sort = devSort.column + ' asc';
-                            d.sort = devSort.column;
-                            devSort.direction = 'asc';
+                    },
+                ],
+                columnDefs: [
+                    {className: "text-center", target: 0, width: "10em"},
+                    {className: "text-center", target: 1, width: "10em"},
+                    {className: "text-start", target: 2},
+                    {className: "text-start", target: 3},
+                    {className: "text-start", target: 4},
+                    {className: "text-start", target: 5, width: "15em", title: "Duration (h:m:s)"}
+                ],
+                info: true,
+                language: {
+                    infoFiltered: ""
+                },
+                layout: {
+                    bottomStart: {
+                        info: {
+                            text: 'Showing _START_ to _END_ of _TOTAL_ entries'
                         }
-                    }
-                    delete d.start;
-                    delete d.length;
-                    delete d.order;
-                    delete d.columns;
-                }
-            },
-            autoWidth: false,
-            columns: [
-                { data: 'attributes.view', 
-                    render: function (data, type, row, meta) {
-                        return "<a title=\"View\" role=\"button\" class=\"btn btn-sm btn-primary\" href=\"<?= base_url() ?>index.php/devices/" + row.attributes.id + "\"><span style=\"width:1rem;\" title=\"View\" class=\"icon-eye\" aria-hidden=\"true\"></span></a>";
-                    }
-                },
-                { data: 'attributes.icon',
-                    render: function (icon) {
-                        return icon
-                            ? '<img style="width:42px;" src="<?= base_url() ?>device_images/' + icon + '.svg">'
-                            : '';
-                    }
-                },
-                { data: 'attributes.ip',
-                    render: function (data, type, row, meta) {
-                        if (row.attributes.ip_padded) {
-                            data = '<span style="display:none;">' + row.attributes.ip_padded + '</span>' + data;
+                    },
+                    bottomEnd: {
+                        paging: {
+                            type: 'full_numbers'
                         }
-                        if (row.attributes.type) {
-                            if (row.attributes.type == 'unknown') {
-                                data = data + '<br><span class="text-danger"><i>' + row.attributes.type + '</i></span>';
-                            } else if (row.attributes.type == 'unclassified') {
-                                data = data + '<br><span class="text-warning"><i>' + row.attributes.type + '</i></span>';
-                            } else {
-                                data = data + '<br><span class="text-success"><i>' + row.attributes.type + '</i></span>';
-                            }
-                        }
-                        return data;
-                    }
-                },
-                { data: 'attributes.name',
-                    render: function (data, type, row, meta) {
-                        return data
-                            ? data + '<br><span class="text-primary"><i>' + row.attributes.domain + '</i></span>'
-                            : data;
-                    }
-                },
-                { data: 'attributes.message' },
-                { data: 'attributes.command_time_to_execute',
-                    render: function (data, type, row, meta) {
-                        return data;
-                    }
-                },
-            ],
-            columnDefs: [
-                {className: "text-center", target: 0, width: "10em"},
-                {className: "text-center", target: 1, width: "10em"},
-                {className: "text-start", target: 2},
-                {className: "text-start", target: 3},
-                {className: "text-start", target: 4},
-                {className: "text-start", target: 5, width: "15em", title: "Duration (h:m:s)"}
-            ],
-            info: true,
-            language: {
-                infoFiltered: ""
-            },
-            layout: {
-                bottomStart: {
-                    info: {
-                        text: 'Showing _START_ to _END_ of _TOTAL_ entries'
-                    }
-                },
-                bottomEnd: {
-                    paging: {
-                        type: 'full_numbers'
                     }
                 }
-            }
-        });
+            });
 
-        /* This stops the sort when clicking in a search text box in the table header */
-        $('.dataTablesearchFieldDev').on('click', function(e) { e.stopPropagation() });
+            /* This stops the sort when clicking in a search text box in the table header */
+            $('.dataTablesearchFieldDev').on('click', function(e) { e.stopPropagation() });
 
-        /* And don't automatically send the result - wait for the user to press <enter> / <return> */
-        $(".dataTablesearchFieldDev").on("keypress", function (evtObj) {
-            if (evtObj.keyCode == 13) {
-                myDataTableDev.ajax.reload();
-            }
-        });
+            /* And don't automatically send the result - wait for the user to press <enter> / <return> */
+            $(".dataTablesearchFieldDev").on("keypress", function (evtObj) {
+                if (evtObj.keyCode == 13) {
+                    myDataTableDev.ajax.reload();
+                }
+            });
 
-        myDataTableDev.on('xhr', function (e, settings, json) {
-            if (json.warning) {
-                $("#dev_notice").show();
-                $("#dev_alert").html(json.warning + '<button id="dev_button" type="button" class="btn-close" aria-label="Close"></button>');
-                $("#dev_alert").show();
-            } else {
-                $("#dev_alert").hide();
-            }
+            myDataTableDev.on('xhr', function (e, settings, json) {
+                if (json.warning) {
+                    $("#dev_notice").show();
+                    $("#dev_alert").html(json.warning + '<button id="dev_button" type="button" class="btn-close" aria-label="Close"></button>');
+                    $("#dev_alert").show();
+                } else {
+                    $("#dev_alert").hide();
+                }
+            });
+            $(document).on('click', '#dev_button', function() {
+                $(this).parent().hide();
+            });
         });
-        $(document).on('click', '#dev_button', function() {
-            $(this).parent().hide();
-        });
-    });
-}
+    }
 </script>
