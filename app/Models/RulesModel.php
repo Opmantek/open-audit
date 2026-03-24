@@ -439,7 +439,7 @@ class RulesModel extends BaseModel
                             break;
 
                         case 'in':
-                            $values = explode(',', $input->value);
+                            $values = array_map('trim', explode(',', $input->value));
                             if (isset($device->{$input->attribute}) and in_array((string)$device->{$input->attribute}, $values)) {
                                 $log->message .= " Hit on $input->attribute " . $device->{$input->attribute} . " in " . $input->value;
                                 $hit++;
