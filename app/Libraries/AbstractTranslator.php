@@ -29,13 +29,13 @@ abstract class AbstractTranslator
         'lt' => 'Lithuanian',
         'lv' => 'Latvian',
         'nl' => 'Dutch',
-        'pb' => 'Punjabi',
+        'pa' => 'Punjabi',
         'pl' => 'Polish',
         'ru' => 'Russian',
         'sq' => 'Albanian',
         'tr' => 'Turkish',
         'uk' => 'Ukrainian',
-        'zh' => 'Chinese'
+        'zh-CN' => 'Chinese'
     ];
 
     private string $outputPath = APPPATH . 'Views/lang';
