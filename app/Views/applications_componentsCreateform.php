@@ -572,8 +572,9 @@ window.onload = function () {
         $('.hostname_select').change(function(){
             var deviceId = $(this).val();
             $target = $(this).data('target');
+            $field = $("#data\\[attributes\\]\\[" + $target + "_type\\]").val();
             $("#data\\[attributes\\]\\[" + $target + "_internal_id_a\\]").val(deviceId);
-            getDevice(deviceId, 'container', $target);
+            getDevice(deviceId, $field, $target);
         });
 
         // Retrieve the device list once we click Search and activate the "device_id" select
@@ -589,12 +590,12 @@ window.onload = function () {
             })
             .done(function(data) {
                 if (data.data[0]) {
-                    $("#hostname_" + $target).val(data.data[0].attributes.name);
                     $('#data\\[attributes\\]\\[' + $target + '_internal_id_b\\]').find('option').remove().end();
+
                     if (data.data.length === 1) {
+                        $("#hostname_" + $target).val(data.data[0].attributes.name);
                         $("#data\\[attributes\\]\\[" + $target + "_internal_id_a\\]").val(data.data[0].id);
                         getDevice(data.data[0].id, $include, $target);
-
                     } else if (data.data.length > 1) {
                         $('#' + $target + '_hostname_select').find('option').remove().end();
                         $('#' + $target + '_hostname_select').append($('<option></option>').val("").html("Choose"));
@@ -644,7 +645,6 @@ window.onload = function () {
                 console.log("search fail");
             });
         });
-
 
         function getDevice($id, $field, $target) {
             $include = 'all';

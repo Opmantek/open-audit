@@ -143,6 +143,8 @@ public/aws_icons/*
 public/azure_icons/*
 
 .claude/
+.CLAUDE.md
+CLAUDE.md
 .phpactor.json
 writable/CookieSaver.txt
 

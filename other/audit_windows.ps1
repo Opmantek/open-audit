@@ -1377,6 +1377,9 @@ if ($skip_sections.Contains("network,") -eq $false) {
                 $item.connection = $_.NetConnectionID
                 $item.connection_status = $_.NetConnectionStatus
                 $item.speed = if ($_.MaxSpeed) { [int]$_.MaxSpeed } else { 0 }
+                if ($item.speed -eq 0) {
+                    $item.speed = if ($_.Speed) { [int]$_.Speed } else { 0 }
+                }
                 if ($item.connection_status -eq 0 ) { $item.connection_status = "Disconnected" }
                 if ($item.connection_status -eq 1 ) { $item.connection_status = "Connecting" }
                 if ($item.connection_status -eq 2 ) { $item.connection_status = "Connected" }

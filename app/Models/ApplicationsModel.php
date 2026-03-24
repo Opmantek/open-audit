@@ -83,7 +83,7 @@ class ApplicationsModel extends BaseModel
     public function delete($id = null, bool $purge = false): bool
     {
         $sql = "DELETE FROM applications_components WHERE application_id = ?";
-        $this->db->query($sql);
+        $this->db->query($sql, [$id]);
 
         $this->builder->delete(['id' => intval($id)]);
         if ($this->sqlError($this->db->error())) {
