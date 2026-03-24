@@ -229,180 +229,180 @@ class DatabaseModel extends BaseModel
         $db = db_connect();
         $instance = & get_instance();
 
-        if (intval(config('Openaudit')->internal_version) < 20190214) {
+        if (intval(config('OpenAudit')->internal_version) < 20190214) {
             # upgrade for 3.0.0
             include "db_upgrades/db_3.0.0.php";
         }
 
-        if (intval(config('Openaudit')->internal_version) < 20190301) {
+        if (intval(config('OpenAudit')->internal_version) < 20190301) {
             # upgrade for 3.0.1
             include "db_upgrades/db_3.0.1.php";
         }
 
-        if (intval(config('Openaudit')->internal_version) < 20190401) {
+        if (intval(config('OpenAudit')->internal_version) < 20190401) {
             # upgrade for 3.0.2
             include "db_upgrades/db_3.0.2.php";
         }
 
-        if (intval(config('Openaudit')->internal_version) < 20190512) {
+        if (intval(config('OpenAudit')->internal_version) < 20190512) {
             # upgrade for 3.1.0
             include "db_upgrades/db_3.1.0.php";
         }
 
-        if (intval(config('Openaudit')->internal_version) < 20190810) {
+        if (intval(config('OpenAudit')->internal_version) < 20190810) {
             # upgrade for 3.2.0
             include "db_upgrades/db_3.2.0.php";
         }
 
-        if (intval(config('Openaudit')->internal_version) < 20190923) {
+        if (intval(config('OpenAudit')->internal_version) < 20190923) {
             # upgrade for 3.2.2
             include "db_upgrades/db_3.2.2.php";
         }
 
-        if (intval(config('Openaudit')->internal_version) < 20191010) {
+        if (intval(config('OpenAudit')->internal_version) < 20191010) {
             # upgrade for 3.3.0
             include "db_upgrades/db_3.3.0.php";
         }
 
-        if (intval(config('Openaudit')->internal_version) < 20200620) {
+        if (intval(config('OpenAudit')->internal_version) < 20200620) {
             # upgrade for 3.4.0
             include "db_upgrades/db_3.4.0.php";
         }
 
-        if (intval(config('Openaudit')->internal_version) < 20200810) {
+        if (intval(config('OpenAudit')->internal_version) < 20200810) {
             # upgrade for 3.5.0
             include "db_upgrades/db_3.5.0.php";
         }
 
-        if (intval(config('Openaudit')->internal_version) < 20201012) {
+        if (intval(config('OpenAudit')->internal_version) < 20201012) {
             # upgrade for 3.5.1
             include "db_upgrades/db_3.5.1.php";
         }
 
-        if (intval(config('Openaudit')->internal_version) < 20201115) {
+        if (intval(config('OpenAudit')->internal_version) < 20201115) {
             # upgrade for 3.5.2
             include "db_upgrades/db_3.5.2.php";
         }
 
-        if (intval(config('Openaudit')->internal_version) < 20210104) {
+        if (intval(config('OpenAudit')->internal_version) < 20210104) {
             # upgrade for 3.5.3
             include "db_upgrades/db_3.5.3.php";
         }
 
-        if (intval(config('Openaudit')->internal_version) < 20210126) {
+        if (intval(config('OpenAudit')->internal_version) < 20210126) {
             # upgrade for 3.5.4
             include "db_upgrades/db_3.5.4.php";
         }
 
-        if (intval(config('Openaudit')->internal_version) < 20210512) {
+        if (intval(config('OpenAudit')->internal_version) < 20210512) {
             # upgrade for 4.1.1
             include "db_upgrades/db_4.1.1.php";
         }
 
-        if (intval(config('Openaudit')->internal_version) < 20210620) {
+        if (intval(config('OpenAudit')->internal_version) < 20210620) {
             # upgrade for 4.1.2
             include "db_upgrades/db_4.1.2.php";
         }
 
-        if (intval(config('Openaudit')->internal_version) < 20210810) {
+        if (intval(config('OpenAudit')->internal_version) < 20210810) {
             # upgrade for 4.2.0
             include "db_upgrades/db_4.2.0.php";
         }
 
-        if (intval(config('Openaudit')->internal_version) < 20211112) {
+        if (intval(config('OpenAudit')->internal_version) < 20211112) {
             # upgrade for 4.3.0
             include "db_upgrades/db_4.3.0.php";
         }
 
-        if (intval(config('Openaudit')->internal_version) < 20211213) {
+        if (intval(config('OpenAudit')->internal_version) < 20211213) {
             # upgrade for 4.3.1
             include "db_upgrades/db_4.3.1.php";
         }
 
-        if (intval(config('Openaudit')->internal_version) < 20220321) {
+        if (intval(config('OpenAudit')->internal_version) < 20220321) {
             # upgrade for 4.3.3
             include "db_upgrades/db_4.3.3.php";
         }
 
-        if (intval(config('Openaudit')->internal_version) < 20220620) {
+        if (intval(config('OpenAudit')->internal_version) < 20220620) {
             # upgrade for 4.3.4
             include "db_upgrades/db_4.3.4.php";
         }
 
-        if (intval(config('Openaudit')->internal_version) < 20221130) {
+        if (intval(config('OpenAudit')->internal_version) < 20221130) {
             # upgrade for 4.4.0
             include "db_upgrades/db_4.4.0.php";
         }
 
-        if (intval(config('Openaudit')->internal_version) < 20230615) {
+        if (intval(config('OpenAudit')->internal_version) < 20230615) {
             include "db_upgrades/db_5.0.0.php";
         }
 
-        if (intval(config('Openaudit')->internal_version) < 20231130) {
+        if (intval(config('OpenAudit')->internal_version) < 20231130) {
             include "db_upgrades/db_5.0.1.php";
         }
 
-        if (intval(config('Openaudit')->internal_version) < 20231207) {
+        if (intval(config('OpenAudit')->internal_version) < 20231207) {
             include "db_upgrades/db_5.0.2.php";
         }
 
-        if (intval(config('Openaudit')->internal_version) < 20231219) {
+        if (intval(config('OpenAudit')->internal_version) < 20231219) {
             include "db_upgrades/db_5.0.3.php";
         }
 
-        if (intval(config('Openaudit')->internal_version) < 20240104) {
+        if (intval(config('OpenAudit')->internal_version) < 20240104) {
             include "db_upgrades/db_5.1.0.php";
         }
 
-        if (intval(config('Openaudit')->internal_version) < 20240512) {
+        if (intval(config('OpenAudit')->internal_version) < 20240512) {
             include "db_upgrades/db_5.2.0.php";
         }
 
-        if (intval(config('Openaudit')->internal_version) < 20240620) {
+        if (intval(config('OpenAudit')->internal_version) < 20240620) {
             include "db_upgrades/db_5.2.1.php";
         }
 
-        if (intval(config('Openaudit')->internal_version) < 20240621) {
+        if (intval(config('OpenAudit')->internal_version) < 20240621) {
             include "db_upgrades/db_5.2.2.php";
         }
 
-        if (intval(config('Openaudit')->internal_version) < 20240810) {
+        if (intval(config('OpenAudit')->internal_version) < 20240810) {
             include "db_upgrades/db_5.3.0.php";
         }
 
-        if (intval(config('Openaudit')->internal_version) < 20240822) {
+        if (intval(config('OpenAudit')->internal_version) < 20240822) {
             include "db_upgrades/db_5.4.0.php";
         }
 
-        if (intval(config('Openaudit')->internal_version) < 20241012) {
+        if (intval(config('OpenAudit')->internal_version) < 20241012) {
             include "db_upgrades/db_5.5.0.php";
         }
 
-        if (intval(config('Openaudit')->internal_version) < 20241112) {
+        if (intval(config('OpenAudit')->internal_version) < 20241112) {
             include "db_upgrades/db_5.6.0.php";
         }
 
-        if (intval(config('Openaudit')->internal_version) < 20241130) {
+        if (intval(config('OpenAudit')->internal_version) < 20241130) {
             include "db_upgrades/db_5.6.1.php";
         }
 
-        if (intval(config('Openaudit')->internal_version) < 20250104) {
+        if (intval(config('OpenAudit')->internal_version) < 20250104) {
             include "db_upgrades/db_5.6.2.php";
         }
 
-        if (intval(config('Openaudit')->internal_version) < 20250218) {
+        if (intval(config('OpenAudit')->internal_version) < 20250218) {
             include "db_upgrades/db_5.6.3.php";
         }
 
-        if (intval(config('Openaudit')->internal_version) < 20250305) {
+        if (intval(config('OpenAudit')->internal_version) < 20250305) {
             include "db_upgrades/db_5.6.4.php";
         }
 
-        if (intval(config('Openaudit')->internal_version) < 20250402) {
+        if (intval(config('OpenAudit')->internal_version) < 20250402) {
             include "db_upgrades/db_5.6.5.php";
         }
 
-        if (intval(config('Openaudit')->internal_version) < 20250615) {
+        if (intval(config('OpenAudit')->internal_version) < 20250615) {
             include "db_upgrades/db_6.0.0.php";
 
             log_message('info', 'Retrieving vulnerabilites list');
@@ -425,15 +425,15 @@ class DatabaseModel extends BaseModel
             }
         }
 
-        if (intval(config('Openaudit')->internal_version) < 20251130) {
+        if (intval(config('OpenAudit')->internal_version) < 20251130) {
             include "db_upgrades/db_6.0.1.php";
         }
 
-        if (intval(config('Openaudit')->internal_version) < 20260104) {
+        if (intval(config('OpenAudit')->internal_version) < 20260104) {
             include "db_upgrades/db_6.0.2.php";
         }
 
-        if (intval(config('Openaudit')->internal_version) < 20260218) {
+        if (intval(config('OpenAudit')->internal_version) < 20260218) {
             include "db_upgrades/db_6.1.0.php";
         }
 
@@ -457,9 +457,9 @@ class DatabaseModel extends BaseModel
     {
         $instance = & get_instance();
         $result = new \stdClass();
-        $result->operating_system = (!empty(config('Openaudit')->server_platform)) ? config('Openaudit')->server_platform : '';
-        $result->current_version = (!empty(config('Openaudit')->display_version)) ? config('Openaudit')->display_version : '';
-        $result->new_version = (!empty(config('Openaudit')->displayVersion)) ? config('Openaudit')->displayVersion : '';
+        $result->operating_system = (!empty(config('OpenAudit')->server_platform)) ? config('OpenAudit')->server_platform : '';
+        $result->current_version = (!empty(config('OpenAudit')->display_version)) ? config('OpenAudit')->display_version : '';
+        $result->new_version = (!empty(config('OpenAudit')->displayVersion)) ? config('OpenAudit')->displayVersion : '';
         $result->hostname = php_uname('n');
         $result->database_platform = $this->db->getPlatform();
         $result->database_version = $this->db->getVersion();

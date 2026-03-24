@@ -542,7 +542,7 @@ function check_ip(string $ip = ''): bool
         $instance = & get_instance();
     } else {
         $instance = new stdClass();
-        $instance->config = config('Openaudit');
+        $instance->config = config('OpenAudit');
     }
 
     if ($ip === '127.0.0.1' or $ip === '127.0.1.1') {

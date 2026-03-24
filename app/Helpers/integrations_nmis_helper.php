@@ -75,7 +75,7 @@ if (!function_exists('integrations_pre')) {
             $instance = & get_instance();
         } else {
             $instance = new stdClass();
-            $instance->config = config('Openaudit');
+            $instance->config = config('OpenAudit');
         }
 
         // Get our devices
@@ -1221,7 +1221,7 @@ if (!function_exists('integrations_post')) {
             $instance = & get_instance();
         } else {
             $instance = new stdClass();
-            $instance->config = config('Openaudit');
+            $instance->config = config('OpenAudit');
         }
 
         // Get our devices

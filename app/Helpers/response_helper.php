@@ -33,7 +33,7 @@ if (!function_exists('response_create')) {
             $config = $instance->config;
         }
         if (empty($config)) {
-            $config = config('Openaudit');
+            $config = config('OpenAudit');
         }
         $db = db_connect();
 
@@ -1406,7 +1406,7 @@ if (!function_exists('response_get_properties')) {
             $instance = & get_instance();
         } else {
             $instance = new stdClass();
-            $instance->config = config('Openaudit');
+            $instance->config = config('OpenAudit');
         }
 
         if (!empty($get)) {

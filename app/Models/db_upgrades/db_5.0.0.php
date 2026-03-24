@@ -822,7 +822,7 @@ $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
 
 $email_config_items = array('mail_domain' => 'example.com', 'mail_from' => 'yourmailname@example.com', 'mail_password' => 'your_password', 'mail_server' => 'smtp.example.com', 'mail_server_port' => 25, 'mail_use_tls' => 'true', 'mail_user' => 'your_user_account@example.com');
-$files = array(config('Openaudit')->commercial_dir . '/conf/opCommon.json');
+$files = array(config('OpenAudit')->commercial_dir . '/conf/opCommon.json');
 foreach ($files as $file) {
     if (file_exists($file)) {
         $contents = file_get_contents($file);
@@ -923,5 +923,5 @@ $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 
 $output .= "Upgrade database to 5.0.0 completed.\n\n";
-config('Openaudit')->internal_version = 20230615;
-config('Openaudit')->display_version = '5.0.0';
+config('OpenAudit')->internal_version = 20230615;
+config('OpenAudit')->display_version = '5.0.0';

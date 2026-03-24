@@ -24,7 +24,7 @@ class DiscoveryLogModel extends BaseModel
 
     public function getByIp(?int $id = null): array
     {
-        $config = config('Openaudit');
+        $config = config('OpenAudit');
         $instance = & get_instance();
         $limit = !empty($instance->resp->meta->limit) ? intval($instance->resp->meta->limit) : intval($config->page_size);
         $offset = !empty($instance->resp->meta->offset) ? intval($instance->resp->meta->offset) : 0;
@@ -107,7 +107,7 @@ class DiscoveryLogModel extends BaseModel
 
     public function getByDevice(int $id): array
     {
-        $config = config('Openaudit');
+        $config = config('OpenAudit');
         $instance = & get_instance();
         $limit = !empty($instance->resp->meta->limit) ? intval($instance->resp->meta->limit) : intval($config->page_size);
         $offset = !empty($instance->resp->meta->offset) ? intval($instance->resp->meta->offset) : 0;
@@ -329,7 +329,7 @@ class DiscoveryLogModel extends BaseModel
             $instance = & get_instance();
         } else {
             $instance = new stdClass();
-            $instance->config = config('Openaudit');
+            $instance->config = config('OpenAudit');
         }
 
         if (empty($data)) {

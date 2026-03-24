@@ -236,7 +236,7 @@ if (! function_exists('deviceMatch')) {
             }
         } else {
             $instance = new stdClass();
-            $instance->config = config('Openaudit');
+            $instance->config = config('OpenAudit');
         }
 
         if (empty($instance->config)) {

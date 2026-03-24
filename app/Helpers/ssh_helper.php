@@ -198,7 +198,7 @@ if (! function_exists('scp_get')) {
             $instance = & get_instance();
         } else {
             $instance = new stdClass();
-            $instance->config = config('Openaudit');
+            $instance->config = config('OpenAudit');
         }
 
         $discoveryLogModel = new \App\Models\DiscoveryLogModel();
@@ -762,7 +762,7 @@ if (! function_exists('ssh_audit')) {
             $instance = & get_instance();
         } else {
             $instance = new stdClass();
-            $instance->config = config('Openaudit');
+            $instance->config = config('OpenAudit');
         }
 
         if (empty($parameters->credentials)) {

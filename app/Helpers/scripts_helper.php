@@ -13,7 +13,7 @@ if (!function_exists('scripts_options')) {
             $instance = & get_instance();
         } else {
             $instance = new stdClass();
-            $instance->config = config('Openaudit');
+            $instance->config = config('OpenAudit');
         }
 
         $options = array();

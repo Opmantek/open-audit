@@ -265,10 +265,10 @@ class Database extends BaseController
             if (is_null($item)) {
                 $item = new stdClass();
             }
-            $item->{"Open-AudIT--Commercial--" . config('Openaudit')->display_version} = time();
+            $item->{"Open-AudIT--Commercial--" . config('OpenAudit')->display_version} = time();
             $eula->new_value = json_encode($item);
             $errors = array();
-            \Config\Services::session()->setFlashdata('success', "Database upgraded successfully. New database version is " . config('Openaudit')->display_version . " (" . config('Openaudit')->internal_version . ").");
+            \Config\Services::session()->setFlashdata('success', "Database upgraded successfully. New database version is " . config('OpenAudit')->display_version . " (" . config('OpenAudit')->internal_version . ").");
             $config = new \Config\OpenAudit();
             return view('shared/header', [
                 'config' => $config,

@@ -13,5 +13,5 @@ $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
 
 $output .= "Upgrade database to 5.0.3 completed.\n\n";
-config('Openaudit')->internal_version = 20231219;
-config('Openaudit')->display_version = '5.0.3';
+config('OpenAudit')->internal_version = 20231219;
+config('OpenAudit')->display_version = '5.0.3';
