@@ -101,13 +101,13 @@ foreach ($included['discovery_scan_options'] as $item) {
                 <div class="col-8 offset-2" style="background-color: rgba(var(--bs-body-color-rgb), 0.03);">
                     <ul class="nav nav-pills nav-fill" id="myTab" role="tablist">
                         <?= $summary_button ?>
+                        <?= $devices_button ?>
+                        <?= $issues_button ?>
                         <?= $details_button ?>
                         <?= $scan_op_button ?>
                         <?= $match_o_button ?>
                         <?= $logs_button ?>
                         <?= $all_ips_button ?>
-                        <?= $devices_button ?>
-                        <?= $issues_button ?>
                     </ul>
                 </div>
             </div>
