@@ -55,6 +55,7 @@ if (!empty($config->servers)) {
         <script {csp-script-nonce} defer src="<?= base_url('js/popper.min.js') ?>"></script>
         <script {csp-script-nonce} defer src="<?= base_url('js/bootstrap.bundle.min.js') ?>"></script>
         <script {csp-script-nonce} defer src="<?= base_url('js/datatables.min.js') ?>"></script>
+        <script {csp-script-nonce} defer src="<?= base_url('js/datatables.extra.js') ?>"></script>
         <script {csp-script-nonce} defer src="<?= base_url('js/apexcharts.js') ?>"></script>
         <script {csp-script-nonce} defer src="<?= base_url('js/select2.full.min.js') ?>"></script>
         <script {csp-script-nonce} defer src="<?= base_url('js/open-audit.js') ?>"></script>
@@ -63,6 +64,7 @@ if (!empty($config->servers)) {
         <link href="<?= base_url('css/inter.css') ?>" rel="stylesheet">
         <link href="<?= base_url('css/bootstrap.css') ?>" rel="stylesheet">
         <link href="<?= base_url('css/datatables.min.css') ?>" rel="stylesheet">
+        <link href="<?= base_url('css/datatables.extra.css') ?>" rel="stylesheet">
         <link href="<?= base_url('css/select2.min.css') ?>" rel="stylesheet">
         <link href="<?= base_url('css/select2-bootstrap-5-theme.min.css') ?>" rel="stylesheet">
         <link href="<?= base_url('css/lucide.css') ?>" rel="stylesheet">
