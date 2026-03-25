@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Commands;
 
-use App\Libraries\TranslationRemover;
+use App\Libraries\Translation\TranslationRemover;
 use CodeIgniter\CLI\BaseCommand;
 use CodeIgniter\CLI\CLI;
 

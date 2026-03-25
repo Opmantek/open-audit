@@ -14,48 +14,38 @@ if (php_uname('s') !== 'Windows NT') {
 }
 $files = array_diff(scandir($path), array('.', '..', '.DS_Store'));
 
-$lang["sq"] = "Albanian";
-$lang["ar"] = "Arabic";
-$lang["az"] = "Azerbaijani";
-$lang["bg"] = "Bulgarian";
-$lang["zh"] = "Chinese";
-$lang["cs"] = "Czech";
-$lang["da"] = "Danish";
-$lang["nl"] = "Dutch";
-$lang["en"] = "English";
-$lang["eo"] = "Esperanto";
-$lang["et"] = "Estonian";
-$lang["de"] = "German";
-$lang["el"] = "Greek";
-$lang["fi"] = "Finnish";
-$lang["fr"] = "French";
-$lang["ga"] = "Irish";
-$lang["hi"] = "Hindi";
-$lang["hu"] = "Hungarian";
-$lang["id"] = "Indonesian";
-$lang["it"] = "Italian";
-$lang["ja"] = "Japanese";
-$lang["ko"] = "Korean";
-$lang["lt"] = "Lithuanian";
-$lang["lv"] = "Latvian";
-#$lang["ms"] = "Malay";
-#$lang["nb"] = "Norwegian";
-#$lang["fa"] = "Persian";
-$lang["pb"] = "Portuguese (Brazil)";
-$lang["pl"] = "Polish";
-#$lang["pt"] = "Portuguese";
-#$lang["ro"] = "Romanian";
-$lang["ru"] = "Russian";
-#$lang["sk"] = "Slovak";
-#$lang["sl"] = "Slovenian";
-$lang["es"] = "Spanish";
-#$lang["sv"] = "Swedish";
-#$lang["th"] = "Thai";
-#$lang["tl"] = "Tagalog";
-$lang["tr"] = "Turkish";
-$lang["uk"] = "Ukrainian";
-#$lang["ur"] = "Urdu";
-#$lang["vi"] = "Vietnamese";
+$lang = [
+    'sq' => 'Albanian',
+    'ar' => 'Arabic',
+    'az' => 'Azerbaijani',
+    'bg' => 'Bulgarian',
+    'zh-CN' => 'Chinese',
+    'cs' => 'Czech',
+    'da' => 'Danish',
+    'nl' => 'Dutch',
+    'en' => 'English',
+    'eo' => 'Esperanto',
+    'et' => 'Estonian',
+    'fi' => 'Finnish',
+    'fr' => 'French',
+    'de' => 'German',
+    'el' => 'Greek',
+    'hi' => 'Hindi',
+    'hu' => 'Hungarian',
+    'id' => 'Indonesian',
+    'ga' => 'Irish',
+    'it' => 'Italian',
+    'ja' => 'Japanese',
+    'ko' => 'Korean',
+    'lv' => 'Latvian',
+    'lt' => 'Lithuanian',
+    'pl' => 'Polish',
+    'pa' => 'Punjabi',
+    'ru' => 'Russian',
+    'es' => 'Spanish',
+    'tr' => 'Turkish',
+    'uk' => 'Ukrainian',
+];
 
 ?>
         <main class="container-fluid">
@@ -89,18 +79,11 @@ $lang["uk"] = "Ukrainian";
                                                 echo "<option value='" . $resource->lang . "' selected>" . $resource->lang . "</option>";
                                             }
                                             foreach ($lang as $key => $value) {
-                                                if ($resource->lang !== 'en') {
-                                                    if (file_exists($path . '/' . $key . '.php')) {
-                                                        echo '<option value="' . $key . '">' . __($value) . ' (' . $value . ')</option>';
-                                                    } else {
-                                                        log_message('debug', $path . '/' . $key . '.php does not exist');
-                                                    }
+                                                $fileName = $key === 'en' ? 'default' : $key;
+                                                if (file_exists($path . '/' . $fileName . '.php')) {
+                                                    echo '<option value="' . $key . '">' . __($value) . ' (' . $value . ')</option>';
                                                 } else {
-                                                    if (file_exists($path . '/' . $key . '.php')) {
-                                                        echo '<option value="' . $key . '">' . $value . '</option>';
-                                                    } else {
-                                                        log_message('debug', $path . '/' . $key . '.php does not exist');
-                                                    }
+                                                    log_message('debug', $path . '/' . $fileName . '.php does not exist');
                                                 }
                                             }
                                             ?>

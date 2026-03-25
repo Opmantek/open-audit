@@ -267,6 +267,7 @@ class Logon extends Controller
         if ($user) {
             log_message('info', 'Valid credentials for ' . $username . ' from ' . @$this->request->getIPAddress());
             $session->set('user_id', $user->id);
+            $session->set('user_language', $user->lang ?? 'en');
             if ($format !== 'json') {
                 if (!empty($_POST['url'])) {
                     header('Location: ' . $_POST['url']);

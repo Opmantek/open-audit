@@ -2,9 +2,8 @@
 
 declare(strict_types=1);
 
-namespace App\Libraries;
+namespace App\Libraries\Translation;
 
-use App\Controllers\BaseController;
 use Config\Database;
 use FilesystemIterator;
 use RecursiveDirectoryIterator;
@@ -154,20 +153,6 @@ final class TranslationExtractor
 
     private function extractModelDictionaries(): void
     {
-        $newDictionary = function() {
-            $dictionary = new stdClass();
-            $dictionary->id = 'The identifier column (integer) in the database (read only).';
-            $dictionary->name = 'The name given to this item. Ideally it should be unique.';
-            $dictionary->org_id = 'The Organisation that owns this item. Links to <code>orgs.id</code>.';
-            $dictionary->description = 'Your description of this item.';
-            $dictionary->options = 'A JSON object containing collection specific options.';
-            $dictionary->edited_by = 'The name of the user who last changed or added this item (read only).';
-            $dictionary->edited_date = 'The date this item was changed or added (read only). NOTE - This is the timestamp from the server.';
-            $dictionary->device_id = 'The id of the linked device. Links to <code>devices.id</code>';
-            $dictionary->link = 'For more detailed information, check the Open-AudIT Knowledge Base.';
-            return $dictionary;
-        };
-
         $excluded = [
             'Model.php',
             'BaseModel.php',
@@ -180,6 +165,8 @@ final class TranslationExtractor
             new RecursiveDirectoryIterator(__DIR__ . '/../Models', FilesystemIterator::SKIP_DOTS)
         );
 
+        register_workaround();
+
         foreach ($iterator as $file) {
             if (! $file->isFile() || strtolower($file->getExtension()) !== 'php') {
                 continue;
@@ -190,24 +177,6 @@ final class TranslationExtractor
             }
 
             $modelName = str_replace('.php', '', $file->getBasename());
-            $controllerName = str_replace('Model', '', $modelName);
-            $controllerClass = 'App\\Controllers\\' . $controllerName;
-
-            if (! class_exists($controllerClass)) {
-                continue;
-            }
-
-            $controller = new $controllerClass();
-
-            if (! $controller instanceof BaseController) {
-                continue;
-            }
-
-            // Required due to models reliance on a controller instance
-            register_ci_instance($controller);
-            $instance = & get_instance();
-            $instance->dictionary = $newDictionary();
-
             $model = model('App\\Models\\' . $modelName);
 
             if (! method_exists($model, 'dictionary')) {
@@ -236,6 +205,8 @@ final class TranslationExtractor
                 $this->addTranslation($dictionary->notes);
             }
         }
+
+        deregister_workaround();
     }
 
     private function scanDirectory(string $directory): void

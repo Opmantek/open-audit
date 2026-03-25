@@ -255,6 +255,12 @@ class UsersModel extends BaseModel
         if ($this->sqlError($this->db->error())) {
             return false;
         }
+
+        if (! empty($data->lang)) {
+            $session = session();
+            $session->set('user_language', $data->lang);
+        }
+
         return true;
     }
 
