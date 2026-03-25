@@ -59,10 +59,8 @@ final class TranslationUpdater extends AbstractTranslation
             }
 
             $translations = $languageTranslations;
-            $this->printProgress('en', $code, count($missingTranslations), count($defaultTranslations), 0, 'updating');
-
             [$requests, $hashes] = $this->buildRequests($client, $missingTranslations, $code);
-            [$newTranslations, $failedRequests] = $this->sendRequests($client, $requests, $hashes, $code, count($missingTranslations), 'updating');
+            [$newTranslations, $failedRequests] = $this->sendRequests($client, $requests, $hashes, $code, 0, 'updating');
             $translations += $newTranslations;
 
             echo PHP_EOL;

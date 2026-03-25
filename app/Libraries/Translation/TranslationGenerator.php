@@ -30,8 +30,6 @@ final class TranslationGenerator extends AbstractTranslation
             $processTranslations = array_diff_key($defaultTranslations, $existingTranslations);
 
             $translations = $existingTranslations;
-            $this->printProgress('en', $code, count($existingTranslations), count($defaultTranslations), 0, 'generating');
-
             [$requests, $hashes] = $this->buildRequests($client, $processTranslations, $code);
             [$newTranslations, $failedRequests] = $this->sendRequests($client, $requests, $hashes, $code, count($existingTranslations), 'generating');
             $translations += $newTranslations;

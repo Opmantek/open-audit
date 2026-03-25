@@ -273,7 +273,7 @@ abstract class AbstractTranslation
         int $failed = 0,
         string $label = 'translating'
     ): void {
-        echo sprintf(
+        $message = sprintf(
             "\r[%s] %s to %s: %d / %d (failed: %d)",
             $label,
             $from,
@@ -282,6 +282,8 @@ abstract class AbstractTranslation
             $total,
             $failed
         );
+
+        echo "\r\033[K" . $message;
 
         flush();
     }
