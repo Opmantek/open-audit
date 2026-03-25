@@ -703,6 +703,11 @@ foreach ($included['discovery_scan_options'] as $item) {
                 },
                 serverSide: true,
                 deferLoading: 0,
+                refreshButton: {
+                    tooltip: 'Reload logs',
+                    autoRefreshIfEmpty: true,
+                    autoRefreshInterval: 5000
+                },
                 ajax: {
                     url: '<?= base_url() ?>index.php/discovery_log?discovery_id=<?= $meta->id ?>&format=json',
                     dataSrc: 'data',
