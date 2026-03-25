@@ -35,6 +35,13 @@ final class TranslationUpdater extends AbstractTranslation
             $languageTranslations = include $languageFile;
             $missingTranslations  = array_diff_key($defaultTranslations, $languageTranslations);
             $removedTranslations  = array_diff_key($languageTranslations, $defaultTranslations);
+
+            foreach ($missingTranslations as $hash => $text) {
+                if ($text === '') {
+                    unset($missingTranslations[$hash]);
+                }
+            }
+
             $totalMissing = count($missingTranslations);
             $totalRemoved = count($removedTranslations);
 
@@ -42,12 +49,14 @@ final class TranslationUpdater extends AbstractTranslation
                 continue;
             }
 
-            foreach ($removedTranslations as $index => $value) {
-                unset($languageTranslations[$index]);
-            }
+            if ($totalRemoved > 0) {
+                foreach ($removedTranslations as $index => $value) {
+                    unset($languageTranslations[$index]);
+                }
 
-            $this->printProgress('en', $code, $totalRemoved, $totalRemoved, 0, 'removing');
-            echo PHP_EOL;
+                $this->printProgress('en', $code, $totalRemoved, $totalRemoved, 0, 'removing');
+                echo PHP_EOL;
+            }
 
             $translations = $languageTranslations;
             $this->printProgress('en', $code, count($missingTranslations), count($defaultTranslations), 0, 'updating');
