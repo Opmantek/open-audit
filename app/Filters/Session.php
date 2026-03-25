@@ -2,7 +2,7 @@
 
 namespace App\Filters;
 
-use App\Libraries\Translator;
+use App\Libraries\Translation\Translator;
 use CodeIgniter\Filters\FilterInterface;
 use CodeIgniter\HTTP\RequestInterface;
 use CodeIgniter\HTTP\ResponseInterface;

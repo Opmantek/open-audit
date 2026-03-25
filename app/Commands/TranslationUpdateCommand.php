@@ -4,8 +4,7 @@ declare(strict_types=1);
 
 namespace App\Commands;
 
-use App\Libraries\TranslationGenerator;
-use App\Libraries\TranslationUpdater;
+use App\Libraries\Translation\TranslationUpdater;
 use CodeIgniter\CLI\BaseCommand;
 use CodeIgniter\CLI\CLI;
 
