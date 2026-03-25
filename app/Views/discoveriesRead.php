@@ -1103,7 +1103,7 @@ foreach ($included['discovery_scan_options'] as $item) {
                 serverSide: true,
                 deferLoading: 0,
                 refreshButton: {
-                    tooltip: 'Reload logs',
+                    tooltip: 'Reload devices',
                     autoRefreshIfEmpty: true,
                     autoRefreshInterval: 10000
                 },
