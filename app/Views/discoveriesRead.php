@@ -101,13 +101,13 @@ foreach ($included['discovery_scan_options'] as $item) {
                 <div class="col-8 offset-2" style="background-color: rgba(var(--bs-body-color-rgb), 0.03);">
                     <ul class="nav nav-pills nav-fill" id="myTab" role="tablist">
                         <?= $summary_button ?>
+                        <?= $devices_button ?>
+                        <?= $issues_button ?>
                         <?= $details_button ?>
                         <?= $scan_op_button ?>
                         <?= $match_o_button ?>
                         <?= $logs_button ?>
                         <?= $all_ips_button ?>
-                        <?= $devices_button ?>
-                        <?= $issues_button ?>
                     </ul>
                 </div>
             </div>
@@ -703,6 +703,11 @@ foreach ($included['discovery_scan_options'] as $item) {
                 },
                 serverSide: true,
                 deferLoading: 0,
+                refreshButton: {
+                    tooltip: 'Reload logs',
+                    autoRefreshIfEmpty: true,
+                    autoRefreshInterval: 10000
+                },
                 ajax: {
                     url: '<?= base_url() ?>index.php/discovery_log?discovery_id=<?= $meta->id ?>&format=json',
                     dataSrc: 'data',
@@ -907,6 +912,11 @@ foreach ($included['discovery_scan_options'] as $item) {
                 },
                 serverSide: true,
                 deferLoading: 0,
+                refreshButton: {
+                    tooltip: 'Reload IPs',
+                    autoRefreshIfEmpty: true,
+                    autoRefreshInterval: 10000
+                },
                 ajax: {
                     url: '<?= base_url() ?>index.php/discovery_log?discovery_id=<?= $meta->id ?>&groupby=discovery_log.ip&format=json',
                     dataSrc: 'data',
@@ -1092,6 +1102,11 @@ foreach ($included['discovery_scan_options'] as $item) {
                 },
                 serverSide: true,
                 deferLoading: 0,
+                refreshButton: {
+                    tooltip: 'Reload devices',
+                    autoRefreshIfEmpty: true,
+                    autoRefreshInterval: 10000
+                },
                 devSort: {},
                 ajax: {
                     url: '<?= base_url() ?>index.php/discovery_log?discovery_id=<?= $meta->id ?>&groupby=discovery_log.device_id&format=json',

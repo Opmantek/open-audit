@@ -1,0 +1,30 @@
+@keyframes dt-refresh-spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+.dt-refresh-spin {
+    animation: dt-refresh-spin 1s linear infinite;
+}
+
+.dt-refresh button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.dt-refresh button > i {
+    width: 16px;
+    height: 16px;
+    display: inline-block;
+    transform-origin: center center;
+    vertical-align: middle;
+}
+
+.dt-refresh button > span:empty {
+    display: none;
+}
+
+.dt-refresh button > span:not(:empty) {
+    margin-left: 6px;
+}
