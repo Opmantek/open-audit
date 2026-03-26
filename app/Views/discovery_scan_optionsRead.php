@@ -88,8 +88,8 @@ include 'shared/common_functions.php';
 
                         </div>
                         <div class="col-4">
-                            <?= read_field('tcp_ports', $resource->tcp_ports, $dictionary->columns->tcp_ports, $update, '', '', '', '', $meta->collection) ?>
-                            <?= read_field('udp_ports', $resource->udp_ports, $dictionary->columns->udp_ports, $update, '', '', '', '', $meta->collection) ?>
+                            <?= read_field('tcp_ports', $resource->tcp_ports, $dictionary->columns->tcp_ports, $update, __('Additional TCP Ports'), '', '', '', $meta->collection) ?>
+                            <?= read_field('udp_ports', $resource->udp_ports, $dictionary->columns->udp_ports, $update, __('Additional UDP Ports'), '', '', '', $meta->collection) ?>
                             <?= read_field('timeout', $resource->timeout, $dictionary->columns->timeout, $update, '', '', '', '', $meta->collection) ?>
                             <?= read_field('exclude_tcp_ports', $resource->exclude_tcp_ports, $dictionary->columns->exclude_tcp_ports, $update, '', '', '', '', $meta->collection) ?>
                             <?= read_field('exclude_udp_ports', $resource->exclude_udp_ports, $dictionary->columns->exclude_udp_ports, $update, '', '', '', '', $meta->collection) ?>
