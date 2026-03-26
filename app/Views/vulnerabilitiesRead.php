@@ -69,7 +69,7 @@ if ($resource->type === 'application') {
                                     </div>
                                     <div class="row" style="padding-top:16px;">
                                         <div class="offset-2 col-8" style="position:relative;">
-                                            <?= read_field_header($meta->collection, 'remediation', $dictionary->columns->remediation, 'Remediation') ?>
+                                            <?= read_field_header($meta->collection, 'remediation', $dictionary->columns->remediation, 'CVE Recommended Remediation') ?>
                                             <div class="input-group">
                                                 <textarea class="form-control" rows="6" id="remediation" name="remediation" disabled><?= html_entity_decode($resource->remediation) ?></textarea>
                                             </div>
