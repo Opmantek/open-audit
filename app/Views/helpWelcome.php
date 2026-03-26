@@ -81,16 +81,6 @@ foreach ($ips as $ip) {
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-3 text-center">
-                                    <div class="card">
-                                        <div class="card-body">
-                                            <?= __('Ask the Community for help or contribute answers for others.') ?>
-                                        </div>
-                                        <div class="card-footer">
-                                            <a target="_blank" role="button" class="btn btn-default btn-lg" href="https://docs.community.firstwave.com/wiki/display/OA/customcontent/list/ac%3Acom.atlassian.confluence.plugins.confluence-questions%3Aquestion?ac.com.atlassian.confluence.plugins.confluence-questions.path=/questions-bootstrap"><?= __('Community Questions') ?></a>
-                                        </div>
-                                    </div>
-                                </div>
                             </div>
                         </div>
                     </div>
@@ -150,7 +140,7 @@ foreach ($ips as $ip) {
                         <p><?= __('This form provides a simple way to get started discovering the devices on your network. For more (much more) detailed options, you can individually create') ?> <a href="<?= url_to('credentialsCollection') ?>"><?= __('credentials') ?></a>, <a href="<?= url_to('locationsCollection') ?>"><?= __('locations') ?></a> <?= __('and') ?> <a href="<?= url_to('discoveriesCollection') ?>"><?= __('discoveries') ?></a> <?= __('using the main menu items.') ?></p>
                         <hr>
                         <h3><?= __('Credentials') ?></h3>
-                        <p><?= __('We need some credentials to be able to effectively talk to the devices on your network.') ?></p><br>
+                        <p><?= __('We need some credentials to be able to effectively talk to the devices on your network.') ?> <?= __('Choose the credentials that apply to your network') ?></p><br>
                         <div class="row">
                             <div class="col">
                                 <h4>Windows</h4>
@@ -162,8 +152,8 @@ foreach ($ips as $ip) {
                             </div>
 
                             <div class="col">
-                                <h4>Unix</h4>
-                                <label for="ssh_username" class="form-label">SSH Username</label>
+                                <h4><?= __('Unix')  . ' (' . __('optional') . ')' ?></h4>
+                                <label for="ssh_username" class="form-label"><?= __('SSH Username') ?></label>
                                 <input type="text" class="form-control" placeholder="" aria-label="ssh_username" id="ssh_username" name="ssh_username" value="">
                                 <br>
                                 <label for="ssh_password" class="form-label">SSH Password</label>
@@ -171,34 +161,14 @@ foreach ($ips as $ip) {
                             </div>
 
                             <div class="col">
-                                <h4>SNMP Devices</h4>
-                                <label for="snmp_community" class="form-label">SNMP Community String</label>
+                                <h4><?= __('SNMP')  . ' (' . __('optional') . ')' ?></h4>
+                                <label for="snmp_community" class="form-label"><?= __('Community String') ?></label>
                                 <input type="password" class="form-control" placeholder="" value="public" aria-label="snmp_community" id="snmp_community" name="snmp_community">
-                            </div>
-                        </div>
-                        <hr>
-                        <br>
-                        <div class="row">
-                            <div class="col">
-                                <h2><?= __('Location') ?></h2>
-                                <p><?= __('A location name will help you to find these devices in the future.') ?></p>
-                                <label for="location_name" class="form-label"><?= __('Location Name') ?></label>
-                                <input type="text" class="form-control" placeholder="Sydney DataCenter" aria-label="location_name" id="location_name" name="location_name">
-                            </div>
-                            <div class="col">
-                                <h2><?= __('Network') ?></h2>
-                                <p><?= __('Which network should we discover. This should be in the format of') ?> 1.2.3.4/24</p>
-                                <label for="subnet" class="form-label"><?= __('The Network to Discover') ?></label>
-                                <input type="text" class="form-control" value="<?= $subnet ?>" placeholder="This should be in the format of 1.2.3.4/24" aria-label="subnet" id="subnet" name="subnet" required>
-                            </div>
-                            <div class="col">
-                                <h2><?= __('Execute') ?></h2>
-                                <p><?= __('And finally, click Submit to execute this discovery.') ?></p>
-                                <label for="submit" class="form-label"><?= __('Click Submit to Execute') ?></label><br>
+                                <br>
+                                <label for="submit" class="form-label"><?= __('Click Submit to start your discovery.') ?></label><br>
                                 <button type="submit" class="btn btn-primary" id="submit" name="submit" ><?= __('Submit') ?></button>
                             </div>
                         </div>
-                        <br>
                     </div>
                 </div>
             </div>
