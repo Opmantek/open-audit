@@ -218,6 +218,26 @@ function read_field_header(string $collection = '', string $name = '', string $d
     $label = str_replace('Options.widgets.position.', 'Widget #', $label);
     $label = str_replace('[]', '', $label);
 
+    if (in_array($collection, ['discovery_scan_options', 'discoveries'])) {
+        $name = str_replace('scan_options.', '', $name);
+        $label = match ($name) {
+            'ping'              => __('Must Respond to Ping'),
+            'service_version'   => __('Use Service Version Detection'),
+            'open|filtered'     => __('Consider Open|Filtered Ports Open'),
+            'filtered'          => __('Consider Filtered Ports Open'),
+            'timing'            => __('Timing'),
+            'nmap_tcp_ports'    => __('Top TCP Ports'),
+            'nmap_udp_ports'    => __('Top UDP Ports'),
+            'tcp_ports'         => __('Custom TCP Ports'),
+            'udp_ports'         => __('Custom UDP Ports'),
+            'timeout'           => __('Nmap Timeout Per Target'),
+            'exclude_tcp_ports' => __('Exclude TCP Ports'),
+            'exclude_udp_ports' => __('Exclude UDP Ports'),
+            'exclude_ip'        => __('Exclude IP Addresses'),
+            'ssh_ports'         => __('SSH Running on Ports'),
+            default => $label,
+        };
+    }
 
     $field = (!empty($collection) and !empty($name)) ? '<code>' . $collection . '.' . str_replace('[]', '', $name) . '</code><br>' : '';
     $header = '
