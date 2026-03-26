@@ -51,17 +51,17 @@ foreach ($ips as $ip) {
                             </div>
                             <br>
                             <div class="row">
-                                <div class="col-3">
+                                <div class="col-4">
                                     <div class="card text-center">
                                         <div class="card-body">
-                                            <?= __('Insert example data and discover all that Open-AudIT can tell you.') ?>
+                                            <?= __('Import example device data.') ?>
                                         </div>
                                         <div class="card-footer">
                                             <a role="button" class="btn btn-default btn-lg" href="<?= url_to('devicesExampleForm') ?>"><?= __('Import Example Data') ?></a>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-3">
+                                <div class="col-4">
                                     <div class="card text-center">
                                         <div class="card-body">
                                             <?= __('Visit our YouTube channel for instructional videos.') ?>
@@ -71,7 +71,7 @@ foreach ($ips as $ip) {
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-3">
+                                <div class="col-4">
                                     <div class="card text-center">
                                         <div class="card-body">
                                             <?= __('Read our online documentation on the Open-AudIT Wiki.') ?>
@@ -163,7 +163,7 @@ foreach ($ips as $ip) {
                             <div class="col">
                                 <h4><?= __('SNMP')  . ' (' . __('optional') . ')' ?></h4>
                                 <label for="snmp_community" class="form-label"><?= __('Community String') ?></label>
-                                <input type="password" class="form-control" placeholder="" value="public" aria-label="snmp_community" id="snmp_community" name="snmp_community">
+                                <input type="password" class="form-control" placeholder="" value="" aria-label="snmp_community" id="snmp_community" name="snmp_community">
                                 <br>
                                 <label for="submit" class="form-label"><?= __('Click Submit to start your discovery.') ?></label><br>
                                 <button type="submit" class="btn btn-primary" id="submit" name="submit" ><?= __('Submit') ?></button>
@@ -189,10 +189,12 @@ window.onload = function () {
                 $("#submit").html('Executing');
                 $("#submit").removeClass('btn-primary');
                 $("#submit").addClass('btn-success').trigger("change");
-                requestAnimationFrame(() =>
-                requestAnimationFrame(function(){
-                     create();
-                }));
+                setTimeout(function(){
+                    requestAnimationFrame(() =>
+                    requestAnimationFrame(function(){
+                         create();
+                    }))
+                }, 3500);
             }
         });
 
@@ -200,8 +202,7 @@ window.onload = function () {
         {
             var data = {};
             var access_token = "<?= $meta->access_token ?>";
-            discovery_id = "";
-            if ($("#snmp_community").val() !== "" && $("#subnet").val() !== "") {
+            if ($("#snmp_community").val() !== "") {
                 data["access_token"] = access_token;
                 data["type"] = "credentials";
                 data["attributes"] = {};
@@ -232,7 +233,7 @@ window.onload = function () {
                 });
             }
 
-            if ($("#windows_username").val() !== "" && $("#windows_password").val() !== "" && $("#subnet").val() !== "") {
+            if ($("#windows_username").val() !== "" && $("#windows_password").val() !== "") {
                 data["access_token"] = access_token;
                 data["type"] = "credentials";
                 data["attributes"] = {};
@@ -264,7 +265,7 @@ window.onload = function () {
                 });
             }
 
-            if ($("#ssh_username").val() !== "" && $("#ssh_password").val() !== "" && $("#subnet").val() !== "") {
+            if ($("#ssh_username").val() !== "" && $("#ssh_password").val() !== "") {
                 data["access_token"] = access_token;
                 data["type"] = "credentials";
                 data["attributes"] = {};
@@ -296,91 +297,21 @@ window.onload = function () {
                 });
             }
 
-            location_id = "";
-            if ($("#location_name").val() !== "" && $("#subnet").val() !== "") {
-                data["access_token"] = access_token;
-                data["type"] = "locations";
-                data["attributes"] = {};
-                data["attributes"]["name"] = $("#location_name").val();
-                data["attributes"]["org_id"] = 1;
-                $.ajax({
-                    type: "POST",
-                    async: false,
-                    url: "<?= url_to('locationsCreate') ?>",
-                    dataType: "json",
-                    data: {data : data},
-                    headers: { Accept: "application/json"},
-                    success: function (data) {
-                        console.log("Location has been created.");
-                        if (data.meta.id) {
-                            location_id = data.meta.id;
-                        }
-                        if (data.meta.access_token) {
-                            access_token = data.meta.access_token;
-                        } else {
-                            console.log("Error - could not get access token from LocationsCreate.")
-                        }
-                    },
-                    error: function (data) {
-                        console.log("Could not create Location.");
-                        console.log(data);
-                    }
-                });
-            }
-
-            if ($("#subnet").val() !== "") {
-                data["access_token"] = access_token;
-                data["type"] = "discoveries";
-                data["attributes"] = {};
-                data["attributes"]["name"] = "Quick Discovery for " + $("#subnet").val();
-                data["attributes"]["org_id"] = 1;
-                data["attributes"]["type"] = "subnet";
-                data["attributes"]["subnet"] = $("#subnet").val();
-                if ($("#location_name").val() !== "" && location_id != "") {
-                    data["attributes"]["devices_assigned_to_location"] = location_id;
+            $url = "<?= url_to('discoveriesCollection') ?>/1/execute";
+            $.ajax({
+                type: "GET",
+                async: false,
+                url: $url,
+                dataType: "json",
+                headers: { Accept: "application/json"},
+                success: function (data) {
+                    console.log("Discovery has been executed.");
+                },
+                error: function (data) {
+                    console.log(data);
                 }
-                $.ajax({
-                    type: "POST",
-                    async: false,
-                    url: "<?= url_to('discoveriesCreate') ?>",
-                    dataType: "json",
-                    data: {data : data},
-                    headers: { Accept: "application/json"},
-                    success: function (data) {
-                        console.log("Discovery has been created.");
-                        if (data.meta.id) {
-                            discovery_id = data.meta.id;
-                        }
-                        if (data.meta.access_token) {
-                            access_token = data.meta.access_token;
-                        } else {
-                            console.log("Error - could not get access token from LocationsCreate.")
-                        }
-                    },
-                    error: function (data) {
-                        console.log("Could not create Discovery.");
-                        console.log(data);
-                    }
-                });
-            }
-
-            if (discovery_id != "") {
-                $url = "<?= url_to('discoveriesCollection') ?>/" + discovery_id + "/execute";
-                $.ajax({
-                    type: "GET",
-                    async: false,
-                    url: $url,
-                    dataType: "json",
-                    headers: { Accept: "application/json"},
-                    success: function (data) {
-                        console.log("Discovery has been executed.");
-                    },
-                    error: function (data) {
-                        console.log(data);
-                    }
-                });
-                window.location.replace("<?= url_to('discoveriesCollection') . '/' ?>" + discovery_id + "#all_ips");
-            }
+            });
+            window.location.replace("<?= url_to('discoveriesCollection') . '/' ?>1#logs");
         };
     });
 }
