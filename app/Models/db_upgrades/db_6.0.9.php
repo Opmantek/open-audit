@@ -17,5 +17,5 @@ if (! $db->fieldExists('entra_group', 'roles')) {
 }
 
 $output .= "Upgrade database to 6.0.9 completed.\n\n";
-config('Openaudit')->internal_version = 20260311;
-config('Openaudit')->display_version = '6.0.9';
+config('OpenAudit')->internal_version = 20260311;
+config('OpenAudit')->display_version = '6.0.9';

@@ -280,7 +280,7 @@ class UsersModel extends BaseModel
             $instance = & get_instance();
         } else {
             $instance = new stdClass();
-            $instance->config = config('Openaudit');
+            $instance->config = config('OpenAudit');
         }
         $session = \Config\Services::session();
         $request = \Config\Services::request();

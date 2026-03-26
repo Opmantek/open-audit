@@ -192,5 +192,5 @@ $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
 
 $output .= "Upgrade database to 4.3.0 completed.\n\n";
-config('Openaudit')->internal_version = 20211112;
-config('Openaudit')->display_version = '4.3.0';
+config('OpenAudit')->internal_version = 20211112;
+config('OpenAudit')->display_version = '4.3.0';

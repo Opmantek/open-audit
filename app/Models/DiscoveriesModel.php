@@ -44,7 +44,7 @@ class DiscoveriesModel extends BaseModel
                 $this->builder->{$filter->function}($filter->name, $filter->value);
             }
         }
-        $config = config('Openaudit');
+        $config = config('OpenAudit');
         if ($config->product !== 'enterprise') {
             $this->builder->where('discoveries.type !=', 'seed');
         }
@@ -1108,10 +1108,10 @@ class DiscoveriesModel extends BaseModel
                 log_message('error', 'Could not decode JSON. File:' . basename(__FILE__) . ', Line:' . __LINE__ . ', Error: ' . $e->getMessage());
             }
         }
-        foreach (config('Openaudit') as $key => $value) {
+        foreach (config('OpenAudit') as $key => $value) {
             if (str_contains($key, 'match_')) {
-                if (empty($result[0]->match_options->{$key}) && !empty(config('Openaudit')->{$key})) {
-                    $result[0]->match_options->{$key} = config('Openaudit')->{$key};
+                if (empty($result[0]->match_options->{$key}) && !empty(config('OpenAudit')->{$key})) {
+                    $result[0]->match_options->{$key} = config('OpenAudit')->{$key};
                 }
             }
         }

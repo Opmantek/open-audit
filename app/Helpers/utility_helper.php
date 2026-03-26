@@ -699,7 +699,7 @@ function nmapInstalled($setNotice = false)
         $instance = & get_instance();
     } else {
         $instance = new \stdClass();
-        $instance->config = config('Openaudit');
+        $instance->config = config('OpenAudit');
     }
 
     if (!empty($instance->config->discovery_override_nmap) && $instance->config->discovery_override_nmap === 'y') {
@@ -759,7 +759,7 @@ function nmapSuid($setNotice = false)
         $instance = & get_instance();
     } else {
         $instance = new \stdClass();
-        $instance->config = config('Openaudit');
+        $instance->config = config('OpenAudit');
     }
     if (!empty($instance->config->discovery_override_nmap) && $instance->config->discovery_override_nmap === 'y') {
         return 'y';
@@ -1227,7 +1227,7 @@ function formatQuery(array $result = array()): array
         return array();
     }
     $instance = & get_instance();
-    $config = config('Openaudit');
+    $config = config('OpenAudit');
     $device_count = $config->device_count;
     $device_known = $config->device_known;
     $license_limit = $config->license_limit;
