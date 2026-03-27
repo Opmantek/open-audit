@@ -64,8 +64,8 @@ include 'shared/common_functions.php';
                                     </div>
                                 </div>
 
-                                <?= create_text_field('data[attributes][tcp_ports]', __('Custom TCP Ports'), $dictionary->attributes->create) ?>
-                                <?= create_text_field('data[attributes][udp_ports]', __('Custom UDP Ports'), $dictionary->attributes->create) ?>
+                                <?= create_text_field('data[attributes][tcp_ports]', __('Additional TCP Ports'), $dictionary->attributes->create) ?>
+                                <?= create_text_field('data[attributes][udp_ports]', __('Additional UDP Ports'), $dictionary->attributes->create) ?>
                                 <?= create_text_field('data[attributes][timeout]', __('Timeout Per Target (Seconds)'), $dictionary->attributes->create) ?>
                                 <?= create_text_field('data[attributes][exclude_tcp_ports]', __('Exclude TCP Ports'), $dictionary->attributes->create) ?>
                                 <?= create_text_field('data[attributes][exclude_udp_ports]', __('Exclude UDP Ports'), $dictionary->attributes->create) ?>

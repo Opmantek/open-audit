@@ -385,8 +385,8 @@ foreach ($included['discovery_scan_options'] as $item) {
                                 <?php
                                 unset($scan_options);
                                 $scan_options = array();
-                                $scan_options['tcp_ports'] = 'Custom TCP Ports';
-                                $scan_options['udp_ports'] = 'Custom UDP Ports';
+                                $scan_options['tcp_ports'] = 'Additional TCP Ports';
+                                $scan_options['udp_ports'] = 'Additional UDP Ports';
                                 $scan_options['timeout'] = 'Nmap Timeout Per Target';
                                 $scan_options['exclude_tcp_ports'] = 'Exclude TCP Ports';
                                 $scan_options['exclude_udp_ports'] = 'Exclude UDP Ports';

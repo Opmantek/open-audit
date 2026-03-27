@@ -61,7 +61,7 @@ class Logon extends Controller
         helper('network');
 
         $db = db_connect();
-        $sql = "SELECT * FROM discoveries WHERE id = 1";
+        $sql = "SELECT * FROM discoveries WHERE id = 1 and name = 'Default Discovery'";
         $result = $db->query($sql)->getResult();
         $subnet = (!empty($result[0]->subnet)) ? $result[0]->subnet : '';
 
@@ -72,6 +72,16 @@ class Logon extends Controller
         $sql = "SELECT `value` FROM `configuration` WHERE `name` = 'server_os'";
         $result = $db->query($sql)->getResult();
         $server_os = (!empty($result[0]->value)) ? $result[0]->value : '';
+
+        // If we have no credentials, add the default "public" SNMP community
+        $credentialsModel = model('CredentialsModel');
+        $credentials = $credentialsModel->listAll();
+        if (empty($credentials)) {
+            helper('security');
+            $sql = "INSERT INTO `credentials` VALUES (null, 'SNMP public', 'The default SNMP community string.', 'snmp', ?, 1, 'system', '2000-01-01 00:00:00')";
+            $db->query($sql, [simpleEncrypt('{"community": "public"}', config('Encryption')->key)]);
+            log_message('info', 'Default snmp community auto-populated.');
+        }
 
         $newsRequested = false;
         if (empty($server_os)) {
