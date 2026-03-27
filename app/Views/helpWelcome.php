@@ -50,7 +50,7 @@ foreach ($ips as $ip) {
                                 <br>
                             </div>
                             <br>
-                            <div class="row">
+                            <div class="row justify-content-center">
                                 <div class="col-3">
                                     <div class="card text-center">
                                         <div class="card-body">
@@ -78,16 +78,6 @@ foreach ($ips as $ip) {
                                         </div>
                                         <div class="card-footer">
                                             <a target="_blank" role="button" class="btn btn-default btn-lg" href="https://docs.community.firstwave.com/wiki/spaces/OA"><?= __('Online Documentation') ?></a>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-3 text-center">
-                                    <div class="card">
-                                        <div class="card-body">
-                                            <?= __('Ask the Community for help or contribute answers for others.') ?>
-                                        </div>
-                                        <div class="card-footer">
-                                            <a target="_blank" role="button" class="btn btn-default btn-lg" href="https://docs.community.firstwave.com/wiki/display/OA/customcontent/list/ac%3Acom.atlassian.confluence.plugins.confluence-questions%3Aquestion?ac.com.atlassian.confluence.plugins.confluence-questions.path=/questions-bootstrap"><?= __('Community Questions') ?></a>
                                         </div>
                                     </div>
                                 </div>
