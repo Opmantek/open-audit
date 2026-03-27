@@ -679,13 +679,19 @@ foreach ($included['discovery_scan_options'] as $item) {
                 if (tableState[id] === false) {
                     tableState[id] = true;
                     if (id === 'logs-tab') {
-                        myDataTableLog.ajax.reload();
+                        if (myDataTableLog && myDataTableLog.data().count() === 0) {
+                            myDataTableLog.ajax.reload();
+                        }
                     }
                     if (id === 'all_ips-tab') {
-                        myDataTableIP.ajax.reload();
+                        if (myDataTableIP && myDataTableIP.data().count() === 0) {
+                            myDataTableIP.ajax.reload();
+                        }
                     }
                     if (id === 'devices-tab') {
-                        myDataTableDev.ajax.reload();
+                        if (myDataTableDev && myDataTableDev.data().count() === 0) {
+                            myDataTableDev.ajax.reload();
+                        }
                     }
                 }
             });
@@ -861,6 +867,7 @@ foreach ($included['discovery_scan_options'] as $item) {
                         buttons: [
                             {
                                 extend: 'refresh',
+                                boundToTab: '#logs-tab',
                                 autoRefreshIfEmpty: true,
                                 autoRefreshInterval: 10000
                             }
@@ -1053,6 +1060,7 @@ foreach ($included['discovery_scan_options'] as $item) {
                         buttons: [
                             {
                                 extend: 'refresh',
+                                boundToTab: '#all_ips-tab',
                                 autoRefreshIfEmpty: true,
                                 autoRefreshInterval: 10000
                             }
@@ -1246,6 +1254,7 @@ foreach ($included['discovery_scan_options'] as $item) {
                         buttons: [
                             {
                                 extend: 'refresh',
+                                boundToTab: '#devices-tab',
                                 autoRefreshIfEmpty: true,
                                 autoRefreshInterval: 10000
                             }

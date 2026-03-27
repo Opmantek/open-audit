@@ -6,6 +6,8 @@
         spinClass: 'dt-refresh-spin',
         autoDisable: true,
         resetPaging: true,
+        boundToTab: null,
+        tabActiveClass: 'active',
         autoRefreshIfEmpty: false,
         autoRefreshInterval: 5000
     };
@@ -15,77 +17,92 @@
         var options = $.extend({}, defaults, config);
         var pollTimer = null;
 
-        function startPolling(node) {
+        function reloadData() {
+            var button = table.button('.buttons-refresh').node();
+
+            if (button) {
+                var icon = $(button).find('i');
+
+                if (options.autoDisable) {
+                    button.prop('disabled', true);
+                }
+
+                icon.addClass(options.spinClass);
+            }
+
+            table.ajax.reload(null, options.resetPaging);
+        }
+
+        function startPolling() {
             if (!pollTimer) {
                 pollTimer = setInterval(() => {
                     if (table.data().count() === 0) {
-                        triggerReload(node);
+                        if (options.boundToTab) {
+                            var tab = $(options.boundToTab);
+                            if (tab.length && tab.hasClass(options.tabActiveClass)) {
+                                reloadData();
+                            }
+                        } else {
+                            reloadData();
+                        }
                     } else {
-                        stopPolling(node);
+                        stopPolling();
                     }
                 }, options.autoRefreshInterval);
             }
         }
 
-        function stopPolling(node) {
+        function stopPolling() {
             if (pollTimer) {
                 clearInterval(pollTimer);
                 pollTimer = null;
-                stopSpin(node);
+                var button = table.button('.buttons-refresh').node();
+
+                if (button) {
+                    var icon = $(button).find('i');
+
+                    if (options.autoDisable) {
+                        button.prop('disabled', false);
+                    }
+
+                    icon.removeClass(options.spinClass);
+                }
             }
         }
 
-        function startSpin(node) {
-            var icon = $(node).find('i');
-            icon.addClass(options.spinClass);
-            if (options.autoDisable) $(node).prop('disabled', true);
-        }
+        table.on('processing.dt', function (e, settings, processing) {
+            if (!processing) {
+                var button = table.button('.buttons-refresh').node();
 
-        function stopSpin(node) {
-            var icon = $(node).find('i');
-            icon.removeClass(options.spinClass);
-            if (options.autoDisable) $(node).prop('disabled', false);
-        }
+                if (button) {
+                    var icon = $(button).find('i');
 
-        function triggerReload(node) {
-            startSpin(node);
+                    if (options.autoDisable) {
+                        button.prop('disabled', false);
+                    }
 
-            table.ajax.reload(() => {
-                stopSpin(node);
+                    icon.removeClass(options.spinClass);
+                }
 
                 if (options.autoRefreshIfEmpty && table.data().count() === 0) {
-                    startPolling(node);
+                    startPolling();
                 } else {
-                    stopPolling(node);
+                    stopPolling();
                 }
-            }, options.resetPaging);
-        }
-
-        table.on('processing.dt', function (e, s, processing) {
-            var node = table.button('.buttons-refresh').node();
-
-            if (!node) return;
-
-            if (processing) {
-                startSpin(node);
-            } else {
-                stopSpin(node);
             }
         });
 
         table.on('init.dt', function () {
-            var node = table.button('.buttons-refresh').node();
-
             if (options.autoRefreshIfEmpty && table.data().count() === 0) {
-                startPolling(node);
+                startPolling();
             }
         });
 
         return {
             text: options.text,
             className: options.className + ' buttons-refresh',
-            action: function (e, dt, node) {
-                triggerReload(node);
+            action: function () {
+                reloadData();
             }
         };
     };
