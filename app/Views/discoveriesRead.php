@@ -703,11 +703,6 @@ foreach ($included['discovery_scan_options'] as $item) {
                 },
                 serverSide: true,
                 deferLoading: 0,
-                refreshButton: {
-                    tooltip: 'Reload logs',
-                    autoRefreshIfEmpty: true,
-                    autoRefreshInterval: 10000
-                },
                 ajax: {
                     url: '<?= base_url() ?>index.php/discovery_log?discovery_id=<?= $meta->id ?>&format=json',
                     dataSrc: 'data',
@@ -861,6 +856,16 @@ foreach ($included['discovery_scan_options'] as $item) {
                     infoFiltered: ""
                 },
                 layout: {
+                    topEnd: {
+                        search: {},
+                        buttons: [
+                            {
+                                extend: 'refresh',
+                                autoRefreshIfEmpty: true,
+                                autoRefreshInterval: 10000
+                            }
+                        ]
+                    },
                     bottomStart: {
                         info: {
                             text: 'Showing _START_ to _END_ of _TOTAL_ entries'
@@ -912,11 +917,6 @@ foreach ($included['discovery_scan_options'] as $item) {
                 },
                 serverSide: true,
                 deferLoading: 0,
-                refreshButton: {
-                    tooltip: 'Reload IPs',
-                    autoRefreshIfEmpty: true,
-                    autoRefreshInterval: 10000
-                },
                 ajax: {
                     url: '<?= base_url() ?>index.php/discovery_log?discovery_id=<?= $meta->id ?>&groupby=discovery_log.ip&format=json',
                     dataSrc: 'data',
@@ -1048,6 +1048,16 @@ foreach ($included['discovery_scan_options'] as $item) {
                     infoFiltered: ""
                 },
                 layout: {
+                    topEnd: {
+                        search: {},
+                        buttons: [
+                            {
+                                extend: 'refresh',
+                                autoRefreshIfEmpty: true,
+                                autoRefreshInterval: 10000
+                            }
+                        ]
+                    },
                     bottomStart: {
                         info: {
                             text: 'Showing _START_ to _END_ of _TOTAL_ entries'
@@ -1102,11 +1112,6 @@ foreach ($included['discovery_scan_options'] as $item) {
                 },
                 serverSide: true,
                 deferLoading: 0,
-                refreshButton: {
-                    tooltip: 'Reload devices',
-                    autoRefreshIfEmpty: true,
-                    autoRefreshInterval: 10000
-                },
                 devSort: {},
                 ajax: {
                     url: '<?= base_url() ?>index.php/discovery_log?discovery_id=<?= $meta->id ?>&groupby=discovery_log.device_id&format=json',
@@ -1236,6 +1241,16 @@ foreach ($included['discovery_scan_options'] as $item) {
                     infoFiltered: ""
                 },
                 layout: {
+                    topEnd: {
+                        search: {},
+                        buttons: [
+                            {
+                                extend: 'refresh',
+                                autoRefreshIfEmpty: true,
+                                autoRefreshInterval: 10000
+                            }
+                        ]
+                    },
                     bottomStart: {
                         info: {
                             text: 'Showing _START_ to _END_ of _TOTAL_ entries'
