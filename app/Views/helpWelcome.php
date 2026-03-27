@@ -43,7 +43,7 @@ foreach ($ips as $ip) {
                                             <?= __('Run a discovery and find out <b>What\'s On Your Network?</b>') ?>
                                         </div>
                                         <div class="card-footer">
-                                            <a role="button" id="get_started" class="btn btn-success btn-lg" data-bs-toggle="modal" data-bs-target="#discoveryModel" href="#"><?= __('Get Started') ?></a>
+                                            <a role="button" id="get_started" class="btn btn-success btn-lg" data-bs-toggle="modal" data-bs-target="#discoveryModel" href="#"><?= __('Start a Discovery') ?></a>
                                         </div>
                                     </div>
                                 </div>
