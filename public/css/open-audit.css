@@ -927,7 +927,12 @@ table.dataTable > thead .sorting_desc_disabled::after
     }
 }
 
+[role=tabpanel]:focus-visible,
+.tab-panel:focus-visible {
+    outline: 0;
+}
 
+ */
 
 /*
 
@@ -1072,3 +1077,4 @@ code {
 .card {
     background-color: transparent !important;
 }
+*/
