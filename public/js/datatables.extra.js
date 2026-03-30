@@ -2,14 +2,15 @@
 
     var defaults = {
         text: '<i class="icon-refresh-cw text-oa-primary"></i> Refresh',
-        className: 'btn btn-light btn-sm',
+        className: 'btn btn-sm',
         spinClass: 'dt-refresh-spin',
         autoDisable: true,
         resetPaging: true,
         boundToTab: null,
         tabActiveClass: 'active',
         autoRefreshIfEmpty: false,
-        autoRefreshInterval: 5000
+        autoRefreshInterval: 5000,
+        continueRefreshing: null
     };
 
     $.fn.dataTable.ext.buttons.refresh = function (table, config) {
@@ -36,6 +37,14 @@
         function startPolling() {
             if (!pollTimer) {
                 pollTimer = setInterval(() => {
+                    if (typeof options.continueRefreshing === 'function') {
+                        var continuePolling = options.continueRefreshing();
+                        if (! continuePolling) {
+                            stopPolling();
+                            return;
+                        }
+                    }
+
                     if (table.data().count() === 0) {
                         if (options.boundToTab) {
                             var tab = $(options.boundToTab);

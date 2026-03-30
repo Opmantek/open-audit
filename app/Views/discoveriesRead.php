@@ -696,6 +696,58 @@ foreach ($included['discovery_scan_options'] as $item) {
                 }
             });
 
+            // Discovery interval, cleared once no longer running
+            var discoveryInterval = null;
+            // Whether tables should refresh data periodically
+            var refreshTableData = true;
+            // Interval to check whether a discovery is running
+            var checkDiscoveryInterval = 8000;
+            // Interval to refresh table data
+            var refreshTableDataInterval = 10000;
+
+            function checkDiscoveryStatus() {
+                $.ajax({
+                    url: '/index.php/discoveries/1?format=json',
+                    method: 'GET',
+                    dataType: 'json',
+                    success: function (response) {
+                        if (response.data && response.data.length) {
+                            var item = response.data[0];
+                            var attributes = item.attributes || {};
+
+                            if (! attributes.last_run || ! attributes.last_finished) {
+                                return false;
+                            }
+
+                            var lastRun = new Date(attributes.last_run);
+                            var lastFinished = new Date(attributes.last_finished);
+                            // Unsure whether this is adequate, but we do not track PID's or a
+                            // dedicated field determining whether the discovery is running
+                            if (lastRun.getTime() <= lastFinished.getTime()) {
+                                refreshTableData = false;
+                                clearInterval(discoveryInterval);
+                                discoveryInterval = null;
+                            } else {
+                                refreshTableData = true;
+                            }
+                        }
+                    },
+                    error: function () {
+                        return false;
+                    }
+                });
+            }
+
+            function startDiscoveryStatusPolling() {
+                if (discoveryInterval) return;
+                checkDiscoveryStatus();
+                discoveryInterval = setInterval(() => {
+                    checkDiscoveryStatus();
+                }, checkDiscoveryInterval);
+            }
+
+            startDiscoveryStatusPolling();
+
             let logSort = {};
             var myDataTableLog = new DataTable('.dataTableLog', {
                 lengthChange: true,
@@ -869,7 +921,10 @@ foreach ($included['discovery_scan_options'] as $item) {
                                 extend: 'refresh',
                                 boundToTab: '#logs-tab',
                                 autoRefreshIfEmpty: true,
-                                autoRefreshInterval: 10000
+                                autoRefreshInterval: refreshTableDataInterval,
+                                continueRefreshing: function () {
+                                    return refreshTableData;
+                                }
                             }
                         ]
                     },
@@ -1062,7 +1117,10 @@ foreach ($included['discovery_scan_options'] as $item) {
                                 extend: 'refresh',
                                 boundToTab: '#all_ips-tab',
                                 autoRefreshIfEmpty: true,
-                                autoRefreshInterval: 10000
+                                autoRefreshInterval: refreshTableDataInterval,
+                                continueRefreshing: function () {
+                                    return refreshTableData;
+                                }
                             }
                         ]
                     },
@@ -1256,7 +1314,10 @@ foreach ($included['discovery_scan_options'] as $item) {
                                 extend: 'refresh',
                                 boundToTab: '#devices-tab',
                                 autoRefreshIfEmpty: true,
-                                autoRefreshInterval: 10000
+                                autoRefreshInterval: refreshTableDataInterval,
+                                continueRefreshing: function () {
+                                    return refreshTableData;
+                                }
                             }
                         ]
                     },
