@@ -582,6 +582,11 @@ if (!empty($config->modules)) {
                                 <li><a class="dropdown-item" href='#' data-bs-toggle="modal" data-bs-target="#modalCompareLicense"><?= __('Buy More Licenses')?></a></li>
 <?php } ?>
                                 <li><a class="dropdown-item" href='<?= url_to('configurationReadLicense') ?>'><?= __('Manage Licenses')?></a></li>
+                                <?php if (empty($config->product) || $config->product === 'community'): ?>
+                                    <li><a class="dropdown-item" target="_blank" href="https://open-audit.com/buy"><?= __('Buy a License')?></a></li>
+                                <?php elseif ($config->product === 'professional'): ?>
+                                    <li><a class="dropdown-item" target="_blank" href="https://open-audit.com/buy"><?= __('Upgrade to Enterprise')?></a></li>
+                                <?php endif; ?>
                             </ul>
                         </li>
 
