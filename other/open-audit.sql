@@ -299,7 +299,7 @@ CREATE TABLE `attributes` (
   `edited_by` varchar(200) NOT NULL DEFAULT '',
   `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=228 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=229 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1238,7 +1238,7 @@ CREATE TABLE `configuration` (
   `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
   `description` mediumtext NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=193 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=195 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -3203,7 +3203,7 @@ CREATE TABLE `orgs` (
 
 LOCK TABLES `orgs` WRITE;
 /*!40000 ALTER TABLE `orgs` DISABLE KEYS */;
-INSERT INTO `orgs` VALUES (1,'Default Organisation',1,'','organisation','open-audit_orgs_default_organisation','system','2000-01-01 00:00:00');
+INSERT INTO `orgs` VALUES (1,'Default Organisation',1,'','organisation','open-audit_orgs_default_organisation','','system','2000-01-01 00:00:00');
 /*!40000 ALTER TABLE `orgs` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -3841,10 +3841,10 @@ CREATE TABLE `roles` (
 LOCK TABLES `roles` WRITE;
 /*!40000 ALTER TABLE `roles` DISABLE KEYS */;
 set autocommit=0;
-INSERT INTO `roles` VALUES (1,'admin','This role can change global options.','{\"agents\":\"crud\",\"applications\":\"crud\",\"applications_components\":\"\",\"attributes\":\"crud\",\"auth\":\"crud\",\"baselines\":\"crud\",\"clusters\":\"r\",\"collectors\":\"crud\",\"configuration\":\"crud\",\"dashboards\":\"crud\",\"database\":\"crud\",\"devices\":\"r\",\"executables\":\"r\",\"errors\":\"r\",\"groups\":\"crud\",\"logs\":\"crud\",\"nmis\":\"crud\",\"news\":\"crud\",\"orgs\":\"crud\",\"queue\":\"crud\",\"queries\":\"crud\",\"roles\":\"crud\",\"search\":\"crud\",\"sessions\":\"crud\",\"summaries\":\"crud\",\"tasks\":\"crud\",\"users\":\"crud\",\"widgets\":\"crud\",\"certificates\":\"crud\",\"standards\":\"crud\",\"standards_results\":\"crud\",\"vendors\":\"crud\",\"vulnerabilities\":\"crud\"}','open-audit_roles_admin','system','2000-01-01 00:00:00');
-INSERT INTO `roles` VALUES (2,'org_admin','This role is used for administration of endpoints that contain an org_id.','{\"agents\":\"crud\",\"applications\":\"crud\",\"applications_components\":\"crud\",\"attributes\":\"crud\",\"baselines\":\"crud\",\"benchmarks\":\"crud\",\"benchmarks_exceptions\":\"crud\",\"benchmarks_policies\":\"crud\",\"buildings\":\"crud\",\"clouds\":\"crud\",\"clusters\":\"crud\",\"connections\":\"crud\",\"credentials\":\"crud\",\"dashboards\":\"crud\",\"errors\":\"r\",\"floors\":\"crud\",\"queue\":\"cr\",\"summaries\":\"r\",\"devices\":\"crud\",\"discoveries\":\"crud\",\"discovery_scan_options\":\"crud\",\"executables\":\"crud\",\"fields\":\"crud\",\"files\":\"crud\",\"graph\":\"crud\",\"groups\":\"r\",\"integrations\":\"crud\",\"invoice\":\"crud\",\"licenses\":\"crud\",\"locations\":\"crud\",\"networks\":\"crud\",\"news\":\"crud\",\"orgs\":\"crud\",\"packages\":\"crud\",\"queries\":\"r\",\"racks\":\"crud\",\"rack_devices\":\"crud\",\"rooms\":\"crud\",\"rows\":\"crud\",\"rules\":\"crud\",\"scripts\":\"crud\",\"search\":\"crud\",\"sessions\":\"crud\",\"tasks\":\"crud\",\"users\":\"r\",\"widgets\":\"r\",\"certificates\":\"crud\",\"standards\":\"crud\",\"standards_results\":\"crud\",\"vendors\":\"r\",\"vulnerabilities\":\"r\"}','open-audit_roles_org_admin','system','2000-01-01 00:00:00');
-INSERT INTO `roles` VALUES (3,'user','A standard role that can read all endpoints that contain an org_id.','{\"agents\":\"r\",\"applications\":\"r\",\"applications_components\":\"r\",\"baselines\":\"r\",\"buildings\":\"r\",\"clouds\":\"r\",\"clusters\":\"r\",\"connections\":\"r\",\"credentials\":\"r\",\"dashboards\":\"r\",\"summaries\":\"r\",\"devices\":\"r\",\"errors\":\"r\",\"executables\":\"r\",\"floors\":\"r\",\"fields\":\"r\",\"files\":\"r\",\"graph\":\"r\",\"groups\":\"r\",\"invoice\":\"r\",\"licenses\":\"r\",\"locations\":\"r\",\"networks\":\"r\",\"orgs\":\"r\",\"packages\":\"r\",\"queue\":\"cr\",\"queries\":\"r\",\"racks\":\"r\",\"rack_devices\":\"r\",\"rooms\":\"r\",\"rows\":\"r\",\"rules\":\"r\",\"search\":\"crud\",\"sessions\":\"crud\",\"widgets\":\"r\",\"news\":\"\",\"certificates\":\"r\",\"standards\":\"\",\"standards_results\":\"\",\"vendors\":\"r\",\"vulnerabilities\":\"r\"}','open-audit_roles_user','system','2000-01-01 00:00:00');
-INSERT INTO `roles` VALUES (4,'collector','The collector specific role.','{\"collectors\":\"crud\",\"configuration\":\"r\",\"credentials\":\"crud\",\"dashboards\":\"r\",\"devices\":\"crud\",\"discoveries\":\"crud\",\"discovery_scan_options\":\"crud\",\"locations\":\"crud\",\"networks\":\"crud\",\"orgs\":\"crud\",\"sessions\":\"crud\",\"tasks\":\"crud\",\"users\":\"r\",\"widgets\":\"r\",\"news\":\"\",\"certificates\":\"r\",\"standards\":\"\",\"standards_results\":\"\",\"vendors\":\"r\",\"vulnerabilities\":\"r\"}','open-audit_roles_collector','system','2000-01-01 00:00:00');
+INSERT INTO `roles` VALUES (1,'admin','This role can change global options.','{\"agents\":\"crud\",\"applications\":\"crud\",\"applications_components\":\"\",\"attributes\":\"crud\",\"auth\":\"crud\",\"baselines\":\"crud\",\"clusters\":\"r\",\"collectors\":\"crud\",\"configuration\":\"crud\",\"dashboards\":\"crud\",\"database\":\"crud\",\"devices\":\"r\",\"executables\":\"r\",\"errors\":\"r\",\"groups\":\"crud\",\"logs\":\"crud\",\"nmis\":\"crud\",\"news\":\"crud\",\"orgs\":\"crud\",\"queue\":\"crud\",\"queries\":\"crud\",\"roles\":\"crud\",\"search\":\"crud\",\"sessions\":\"crud\",\"summaries\":\"crud\",\"tasks\":\"crud\",\"users\":\"crud\",\"widgets\":\"crud\",\"certificates\":\"crud\",\"standards\":\"crud\",\"standards_results\":\"crud\",\"vendors\":\"crud\",\"vulnerabilities\":\"crud\"}','open-audit_roles_admin','','system','2000-01-01 00:00:00');
+INSERT INTO `roles` VALUES (2,'org_admin','This role is used for administration of endpoints that contain an org_id.','{\"agents\":\"crud\",\"applications\":\"crud\",\"applications_components\":\"crud\",\"attributes\":\"crud\",\"baselines\":\"crud\",\"benchmarks\":\"crud\",\"benchmarks_exceptions\":\"crud\",\"benchmarks_policies\":\"crud\",\"buildings\":\"crud\",\"clouds\":\"crud\",\"clusters\":\"crud\",\"connections\":\"crud\",\"credentials\":\"crud\",\"dashboards\":\"crud\",\"errors\":\"r\",\"floors\":\"crud\",\"queue\":\"cr\",\"summaries\":\"r\",\"devices\":\"crud\",\"discoveries\":\"crud\",\"discovery_scan_options\":\"crud\",\"executables\":\"crud\",\"fields\":\"crud\",\"files\":\"crud\",\"graph\":\"crud\",\"groups\":\"r\",\"integrations\":\"crud\",\"invoice\":\"crud\",\"licenses\":\"crud\",\"locations\":\"crud\",\"networks\":\"crud\",\"news\":\"crud\",\"orgs\":\"crud\",\"packages\":\"crud\",\"queries\":\"r\",\"racks\":\"crud\",\"rack_devices\":\"crud\",\"rooms\":\"crud\",\"rows\":\"crud\",\"rules\":\"crud\",\"scripts\":\"crud\",\"search\":\"crud\",\"sessions\":\"crud\",\"tasks\":\"crud\",\"users\":\"r\",\"widgets\":\"r\",\"certificates\":\"crud\",\"standards\":\"crud\",\"standards_results\":\"crud\",\"vendors\":\"r\",\"vulnerabilities\":\"r\"}','open-audit_roles_org_admin','','system','2000-01-01 00:00:00');
+INSERT INTO `roles` VALUES (3,'user','A standard role that can read all endpoints that contain an org_id.','{\"agents\":\"r\",\"applications\":\"r\",\"applications_components\":\"r\",\"baselines\":\"r\",\"buildings\":\"r\",\"clouds\":\"r\",\"clusters\":\"r\",\"connections\":\"r\",\"credentials\":\"r\",\"dashboards\":\"r\",\"summaries\":\"r\",\"devices\":\"r\",\"errors\":\"r\",\"executables\":\"r\",\"floors\":\"r\",\"fields\":\"r\",\"files\":\"r\",\"graph\":\"r\",\"groups\":\"r\",\"invoice\":\"r\",\"licenses\":\"r\",\"locations\":\"r\",\"networks\":\"r\",\"orgs\":\"r\",\"packages\":\"r\",\"queue\":\"cr\",\"queries\":\"r\",\"racks\":\"r\",\"rack_devices\":\"r\",\"rooms\":\"r\",\"rows\":\"r\",\"rules\":\"r\",\"search\":\"crud\",\"sessions\":\"crud\",\"widgets\":\"r\",\"news\":\"\",\"certificates\":\"r\",\"standards\":\"\",\"standards_results\":\"\",\"vendors\":\"r\",\"vulnerabilities\":\"r\"}','open-audit_roles_user','','system','2000-01-01 00:00:00');
+INSERT INTO `roles` VALUES (4,'collector','The collector specific role.','{\"collectors\":\"crud\",\"configuration\":\"r\",\"credentials\":\"crud\",\"dashboards\":\"r\",\"devices\":\"crud\",\"discoveries\":\"crud\",\"discovery_scan_options\":\"crud\",\"locations\":\"crud\",\"networks\":\"crud\",\"orgs\":\"crud\",\"sessions\":\"crud\",\"tasks\":\"crud\",\"users\":\"r\",\"widgets\":\"r\",\"news\":\"\",\"certificates\":\"r\",\"standards\":\"\",\"standards_results\":\"\",\"vendors\":\"r\",\"vulnerabilities\":\"r\"}','open-audit_roles_collector','','system','2000-01-01 00:00:00');
 /*!40000 ALTER TABLE `roles` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -4684,7 +4684,7 @@ CREATE TABLE `tasks` (
   `edited_by` varchar(200) NOT NULL DEFAULT '',
   `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -5324,6 +5324,7 @@ UNLOCK TABLES;
 /*!40111 SET SQL_NOTES=0 */;
 
 DELIMITER ;;
+DROP FUNCTION IF EXISTS `cidr_to_mask`;
 CREATE DEFINER=`openaudit`@`localhost` FUNCTION `cidr_to_mask`(cidr INT(2)) RETURNS char(15) CHARSET latin1 COLLATE latin1_swedish_ci
     DETERMINISTIC
 RETURN INET_NTOA(CONV(CONCAT(REPEAT(1,cidr),REPEAT(0,32-cidr)),2,10)) ;;
