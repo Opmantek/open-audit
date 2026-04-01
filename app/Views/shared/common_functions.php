@@ -1,6 +1,6 @@
 <?php
 
-function aboutNotesDiv (string $collection = '', object $dictionary = null)
+function aboutNotesDiv (string $collection = '', ?object $dictionary = null)
 {
     $return = '';
     if (! empty($dictionary->about)) {
@@ -15,7 +15,7 @@ function aboutNotesDiv (string $collection = '', object $dictionary = null)
     return $return;
 }
 
-function fieldsInfoDiv (object $dictionary = null, array $fieldsList = [])
+function fieldsInfoDiv (?object $dictionary = null, array $fieldsList = [])
 {
     if (empty($dictionary)) {
         return '';
