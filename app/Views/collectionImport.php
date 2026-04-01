@@ -147,7 +147,7 @@ $example .= __('You should use a header line containing the names of the columns
 <main class="container-fluid">
     <div class="card">
         <div class="card-header">
-            <?= create_card_header($meta->collection, $meta->icon); ?>
+            <?= create_card_header($meta->collection, $meta->icon, $user); ?>
         </div>
         <div class="card-body">
             <div class="row">
@@ -175,9 +175,6 @@ $example .= __('You should use a header line containing the names of the columns
                 <div class="col-6">
                     <div class="offset-2 col-8">
                         <?= aboutNotesDiv ($meta->collection, $dictionary) ?>
-                        <?php foreach ($data->columns as $column => $value) { ?>
-                            <code><?= $column ?>: </code><?= $value ?><br><br>
-                        <?php } ?>
                     </div>
                 </div>
             </div>
@@ -197,7 +194,7 @@ $example .= __('You should use a header line containing the names of the columns
         </div>
         <div class="card-body">
     <div class="row">
-        <div class="offset-1 col-10">
+        <div class="col-12">
             <table class="table <?= $GLOBALS['table'] ?> table-striped table-hover">
                 <thead>
                     <tr>
@@ -207,6 +204,7 @@ $example .= __('You should use a header line containing the names of the columns
                         <th><?= __('Max Length') ?></th>
                         <th><?= __('Primary Key') ?></th>
                         <th><?= __('Valid Values') ?></th>
+                        <th><?= __('Description') ?></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -221,6 +219,7 @@ $example .= __('You should use a header line containing the names of the columns
                         <td><?= $column->max_length ?></td>
                         <td><?= $column->primary_key ?></td>
                         <td><?= @$column->values ?></td>
+                        <td><?= @nl2br(@$dictionary->columns->{$column->name}) ?></td>
                     </tr>
                     <?php } ?>
                 </tbody>
