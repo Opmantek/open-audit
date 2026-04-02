@@ -90,12 +90,12 @@ body
 }
 
 .text-oa-warning {
-    color: rgb(255, 193, 7);
+    color: #ffc107;
     padding-right: 6px;
 }
 
 .text-oa-danger {
-    color: rgb(220, 53, 69);
+    color: #dc3545;
     padding-right: 6px;
 }
 
@@ -899,7 +899,9 @@ table.dataTable > thead .sorting_desc_disabled::after
         cursor: hand;
         background-color: #444;
     }
-    .mb-2
+    .mb-2,
+    button.btn-light,
+    a.btn-light
     {
         border-color: #888;
         color: white;
