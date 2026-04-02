@@ -20,7 +20,7 @@ if ($style === 'icontext') {
 
     $devices_button = '<li class="nav-item" role="presentation"><a href="#devices" class="nav-link" id="devices-tab"><span class="icon-computer text-oa-primary" ></span>' . __('Devices') . '</a></li>';
 
-    $issues_button  = '<li class="nav-item" role="presentation"><a href="#issues"  class="nav-link" id="issues-tab" ><span class="icon-triangle-alert text-oa-warning"></span>' . __('Issues')  . '</a></li>';
+    $issues_button  = '<li class="nav-item" role="presentation"><a href="#issues"  class="nav-link position-relative" id="issues-tab"><span class="icon-triangle-alert text-oa-warning"></span>' . __('Issues')  . '</a></li>';
 } elseif ($style === 'icon') {
     $summary_button = '<li class="nav-item" role="presentation"><a href="#summary" class="nav-link" id="summary-tab"><span title="' . __('Summary') . '" class="icon-book-check text-primary"></span></a></li>';
 
@@ -36,7 +36,7 @@ if ($style === 'icontext') {
 
     $devices_button = '<li class="nav-item" role="presentation"><a href="#devices" class="nav-link" id="devices-tab"><span title="' . __('Devices') . '" class="icon-computer text-primary"></span></a></li>';
 
-    $issues_button  = '<li class="nav-item" role="presentation"><a href="#issues"  class="nav-link" id="issues-tab" ><span style="margin-right:6px;" title="' . __('Issues') .  '" class="icon-triangle-alert text-warning"></span></a></li>';
+    $issues_button  = '<li class="nav-item" role="presentation"><a href="#issues"  class="nav-link position-relative" id="issues-tab"><span style="margin-right:6px;" title="' . __('Issues') .  '" class="icon-triangle-alert text-warning"></span></a></li>';
 } else {
     $summary_button = '<li class="nav-item" role="presentation"><a href="#summary" class="nav-link" id="summary-tab">' . __('Summary') . '</a></li>';
     $details_button = '<li class="nav-item" role="presentation"><a href="#details" class="nav-link" id="details-tab">' . __('Details') . '</a></li>';
@@ -45,7 +45,7 @@ if ($style === 'icontext') {
     $logs_button    = '<li class="nav-item" role="presentation"><a href="#logs"    class="nav-link" id="logs-tab"   >' . __('Logs') .    '</a></li>';
     $all_ips_button = '<li class="nav-item" role="presentation"><a href="#all_ips" class="nav-link" id="all_ips-tab">' . __('ALL IPs') . '</a></li>';
     $devices_button = '<li class="nav-item" role="presentation"><a href="#devices" class="nav-link" id="devices-tab">' . __('Devices') . '</a></li>';
-    $issues_button  = '<li class="nav-item" role="presentation"><a href="#issues"  class="nav-link" id="issues-tab" >' . __('Issues')  . '</a></li>';
+    $issues_button  = '<li class="nav-item" role="presentation"><a href="#issues"  class="nav-link position-relative" id="issues-tab">' . __('Issues')  . '</a></li>';
 }
 
 
@@ -98,7 +98,7 @@ foreach ($included['discovery_scan_options'] as $item) {
         </div>
         <div class="card-body">
             <div class="row text-center">
-                <div class="col-8 offset-2" style="background-color: rgba(var(--bs-body-color-rgb), 0.03);">
+                <div class="col-12 offset-0 col-sm-10 offset-sm-1 col-xl-8 offset-xl-2" style="background-color: rgba(var(--bs-body-color-rgb), 0.03);">
                     <ul class="nav nav-pills nav-fill" id="myTab" role="tablist">
                         <?= $summary_button ?>
                         <?= $devices_button ?>
@@ -117,13 +117,13 @@ foreach ($included['discovery_scan_options'] as $item) {
             <div class="tab-content">
                 <div class="tab-pane" id="summary" role="tabpanel" tabindex="0" aria-labelledby="summary">
                     <div class="row">
-                        <div class="col-6">
+                        <div class="col-12 col-md-6 col-lg-4">
                             <?= read_field('status', $resource->status, $dictionary->columns->status, false, '', '', '', '', $meta->collection) ?>
                             <?= read_field('last_run', $resource->last_run, $dictionary->columns->last_run, false, '', '', '', '', $meta->collection) ?>
                             <?= read_field('duration', $resource->duration, $dictionary->columns->duration, false, '', '', '', '', $meta->collection) ?>
                             <?= read_field('last_finished', $resource->last_finished, $dictionary->columns->last_finished, false, '', '', '', '', $meta->collection) ?>
                         </div>
-                        <div class="col-6">
+                        <div class="col-12 col-md-6 col-lg-4">
                             <?= read_field('ip_all_count', $resource->ip_all_count, $dictionary->columns->ip_all_count, false, '', '', '', '', $meta->collection) ?>
                             <?= read_field('ip_responding_count', $resource->ip_responding_count, $dictionary->columns->ip_responding_count, false, '', '', '', '', $meta->collection) ?>
                             <?= read_field('ip_scanned_count', $resource->ip_scanned_count, $dictionary->columns->ip_scanned_count, false, '', '', '', '', $meta->collection) ?>
@@ -132,95 +132,104 @@ foreach ($included['discovery_scan_options'] as $item) {
                                     <?= read_field('device_count', $resource->ip_discovered_count, $dictionary->columns->device_count, false, '', '', '', '', $meta->collection) ?>
                                     -->
                         </div>
+                        <div class="col-12 col-lg-4">
+                            <div class="row align-items-start justify-content-center pt-3">
+                                <div id="discovery-progress" style="width: 100%; max-width: 400px; aspect-ratio: 1;"></div>
+                            </div>
+                        </div>
                     </div>
                     <br>
                     <div class="row">
-                        <div class="col-6">
-                            <div class="offset-2 col-8">
-                                <div class="card">
-                                    <div class="card-header">
-                                        <div class="row">
-                                            <div class="col-4 clearfix">
-                                                <h6 style="padding-top:10px;"><span class="icon-router oa-icon"></span><?= __('Devices') ?></h6>
+                        <div class="col-12 col-md-6">
+                            <div class="row">
+                                <div class="col-12 col-md-11 mx-auto ms-md-auto me-md-0">
+                                    <div class="card mb-3 mb-md-0">
+                                        <div class="card-header">
+                                            <div class="row">
+                                                <div class="col-4 clearfix">
+                                                    <h6 style="padding-top:10px;"><span class="icon-router oa-icon"></span><?= __('Devices') ?></h6>
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
-                                    <div class="card-body">
-                                        <div class="row" style="min-height:100px;">
-                                            <?php
-                                            $i = 0;
-                                            foreach ($included['devices'] as $os) {
-                                                $i++;
-                                                if ($os->attributes->type === 'computer') {
-                                                    $os->attributes->icon = 'computer';
-                                                }
-                                                if ($i === 5 or $i === 9 or $i === 13 or $i === 17 or $i === 21 or $i === 25) {
-                                                    echo "</div><br><div class=\"row\">";
+                                        <div class="card-body">
+                                            <div class="row" style="min-height:100px;">
+                                                <?php
+                                                $i = 0;
+                                                foreach ($included['devices'] as $os) {
+                                                    $i++;
+                                                    if ($os->attributes->type === 'computer') {
+                                                        $os->attributes->icon = 'computer';
+                                                    }
+                                                    if ($i === 5 or $i === 9 or $i === 13 or $i === 17 or $i === 21 or $i === 25) {
+                                                        echo "</div><br><div class=\"row\">";
+                                                    }
+                                                    ?>
+                                                    <div class="col-lg-3 text-center">
+                                                        <div>
+                                                            <a href="<?= url_to('devicesCollection') ?>?devices.type=<?= $os->attributes->type ?>&devices.discovery_id=<?= $resource->id ?>" class="position-relative">
+                                                                <img style="width:4rem;" class="img-responsive center-block" src="<?= $meta->baseurl ?>device_images/<?= $os->attributes->icon ?>.svg" alt="<?= $os->attributes->icon ?>">
+                                                                <br><?= $os->attributes->type ?>
+                                                                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill" style="background:#3bafda"><?= $os->attributes->count ?></span>
+                                                            </a>
+                                                        </div>
+                                                    </div>
+                                                    <?php
                                                 }
                                                 ?>
-                                                <div class="col-lg-3 text-center">
-                                                    <div>
-                                                        <a href="<?= url_to('devicesCollection') ?>?devices.type=<?= $os->attributes->type ?>&devices.discovery_id=<?= $resource->id ?>" class="position-relative">
-                                                            <img style="width:4rem;" class="img-responsive center-block" src="<?= $meta->baseurl ?>device_images/<?= $os->attributes->icon ?>.svg" alt="<?= $os->attributes->icon ?>">
-                                                            <br><?= $os->attributes->type ?>
-                                                            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill" style="background:#3bafda"><?= $os->attributes->count ?></span>
-                                                        </a>
-                                                    </div>
-                                                </div>
-                                                <?php
-                                            }
-                                            ?>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <div class="col-6">
-                            <div class="offset-2 col-8">
-                                <div class="card">
-                                    <div class="card-header">
-                                        <div class="row">
-                                            <div class="col-4 clearfix">
-                                                <h6 style="padding-top:10px;"><span class="icon-layers-2 oa-icon"></span><?= __('Resources') ?></h6>
+                        <div class="col-12 col-md-6">
+                            <div class="row">
+                                <div class="col-12 col-md-11 mx-auto me-md-auto ms-md-0">
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <div class="row">
+                                                <div class="col-4 clearfix">
+                                                    <h6 style="padding-top:10px;"><span class="icon-layers-2 oa-icon"></span><?= __('Resources') ?></h6>
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
-                                    <div class="card-body">
-                                        <div class="row" style="min-height:100px;">
-                                            <div class="col-lg-3 text-center">
-                                                <div>
-                                                    <a href="<?= url_to('devicesCollection') ?>?devices.discovery_id=<?= $resource->id ?>" class="position-relative">
-                                                        <img style="width:4rem;" class="img-responsive center-block" src="<?= $meta->baseurl ?>icons/devices.svg" alt="<?= __('Devices') ?>">
-                                                        <br><?= __('Devices') ?>
-                                                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill" style="background:#3bafda"><?= count($included['devices_count']) ?></span>
-                                                    </a>
+                                        <div class="card-body">
+                                            <div class="row" style="min-height:100px;">
+                                                <div class="col-lg-3 text-center">
+                                                    <div>
+                                                        <a href="<?= url_to('devicesCollection') ?>?devices.discovery_id=<?= $resource->id ?>" class="position-relative">
+                                                            <img style="width:4rem;" class="img-responsive center-block" src="<?= $meta->baseurl ?>icons/devices.svg" alt="<?= __('Devices') ?>">
+                                                            <br><?= __('Devices') ?>
+                                                            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill" style="background:#3bafda"><?= count($included['devices_count']) ?></span>
+                                                        </a>
+                                                    </div>
                                                 </div>
-                                            </div>
-                                            <div class="col-lg-3 text-center">
-                                                <div>
-                                                    <a href="<?= url_to('locationsCollection') ?>?locations.id=in(<?= $included['locations_url'] ?>)" class="position-relative">
-                                                        <img style="width:4rem;" class="img-responsive center-block" src="<?= $meta->baseurl ?>icons/locations.svg" alt="<?= __('Locations') ?>">
-                                                        <br><?= __('Locations') ?>
-                                                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill" style="background:#3bafda"><?= $included['locations_count'] ?></span>
-                                                    </a>
+                                                <div class="col-lg-3 text-center">
+                                                    <div>
+                                                        <a href="<?= url_to('locationsCollection') ?>?locations.id=in(<?= $included['locations_url'] ?>)" class="position-relative">
+                                                            <img style="width:4rem;" class="img-responsive center-block" src="<?= $meta->baseurl ?>icons/locations.svg" alt="<?= __('Locations') ?>">
+                                                            <br><?= __('Locations') ?>
+                                                            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill" style="background:#3bafda"><?= $included['locations_count'] ?></span>
+                                                        </a>
+                                                    </div>
                                                 </div>
-                                            </div>
-                                            <div class="col-lg-3 text-center">
-                                                <div>
-                                                    <a href="<?= url_to('networksCollection') ?>?networks.id=in(<?= $included['networks_url'] ?>)" class="position-relative">
-                                                        <img style="width:4rem;" class="img-responsive center-block" src="<?= $meta->baseurl ?>icons/networks.svg" alt="<?= __('Networks') ?>">
-                                                        <br><?= __('Networks') ?>
-                                                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill" style="background:#3bafda"><?= $included['networks_count'] ?></span>
-                                                    </a>
+                                                <div class="col-lg-3 text-center">
+                                                    <div>
+                                                        <a href="<?= url_to('networksCollection') ?>?networks.id=in(<?= $included['networks_url'] ?>)" class="position-relative">
+                                                            <img style="width:4rem;" class="img-responsive center-block" src="<?= $meta->baseurl ?>icons/networks.svg" alt="<?= __('Networks') ?>">
+                                                            <br><?= __('Networks') ?>
+                                                            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill" style="background:#3bafda"><?= $included['networks_count'] ?></span>
+                                                        </a>
+                                                    </div>
                                                 </div>
-                                            </div>
-                                            <div class="col-lg-3 text-center">
-                                                <div>
-                                                    <a href="<?= url_to('orgsCollection') ?>?orgs.id=in(<?= $included['orgs_url'] ?>)" class="position-relative">
-                                                        <img style="width:4rem;" class="img-responsive center-block" src="<?= $meta->baseurl ?>icons/orgs.svg" alt="<?= __('Orgs') ?>">
-                                                        <br><?= __('Orgs') ?>
-                                                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill" style="background:#3bafda"><?= $included['orgs_count'] ?></span>
-                                                    </a>
+                                                <div class="col-lg-3 text-center">
+                                                    <div>
+                                                        <a href="<?= url_to('orgsCollection') ?>?orgs.id=in(<?= $included['orgs_url'] ?>)" class="position-relative">
+                                                            <img style="width:4rem;" class="img-responsive center-block" src="<?= $meta->baseurl ?>icons/orgs.svg" alt="<?= __('Orgs') ?>">
+                                                            <br><?= __('Orgs') ?>
+                                                            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill" style="background:#3bafda"><?= $included['orgs_count'] ?></span>
+                                                        </a>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
@@ -596,6 +605,7 @@ foreach ($included['discovery_scan_options'] as $item) {
                     <div class="tab-pane" id="issues" role="tabpanel" tabindex="0" aria-labelledby="issues">
                         <div class="row">
                             <div class="col-12">
+                                <!--
                                 <table class="table <?= $GLOBALS['table'] ?> table-striped table-hover dataTable" data-order='[[2,"asc"]]'>
                                     <thead>
                                     <tr>
@@ -628,6 +638,24 @@ foreach ($included['discovery_scan_options'] as $item) {
                                     <?php } ?>
                                     </tbody>
                                 </table>
+                                -->
+
+
+                                <!-- TODO: Make table load via Ajax -->
+                                <table class="table <?= $GLOBALS['table'] ?> table-striped table-hover dataTableIssues" data-order='[[2,"asc"]]'>
+                                    <thead>
+                                        <tr>
+                                            <th style="min-width:6rem;" data-orderable="false" class="text-center"><?= __('View') ?></th>
+                                            <th style="min-width:6rem;" data-orderable="false" class="text-center"></th>
+                                            <th style="min-width:6rem;"><?= __('IP') ?></th>
+                                            <th style="min-width:6rem;"><?= __('Name') ?></th>
+                                            <th><?= __('Issue') ?></th>
+                                            <th style="min-width:6rem;" data-orderable="false"><?= __('Action') ?></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                    </tbody>
+                                </table>
                             </div>
                         </div>
                     </div>
@@ -639,6 +667,7 @@ foreach ($included['discovery_scan_options'] as $item) {
 <script {csp-script-nonce}>
     window.onload = function () {
         $(document).ready(function () {
+            var discoveryId = Number('<?php echo $meta->id ?>');
             $("#devices_assigned_to_org").append($('<option>', { value: '', text: ''}));
             $("#devices_assigned_to_location").append($('<option>', { value: '', text: ''}));
             $("#devices_assigned_to_org").val("<?= $resource->devices_assigned_to_org ?>");
@@ -707,7 +736,7 @@ foreach ($included['discovery_scan_options'] as $item) {
 
             function checkDiscoveryStatus() {
                 $.ajax({
-                    url: '/index.php/discoveries/1?format=json',
+                    url: '<?php echo base_url(); ?>index.php/discoveries/' + discoveryId + '?format=json',
                     method: 'GET',
                     dataType: 'json',
                     success: function (response) {
@@ -715,15 +744,26 @@ foreach ($included['discovery_scan_options'] as $item) {
                             var item = response.data[0];
                             var attributes = item.attributes || {};
 
+                            var totalIps        = Number(attributes.ip_all_count);
+                            var totalResponding = Number(attributes.ip_responding_count);
+                            var totalScanned    = Number(attributes.ip_scanned_count);
+                            var totalAudited    = Number(attributes.ip_audited_count);
+
+                            $('#ip_all_count').val(totalIps);
+                            $('#ip_responding_count').val(totalResponding);
+                            $('#ip_scanned_count').val(totalScanned);
+                            $('#ip_audited_count').val(totalAudited);
+
+                            updateProgressData(totalResponding, totalScanned, totalAudited, totalIps);
+
                             if (! attributes.last_run || ! attributes.last_finished) {
                                 return false;
                             }
 
-                            var lastRun = new Date(attributes.last_run);
-                            var lastFinished = new Date(attributes.last_finished);
-                            // Unsure whether this is adequate, but we do not track PID's or a
-                            // dedicated field determining whether the discovery is running
-                            if (lastRun.getTime() <= lastFinished.getTime()) {
+                            var lastRunDate = new Date(attributes.last_run);
+                            var lastFinishedDate = new Date(attributes.last_finished);
+
+                            if (lastRunDate.getTime() <= lastFinishedDate.getTime()) {
                                 refreshTableData = false;
                                 clearInterval(discoveryInterval);
                                 discoveryInterval = null;
@@ -920,9 +960,8 @@ foreach ($included['discovery_scan_options'] as $item) {
                             {
                                 extend: 'refresh',
                                 boundToTab: '#logs-tab',
-                                autoRefreshIfEmpty: true,
                                 autoRefreshInterval: refreshTableDataInterval,
-                                continueRefreshing: function () {
+                                autoRefresh: function () {
                                     return refreshTableData;
                                 }
                             }
@@ -1116,9 +1155,8 @@ foreach ($included['discovery_scan_options'] as $item) {
                             {
                                 extend: 'refresh',
                                 boundToTab: '#all_ips-tab',
-                                autoRefreshIfEmpty: true,
                                 autoRefreshInterval: refreshTableDataInterval,
-                                continueRefreshing: function () {
+                                autoRefresh: function () {
                                     return refreshTableData;
                                 }
                             }
@@ -1313,9 +1351,8 @@ foreach ($included['discovery_scan_options'] as $item) {
                             {
                                 extend: 'refresh',
                                 boundToTab: '#devices-tab',
-                                autoRefreshIfEmpty: true,
                                 autoRefreshInterval: refreshTableDataInterval,
-                                continueRefreshing: function () {
+                                autoRefresh: function () {
                                     return refreshTableData;
                                 }
                             }
@@ -1356,6 +1393,288 @@ foreach ($included['discovery_scan_options'] as $item) {
             $(document).on('click', '#dev_button', function() {
                 $(this).parent().hide();
             });
+
+            var issuesDataTable = new DataTable('.dataTableIssues', {
+                paging: false,
+                ordering: true,
+                lengthChange: false,
+                processing: true,
+                searching: true,
+                serverSide: false,
+                deferLoading: 0,
+                autoWidth: false,
+                info: true,
+                language: { infoFiltered: '' },
+                ajax: {
+                    url: '<?php echo base_url(); ?>index.php/discoveries/<?php echo $meta->id; ?>/issues?format=json',
+                    dataSrc: 'data',
+                },
+                columns: [
+                    { data: 'view', render: function (data, type, row, meta) {
+                        var baseUrl = '<?php echo base_url(); ?>index.php/devices';
+                        var deviceId = row['devices.id'];
+                        var deviceUrl = deviceId ? baseUrl + '/' + deviceId : baseUrl;
+                        return `<a title="<?php echo __('Devices'); ?>" role="button" class="btn btn-sm btn-devices" href="${deviceUrl}"><span style="width:1rem;" title="<?php echo __('Devices'); ?>" class="icon-computer" aria-hidden="true"></span></a>`;
+                    }},
+                    { data: 'icon', render: function (data, type, row, meta) {
+                        var deviceIcon = row['devices.icon'];
+                        var deviceIconUrl = `<?php echo base_url(); ?>device_images/${deviceIcon}.svg`;
+                        return `<img style="width:30px;" src="${deviceIconUrl}" alt="">`;
+                    }},
+                    { data: 'ip', render: function (data, type, row, meta) {
+                        var deviceType = row['devices.type'];
+                        var deviceIp = row['devices.ip'];
+                        var deviceIpPadded = row['devices.ip_padded'];
+                        return `<span style="display:none;">${deviceIpPadded}</span>${deviceIp}<br>${deviceType}`;
+                    }},
+                    { data: 'name', render: function (data, type, row, meta) {
+                        return row['devices.name'];
+                    }},
+                    { data: 'output', render: function (data, type, row, meta) {
+                        var decodedDescription = $('<div/>').html(row.description).text();
+                        return `${row.output}<br>${decodedDescription}`;
+                    }},
+                    { data: 'action', render: function (data, type, row, meta) {
+                        var credentialsUrl = '<?php echo base_url(); ?>index.php/credentials/create';
+                        var credentialsButton = `<a role="button" class="btn btn-sm btn-light" href="${credentialsUrl}"><?php echo __('Add Credentials'); ?></a>`;
+                        return row.action === 'add credentials' ? credentialsButton : '';
+                    }},
+                ],
+                columnDefs: [
+                    { className: "text-center", target: 0, width: "10em" },
+                    { className: "text-center", target: 1, width: "10em" },
+                    { className: "text-start", target: 2, width: "10em" },
+                    { className: "text-start", target: 3, width: "10em" },
+                    { className: "text-start", target: 4 },
+                    { className: "text-start", target: 5, width: "10em" },
+                ],
+                layout: {
+                    topEnd: {
+                        search: {},
+                        buttons: [
+                            {
+                                extend: 'refresh',
+                                boundToTab: '#issues-tab',
+                                autoRefreshInterval: refreshTableDataInterval,
+                                autoRefresh: function () {
+                                    return refreshTableData;
+                                }
+                            }
+                        ]
+                    },
+                    bottomStart: {
+                        info: {
+                            text: 'Showing _START_ to _END_ of _TOTAL_ entries'
+                        }
+                    },
+                    bottomEnd: {
+                        paging: {
+                            type: 'full_numbers'
+                        }
+                    }
+                }
+            });
+
+            issuesDataTable.on('processing.dt', function (e, settings, processing) {
+                if (! processing) {
+                    var issues = issuesDataTable.data().count();
+                    var tab = $('#issues-tab');
+                    $('issues-bubble', tab).remove();
+                    if (issues > 0) {
+                        var bubble = `<span class="issues-bubble position-absolute top-0 start-75 translate-middle badge rounded-pill bg-warning">${issues}</span>`;
+                        tab.append(bubble);
+                    }
+                }
+            });
+
+            var progressId = 'discovery-progress';
+            var progressContainer = document.getElementById(progressId);
+            var progressChart = echarts.init(progressContainer, null, {
+                renderer: 'svg'
+            });
+            var progressWidth = $('#' + progressId).innerWidth();
+            var progressFontSize = getProgressFontSize(progressWidth);
+            var progressLineWidth = getProgressLineWidth(progressWidth);
+
+            var progressData = [
+                {
+                    value: 0,
+                    percentage: 0,
+                    name: 'Responding',
+                    title: {
+                        offsetCenter: ['0%', '-30%']
+                    },
+                    detail: {
+                        valueAnimation: true,
+                        offsetCenter: ['0%', '-20%']
+                    },
+                    itemStyle: {
+                        color: '#DC3545'
+                    },
+                },
+                {
+                    value: 0,
+                    percentage: 0,
+                    name: 'Scanned',
+                    title: {
+                        offsetCenter: ['0%', '0%']
+                    },
+                    detail: {
+                        valueAnimation: true,
+                        offsetCenter: ['0%', '10%']
+                    },
+                    itemStyle: {
+                        color: '#FFC107'
+                    },
+                },
+                {
+                    value: 0,
+                    percentage: 0,
+                    name: 'Audited',
+                    title: {
+                        offsetCenter: ['0%', '30%']
+                    },
+                    detail: {
+                        valueAnimation: true,
+                        offsetCenter: ['0%', '40%']
+                    },
+                    itemStyle: {
+                        color: '#8CC152'
+                    },
+                }
+            ];
+
+            var progressOption = {
+                series: [
+                    {
+                        type: 'gauge',
+                        radius: '100%',
+                        startAngle: 90,
+                        endAngle: -270,
+                        pointer: {
+                            show: false
+                        },
+                        progress: {
+                            show: true,
+                            overlap: false,
+                            roundCap: false,
+                            clip: false,
+                            itemStyle: {
+                                borderWidth: 0,
+                                borderColor: '#464646'
+                            }
+                        },
+                        axisLine: {
+                            lineStyle: {
+                                width: progressLineWidth
+                            }
+                        },
+                        splitLine: {
+                            show: false,
+                            distance: 0,
+                            length: 10
+                        },
+                        axisTick: {
+                            show: false
+                        },
+                        axisLabel: {
+                            show: false,
+                            distance: 50
+                        },
+                        data: progressData,
+                        title: {
+                            fontSize: progressFontSize
+                        },
+                        detail: {
+                            width: 50,
+                            height: 14,
+                            fontSize: progressFontSize,
+                            color: 'inherit',
+                            borderColor: 'inherit',
+                            borderRadius: 0,
+                            borderWidth: 0,
+                            formatter: function (value) {
+                                var amount = $.isArray(value) ? value[0] : value;
+                                var percentage = $.isArray(value) ? value[1] : value;
+                                return '{percentage| ' + percentage + '%} {amount|(' + amount + ')}';
+                            },
+                            rich: {
+                                percentage: {
+                                    color: 'inherit',
+                                },
+                                amount: {
+                                    color: '#666666',
+                                }
+                            }
+                        }
+                    }
+                ]
+            };
+
+            progressChart.setOption(progressOption);
+
+            window.addEventListener('resize', () => {
+                updateProgressSizing();
+            });
+
+            function getProgressFontSize(containerWidth) {
+                if (containerWidth < 250) return 10;
+                if (containerWidth < 300) return 12;
+                return 14;
+            }
+
+            function getProgressLineWidth(containerWidth) {
+                if (containerWidth < 250) return 24;
+                if (containerWidth < 300) return 32;
+                return 40;
+            }
+
+            function updateProgressSizing() {
+                progressChart.resize();
+                progressWidth = $('#' + progressId).innerWidth();
+                progressFontSize = getProgressFontSize(progressWidth);
+                progressLineWidth = getProgressLineWidth(progressWidth);
+                progressChart.setOption({
+                    series: [
+                        {
+                            axisLine: {
+                                lineStyle: {
+                                    width: progressLineWidth
+                                }
+                            },
+                            title: {
+                                fontSize: progressFontSize
+                            },
+                            detail: {
+                                fontSize: progressFontSize
+                            }
+                        }
+                    ]
+                });
+            }
+
+            function updateProgressData(responding, scanned, audited, total) {
+                if (total === 0) {
+                    progressData[0].value = [0, 0];
+                    progressData[1].value = [0, 0];
+                    progressData[2].value = [0, 0];
+                } else {
+                    progressData[0].value = [responding, Math.round((responding / total) * 100).toFixed(2)];
+                    progressData[1].value = [scanned, Math.round((scanned / total) * 100).toFixed(2)];
+                    progressData[2].value = [audited, Math.round((audited / total) * 100).toFixed(2)];
+                }
+
+                progressChart.setOption({
+                    series: [
+                        {
+                            data: progressData,
+                            pointer: {
+                                show: false
+                            }
+                        }
+                    ]
+                });
+            }
         });
     }
 </script>
