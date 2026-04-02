@@ -57,6 +57,7 @@ if (!empty($config->servers)) {
         <script {csp-script-nonce} defer src="<?= base_url('js/datatables.min.js') ?>"></script>
         <script {csp-script-nonce} defer src="<?= base_url('js/datatables.extra.js') ?>"></script>
         <script {csp-script-nonce} defer src="<?= base_url('js/apexcharts.js') ?>"></script>
+        <script {csp-script-nonce} defer src="<?= base_url('js/echarts.min.js') ?>"></script>
         <script {csp-script-nonce} defer src="<?= base_url('js/select2.full.min.js') ?>"></script>
         <script {csp-script-nonce} defer src="<?= base_url('js/open-audit.js') ?>"></script>
 
