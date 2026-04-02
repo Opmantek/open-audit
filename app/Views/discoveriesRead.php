@@ -1442,7 +1442,7 @@ foreach ($included['discovery_scan_options'] as $item) {
                 if (! processing) {
                     var issues = issuesDataTable.data().count();
                     var tab = $('#issues-tab');
-                    $('issues-bubble', tab).remove();
+                    $('.issues-bubble', tab).remove();
                     if (issues > 0) {
                         var bubble = `<span class="issues-bubble position-absolute top-0 start-75 translate-middle badge rounded-pill bg-warning">${issues}</span>`;
                         tab.append(bubble);
