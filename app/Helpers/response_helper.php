@@ -129,6 +129,10 @@ if (!function_exists('response_create')) {
             $permission_requested['execute'] = 'r';
         }
 
+        if ($response->meta->collection === 'discoveries' and $response->meta->action === 'issues') {
+            $permission_requested['issues'] = 'r';
+        }
+
         if ($response->meta->collection === 'configuration' and $response->meta->action === 'executeformemail') {
             $response->meta->action = 'read';
         }

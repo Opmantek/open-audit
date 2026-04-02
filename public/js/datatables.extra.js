@@ -2,21 +2,30 @@
 
     var defaults = {
         text: '<i class="icon-refresh-cw text-oa-primary"></i> Refresh',
-        className: 'btn btn-sm',
+        className: 'btn btn-sm btn-light',
         spinClass: 'dt-refresh-spin',
         autoDisable: true,
         resetPaging: true,
         boundToTab: null,
         tabActiveClass: 'active',
-        autoRefreshIfEmpty: false,
-        autoRefreshInterval: 5000,
-        continueRefreshing: null
+        autoRefresh: null,
+        autoRefreshInterval: 10000,
     };
 
     $.fn.dataTable.ext.buttons.refresh = function (table, config) {
 
         var options = $.extend({}, defaults, config);
         var pollTimer = null;
+
+        if (typeof options.autoRefresh !== 'function') {
+            options.autoRefresh = function() {
+                return table.data().count() === 0;
+            }
+        }
+
+        function shouldAutoRefresh() {
+            return options.autoRefresh() === true;
+        }
 
         function reloadData() {
             var button = table.button('.buttons-refresh').node();
@@ -37,15 +46,7 @@
         function startPolling() {
             if (!pollTimer) {
                 pollTimer = setInterval(() => {
-                    if (typeof options.continueRefreshing === 'function') {
-                        var continuePolling = options.continueRefreshing();
-                        if (! continuePolling) {
-                            stopPolling();
-                            return;
-                        }
-                    }
-
-                    if (table.data().count() === 0) {
+                    if (shouldAutoRefresh()) {
                         if (options.boundToTab) {
                             var tab = $(options.boundToTab);
                             if (tab.length && tab.hasClass(options.tabActiveClass)) {
@@ -93,7 +94,7 @@
                     icon.removeClass(options.spinClass);
                 }
 
-                if (options.autoRefreshIfEmpty && table.data().count() === 0) {
+                if (shouldAutoRefresh()) {
                     startPolling();
                 } else {
                     stopPolling();
@@ -102,7 +103,7 @@
         });
 
         table.on('init.dt', function () {
-            if (options.autoRefreshIfEmpty && table.data().count() === 0) {
+            if (shouldAutoRefresh()) {
                 startPolling();
             }
         });
