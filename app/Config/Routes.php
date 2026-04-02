@@ -92,7 +92,8 @@ $routes->post('devices/delete', 'Devices::delete', ['filter' => \App\Filters\Ses
 $routes->get('devices/importnmis', 'Devices::importNMISForm', ['filter' => \App\Filters\Session::class, 'as' => 'devicesImportNMISForm']);
 $routes->post('devices/importnmis', 'Devices::importNMIS', ['filter' => \App\Filters\Session::class, 'as' => 'devicesImportNMIS']);
 
-$routes->get('discoveries/(:any)/download', 'Discoveries::download/$1', ['filter' => \App\Filters\Session::class, 'as' => 'discoveriesDownload']);
+$routes->get('discoveries/(:num)/download', 'Discoveries::download/$1', ['filter' => \App\Filters\Session::class, 'as' => 'discoveriesDownload']);
+$routes->get('discoveries/(:num)/issues', 'Discoveries::issues/$1', ['filter' => \App\Filters\Session::class, 'as' => 'discoveriesIssues']);
 $routes->get('discoveries/(:num)/executeForm', 'Discoveries::executeForm/$1', ['filter' => \App\Filters\Session::class, 'as' => 'discoveriesExecuteForm']);
 $routes->post('discoveries/(:num)/executeForm', 'Discoveries::executeCollector/$1', ['filter' => \App\Filters\Session::class, 'as' => 'discoveriesExecuteCollector']);
 
