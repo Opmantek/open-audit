@@ -151,6 +151,20 @@ class Discoveries extends BaseController
     }
 
     /**
+     * Retrieve the discovery logs for a given ID, where logs are mapped by issue type.
+     *
+     * @param $id
+     * @return void
+     */
+    public function issues($id)
+    {
+        $id = (int) $id;
+        $this->resp->data = $this->discoveriesModel->issuesRead($id) ?? [];
+
+        output($this);
+    }
+
+    /**
      * Download a discovery including all, for support
      *
      * @access public
