@@ -605,43 +605,6 @@ foreach ($included['discovery_scan_options'] as $item) {
                     <div class="tab-pane" id="issues" role="tabpanel" tabindex="0" aria-labelledby="issues">
                         <div class="row">
                             <div class="col-12">
-                                <!--
-                                <table class="table <?= $GLOBALS['table'] ?> table-striped table-hover dataTable" data-order='[[2,"asc"]]'>
-                                    <thead>
-                                    <tr>
-                                        <th style="min-width:6rem;" data-orderable="false" class="text-center"><?= __('View') ?></th>
-                                        <th style="min-width:6rem;" data-orderable="false" class="text-center"></th>
-                                        <th style="min-width:6rem;"><?= __('IP') ?></th>
-                                        <th style="min-width:6rem;"><?= __('Name') ?></th>
-                                        <th><?= __('Issue') ?></th>
-                                        <th style="min-width:6rem;"><?= __('Action') ?></th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    <?php foreach ($included['issues'] as $issue) { ?>
-                                        <?php
-                                        $link = url_to('devicesCollection');
-                                        if (!empty($issue->{'devices.id'})) {
-                                            $link = url_to('devicesRead', $issue->{'devices.id'});
-                                        } ?>
-                                        <tr>
-                                            <td class="text-center"><a title=" <?= __('Devices') ?>" role="button" class="btn btn-sm btn-devices" href="<?= $link ?>"><span style="width:1rem;" title="<?= __('Devices') ?>" class="icon-computer" aria-hidden="true"></span></a></td>
-                                            <td class="text-center"><img style="width:30px;" src="<?= $meta->baseurl ?>device_images/<?= $issue->{'devices.icon'} ?>.svg" alt=""></td>
-                                            <td><span style="display:none;"><?= @$issue->{'devices.ip_padded'} ?></span><?= $issue->{'devices.ip'} . '<br>' . $issue->{'devices.type'} ?></td>
-                                            <td><?= $issue->{'devices.name'} ?></td>
-                                            <td><?= $issue->{'output'} . '<br>' . html_entity_decode($issue->{'description'}) ?></td>
-                                            <td><?php if ($issue->action === 'add credentials') { ?>
-                                                    <a role="button" class="btn btn-default btn-sm" href="<?= url_to('credentialsCreateForm') ?>"><?= __('Add Credentials') ?></a>
-                                                <?php } ?>
-                                            </td>
-                                        </tr>
-                                    <?php } ?>
-                                    </tbody>
-                                </table>
-                                -->
-
-
-                                <!-- TODO: Make table load via Ajax -->
                                 <table class="table <?= $GLOBALS['table'] ?> table-striped table-hover dataTableIssues" data-order='[[2,"asc"]]'>
                                     <thead>
                                         <tr>
