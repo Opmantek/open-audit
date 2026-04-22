@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Commands;
+namespace App\Commands\Translation;
 
 use App\Libraries\Translation\TranslationExtractor;
 use CodeIgniter\CLI\BaseCommand;
@@ -13,7 +13,7 @@ use CodeIgniter\CLI\CLI;
  *   --dirs /usr/local/open-audit/app \
  *   --output /usr/local/open-audit/writable/translations
  */
-class TranslationExtractCommand extends BaseCommand
+class ExtractCommand extends BaseCommand
 {
     protected $group       = 'Translation';
     protected $name        = 'translation:extract';
