@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Commands\Database;
 
-use App\Libraries\TranslationCreator;
 use CodeIgniter\CLI\BaseCommand;
 use CodeIgniter\CLI\CLI;
 use Throwable;
