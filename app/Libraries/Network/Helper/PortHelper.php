@@ -156,6 +156,47 @@ final class PortHelper
     }
 
     /**
+     * Contract a list of expanded ports into a simplified comma-separated string with ranges.
+     *
+     * @param array<int> $ports List of port numbers.
+     * @return string Comma-separated string with port ranges where possible.
+     */
+    public static function contract(array $ports): string
+    {
+        if (empty($ports)) {
+            return '';
+        }
+
+        sort($ports);
+
+        $ranges = [];
+        $start = $ports[0];
+        $end = $ports[0];
+
+        for ($i = 1; $i < count($ports); $i++) {
+            if ($ports[$i] === $end + 1) {
+                $end = $ports[$i];
+            } else {
+                if ($start === $end) {
+                    $ranges[] = (string) $start;
+                } else {
+                    $ranges[] = "$start-$end";
+                }
+                $start = $ports[$i];
+                $end = $ports[$i];
+            }
+        }
+
+        if ($start === $end) {
+            $ranges[] = (string) $start;
+        } else {
+            $ranges[] = "$start-$end";
+        }
+
+        return implode(',', $ranges);
+    }
+
+    /**
      * Validate that a string represents a numeric port value.
      *
      * @param string $value Raw port string input.

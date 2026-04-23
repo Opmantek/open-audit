@@ -73,6 +73,53 @@ final class PortHelperTest extends TestCase
         PortHelper::expand($input);
     }
 
+    /**
+     * @dataProvider validContractDataProvider
+     */
+    public function testContract(array $input, string $expected): void
+    {
+        $result = PortHelper::contract($input);
+        $this->assertSame($expected, $result);
+    }
+
+    public static function validContractDataProvider(): array
+    {
+        return [
+            'single port' => [
+                'input'    => [80],
+                'expected' => '80',
+            ],
+            'consecutive ports' => [
+                'input'    => [22, 23, 24, 25],
+                'expected' => '22-25',
+            ],
+            'non-consecutive ports' => [
+                'input'    => [22, 80, 443],
+                'expected' => '22,80,443',
+            ],
+            'multiple ranges' => [
+                'input'    => [100, 101, 102, 110, 111],
+                'expected' => '100-102,110-111',
+            ],
+            'single port again' => [
+                'input'    => [22],
+                'expected' => '22',
+            ],
+            'no ports' => [
+                'input'    => [],
+                'expected' => '',
+            ],
+            'disjoint ranges' => [
+                'input'    => [22, 23, 25, 26, 30],
+                'expected' => '22-23,25-26,30',
+            ],
+            'full port range' => [
+                'input'    => range(1, 65535),
+                'expected' => '1-65535',
+            ],
+        ];
+    }
+
     public static function invalidExpandDataProvider(): array
     {
         return [
