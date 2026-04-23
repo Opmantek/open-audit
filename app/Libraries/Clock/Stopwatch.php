@@ -32,13 +32,17 @@ class Stopwatch
         $this->running = false;
     }
 
-    public function getElapsedTime(): string
+    public function getElapsedTime($humanReadable = false): float|string
     {
         if ($this->running) {
             throw new RuntimeException('Stopwatch is still running.');
         }
 
         $elapsedSeconds = $this->endTime - $this->startTime;
+
+        if (! $humanReadable) {
+            return $elapsedSeconds;
+        }
 
         $days = floor($elapsedSeconds / 86400);
         $elapsedSeconds %= 86400;

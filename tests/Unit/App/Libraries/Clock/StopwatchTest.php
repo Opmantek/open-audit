@@ -19,17 +19,17 @@ final class StopwatchTest extends TestCase
     }
 
     /**
-     * @dataProvider elapsedTimeProvider
+     * @dataProvider humanReadableElapsedTimeDataProvider
      */
-    public function testElapsedTime(int $startTime, int $endTime, string $expected)
+    public function testHumanReadableElapsedTime(int $startTime, int $endTime, string $expected)
     {
         $this->setProperty($this->stopwatch, 'startTime', $startTime);
         $this->setProperty($this->stopwatch, 'endTime', $endTime);
 
-        $this->assertSame($expected, $this->stopwatch->getElapsedTime());
+        $this->assertSame($expected, $this->stopwatch->getElapsedTime(true));
     }
 
-    public function elapsedTimeProvider(): array
+    public function humanReadableElapsedTimeDataProvider(): array
     {
         return [
             'zero seconds' => [
@@ -58,6 +58,14 @@ final class StopwatchTest extends TestCase
                 'expected'  => '1 day, 1 hour, 1 minute, 2 seconds'
             ],
         ];
+    }
+
+    public function testElapsedTime()
+    {
+        $this->setProperty($this->stopwatch, 'startTime', 10);
+        $this->setProperty($this->stopwatch, 'endTime', 60);
+
+        $this->assertSame(50.0, $this->stopwatch->getElapsedTime());
     }
 
     public function testCannotStartWhenRunning()
