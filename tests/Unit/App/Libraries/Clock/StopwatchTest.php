@@ -32,30 +32,30 @@ final class StopwatchTest extends TestCase
     public function elapsedTimeProvider(): array
     {
         return [
-            'testElapsedTimeInSeconds' => [
+            'zero seconds' => [
+                'startTime' => 0,
+                'endTime'   => 0,
+                'expected'  => '0 seconds'
+            ],
+            'seconds only' => [
                 'startTime' => 0,
                 'endTime'   => 3,
                 'expected'  => '3 seconds'
             ],
-            'testElapsedTimeInMinutesAndSeconds' => [
+            'minutes and seconds' => [
                 'startTime' => 0,
                 'endTime'   => 65,
                 'expected'  => '1 minute, 5 seconds'
             ],
-            'testElapsedTimeWithMultipleUnits' => [
+            'hours, minutes and seconds' => [
                 'startTime' => 0,
                 'endTime'   => 3665,
                 'expected'  => '1 hour, 1 minute, 5 seconds'
             ],
-            'testElapsedTimeWithDaysHoursMinutesSeconds' => [
+            'days, hours, minutes and seconds' => [
                 'startTime' => 0,
                 'endTime'   => 90062,
                 'expected'  => '1 day, 1 hour, 1 minute, 2 seconds'
-            ],
-            'testZeroElapsedTime' => [
-                'startTime' => 0,
-                'endTime'   => 0,
-                'expected'  => '0 seconds'
             ],
         ];
     }
