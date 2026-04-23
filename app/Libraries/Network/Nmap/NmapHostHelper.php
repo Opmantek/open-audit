@@ -7,6 +7,18 @@ namespace App\Libraries\Network\Nmap;
 final class NmapHostHelper
 {
     /**
+     * Retrieve the state of the host (e.g., 'up', 'down', etc.).
+     *
+     * @param array $host The host array containing status information.
+     * @param string $default The default value to return if the state is not found. Defaults to 'unknown'.
+     * @return string The state of the host or the default value.
+     */
+    public static function getState(array $host, string $default = 'unknown'): string
+    {
+        return $host['status']['state'] ?? $default;
+    }
+
+    /**
      * Retrieve all addresses or filter by type.
      *
      * This function will return all addresses or filter them based on the `addrtype`

@@ -9,6 +9,50 @@ use PHPUnit\Framework\TestCase;
 
 final class NmapHostHelperTest extends TestCase
 {
+    public function testGetStateWhenStateExists()
+    {
+        $host = [
+            'status' => [
+                'state' => 'up'
+            ]
+        ];
+
+        $state = NmapHostHelper::getState($host);
+
+        $this->assertEquals('up', $state);
+    }
+
+    public function testGetStateWhenStateDoesNotExist()
+    {
+        $host = [
+            'status' => []
+        ];
+
+        $state = NmapHostHelper::getState($host);
+
+        $this->assertEquals('unknown', $state);
+    }
+
+    public function testGetStateWithCustomDefault()
+    {
+        $host = [
+            'status' => []
+        ];
+
+        $state = NmapHostHelper::getState($host, 'offline');
+
+        $this->assertEquals('offline', $state);
+    }
+
+    public function testGetStateWhenStatusKeyIsMissing()
+    {
+        $host = [];
+
+        $state = NmapHostHelper::getState($host);
+
+        $this->assertEquals('unknown', $state);
+    }
+
     public function testGetAddressesAllTypes()
     {
         $host = [
@@ -100,7 +144,7 @@ final class NmapHostHelperTest extends TestCase
 
         $ipv4 = NmapHostHelper::getIpv4Address($host);
 
-        $this->assertEmpty($ipv4); // Should return an empty array
+        $this->assertEmpty($ipv4);
     }
 
     public function testGetIpv6Address()
