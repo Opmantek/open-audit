@@ -5,21 +5,21 @@ declare(strict_types=1);
 namespace OpenAuditTest\Unit\App\Libraries\Network\Nmap;
 
 use PHPUnit\Framework\TestCase;
-use App\Libraries\Network\Nmap\NmapPartialXmlParser;
+use App\Libraries\Network\Nmap\NmapHostXmlParser;
 
 use function explode;
 use function file_get_contents;
 use function iterator_to_array;
 use function json_decode;
 
-final class NmapPartialXmlParserTest extends TestCase
+final class NmapHostXmlParserTest extends TestCase
 {
     /**
      * @dataProvider singleChunkDataProvider
      */
     public function testSingleChunkParsing(string $chunk, array $expected): void
     {
-        $parser = new NmapPartialXmlParser();
+        $parser = new NmapHostXmlParser();
 
         $result = iterator_to_array($parser->parse($chunk), false);
 
@@ -69,7 +69,7 @@ final class NmapPartialXmlParserTest extends TestCase
      */
     public function testChunkedStreaming(array $chunks, array $expected): void
     {
-        $parser = new NmapPartialXmlParser();
+        $parser = new NmapHostXmlParser();
 
         $result = [];
 
@@ -134,7 +134,7 @@ final class NmapPartialXmlParserTest extends TestCase
 
     public function testIgnoresHostsWithoutAddressAcrossChunks(): void
     {
-        $parser = new NmapPartialXmlParser();
+        $parser = new NmapHostXmlParser();
 
         $chunks = [
             '<host><status state="up"/>',
@@ -163,7 +163,7 @@ final class NmapPartialXmlParserTest extends TestCase
         $xml  = file_get_contents(__DIR__ . '/../../../../../Support/Resource/nmap_example_complete.xml');
         $json = file_get_contents(__DIR__ . '/../../../../../Support/Resource/nmap_example_expected.json');
 
-        $parser = new NmapPartialXmlParser();
+        $parser = new NmapHostXmlParser();
 
         $chunks = [$xml];
         $result = [];
@@ -184,7 +184,7 @@ final class NmapPartialXmlParserTest extends TestCase
         $xml  = file_get_contents(__DIR__ . '/../../../../../Support/Resource/nmap_example_chunks.xml');
         $json = file_get_contents(__DIR__ . '/../../../../../Support/Resource/nmap_example_expected.json');
 
-        $parser = new NmapPartialXmlParser();
+        $parser = new NmapHostXmlParser();
 
         $chunks = explode('<!-- BEGIN CHUNK -->', $xml);
         $result = [];

@@ -10,7 +10,7 @@ use function str_contains;
 use function strpos;
 use function substr;
 
-final class NmapPartialXmlParser
+final class NmapHostXmlParser
 {
     private string $buffer = '';
 
