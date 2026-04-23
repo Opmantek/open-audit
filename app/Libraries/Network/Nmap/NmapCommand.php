@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Libraries\Network\Nmap;
 
+use App\Libraries\Network\Helper\PortHelper;
 use function array_map;
 use function array_merge;
 use function implode;
@@ -99,11 +100,25 @@ class NmapCommand
 
         if ($options->excludePorts || $options->excludeTcpPorts || $options->excludeUdpPorts) {
             $command[] = '--exclude-ports';
-            $excluded  = array_merge(
-                $options->excludePorts ?? [],
-                array_map(fn($port) => 'T:' . $port, $options->excludeTcpPorts ?? []),
-                array_map(fn($port) => 'U:' . $port, $options->excludeUdpPorts ?? []),
-            );
+
+            $ports    = PortHelper::contract($options->excludePorts ?? []);
+            $tcpPorts = PortHelper::contract($options->excludeTcpPorts ?? []);
+            $udpPorts = PortHelper::contract($options->excludeUdpPorts ?? []);
+
+            $excluded = [];
+
+            if (! empty($ports)) {
+                $excluded[] = $ports;
+            }
+
+            if (! empty($tcpPorts)) {
+                $excluded[] = 'T:' . $tcpPorts;
+            }
+
+            if (! empty($udpPorts)) {
+                $excluded[] = 'U:' . $udpPorts;
+            }
+
             $command[] = implode(',', $excluded);
         }
 

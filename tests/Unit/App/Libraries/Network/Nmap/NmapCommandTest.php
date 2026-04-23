@@ -129,6 +129,95 @@ final class NmapCommandTest extends TestCase
         $this->assertTrue(in_array('80,T:443,U:53', $result));
     }
 
+    public function testExcludePortRangesAreContracted(): void
+    {
+        $options                  = new NmapOptions();
+        $options->targets         = 'localhost';
+        $options->excludePorts    = [80, 81, 82, 83, 84];
+        $options->excludeTcpPorts = [443, 444, 445];
+        $options->excludeUdpPorts = [161, 162, 163];
+
+        $command = new NmapCommand();
+        $result  = $command->generate($options);
+
+        $this->assertTrue(in_array('--exclude-ports', $result));
+        $this->assertTrue(in_array('80-84,T:443-445,U:161-163', $result));
+    }
+
+    public function testExcludePortsWithMixedRangesAndSinglePorts(): void
+    {
+        $options                  = new NmapOptions();
+        $options->targets         = 'localhost';
+        $options->excludePorts    = [80, 81, 82, 85, 87];
+        $options->excludeTcpPorts = [443, 444];
+        $options->excludeUdpPorts = [161, 162, 165];
+
+        $command = new NmapCommand();
+        $result  = $command->generate($options);
+
+        $this->assertTrue(in_array('--exclude-ports', $result));
+        $this->assertTrue(in_array('80-82,85,87,T:443-444,U:161-162,165', $result));
+    }
+
+    public function testExcludePortsWithNoValues(): void
+    {
+        $options                  = new NmapOptions();
+        $options->targets         = 'localhost';
+        $options->excludePorts    = [];
+        $options->excludeTcpPorts = [];
+        $options->excludeUdpPorts = [];
+
+        $command = new NmapCommand();
+        $result  = $command->generate($options);
+
+        $this->assertFalse(in_array('--exclude-ports', $result));
+    }
+
+    public function testExcludePortsWithOnlyGeneralPorts(): void
+    {
+        $options                  = new NmapOptions();
+        $options->targets         = 'localhost';
+        $options->excludePorts    = [80, 443];
+        $options->excludeTcpPorts = [];
+        $options->excludeUdpPorts = [];
+
+        $command = new NmapCommand();
+        $result  = $command->generate($options);
+
+        $this->assertTrue(in_array('--exclude-ports', $result));
+        $this->assertTrue(in_array('80,443', $result));
+    }
+
+    public function testExcludePortsWithOnlyTcpPorts(): void
+    {
+        $options                  = new NmapOptions();
+        $options->targets         = 'localhost';
+        $options->excludePorts    = [];
+        $options->excludeTcpPorts = [443, 444, 8080];
+        $options->excludeUdpPorts = [];
+
+        $command = new NmapCommand();
+        $result  = $command->generate($options);
+
+        $this->assertTrue(in_array('--exclude-ports', $result));
+        $this->assertTrue(in_array('T:443-444,8080', $result));
+    }
+
+    public function testExcludePortsWithOnlyUdpPorts(): void
+    {
+        $options                  = new NmapOptions();
+        $options->targets         = 'localhost';
+        $options->excludePorts    = [];
+        $options->excludeTcpPorts = [];
+        $options->excludeUdpPorts = [53, 161, 162];
+
+        $command = new NmapCommand();
+        $result  = $command->generate($options);
+
+        $this->assertTrue(in_array('--exclude-ports', $result));
+        $this->assertTrue(in_array('U:53,161-162', $result));
+    }
+
     /**
      * @dataProvider outputTypesDataProvider
      */
