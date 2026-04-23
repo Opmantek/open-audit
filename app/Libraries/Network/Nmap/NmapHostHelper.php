@@ -47,6 +47,17 @@ final class NmapHostHelper
     }
 
     /**
+     * Retrieve the first IPv4 or IPv6 address from the host.
+     *
+     * @param array $host The host array containing address information.
+     * @return array The first IPv4 or IPv6 address or an empty array if not found.
+     */
+    public static function getIpAddress(array $host): array
+    {
+        return self::getAddresses($host, 'ipv4')[0] ?? self::getIpv6Address($host) ?? [];
+    }
+
+    /**
      * Retrieve the first IPv4 address from the host.
      *
      * @param array $host The host array containing address information.
@@ -77,5 +88,20 @@ final class NmapHostHelper
     public static function getMacAddress(array $host): array
     {
         return self::getAddresses($host, 'mac')[0] ?? [];
+    }
+
+    /**
+     * Retrieve ports from the host.
+     *
+     * @param array $host The host array containing port information.
+     * @return array A list of ports (empty array if none found).
+     */
+    public static function getPorts(array $host): array
+    {
+        if (empty($host['ports']['port']) || ! is_array($host['ports']['port'])) {
+            return [];
+        }
+
+        return array_is_list($host['ports']['port']) ? $host['ports']['port'] : [$host['ports']['port']];
     }
 }

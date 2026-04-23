@@ -71,6 +71,55 @@ final class NmapHostHelperTest extends TestCase
         $this->assertEquals('00:14:22:01:23:45', $addresses[2]['addr']);
     }
 
+    public function testGetIpAddressWithIpv4()
+    {
+        $host = [
+            'address' => [
+                ['addr' => '192.168.1.1', 'addrtype' => 'ipv4'],
+                ['addr' => '2001:db8::1', 'addrtype' => 'ipv6']
+            ]
+        ];
+
+        $ipAddress = NmapHostHelper::getIpAddress($host);
+
+        $this->assertEquals('192.168.1.1', $ipAddress['addr']);
+        $this->assertEquals('ipv4', $ipAddress['addrtype']);
+    }
+
+    public function testGetIpAddressWithIpv6()
+    {
+        $host = [
+            'address' => [
+                ['addr' => '2001:db8::1', 'addrtype' => 'ipv6']
+            ]
+        ];
+
+        $ipAddress = NmapHostHelper::getIpAddress($host);
+
+        $this->assertEquals('2001:db8::1', $ipAddress['addr']);
+        $this->assertEquals('ipv6', $ipAddress['addrtype']);
+    }
+
+    public function testGetIpAddressWithNoIpAddress()
+    {
+        $host = [
+            'address' => []
+        ];
+
+        $ipAddress = NmapHostHelper::getIpAddress($host);
+
+        $this->assertEmpty($ipAddress);
+    }
+
+    public function testGetIpAddressWhenNoAddressKey()
+    {
+        $host = [];
+
+        $ipAddress = NmapHostHelper::getIpAddress($host);
+
+        $this->assertEmpty($ipAddress);
+    }
+
     public function testGetAddressesByIpv4()
     {
         $host = [
@@ -189,5 +238,58 @@ final class NmapHostHelperTest extends TestCase
         $this->assertEmpty($ipv4);
         $this->assertEmpty($ipv6);
         $this->assertEmpty($mac);
+    }
+
+    public function testGetPortsWithIndexedArray()
+    {
+        $host = [
+            'ports' => [
+                'port' => [
+                    ['portid' => 80, 'protocol' => 'tcp'],
+                    ['portid' => 443, 'protocol' => 'tcp']
+                ]
+            ]
+        ];
+
+        $ports = NmapHostHelper::getPorts($host);
+
+        $this->assertCount(2, $ports);
+        $this->assertEquals(80, $ports[0]['portid']);
+        $this->assertEquals('tcp', $ports[0]['protocol']);
+    }
+
+    public function testGetPortsWithAssocArray()
+    {
+        $host = [
+            'ports' => [
+                'port' => ['portid' => 80, 'protocol' => 'tcp']
+            ]
+        ];
+
+        $ports = NmapHostHelper::getPorts($host);
+
+        $this->assertCount(1, $ports);
+        $this->assertEquals(80, $ports[0]['portid']);
+        $this->assertEquals('tcp', $ports[0]['protocol']);
+    }
+
+    public function testGetPortsWithNoPorts()
+    {
+        $host = [
+            'ports' => []
+        ];
+
+        $ports = NmapHostHelper::getPorts($host);
+
+        $this->assertEmpty($ports);
+    }
+
+    public function testGetPortsWhenNoPortsKey()
+    {
+        $host = [];
+
+        $ports = NmapHostHelper::getPorts($host);
+
+        $this->assertEmpty($ports);
     }
 }
