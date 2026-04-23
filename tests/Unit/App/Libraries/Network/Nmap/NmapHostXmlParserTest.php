@@ -21,7 +21,7 @@ final class NmapHostXmlParserTest extends TestCase
     {
         $parser = new NmapHostXmlParser();
 
-        $result = iterator_to_array($parser->parse($chunk), false);
+        $result = iterator_to_array($parser->feed($chunk), false);
 
         $this->assertSame($expected, $result);
     }
@@ -74,7 +74,7 @@ final class NmapHostXmlParserTest extends TestCase
         $result = [];
 
         foreach ($chunks as $chunk) {
-            foreach ($parser->parse($chunk) as $host) {
+            foreach ($parser->feed($chunk) as $host) {
                 $result[] = $host;
             }
         }
@@ -144,7 +144,7 @@ final class NmapHostXmlParserTest extends TestCase
         $result = [];
 
         foreach ($chunks as $chunk) {
-            foreach ($parser->parse($chunk) as $host) {
+            foreach ($parser->feed($chunk) as $host) {
                 $result[] = $host;
             }
         }
@@ -165,14 +165,7 @@ final class NmapHostXmlParserTest extends TestCase
 
         $parser = new NmapHostXmlParser();
 
-        $chunks = [$xml];
-        $result = [];
-
-        foreach ($chunks as $chunk) {
-            foreach ($parser->parse($chunk) as $host) {
-                $result[] = $host;
-            }
-        }
+        $result = $parser->parse($xml);
 
         $expected = json_decode($json, true);
 
@@ -190,7 +183,7 @@ final class NmapHostXmlParserTest extends TestCase
         $result = [];
 
         foreach ($chunks as $chunk) {
-            foreach ($parser->parse($chunk) as $host) {
+            foreach ($parser->feed($chunk) as $host) {
                 $result[] = $host;
             }
         }

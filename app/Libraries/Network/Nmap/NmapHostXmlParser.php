@@ -14,6 +14,17 @@ final class NmapHostXmlParser
 {
     private string $buffer = '';
 
+    public function parse(string $xml): array
+    {
+        $result = [];
+
+        foreach ($this->feed($xml) as $host) {
+            $result[] = $host;
+        }
+
+        return $result;
+    }
+
     /**
      * Incrementally parse streamed Nmap XML chunks and yield parsed hosts.
      *
@@ -23,7 +34,7 @@ final class NmapHostXmlParser
      * @param string $chunk Incoming XML fragment.
      * @return iterable<array<string, mixed>> Parsed host structures.
      */
-    public function parse(string $chunk): iterable
+    public function feed(string $chunk): iterable
     {
         $this->buffer .= $chunk;
 
