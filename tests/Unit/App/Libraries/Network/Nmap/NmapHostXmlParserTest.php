@@ -43,6 +43,27 @@ final class NmapHostXmlParserTest extends TestCase
                 'chunk'    => '<host><status state="up"/></host>',
                 'expected' => [],
             ],
+            'host with multiple addresses' => [
+                'chunk'    => '
+                    <host>
+                        <address addr="192.168.1.1" addrtype="ipv4" />
+                        <address addr="00:14:22:01:23:45" addrtype="mac" />
+                    </host>',
+                'expected' => [
+                    [
+                        'address' => [
+                            [
+                                'addr' => '192.168.1.1',
+                                'addrtype' => 'ipv4',
+                            ],
+                            [
+                                'addr' => '00:14:22:01:23:45',
+                                'addrtype' => 'mac',
+                            ]
+                        ],
+                    ],
+                ],
+            ],
             'multiple hosts in one chunk'  => [
                 'chunk'    => '
                     <host><address addr="10.0.0.1"/></host>
