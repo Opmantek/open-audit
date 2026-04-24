@@ -14,7 +14,7 @@ class NmapCommand
 {
     public function generate(NmapOptions $options): array
     {
-        $command = [$options->exePath];
+        $command = is_array($options->exePath) ? $options->exePath : [$options->exePath];
 
         if ($options->fast) {
             $command[] = '-F';

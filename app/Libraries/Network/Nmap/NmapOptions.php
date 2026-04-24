@@ -25,7 +25,7 @@ class NmapOptions
     public const OUTPUT_TYPE_XML    = 'xml';    // -oX
 
     // Executable
-    public string $exePath = 'nmap';
+    public string|array $exePath = 'nmap';
 
     // General
     public ?bool $noDns          = null; // -n
