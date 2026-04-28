@@ -4,7 +4,13 @@ declare(strict_types=1);
 
 namespace App\Commands\Network;
 
+use App\Libraries\Network\Nmap\NmapOptions;
 use App\Libraries\Network\Nmap\NmapOptionsParser;
+use App\Libraries\Network\Scan\ListScan;
+use App\Libraries\Network\Scan\PingScan;
+use App\Libraries\Network\Scan\TcpScan;
+use App\Libraries\Network\Scan\UdpScan;
+use App\Libraries\Network\Scanner\BasicScanner;
 use CodeIgniter\CLI\BaseCommand;
 use CodeIgniter\CLI\CLI;
 use InvalidArgumentException;
@@ -26,6 +32,12 @@ class ScanCommand extends BaseCommand
 
         register_workaround();
 
+        /**
+         * ListScan: php spark network:scan --no-header -n -sL -oX - 127.0.0.0/24
+         * PingScan: php spark network:scan --no-header -n -sP -oX - 127.0.0.0/24
+         * TcpScan: php spark network:scan --no-header -n -sT -p 22,80,443,8080 -oX - 127.0.0.1/32
+         * UdpScan: php spark network:scan --no-header -n -sU -p 53,123,161 -oX - 127.0.0.1/32
+         */
         try {
             $optionsParser = new NmapOptionsParser();
             $options = $optionsParser->parse($_SERVER['argv'] ?? []);
@@ -34,9 +46,30 @@ class ScanCommand extends BaseCommand
                 throw new InvalidArgumentException('You must provide a target network or IP to scan.');
             }
 
-            log_message('info', 'Options: ' . print_r($options, true));
+            $scan = match ($options->scanType) {
+                NmapOptions::SCAN_TYPE_TCP_CON,
+                NmapOptions::SCAN_TYPE_TCP_SYN,
+                NmapOptions::SCAN_TYPE_TCP_ACK,
+                NmapOptions::SCAN_TYPE_TCP_FIN,
+                NmapOptions::SCAN_TYPE_TCP_WIN => new TcpScan($options),
+                NmapOptions::SCAN_TYPE_UDP     => new UdpScan($options),
+                NmapOptions::SCAN_TYPE_LIST    => new ListScan($options),
+                NmapOptions::SCAN_TYPE_PING    => new PingScan($options),
+                default => null
+            };
 
-            CLI::write(print_r($options, true), 'green');
+            if ($scan === null) {
+                throw new InvalidArgumentException(sprintf(
+                    'Scan type %s is not supported. Install Nmap for advanced options.', $options->scanType
+                ));
+            }
+
+            // @todo Output header, footer and summary result as XML
+            // CLI::write('Running ' . $options->scanType . ' scan with options: ' . print_r($options, true));
+
+            $scan->start(function (string $type, string $buffer) {
+                CLI::write($buffer);
+            });
 
         } catch(Throwable $error) {
             CLI::error('Error while scanning network: ' . $error->getMessage() . PHP_EOL . $error->getTraceAsString());
