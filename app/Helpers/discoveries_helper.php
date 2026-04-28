@@ -38,7 +38,7 @@ if (!function_exists('all_ip_list')) {
         $log->ip = '127.0.0.1';
 
         $locator = new NmapLocator();
-        $executable = $locator->find() ?? ['php', ROOTPATH . 'spark', 'network:scan'];
+        $executable = $locator->find() ?? ['php', ROOTPATH . 'spark', 'network:scan', '--no-header'];
 
         $options = new NmapOptions();
         $options->scanType   = NmapOptions::SCAN_TYPE_LIST;
@@ -140,7 +140,7 @@ if (! function_exists('responding_ip_list')) {
         $log->ip = '127.0.0.1';
 
         $locator = new NmapLocator();
-        $executable = $locator->find() ?? ['php', ROOTPATH . 'spark', 'network:scan'];
+        $executable = $locator->find() ?? ['php', ROOTPATH . 'spark', 'network:scan', '--no-header'];
 
         $options = new NmapOptions();
         $options->scanType   = NmapOptions::SCAN_TYPE_LIST;
@@ -559,7 +559,7 @@ if (! function_exists('ip_scan')) {
         $timer     = new Stopwatch();
         $parser    = new NmapHostXmlParser();
         $locator   = new NmapLocator();
-        $executable = $locator->find() ?? ['php', ROOTPATH . 'spark', 'network:scan'];
+        $executable = $locator->find() ?? ['php', ROOTPATH . 'spark', 'network:scan', '--no-header'];
 
         $options = new NmapOptions();
         $options->outputType = NmapOptions::OUTPUT_TYPE_XML;
