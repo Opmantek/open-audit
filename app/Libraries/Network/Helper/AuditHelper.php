@@ -210,9 +210,9 @@ final class AuditHelper
      */
     private static function arrayToObjects(array $data): string|array|stdClass
     {
-        $isAssoc = array_keys($data) !== range(0, count($data) - 1);
+        $isList = array_is_list($data);
 
-        if (! $isAssoc) {
+        if ($isList) {
             return array_map(function (mixed $item) {
                 return is_array($item) ? self::arrayToObjects($item) : $item;
             }, $data);
