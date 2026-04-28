@@ -781,10 +781,8 @@ if (! function_exists('ip_scan')) {
             $device['mac_address'] = $macAddress;
         }
 
-        if (! empty($device)) {
-            $device['timestamp'] = $timestamp;
-            $device['nmap_ports'] = implode(',', $device['nmap_ports']);
-        }
+        $device['timestamp'] = $timestamp;
+        $device['nmap_ports'] = implode(',', $device['nmap_ports'] ?? []);
 
         $sql = "UPDATE discovery_log SET command_time_to_execute = ? WHERE message = 'IP " . $ip . " responding, adding to device list.' and discovery_id = ?";
         $db->query($sql, [$timer->getElapsedTime(), $discovery->id]);
@@ -1096,10 +1094,10 @@ if (! function_exists('check_nmap_host_array')) {
         if (! empty($ports)) {
             $devicePorts = [];
             foreach ($ports as $port) {
-                $portId       = $port['portid'];
-                $portProtocol = $port['protocol'];
+                $portId       = $port['portid'] ?? null;
+                $portProtocol = $port['protocol'] ?? null;
                 $portState    = $port['state']['state'] ?? 'unknown';
-                if (in_array($portState, $states) && $options[$portState] === 'y') {
+                if ($portId && $portProtocol && in_array($portState, $states) && $options[$portState] === 'y') {
                     $devicePorts[] = $portId . '/' . $portProtocol;
 
                     $log->command_output = "Host $ip, port $portId/$portProtocol is $portState";
