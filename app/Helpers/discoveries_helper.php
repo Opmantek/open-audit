@@ -14,6 +14,18 @@ use App\Libraries\Network\Nmap\NmapHostXmlParser;
 use App\Libraries\Network\Nmap\NmapProcess;
 use Symfony\Component\Process\Process;
 
+if (! function_exists('get_php_scan_command')) {
+    /**
+     * Retrieve the internal PHP scan command.
+     *
+     * @return string[]
+     */
+    function get_php_scan_command(): array
+    {
+        return ['php', ROOTPATH . 'spark', 'network:scan', '--no-header'];
+    }
+}
+
 if (!function_exists('all_ip_list')) {
     /**
      *
@@ -38,7 +50,7 @@ if (!function_exists('all_ip_list')) {
         $log->ip = '127.0.0.1';
 
         $locator = new NmapLocator();
-        $executable = $locator->find() ?? ['php', ROOTPATH . 'spark', 'network:scan', '--no-header'];
+        $executable = $locator->find() ?? get_php_scan_command();
 
         $options = new NmapOptions();
         $options->scanType   = NmapOptions::SCAN_TYPE_LIST;
@@ -140,7 +152,7 @@ if (! function_exists('responding_ip_list')) {
         $log->ip = '127.0.0.1';
 
         $locator = new NmapLocator();
-        $executable = $locator->find() ?? ['php', ROOTPATH . 'spark', 'network:scan', '--no-header'];
+        $executable = $locator->find() ?? get_php_scan_command();
 
         $options = new NmapOptions();
         $options->scanType   = NmapOptions::SCAN_TYPE_LIST;
@@ -559,7 +571,7 @@ if (! function_exists('ip_scan')) {
         $timer     = new Stopwatch();
         $parser    = new NmapHostXmlParser();
         $locator   = new NmapLocator();
-        $executable = $locator->find() ?? ['php', ROOTPATH . 'spark', 'network:scan', '--no-header'];
+        $executable = $locator->find() ?? get_php_scan_command();
 
         $options = new NmapOptions();
         $options->outputType = NmapOptions::OUTPUT_TYPE_XML;
@@ -635,12 +647,12 @@ if (! function_exists('ip_scan')) {
             $scanOptions->scanType = NmapOptions::SCAN_TYPE_TCP_SYN;
             $scanOptions->topPorts = (int) $nmap->nmap_tcp_ports;
 
-            if (isset($nmap->exclude_tcp_ports) && $nmapVersion > 6) {
+            if ($executable !== get_php_scan_command() && isset($nmap->exclude_tcp_ports) && $nmapVersion > 6) {
                 $scanOptions->excludeTcpPorts = PortHelper::expand($nmap->exclude_tcp_ports);
             }
 
             $stopwatch->start();
-            $process = new NmapProcess($options, null);
+            $process = new NmapProcess($scanOptions, null);
             log_message('debug', 'Command: ' . $process->getCommandLine());
             $process->run();
             $stopwatch->stop();
@@ -669,12 +681,12 @@ if (! function_exists('ip_scan')) {
             $scanOptions->scanType = NmapOptions::SCAN_TYPE_UDP;
             $scanOptions->topPorts = (int) $nmap->nmap_tcp_ports;
 
-            if (isset($nmap->exclude_udp_ports) && $nmapVersion > 6) {
+            if ($executable !== get_php_scan_command() && isset($nmap->exclude_udp_ports) && $nmapVersion > 6) {
                 $scanOptions->excludeUdpPorts = PortHelper::expand($nmap->exclude_udp_ports);
             }
 
             $stopwatch->start();
-            $process = new NmapProcess($options, null);
+            $process = new NmapProcess($scanOptions, null);
             log_message('debug', 'Command: ' . $process->getCommandLine());
             $process->run();
             $stopwatch->stop();
@@ -703,12 +715,12 @@ if (! function_exists('ip_scan')) {
             $scanOptions->scanType = NmapOptions::SCAN_TYPE_TCP_SYN;
             $scanOptions->ports = PortHelper::expand($nmap->tcp_ports);
 
-            if (isset($nmap->exclude_tcp_ports) && $nmapVersion > 6) {
+            if ($executable !== get_php_scan_command() && isset($nmap->exclude_tcp_ports) && $nmapVersion > 6) {
                 $scanOptions->excludeTcpPorts = PortHelper::expand($nmap->exclude_tcp_ports);
             }
 
             $stopwatch->start();
-            $process = new NmapProcess($options, null);
+            $process = new NmapProcess($scanOptions, null);
             log_message('debug', 'Command: ' . $process->getCommandLine());
             $process->run();
             $stopwatch->stop();
@@ -737,12 +749,12 @@ if (! function_exists('ip_scan')) {
             $scanOptions->scanType = NmapOptions::SCAN_TYPE_UDP;
             $scanOptions->ports = PortHelper::expand($nmap->udp_ports);
 
-            if (isset($nmap->exclude_udp_ports) && $nmapVersion > 6) {
+            if ($executable !== get_php_scan_command() && isset($nmap->exclude_udp_ports) && $nmapVersion > 6) {
                 $scanOptions->excludeUdpPorts = PortHelper::expand($nmap->exclude_udp_ports);
             }
 
             $stopwatch->start();
-            $process = new NmapProcess($options, null);
+            $process = new NmapProcess($scanOptions, null);
             log_message('debug', 'Command: ' . $process->getCommandLine());
             $process->run();
             $stopwatch->stop();
