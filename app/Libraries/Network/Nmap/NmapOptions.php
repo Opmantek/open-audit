@@ -96,6 +96,15 @@ class NmapOptions
             default => $this->excludePorts ?? [],
         };
 
+        if ($this->topPorts !== null) {
+            $topPorts = new NmapTopPorts();
+            if ($this->scanType === self::SCAN_TYPE_UDP) {
+                $ports = $topPorts->getUdpPorts($this->topPorts);
+            } else {
+                $ports = $topPorts->getUdpPorts($this->topPorts);
+            }
+        }
+
         return array_values(array_diff($ports, $excludes));
     }
 }
