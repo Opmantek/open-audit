@@ -343,8 +343,7 @@ abstract class AbstractAsyncSocketScan extends AbstractScan
      * Infer the reason a host is up, based on collected port results.
      *
      * - Check and use the first open port reason
-     * - Otherwise use any available reason
-     * - Finally fallback to no-response
+     * - Finally fallback to unknown
      *
      * @param array<int, array> $ports
      * @return string
@@ -361,13 +360,7 @@ abstract class AbstractAsyncSocketScan extends AbstractScan
             }
         }
 
-        foreach ($ports as $port) {
-            if (! empty($port['state']['reason'])) {
-                return $port['state']['reason'];
-            }
-        }
-
-        return self::REASON_NO_RESPONSE;
+        return self::REASON_UNKNOWN;
     }
 
     /**

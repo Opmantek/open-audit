@@ -19,7 +19,7 @@ abstract class AbstractScan
     public const REASON_UDP_RESPONSE = 'udp-response';
     public const REASON_NO_RESPONSE  = 'no-response';
     public const REASON_TIMEOUT      = 'timeout';
-    public const REASON_UNREACHABLE  = 'unreachable';
+    public const REASON_UNKNOWN      = 'unknown';
 
     public const HOST_STATE_UP   = 'up';
     public const HOST_STATE_DOWN = 'down';
