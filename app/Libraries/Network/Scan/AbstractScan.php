@@ -103,6 +103,18 @@ abstract class AbstractScan
                 $stateNode->setAttribute('reason', $port['state']['reason'] ?? 'best-guess');
 
                 $portNode->appendChild($stateNode);
+
+                $serviceName = getservbyport((int) $port['portid'], $port['protocol']);
+
+                if ($serviceName !== false) {
+                    $serviceNode = $doc->createElement('service');
+                    $serviceNode->setAttribute('name', $serviceName);
+                    $serviceNode->setAttribute('method', 'table');
+                    $serviceNode->setAttribute('conf', '3');
+
+                    $portNode->appendChild($serviceNode);
+                }
+
                 $portsNode->appendChild($portNode);
             }
 
