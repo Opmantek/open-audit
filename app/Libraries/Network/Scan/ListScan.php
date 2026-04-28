@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Libraries\Network\Scan;
 
 use App\Libraries\Network\Helper\IpAddressHelper;
+use App\Libraries\Network\Nmap\NmapHostHelper;
 
 final class ListScan extends AbstractScan
 {
@@ -73,6 +74,6 @@ final class ListScan extends AbstractScan
             'hostnames' => $hostnames,
         ];
 
-        $callback(self::OUT, $this->hostArrayToXml($host));
+        $callback(self::OUT, NmapHostHelper::toXml($host));
     }
 }

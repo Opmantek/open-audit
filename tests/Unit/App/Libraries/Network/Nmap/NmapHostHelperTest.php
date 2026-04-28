@@ -292,4 +292,186 @@ final class NmapHostHelperTest extends TestCase
 
         $this->assertEmpty($ports);
     }
+
+    public function testGetReasonWhenExists()
+    {
+        $host = [
+            'status' => [
+                'reason' => 'syn-ack'
+            ]
+        ];
+
+        $reason = NmapHostHelper::getReason($host);
+
+        $this->assertEquals('syn-ack', $reason);
+    }
+
+    public function testGetReasonWithDefault()
+    {
+        $host = [
+            'status' => []
+        ];
+
+        $reason = NmapHostHelper::getReason($host, 'unknown-reason');
+
+        $this->assertEquals('unknown-reason', $reason);
+    }
+
+    public function testGetReasonWhenMissing()
+    {
+        $host = [];
+
+        $reason = NmapHostHelper::getReason($host);
+
+        $this->assertNull($reason);
+    }
+
+    public function testGetHostnamesWithList()
+    {
+        $host = [
+            'hostnames' => [
+                'hostname' => [
+                    ['name' => 'example.com', 'type' => 'PTR'],
+                    ['name' => 'test.local', 'type' => 'user']
+                ]
+            ]
+        ];
+
+        $hostnames = NmapHostHelper::getHostnames($host);
+
+        $this->assertCount(2, $hostnames);
+        $this->assertEquals('example.com', $hostnames[0]['name']);
+    }
+
+    public function testGetHostnamesWithSingleEntry()
+    {
+        $host = [
+            'hostnames' => [
+                'hostname' => ['name' => 'example.com', 'type' => 'PTR']
+            ]
+        ];
+
+        $hostnames = NmapHostHelper::getHostnames($host);
+
+        $this->assertCount(1, $hostnames);
+        $this->assertEquals('example.com', $hostnames[0]['name']);
+    }
+
+    public function testGetHostnamesWhenMissing()
+    {
+        $host = [];
+
+        $hostnames = NmapHostHelper::getHostnames($host);
+
+        $this->assertEmpty($hostnames);
+    }
+
+    public function testGetHostnamesWhenInvalidStructure()
+    {
+        $host = [
+            'hostnames' => null
+        ];
+
+        $hostnames = NmapHostHelper::getHostnames($host);
+
+        $this->assertEmpty($hostnames);
+    }
+
+    public function testToXmlBasicHost()
+    {
+        $host = [
+            'status' => [
+                'state' => 'up',
+                'reason' => 'syn-ack'
+            ]
+        ];
+
+        $xml = NmapHostHelper::toXml($host);
+
+        $this->assertStringContainsString('<status state="up" reason="syn-ack"/>', $xml);
+    }
+
+    public function testToXmlWithAddresses()
+    {
+        $host = [
+            'address' => [
+                ['addr' => '192.168.1.1', 'addrtype' => 'ipv4']
+            ]
+        ];
+
+        $xml = NmapHostHelper::toXml($host);
+
+        $this->assertStringContainsString('<address addr="192.168.1.1" addrtype="ipv4"/>', $xml);
+    }
+
+    public function testToXmlWithHostnames()
+    {
+        $host = [
+            'hostnames' => [
+                'hostname' => [
+                    ['name' => 'example.com', 'type' => 'PTR']
+                ]
+            ]
+        ];
+
+        $xml = NmapHostHelper::toXml($host);
+
+        $this->assertStringContainsString('<hostnames>', $xml);
+        $this->assertStringContainsString('name="example.com"', $xml);
+    }
+
+    public function testToXmlWithPorts()
+    {
+        $host = [
+            'ports' => [
+                'port' => [
+                    [
+                        'portid' => 80,
+                        'protocol' => 'tcp',
+                        'state' => [
+                            'state' => 'open',
+                            'reason' => 'syn-ack'
+                        ]
+                    ]
+                ]
+            ]
+        ];
+
+        $xml = NmapHostHelper::toXml($host);
+
+        $this->assertStringContainsString('<port protocol="tcp" portid="80">', $xml);
+        $this->assertStringContainsString('<state state="open" reason="syn-ack"/>', $xml);
+    }
+
+    public function testToXmlIncludesServiceWhenResolvable()
+    {
+        $host = [
+            'ports' => [
+                'port' => [
+                    [
+                        'portid' => 80,
+                        'protocol' => 'tcp',
+                        'state' => [
+                            'state' => 'open',
+                            'reason' => 'syn-ack'
+                        ]
+                    ]
+                ]
+            ]
+        ];
+
+        $xml = NmapHostHelper::toXml($host);
+
+        $this->assertStringContainsString('<service', $xml);
+        $this->assertStringContainsString('name="http"', $xml);
+        $this->assertStringContainsString('method="table"', $xml);
+        $this->assertStringContainsString('conf="3"', $xml);
+    }
+
+    public function testToXmlEmptyHost()
+    {
+        $xml = NmapHostHelper::toXml([]);
+
+        $this->assertStringContainsString('<host', $xml);
+    }
 }

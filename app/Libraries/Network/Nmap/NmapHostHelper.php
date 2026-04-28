@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Libraries\Network\Nmap;
 
+use DOMDocument;
+
 final class NmapHostHelper
 {
     /**
@@ -16,6 +18,33 @@ final class NmapHostHelper
     public static function getState(array $host, string $default = 'unknown'): string
     {
         return $host['status']['state'] ?? $default;
+    }
+
+    /**
+     * Retrieve the reason associated with the host status.
+     *
+     * @param array $host The host array containing status information.
+     * @param string|null $default The default value to return if the reason is not found.
+     * @return string|null The reason string or the default value if not present.
+     */
+    public static function getReason(array $host, ?string $default = null): ?string
+    {
+        return $host['status']['reason'] ?? $default;
+    }
+
+    /**
+     * Retrieve hostnames associated with the host.
+     *
+     * @param array $host The host array containing hostname information.
+     * @return array A list of hostname arrays (empty array if none found).
+     */
+    public static function getHostnames(array $host): array
+    {
+        if (empty($host['hostnames']) || ! is_array($host['hostnames'])) {
+            return [];
+        }
+
+        return array_is_list($host['hostnames']['hostname']) ? $host['hostnames']['hostname'] : [$host['hostnames']['hostname']];
     }
 
     /**
@@ -103,5 +132,99 @@ final class NmapHostHelper
         }
 
         return array_is_list($host['ports']['port']) ? $host['ports']['port'] : [$host['ports']['port']];
+    }
+
+    /**
+     * Convert a normalized host array into an XML representation.
+     *
+     * While this nowhere near handles all possibilities, it is a decent
+     * starting point, one we are able to test and expand upon.
+     *
+     * @param array $host Structured host result array.
+     * @return string XML string representation of the host node.
+     * @throws DOMException
+     */
+    public static function toXml(array $host): string
+    {
+        $doc = new DOMDocument('1.0', 'UTF-8');
+        $doc->formatOutput = false;
+
+        $hostNode = $doc->createElement('host');
+
+        $state = self::getState($host);
+
+        if ($state) {
+            $reason = self::getReason($host);
+            $statusNode = $doc->createElement('status');
+            $statusNode->setAttribute('state', $state);
+            if ($reason) {
+                $statusNode->setAttribute('reason', $reason);
+            }
+
+            $hostNode->appendChild($statusNode);
+        }
+
+        $addresses = self::getAddresses($host);
+
+        foreach ($addresses as $address) {
+            $addressNode = $doc->createElement('address');
+            $addressNode->setAttribute('addr', $address['addr']);
+            $addressNode->setAttribute('addrtype', $address['addrtype'] ?? 'ipv4');
+
+            $hostNode->appendChild($addressNode);
+        }
+
+        $hostnames = self::getHostnames($host);
+
+        if (! empty($hostnames)) {
+            $hostnamesNode = $doc->createElement('hostnames');
+
+            foreach ($hostnames as $hostname) {
+                $hostnameNode = $doc->createElement('hostname');
+                $hostnameNode->setAttribute('name', $hostname['name']);
+                $hostnameNode->setAttribute('type', $hostname['type'] ?? 'PTR');
+
+                $hostnamesNode->appendChild($hostnameNode);
+            }
+
+            $hostNode->appendChild($hostnamesNode);
+        }
+
+        $ports = self::getPorts($host);
+
+        if (! empty($ports)) {
+            $portsNode = $doc->createElement('ports');
+
+            foreach ($ports as $port) {
+                $portNode = $doc->createElement('port');
+                $portNode->setAttribute('protocol', $port['protocol']);
+                $portNode->setAttribute('portid', (string) $port['portid']);
+
+                $stateNode = $doc->createElement('state');
+                $stateNode->setAttribute('state', $port['state']['state']);
+                $stateNode->setAttribute('reason', $port['state']['reason'] ?? 'best-guess');
+
+                $portNode->appendChild($stateNode);
+
+                $serviceName = getservbyport((int) $port['portid'], $port['protocol']);
+
+                if ($serviceName !== false) {
+                    $serviceNode = $doc->createElement('service');
+                    $serviceNode->setAttribute('name', $serviceName);
+                    $serviceNode->setAttribute('method', 'table');
+                    $serviceNode->setAttribute('conf', '3');
+
+                    $portNode->appendChild($serviceNode);
+                }
+
+                $portsNode->appendChild($portNode);
+            }
+
+            $hostNode->appendChild($portsNode);
+        }
+
+        $doc->appendChild($hostNode);
+
+        return $doc->saveXML($hostNode);
     }
 }

@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Libraries\Network\Scan;
 
+use App\Libraries\Network\Nmap\NmapHostHelper;
+
 abstract class AbstractAsyncSocketScan extends AbstractScan
 {
     protected int $concurrency = 200;
@@ -336,7 +338,7 @@ abstract class AbstractAsyncSocketScan extends AbstractScan
             ],
         ];
 
-        return $this->hostArrayToXml($host);
+        return NmapHostHelper::toXml($host);
     }
 
     /**
