@@ -1097,8 +1097,9 @@ if (! function_exists('check_nmap_host_array')) {
                 $portId       = $port['portid'] ?? null;
                 $portProtocol = $port['protocol'] ?? null;
                 $portState    = $port['state']['state'] ?? 'unknown';
+                $serviceName  = $port['service']['name'] ?? null;
                 if ($portId && $portProtocol && in_array($portState, $states) && $options[$portState] === 'y') {
-                    $devicePorts[] = $portId . '/' . $portProtocol;
+                    $devicePorts[] = $portId . '/' . $portProtocol . ($serviceName ? '/' . $serviceName : '');
 
                     $log->command_output = "Host $ip, port $portId/$portProtocol is $portState";
                     $log->message = "Host $ip, port $portId/$portProtocol is $portState";
@@ -1975,7 +1976,7 @@ if (! function_exists('ip_audit')) {
                 $nmap_item->ip = (string)$device->ip;
                 $nmap_item->port = $temp[0];
                 $nmap_item->protocol = $temp[1];
-                $nmap_item->program = $temp[2];
+                $nmap_item->program = $temp[2] ?? 'unknown';
                 if (!empty($nmap_item->port)) {
                     $nmap_result[] = $nmap_item;
                 }
