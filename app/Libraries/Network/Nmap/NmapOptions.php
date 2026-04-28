@@ -101,7 +101,7 @@ class NmapOptions
             if ($this->scanType === self::SCAN_TYPE_UDP) {
                 $ports = $topPorts->getUdpPorts($this->topPorts);
             } else {
-                $ports = $topPorts->getUdpPorts($this->topPorts);
+                $ports = $topPorts->getTcpPorts($this->topPorts);
             }
         }
 
