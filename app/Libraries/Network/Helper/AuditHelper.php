@@ -176,9 +176,9 @@ final class AuditHelper
                 if (! is_array($value['item'])) {
                     continue;
                 }
-                $isAssoc = array_keys($value['item']) !== range(0, count($value['item']) - 1);
-                $value   = $isAssoc ? [$value['item']] : $value['item'];
-                $items   = self::arrayToObjects($value);
+                $isList = array_is_list($value['item']);
+                $value  = $isList ? $value['item'] : [$value['item']];
+                $items  = self::arrayToObjects($value);
 
                 if ($section === 'user') {
                     foreach ($items as $item) {
