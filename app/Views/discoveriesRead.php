@@ -1459,17 +1459,44 @@ foreach ($included['discovery_scan_options'] as $item) {
             var progressFontSize = getProgressFontSize(progressWidth);
             var progressLineWidth = getProgressLineWidth(progressWidth);
 
+            function progressValueFormatter(item) {
+                return function (value) {
+                    return '{title|' + item.name + '} {percentage|' + value + '}';
+                };
+            }
+
+            function progressPercentageFormatter(item) {
+                return function (value) {
+                    return '{title|' + item.name + '} {percentage| ' + item.percentage + '%} {amount|(' + value + ')}';
+                };
+            }
+
             var progressData = [
+                {
+                    value: 0,
+                    percentage: 0,
+                    name: 'Total',
+                    title: {
+                        show: false,
+                    },
+                    detail: {
+                        valueAnimation: true,
+                        offsetCenter: ['0%', '-30%'],
+                    },
+                    itemStyle: {
+                        color: '#1F284F'
+                    },
+                },
                 {
                     value: 0,
                     percentage: 0,
                     name: 'Responding',
                     title: {
-                        offsetCenter: ['0%', '-30%']
+                        show: false,
                     },
                     detail: {
                         valueAnimation: true,
-                        offsetCenter: ['0%', '-20%']
+                        offsetCenter: ['0%', '-10%'],
                     },
                     itemStyle: {
                         color: '#DC3545'
@@ -1480,7 +1507,7 @@ foreach ($included['discovery_scan_options'] as $item) {
                     percentage: 0,
                     name: 'Scanned',
                     title: {
-                        offsetCenter: ['0%', '0%']
+                        show: false,
                     },
                     detail: {
                         valueAnimation: true,
@@ -1495,11 +1522,11 @@ foreach ($included['discovery_scan_options'] as $item) {
                     percentage: 0,
                     name: 'Audited',
                     title: {
-                        offsetCenter: ['0%', '30%']
+                        show: false,
                     },
                     detail: {
                         valueAnimation: true,
-                        offsetCenter: ['0%', '40%']
+                        offsetCenter: ['0%', '30%']
                     },
                     itemStyle: {
                         color: '#8CC152'
@@ -1556,23 +1583,29 @@ foreach ($included['discovery_scan_options'] as $item) {
                             borderColor: 'inherit',
                             borderRadius: 0,
                             borderWidth: 0,
-                            formatter: function (value) {
-                                var amount = $.isArray(value) ? value[0] : value;
-                                var percentage = $.isArray(value) ? value[1] : value;
-                                return '{percentage| ' + percentage + '%} {amount|(' + amount + ')}';
-                            },
                             rich: {
                                 percentage: {
                                     color: 'inherit',
                                 },
                                 amount: {
                                     color: '#666666',
+                                },
+                                title: {
+                                    color: '#888888',
                                 }
                             }
                         }
                     }
                 ]
             };
+
+            progressData.forEach(item => {
+                if (item.name === 'Total') {
+                    item.detail.formatter = progressValueFormatter(item);
+                } else {
+                    item.detail.formatter = progressPercentageFormatter(item);
+                }
+            });
 
             progressChart.setOption(progressOption);
 
@@ -1618,13 +1651,22 @@ foreach ($included['discovery_scan_options'] as $item) {
 
             function updateProgressData(responding, scanned, audited, total) {
                 if (total === 0) {
-                    progressData[0].value = [0, 0];
-                    progressData[1].value = [0, 0];
-                    progressData[2].value = [0, 0];
+                    progressData.forEach(item => {
+                        item.value = 0;
+                        item.percentage = 0;
+                    });
                 } else {
-                    progressData[0].value = [responding, Math.round((responding / total) * 100).toFixed(2)];
-                    progressData[1].value = [scanned, Math.round((scanned / total) * 100).toFixed(2)];
-                    progressData[2].value = [audited, Math.round((audited / total) * 100).toFixed(2)];
+                    progressData[0].value = total;
+                    progressData[0].percentage = Math.round((total / total) * 100);
+
+                    progressData[1].value = responding;
+                    progressData[1].percentage = Math.round((responding / total) * 100);
+
+                    progressData[2].value = scanned;
+                    progressData[2].percentage = Math.round((scanned / total) * 100);
+
+                    progressData[3].value = audited;
+                    progressData[3].percentage = Math.round((audited / total) * 100);
                 }
 
                 progressChart.setOption({
