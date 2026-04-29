@@ -1484,7 +1484,7 @@ foreach ($included['discovery_scan_options'] as $item) {
                         offsetCenter: ['0%', '-30%'],
                     },
                     itemStyle: {
-                        color: '#1F284F'
+                        color: '#6B12A2'
                     },
                 },
                 {
@@ -1499,7 +1499,7 @@ foreach ($included['discovery_scan_options'] as $item) {
                         offsetCenter: ['0%', '-10%'],
                     },
                     itemStyle: {
-                        color: '#DC3545'
+                        color: '#4AA312'
                     },
                 },
                 {
@@ -1514,7 +1514,7 @@ foreach ($included['discovery_scan_options'] as $item) {
                         offsetCenter: ['0%', '10%']
                     },
                     itemStyle: {
-                        color: '#FFC107'
+                        color: '#0977C1'
                     },
                 },
                 {
@@ -1529,7 +1529,7 @@ foreach ($included['discovery_scan_options'] as $item) {
                         offsetCenter: ['0%', '30%']
                     },
                     itemStyle: {
-                        color: '#8CC152'
+                        color: '#E6BC04'
                     },
                 }
             ];
@@ -1615,14 +1615,14 @@ foreach ($included['discovery_scan_options'] as $item) {
 
             function getProgressFontSize(containerWidth) {
                 if (containerWidth < 250) return 10;
-                if (containerWidth < 300) return 12;
+                if (containerWidth < 350) return 12;
                 return 14;
             }
 
             function getProgressLineWidth(containerWidth) {
-                if (containerWidth < 250) return 24;
-                if (containerWidth < 300) return 32;
-                return 40;
+                if (containerWidth < 250) return 22;
+                if (containerWidth < 350) return 44;
+                return 66;
             }
 
             function updateProgressSizing() {
