@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Libraries\Network\Scan;
 
-use App\Libraries\Network\Helper\IpAddressHelper;
+use App\Libraries\Network\Helper\SubnetHelper;
 
 final class TcpScan extends AbstractAsyncSocketScan
 {
@@ -14,7 +14,7 @@ final class TcpScan extends AbstractAsyncSocketScan
     protected function initialize(): array
     {
         $targets = iterator_to_array(
-            IpAddressHelper::generateIpV4($this->options->targets),
+            SubnetHelper::expand($this->options->targets),
             false
         );
 
