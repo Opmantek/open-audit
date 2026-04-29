@@ -52,10 +52,16 @@ final class NmapTargetFileWriterTest extends TestCase
                 'targets'       => '192.168.1.1',
                 'expectedLines' => ['192.168.1.1'],
             ],
-            'small cidr range' => [
+            'small cidr range excluding broadcast' => [
                 'targets'       => '192.168.1.0/30',
                 'expectedLines' => [
-                    '192.168.1.0',
+                    '192.168.1.1',
+                    '192.168.1.2',
+                ],
+            ],
+            'small ip range' => [
+                'targets'       => '192.168.1.1-3',
+                'expectedLines' => [
                     '192.168.1.1',
                     '192.168.1.2',
                     '192.168.1.3',
@@ -69,7 +75,7 @@ final class NmapTargetFileWriterTest extends TestCase
         $root = vfsStream::setup('root');
         $file = vfsStream::url('root/targets.txt');
 
-        $expectedIpCount = 256 * 4;
+        $expectedIpCount = (256 * 4) - (2 * 4);
 
         $options          = new NmapOptions();
         $options->targets = '192.168.1.0/24 192.168.2.0/24 192.168.3.0/24 192.168.4.0/24';

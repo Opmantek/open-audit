@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Libraries\Network\Nmap;
 
-use App\Libraries\Network\Helper\IpAddressHelper;
+use App\Libraries\Network\Helper\SubnetHelper;
 use RuntimeException;
 
 use function array_flip;
@@ -21,10 +21,10 @@ use const PREG_SPLIT_NO_EMPTY;
 final class NmapTargetFileWriter
 {
     /**
-     * Write expanded IPv4 targets to a file in a format compatible with Nmap's -iL input.
+     * Write expanded targets to a file in a format compatible with Nmap's -iL input.
      *
      * This method expands the configured target specification (IP addresses and/or CIDR ranges)
-     * using {@see IpAddressHelper::generateIpV4()} and writes each resulting IP address to the
+     * using {@see SubnetHelper::expand()} and writes each resulting IP address to the
      * given file, one per line.
      *
      * Any hosts listed in {@see NmapOptions::$excludeHosts} are filtered out during writing.
@@ -54,7 +54,7 @@ final class NmapTargetFileWriter
             );
         }
 
-        foreach (IpAddressHelper::generateIpV4($options->targets) as $ip) {
+        foreach (SubnetHelper::expand($options->targets) as $ip) {
             if (isset($excluded[$ip])) {
                 continue;
             }
