@@ -490,32 +490,33 @@ if (! function_exists('get_nmap_version')) {
      */
     function get_nmap_version()
     {
-        $output = '';
-        $nmap_version = 0;
-        if (php_uname('s') === 'Windows NT') {
-            $command_string = 'nmap --version';
-            exec($command_string, $output, $return_var);
+        $locator   = new NmapLocator();
+        $executable = $locator->find();
+
+        if ($executable === null) {
+            return 0;
         }
-        if (php_uname('s') === 'Darwin') {
-            $command_string = 'nmap --version';
-            exec($command_string, $output, $return_var);
+
+        $output  = [];
+        $result  = 0;
+        $command = escapeshellcmd($executable) . ' --version';
+
+        exec($command, $output, $result);
+
+        if ($result !== 0 || empty($output)) {
+            return 0;
         }
-        if (php_uname('s') === 'Linux') {
-            $command_string = 'nmap --version';
-            exec($command_string, $output, $return_var);
-        }
-        if (!empty($output) and is_array($output)) {
-            foreach ($output as $line) {
-                if (stripos($line, 'Nmap version') !== false) {
-                    $output = $line;
-                    break;
+
+        foreach ($output as $line) {
+            if (stripos($line, 'Nmap version') === 0) {
+                // Expecting: "Nmap version 7.94 ( https://nmap.org )"
+                if (preg_match('/Nmap version\s+(\d+)\./', $line, $matches)) {
+                    return (int) $matches[1];
                 }
             }
-            $lines = explode(' ', $output);
-            $nmap_version = intval($lines[2]);
         }
-        return $nmap_version;
-    }
+
+        return 0;
 }
 
 if (! function_exists('ip_scan')) {
