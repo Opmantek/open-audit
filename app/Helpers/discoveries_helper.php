@@ -490,15 +490,15 @@ if (! function_exists('get_nmap_version')) {
      */
     function get_nmap_version(): int
     {
-        $locator   = new NmapLocator();
+        $locator = new NmapLocator();
         $executable = $locator->find();
 
         if ($executable === null) {
             return 0;
         }
 
-        $output  = [];
-        $result  = 0;
+        $output = [];
+        $result = 0;
         $command = escapeshellcmd($executable) . ' --version';
 
         exec($command, $output, $result);
@@ -511,12 +511,13 @@ if (! function_exists('get_nmap_version')) {
             if (stripos($line, 'Nmap version') === 0) {
                 // Expecting: "Nmap version 7.94 ( https://nmap.org )"
                 if (preg_match('/Nmap version\s+(\d+)\./', $line, $matches)) {
-                    return (int) $matches[1];
+                    return (int)$matches[1];
                 }
             }
         }
 
         return 0;
+    }
 }
 
 if (! function_exists('ip_scan')) {
