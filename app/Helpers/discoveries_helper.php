@@ -488,7 +488,7 @@ if (! function_exists('get_nmap_version')) {
      * Return the integer major Nmap version
      * @return int The Major version of nmap
      */
-    function get_nmap_version()
+    function get_nmap_version(): int
     {
         $locator   = new NmapLocator();
         $executable = $locator->find();
