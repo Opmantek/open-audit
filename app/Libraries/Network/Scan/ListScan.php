@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Libraries\Network\Scan;
 
-use App\Libraries\Network\Helper\IpAddressHelper;
+use App\Libraries\Network\Helper\SubnetHelper;
 use App\Libraries\Network\Nmap\NmapHostHelper;
 
 final class ListScan extends AbstractScan
@@ -16,7 +16,7 @@ final class ListScan extends AbstractScan
      * Instead, it simply enumerates targets and optionally resolves
      * reverse DNS (PTR records) unless disabled via `noDns`.
      *
-     * - Expands target ranges into individual IPv4 addresses
+     * - Expands target ranges into individual IP addresses
      * - Optionally performs reverse DNS lookup per IP
      * - Emits each host immediately via callback as it is resolved
      *
@@ -28,7 +28,7 @@ final class ListScan extends AbstractScan
     public function start(callable $callback): void
     {
         $noDns = $this->options->noDns === true;
-        $targets = IpAddressHelper::generateIpV4($this->options->targets);
+        $targets = SubnetHelper::expand($this->options->targets);
 
         foreach ($targets as $ip) {
             if ($noDns) {
