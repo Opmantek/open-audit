@@ -33,10 +33,10 @@ class ScanCommand extends BaseCommand
         register_workaround();
 
         /**
-         * ListScan: php spark network:scan --no-header -n -sL -oX - 127.0.0.0/24
-         * PingScan: php spark network:scan --no-header -n -sP -oX - 127.0.0.0/24
-         * TcpScan: php spark network:scan --no-header -n -sT -p 22,80,443,8080 -oX - 127.0.0.1/32
-         * UdpScan: php spark network:scan --no-header -n -sU -p 53,123,161 -oX - 127.0.0.1/32
+         * ListScan: php spark network:scan --no-header -n -sL -oX - 127.0.0.1/24
+         * PingScan: php spark network:scan --no-header -n -sP -oX - 127.0.0.1/24
+         * TcpScan:  php spark network:scan --no-header -n -sT -p 22,80,443,8080 -oX - 127.0.0.1/32
+         * UdpScan:  php spark network:scan --no-header -n -sU -p 53,123,161 -oX - 127.0.0.1/32
          */
         try {
             $optionsParser = new NmapOptionsParser();
@@ -64,15 +64,14 @@ class ScanCommand extends BaseCommand
                 ));
             }
 
-            // @todo Output header, footer and summary result as XML
-            // CLI::write('Running ' . $options->scanType . ' scan with options: ' . print_r($options, true));
+            // @todo Output header, footer and summary result as XML?
 
             $scan->start(function (string $type, string $buffer) {
                 CLI::write($buffer);
             });
 
         } catch(Throwable $error) {
-            CLI::error('Error while scanning network: ' . $error->getMessage() . PHP_EOL . $error->getTraceAsString());
+            CLI::error('Error while scanning network: ' . $error->getMessage());
         } finally {
             deregister_workaround();
         }
