@@ -434,7 +434,7 @@ class DatabaseModel extends BaseModel
         }
 
         if (intval(config('OpenAudit')->internal_version) < 20260218) {
-            include "db_upgrades/db_6.1.0.php";
+            include "db_upgrades/db_6.0.3.php";
         }
 
         if (php_uname('s') === 'Windows NT') {
