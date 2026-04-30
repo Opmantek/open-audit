@@ -141,14 +141,7 @@ final class PingScan extends AbstractAsyncSocketScan
      */
     private function createPingProcess(string $ip): Process
     {
-        // I think most systems would do this check internally, but just to be safe?
-        if ($this->getIpAddressType($ip) === 'ipv6') {
-            $command = ['ping', '-6', '-c', '1', '-W', '1', $ip];
-        } else {
-            $command = ['ping', '-4', '-c', '1', '-W', '1', $ip];
-        }
-
-        return new Process($command);
+        return new Process(['ping', '-c', '1', '-W', '1', $ip]);
     }
 
     /**
