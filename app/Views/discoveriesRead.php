@@ -1461,20 +1461,25 @@ foreach ($included['discovery_scan_options'] as $item) {
 
             function progressValueFormatter(item) {
                 return function (value) {
-                    return '{title|' + item.name + '} {percentage|' + value + '}';
+                    // We use rich formatter "percentage" with item.amount to colorize
+                    return '{title|' + item.name + '} {percentage|' + item.amount + '}';
                 };
             }
 
             function progressPercentageFormatter(item) {
                 return function (value) {
-                    return '{title|' + item.name + '} {percentage| ' + item.percentage + '%} {amount|(' + value + ')}';
+                    return '{title|' + item.name + '} {percentage| ' + value + '%} {amount|(' + item.amount + ')}';
                 };
             }
 
+            /**
+             * value: Equals the percentage calculated from total
+             * amount: Equals the actual figure/quantity
+             */
             var progressData = [
                 {
                     value: 0,
-                    percentage: 0,
+                    amount: 0,
                     name: 'Total',
                     title: {
                         show: false,
@@ -1489,7 +1494,7 @@ foreach ($included['discovery_scan_options'] as $item) {
                 },
                 {
                     value: 0,
-                    percentage: 0,
+                    amount: 0,
                     name: 'Responding',
                     title: {
                         show: false,
@@ -1504,7 +1509,7 @@ foreach ($included['discovery_scan_options'] as $item) {
                 },
                 {
                     value: 0,
-                    percentage: 0,
+                    amount: 0,
                     name: 'Scanned',
                     title: {
                         show: false,
@@ -1519,7 +1524,7 @@ foreach ($included['discovery_scan_options'] as $item) {
                 },
                 {
                     value: 0,
-                    percentage: 0,
+                    amount: 0,
                     name: 'Audited',
                     title: {
                         show: false,
@@ -1541,6 +1546,7 @@ foreach ($included['discovery_scan_options'] as $item) {
                         radius: '100%',
                         startAngle: 90,
                         endAngle: -270,
+                        max: 100,
                         pointer: {
                             show: false
                         },
@@ -1656,17 +1662,17 @@ foreach ($included['discovery_scan_options'] as $item) {
                         item.percentage = 0;
                     });
                 } else {
-                    progressData[0].value = total;
-                    progressData[0].percentage = Math.round((total / total) * 100);
+                    progressData[0].value = 100; // Always 100, since other values derived from this value
+                    progressData[0].amount = total;
 
-                    progressData[1].value = responding;
-                    progressData[1].percentage = Math.round((responding / total) * 100);
+                    progressData[1].value = Math.round((responding / total) * 100);
+                    progressData[1].amount = responding;
 
-                    progressData[2].value = scanned;
-                    progressData[2].percentage = Math.round((scanned / total) * 100);
+                    progressData[2].value = Math.round((scanned / total) * 100);
+                    progressData[2].amount = scanned;
 
-                    progressData[3].value = audited;
-                    progressData[3].percentage = Math.round((audited / total) * 100);
+                    progressData[3].value = Math.round((audited / total) * 100);
+                    progressData[3].amount = audited;
                 }
 
                 progressChart.setOption({
