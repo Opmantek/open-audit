@@ -124,10 +124,10 @@ foreach ($included['discovery_scan_options'] as $item) {
                             <?= read_field('last_finished', $resource->last_finished, $dictionary->columns->last_finished, false, '', '', '', '', $meta->collection) ?>
                         </div>
                         <div class="col-12 col-md-6 col-lg-4">
-                            <?= read_field('ip_all_count', $resource->ip_all_count, $dictionary->columns->ip_all_count, false, '', '', '', '', $meta->collection) ?>
-                            <?= read_field('ip_responding_count', $resource->ip_responding_count, $dictionary->columns->ip_responding_count, false, '', '', '', '', $meta->collection) ?>
-                            <?= read_field('ip_scanned_count', $resource->ip_scanned_count, $dictionary->columns->ip_scanned_count, false, '', '', '', '', $meta->collection) ?>
-                            <?= read_field('ip_audited_count', $resource->ip_audited_count, $dictionary->columns->ip_audited_count, false, '', '', '', '', $meta->collection) ?>
+                            <?= read_field('ip_all_count', $resource->ip_all_count, $dictionary->columns->ip_all_count, false, __('Total IP Addresses'), '', '', '', $meta->collection) ?>
+                            <?= read_field('ip_responding_count', $resource->ip_responding_count, $dictionary->columns->ip_responding_count, false, __('Responding IPs'), '', '', '', $meta->collection) ?>
+                            <?= read_field('ip_scanned_count', $resource->ip_scanned_count, $dictionary->columns->ip_scanned_count, false, __('IPs Scanned'), '', '', '', $meta->collection) ?>
+                            <?= read_field('ip_audited_count', $resource->ip_audited_count, $dictionary->columns->ip_audited_count, false, __('IPs Audited'), '', '', '', $meta->collection) ?>
                             <!--
                                     <?= read_field('device_count', $resource->ip_discovered_count, $dictionary->columns->device_count, false, '', '', '', '', $meta->collection) ?>
                                     -->
