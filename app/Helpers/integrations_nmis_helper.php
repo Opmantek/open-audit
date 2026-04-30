@@ -771,9 +771,9 @@ if (!function_exists('integrations_collection')) {
             unlink($ckfile);
             return array();
         } else {
-            // Exclude the "global" node
+            // Exclude the "global" node and any nodes without a 'host' attribute (excludes Enterprise Services dummy nodes)
             foreach ($external_devices as $key => $device) {
-                if ($device->configuration->host === '__global__.0.0.0') {
+                if (empty($device->configuration->host) or $device->configuration->host === '__global__.0.0.0') {
                     unset($external_devices[$key]);
                     break;
                 }
