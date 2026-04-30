@@ -649,10 +649,6 @@ foreach ($included['discovery_scan_options'] as $item) {
 
             var activeTab = $('ul.nav.nav-pills a[href="' + hash + '"]');
 
-            if (activeTab.length) {
-                activeTab.click();
-            }
-
             $(".nav-link").click(function(e) {
                 window.scrollTo(0, 0);
             });
@@ -663,30 +659,58 @@ foreach ($included['discovery_scan_options'] as $item) {
                 "logs-tab": false,
                 "all_ips-tab": false,
                 "devices-tab": false,
-            }
+                "issues-tab": false,
+            };
 
             $(document).on('shown.bs.tab', 'ul.nav.nav-pills a', function () {
                 var id = $(this).attr('id');
 
                 if (tableState[id] === false) {
                     tableState[id] = true;
-                    if (id === 'logs-tab') {
-                        if (myDataTableLog && myDataTableLog.data().count() === 0) {
-                            myDataTableLog.ajax.reload();
-                        }
-                    }
-                    if (id === 'all_ips-tab') {
-                        if (myDataTableIP && myDataTableIP.data().count() === 0) {
-                            myDataTableIP.ajax.reload();
-                        }
-                    }
-                    if (id === 'devices-tab') {
-                        if (myDataTableDev && myDataTableDev.data().count() === 0) {
-                            myDataTableDev.ajax.reload();
-                        }
-                    }
+                    refreshTables(id);
                 }
             });
+
+            function refreshTables(target) {
+                if (target === undefined || target === 'logs-tab') {
+                    if (myDataTableLog && myDataTableLog.data().count() === 0) {
+                        myDataTableLog.ajax.reload();
+                    }
+                }
+                if (target === undefined || target === 'all_ips-tab') {
+                    if (myDataTableIP && myDataTableIP.data().count() === 0) {
+                        myDataTableIP.ajax.reload();
+                    }
+                }
+                if (target === undefined || target === 'devices-tab') {
+                    if (myDataTableDev && myDataTableDev.data().count() === 0) {
+                        myDataTableDev.ajax.reload();
+                    }
+                }
+                if (target === undefined || target === 'issues-tab') {
+                    if (issuesDataTable && issuesDataTable.data().count() === 0) {
+                        issuesDataTable.ajax.reload();
+                    }
+                }
+            }
+
+            // Extremely hacky, but we need to wrap in a slight delay in order
+            // for DataTables to be ready. I think allot the timing issue stem
+            // from using window.onload and $(document).ready.
+            setTimeout(function () {
+                if (activeTab.length) {
+                    activeTab.click();
+                }
+                // If issues-tab is not active upon load, trigger a table reload
+                // which will fetch initial data and display bubble if applicable
+                if (activeTab.attr('id') !== 'issues-tab') {
+                    if (issuesDataTable && issuesDataTable.data().count() === 0) {
+                        issuesDataTable.ajax.reload();
+                    }
+                }
+                // Ensure charts are sized appropriately
+                updateProgressSizing();
+            }, 500);
 
             // Discovery interval, cleared once no longer running
             var discoveryInterval = null;
@@ -707,15 +731,17 @@ foreach ($included['discovery_scan_options'] as $item) {
                             var item = response.data[0];
                             var attributes = item.attributes || {};
 
+                            var status          = attributes.status;
                             var totalIps        = Number(attributes.ip_all_count);
                             var totalResponding = Number(attributes.ip_responding_count);
                             var totalScanned    = Number(attributes.ip_scanned_count);
                             var totalAudited    = Number(attributes.ip_audited_count);
 
-                            $('#ip_all_count').val(totalIps);
-                            $('#ip_responding_count').val(totalResponding);
-                            $('#ip_scanned_count').val(totalScanned);
-                            $('#ip_audited_count').val(totalAudited);
+                            $('input#status').val(status);
+                            $('input#ip_all_count').val(totalIps);
+                            $('input#ip_responding_count').val(totalResponding);
+                            $('input#ip_scanned_count').val(totalScanned);
+                            $('input#ip_audited_count').val(totalAudited);
 
                             updateProgressData(totalResponding, totalScanned, totalAudited, totalIps);
 
@@ -730,6 +756,8 @@ foreach ($included['discovery_scan_options'] as $item) {
                                 refreshTableData = false;
                                 clearInterval(discoveryInterval);
                                 discoveryInterval = null;
+                                // Refresh all tables encase interval isn't low enough
+                                refreshTables();
                             } else {
                                 refreshTableData = true;
                             }
@@ -1363,7 +1391,7 @@ foreach ($included['discovery_scan_options'] as $item) {
                 lengthChange: false,
                 processing: true,
                 searching: true,
-                serverSide: false,
+                serverSide: true,
                 deferLoading: 0,
                 autoWidth: false,
                 info: true,
