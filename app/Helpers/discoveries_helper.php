@@ -186,8 +186,9 @@ if (! function_exists('responding_ip_list')) {
                 $errors[] = $buffer;
             } else {
                 foreach ($parser->feed($buffer) as $host) {
+                    $state = NmapHostHelper::getState($host);
                     $address = NmapHostHelper::getIpAddress($host);
-                    if ($address) {
+                    if ($state === 'up' && $address) {
                         $ipAddresses[] = $address['addr'];
                     }
                 }
