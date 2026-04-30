@@ -3874,7 +3874,7 @@ CREATE TABLE `rules` (
   `edited_by` varchar(200) NOT NULL DEFAULT '',
   `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=82 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=85 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -3960,10 +3960,13 @@ INSERT INTO `rules` VALUES (74,'Hyper-V Host Criticality',1,'',100,'[{\"table\":
 INSERT INTO `rules` VALUES (75,'VMware ESXi Host Criticality',1,'',100,'[{\"table\":\"devices\",\"attribute\":\"os_group\",\"operator\":\"eq\",\"value\":\"VMware ESXi\"}]','[{\"table\":\"devices\",\"attribute\":\"criticality\",\"value\":\"high\",\"value_type\":\"string\"}]','system','2001-01-01 00:00:00');
 INSERT INTO `rules` VALUES (76,'VMware vCenter Criticality',1,'',100,'[{\"table\":\"service\",\"attribute\":\"name\",\"operator\":\"li\",\"value\":\"%vCenter%\"}]','[{\"table\":\"devices\",\"attribute\":\"criticality\",\"value\":\"high\",\"value_type\":\"string\"}]','system','2001-01-01 00:00:00');
 INSERT INTO `rules` VALUES (77,'SharePoint Server Criticality',1,'',100,'[{\"table\":\"service\",\"attribute\":\"name\",\"operator\":\"li\",\"value\":\"%SharePoint%\"}]','[{\"table\":\"devices\",\"attribute\":\"criticality\",\"value\":\"medium\",\"value_type\":\"string\"}]','system','2001-01-01 00:00:00');
-INSERT INTO `rules` VALUES (78,'Database Server Criticality',1,'',100,'[{\"table\":\"service\",\"attribute\":\"name\",\"operator\":\"in\",\"value\":\"SQL Server, MySQL, MariaDB, Postgresql\"}]','[{\"table\":\"devices\",\"attribute\":\"criticality\",\"value\":\"medium\",\"value_type\":\"string\"}]','system','2001-01-01 00:00:00');
-INSERT INTO `rules` VALUES (79,'Azure Document DB Key Exposure Criticality',1,'',100,'[{\"table\":\"devices\",\"attribute\":\"name\",\"operator\":\"li\",\"value\":\"%Document DB%\"}]','[{\"table\":\"devices\",\"attribute\":\"criticality\",\"value\":\"high\",\"value_type\":\"string\"}]','system','2001-01-01 00:00:00');
-INSERT INTO `rules` VALUES (80,'Azure Redis Cache Key Exposure Criticality',1,'',100,'[{\"table\":\"devices\",\"attribute\":\"name\",\"operator\":\"li\",\"value\":\"%Redis Cache%\"}]','[{\"table\":\"devices\",\"attribute\":\"criticality\",\"value\":\"high\",\"value_type\":\"string\"}]','system','2001-01-01 00:00:00');
-INSERT INTO `rules` VALUES (81,'Azure Storage Account Key Exposure Criticality',1,'',100,'[{\"table\":\"devices\",\"attribute\":\"name\",\"operator\":\"li\",\"value\":\"%Storage Account Key%\"}]','[{\"table\":\"devices\",\"attribute\":\"criticality\",\"value\":\"high\",\"value_type\":\"string\"}]','system','2001-01-01 00:00:00');
+INSERT INTO `rules` VALUES (78,'Database Server (Mysql) Criticality',1,'',100,'[{\"table\":\"service\",\"attribute\":\"name\",\"operator\":\"li\",\"value\":\"MySQL\"}]','[{\"table\":\"devices\",\"attribute\":\"criticality\",\"value\":\"medium\",\"value_type\":\"string\"}]','system','2001-01-01 00:00:00');
+INSERT INTO `rules` VALUES (79,'Database Server (MariaDB) Criticality',1,'',100,'[{\"table\":\"service\",\"attribute\":\"name\",\"operator\":\"li\",\"value\":\"MariaDB\"}]','[{\"table\":\"devices\",\"attribute\":\"criticality\",\"value\":\"medium\",\"value_type\":\"string\"}]','system','2001-01-01 00:00:00');
+INSERT INTO `rules` VALUES (80,'Database Server (Postgresql) Criticality',1,'',100,'[{\"table\":\"service\",\"attribute\":\"name\",\"operator\":\"li\",\"value\":\"Postgresql\"}]','[{\"table\":\"devices\",\"attribute\":\"criticality\",\"value\":\"medium\",\"value_type\":\"string\"}]','system','2001-01-01 00:00:00');
+INSERT INTO `rules` VALUES (81,'Database Server (SQL Server) Criticality',1,'',100,'[{\"table\":\"service\",\"attribute\":\"name\",\"operator\":\"li\",\"value\":\"MSSQLSERVER\"}]','[{\"table\":\"devices\",\"attribute\":\"criticality\",\"value\":\"medium\",\"value_type\":\"string\"}]','system','2001-01-01 00:00:00');
+INSERT INTO `rules` VALUES (82,'Azure Document DB Key Exposure Criticality',1,'',100,'[{\"table\":\"service\",\"attribute\":\"name\",\"operator\":\"li\",\"value\":\"%Document DB%\"}]','[{\"table\":\"devices\",\"attribute\":\"criticality\",\"value\":\"high\",\"value_type\":\"string\"}]','system','2001-01-01 00:00:00');
+INSERT INTO `rules` VALUES (83,'Azure Redis Cache Key Exposure Criticality',1,'',100,'[{\"table\":\"service\",\"attribute\":\"name\",\"operator\":\"li\",\"value\":\"%Redis Cache%\"}]','[{\"table\":\"devices\",\"attribute\":\"criticality\",\"value\":\"high\",\"value_type\":\"string\"}]','system','2001-01-01 00:00:00');
+INSERT INTO `rules` VALUES (84,'Azure Storage Account Key Exposure Criticality',1,'',100,'[{\"table\":\"service\",\"attribute\":\"name\",\"operator\":\"li\",\"value\":\"%Storage Account Key%\"}]','[{\"table\":\"devices\",\"attribute\":\"criticality\",\"value\":\"high\",\"value_type\":\"string\"}]','system','2001-01-01 00:00:00');
 /*!40000 ALTER TABLE `rules` ENABLE KEYS */;
 UNLOCK TABLES;
 
