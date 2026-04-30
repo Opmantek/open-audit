@@ -169,7 +169,7 @@ final class PingScan extends AbstractAsyncSocketScan
      */
     private function isPingAvailable(): bool
     {
-        $process = new Process(['ping', '-V']);
+        $process = new Process(['ping', '127.0.0.1']);
         $process->run();
 
         return $process->isSuccessful();
