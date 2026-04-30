@@ -63,7 +63,7 @@ class Discoveries extends BaseController
         }
         \Config\Services::session()->setFlashdata('success', 'Discovery started.');
         sleep(5);
-        return redirect()->to(site_url() . '/discoveries/' . $id . '#logs');
+        return redirect()->to(site_url() . '/discoveries/' . $id . '#summary');
     }
 
     /**
