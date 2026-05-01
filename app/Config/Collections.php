@@ -65,7 +65,6 @@ class Collections extends BaseConfig
     public $users;
     public $vendors;
     public $vulnerabilities;
-    public $vulnerabilities_filters;
     public $widgets;
 
     public function __construct()
@@ -609,7 +608,7 @@ class Collections extends BaseConfig
         $this->vendors->orgs = 'd';
         $this->vendors->actions = new \stdClass();
         $this->vendors->actions->enterprise = 'crud';
-        $this->vendors->actions->professional = '';
+        $this->vendors->actions->professional = 'crud';
         $this->vendors->actions->community = '';
 
         $this->vulnerabilities = new \StdClass();
@@ -619,18 +618,8 @@ class Collections extends BaseConfig
         $this->vulnerabilities->orgs = 'd';
         $this->vulnerabilities->actions = new \stdClass();
         $this->vulnerabilities->actions->enterprise = 'crud';
-        $this->vulnerabilities->actions->professional = '';
+        $this->vulnerabilities->actions->professional = 'crud';
         $this->vulnerabilities->actions->community = '';
-
-        $this->vulnerabilities_filters = new \StdClass();
-        $this->vulnerabilities_filters->icon = 'icon-bug';
-        $this->vulnerabilities_filters->name = 'Vulnerabilities Filters';
-        $this->vulnerabilities_filters->edition = 'Professional';
-        $this->vulnerabilities_filters->orgs = 'd';
-        $this->vulnerabilities_filters->actions = new \stdClass();
-        $this->vulnerabilities_filters->actions->enterprise = 'crud';
-        $this->vulnerabilities_filters->actions->professional = '';
-        $this->vulnerabilities_filters->actions->community = '';
 
         $this->widgets = new \StdClass();
         $this->widgets->icon = 'icon-chart-column';
