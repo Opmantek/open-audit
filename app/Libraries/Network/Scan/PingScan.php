@@ -105,6 +105,7 @@ final class PingScan extends AbstractAsyncSocketScan
                 $running[$ip] = $process;
             }
 
+            /** @var Process $process */
             foreach ($running as $ip => $process) {
                 if (! $process->isRunning()) {
 
@@ -170,7 +171,13 @@ final class PingScan extends AbstractAsyncSocketScan
      */
     private function isPingAvailable(): bool
     {
-        $process = new Process(['ping', '-c', '1',  '-W', '1', '127.0.0.1']);
+        $command = match (PHP_OS_FAMILY) {
+            'Windows' => ['ping', '-n', '1', '-w', $this->timeout * 1000, '-i', $this->ttl, '127.0.0.1'],
+            'Darwin'  => ['ping', '-n', '-c', '1', '-t', $this->timeout, '-m', $this->ttl, '127.0.0.1'],
+            default   => ['ping', '-n', '-c', '1', '-W', $this->timeout, '-t', $this->ttl, '127.0.0.1'],
+        };
+
+        $process = new Process($command);
         $process->run();
 
         return $process->isSuccessful();
