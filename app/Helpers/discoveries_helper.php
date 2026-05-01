@@ -91,6 +91,7 @@ if (!function_exists('all_ip_list')) {
             $output .= PHP_EOL . 'Errors: ' . implode(PHP_EOL, $errors);
         }
 
+        $log->command = $process->getCommandLine();
         $log->command_output = $output;
         $discoveryLogModel->create($log);
 
@@ -203,6 +204,7 @@ if (! function_exists('responding_ip_list')) {
             $output .= PHP_EOL . 'Errors: ' . implode(PHP_EOL, $errors);
         }
 
+        $log->command = $process->getCommandLine();
         $log->command_output = $output;
         $discoveryLogModel->create($log);
 
