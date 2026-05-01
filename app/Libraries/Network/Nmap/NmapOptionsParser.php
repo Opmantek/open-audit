@@ -143,6 +143,7 @@ class NmapOptionsParser
                 return 0;
 
             case $arg === '-sP':
+            case $arg === '-sn':
                 $options->scanType = NmapOptions::SCAN_TYPE_PING;
                 return 0;
 
