@@ -14,6 +14,8 @@ final class PingScan extends AbstractAsyncSocketScan
     private const PROBE_UDP_PORTS = [53, 123, 161];
 
     protected int $concurrency = 50;
+    protected int $timeout = 10;
+    protected int $ttl = 255;
 
     /**
      * Executes a list scan similar to Nmap `-sP`.
@@ -141,7 +143,13 @@ final class PingScan extends AbstractAsyncSocketScan
      */
     private function createPingProcess(string $ip): Process
     {
-        return new Process(['ping', '-c', '1', '-W', '1', $ip]);
+        $command = match (PHP_OS_FAMILY) {
+            'Windows' => ['ping', '-n', '1', '-w', $this->timeout * 1000, '-i', $this->ttl, $ip],
+            'Darwin'  => ['ping', '-n', '-c', '1', '-t', $this->timeout, '-m', $this->ttl, $ip],
+            default   => ['ping', '-n', '-c', '1', '-W', $this->timeout, '-t', $this->ttl, $ip],
+        };
+
+        return new Process($command);
     }
 
     /**
