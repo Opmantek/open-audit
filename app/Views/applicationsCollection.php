@@ -21,7 +21,7 @@ include 'shared/collection_functions.php';
                                         } ?>
                                         <th><?= collection_column_name($key) ?></th>
                                     <?php } ?>
-                                    <?php if (str_contains($user->permissions[$meta->collection], 'd')) { ?>
+                                    <?php if (strpos($user->permissions[$meta->collection], 'd') !== false) { ?>
                                     <th data-orderable="false" class="text-center"><?= __('Delete') ?></th>
                                     <?php } ?>
                                 </tr>
@@ -42,7 +42,7 @@ include 'shared/collection_functions.php';
                                         }
                                         ?>
                                     <?php } ?>
-                                    <?php if (str_contains($user->permissions[$meta->collection], 'd')) { ?>
+                                    <?php if (strpos($user->permissions[$meta->collection], 'd') !== false) { ?>
                                         <?= collection_button_delete(intval($item->id)) ?>
                                     <?php } ?>
                                 </tr>
@@ -54,11 +54,3 @@ include 'shared/collection_functions.php';
                 </div>
             </div>
         </main>
-
-<script {csp-script-nonce}>
-window.onload = function () {
-    $(document).ready(function() {
-        $("#oa_panel_buttons").append('<form style="padding-left:4px;" method="post" action="<?= url_to('applicationsSearch') ?>"><div class="input-group"><input type="text" class="form-control mb-2" id="search" name="search" placeholder="Search for a component."><div class="float-end" style="padding-left:4px;"><button class="btn btn-primary mb-2" title="Submit">Search</button></div></div></form>');
-    });
-}
-</script>
