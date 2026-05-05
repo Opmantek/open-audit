@@ -593,7 +593,7 @@ function createNewsData()
     }
     $data->products = array_unique($data->products);
     $data->uuid = hash('sha256', $config->uuid);
-    $data->server = hash('sha256', trim(`hostname`));
+    $data->server = hash('sha256', gethostname());
     $os = getOS();
     $data->server_os = $os->server_os;
     $data->server_platform = $os->server_platform;
