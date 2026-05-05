@@ -269,6 +269,7 @@ class Help extends BaseController
      */
     public function welcome()
     {
+        nmapInstalled(true);
         return view('shared/header', [
             'config' => $this->config,
             'dashboards' => filter_response($this->dashboards),

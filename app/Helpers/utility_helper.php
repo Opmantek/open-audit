@@ -718,7 +718,7 @@ function nmapInstalled($setNotice = false)
         }
         unset($test_path);
         if ($nmap_installed === 'n' and $setNotice) {
-            \Config\Services::session()->setFlashdata('error', "WARNING - Nmap not detected. Get it from <a style='color:#729FCF;' target='_blank' href='https://nmap.org/download.html'>http://nmap.org/download.html</a>.<br />Please see <a href='" . url_to('helpFAQ') . "?name=Open-AudIT+and+Nmap'>Open-AudIT and Nmap</a> for information about why Open-AudIT requires Nmap and how to install it.");
+            \Config\Services::session()->setFlashdata('error', "WARNING - Nmap not detected. Get it from <a style='color:#729FCF;' target='_blank' href='https://nmap.org/download.html'>http://nmap.org/download.html</a>.<br />Please see <a href='" . url_to('helpFAQ') . "?name=Open-AudIT+and+Nmap'>Open-AudIT and Nmap</a> for information about why Open-AudIT requires Nmap and how to install it.<br><strong>After installing Nmap, please ensure you reboot Windows.</strong>");
         }
     }
     if (php_uname('s') !== 'Windows NT') {
@@ -740,7 +740,10 @@ function nmapInstalled($setNotice = false)
                 $nmap_installed = 'y';
             }
         }
-        if ($nmap_installed === 'n' and $setNotice) {
+        if ($nmap_installed === 'n' and $setNotice and php_uname('s') === 'Darwin') {
+            \Config\Services::session()->setFlashdata('error', "WARNING - Nmap not detected. Get it from <a style='color:#729FCF;' target='_blank' href='https://nmap.org/download.html'>http://nmap.org/download.html</a> or use <a href='https://brew.sh/' target='_blank'>Homebrew</a> to install it.<br />Please see <a href='" . url_to('helpFAQ') . "?name=Open-AudIT+and+Nmap'>Open-AudIT and Nmap</a> for information about why Open-AudIT requires Nmap and how to install it.");
+        }
+        if ($nmap_installed === 'n' and $setNotice and php_uname('s') === 'Linux') {
             \Config\Services::session()->setFlashdata('error', "WARNING - Nmap not detected. Please install it using your package manager.<br />Please see <a href='" . url_to('helpFAQ') . "?name=Open-AudIT+and+Nmap'>Open-AudIT and Nmap</a> for information about why Open-AudIT requires Nmap and how to install it.");
         }
     }
@@ -764,7 +767,7 @@ function nmapSuid($setNotice = false)
     if (!empty($instance->config->discovery_override_nmap) && $instance->config->discovery_override_nmap === 'y') {
         return 'y';
     }
-    $suid = 'n';
+    $suid = '';
     $command_string = 'which nmap 2>/dev/null';
     $output = shell_exec($command_string);
     if (!empty($output)) {

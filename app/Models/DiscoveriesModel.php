@@ -906,14 +906,15 @@ class DiscoveriesModel extends BaseModel
                 log_message('error', ROOTPATH . $file . " is not writable.");
             }
         }
-        if (php_uname('s') !== 'Windows NT') {
-            $command = 'nmap --version 2>/dev/null';
-            exec($command, $output, $return_var);
-            if (!isset($output[0])) {
-                $warning .= "ERROR: Cannot find Nmap";
-                log_message('error', "Cannot find Nmap.");
-            }
-        }
+        // if (php_uname('s') !== 'Windows NT') {
+        //     $command = 'nmap --version 2>/dev/null';
+        //     exec($command, $output, $return_var);
+        //     if (!isset($output[0])) {
+        //         $warning .= "ERROR: Cannot find Nmap";
+        //         log_message('error', "Cannot find Nmap.");
+        //     }
+        // }
+        nmapInstalled(true);
         if (php_uname('s') === 'Windows NT') {
             if (strtolower(get_current_user()) === 'system' or exec('whoami') === 'nt authority\system') {
                 $warning = 'The Apache service is running as SYSTEM. Discoveries will not function. Please see this wiki page and make the configuration change. <a href="' . url_to('helpFAQ') . '?name=Running+Open-AudIT+Apache+Service+Under+Windows">Running Open-AudIT Apache Service Under Windows</a>.';
@@ -921,7 +922,9 @@ class DiscoveriesModel extends BaseModel
             }
         }
         if (!empty($warning)) {
-            \Config\Services::session()->setFlashdata('warning', $warning);
+            if (empty(\Config\Services::session()->getFlashdata('error'))) {
+                \Config\Services::session()->setFlashdata('warning', $warning);
+            }
         }
         return;
     }
