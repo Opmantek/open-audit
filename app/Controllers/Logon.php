@@ -73,6 +73,14 @@ class Logon extends Controller
         $result = $db->query($sql)->getResult();
         $server_os = (!empty($result[0]->value)) ? $result[0]->value : '';
 
+        // This is no longer populated by the initial SQL schema
+        $sql = "SELECT `value` FROM `configuration` WHERE `name` = 'uuid'";
+        $result = $db->query($sql)->getResult();
+        if (empty($result[0]->value)) {
+            $sql = "UPDATE `configuration` SET value = UUID() WHERE name = 'uuid'";
+            $db->query($sql);
+        }
+
         // If we have no credentials, add the default "public" SNMP community
         $credentialsModel = model('CredentialsModel');
         $credentials = $credentialsModel->listAll();

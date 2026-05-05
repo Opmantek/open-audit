@@ -1374,7 +1374,7 @@ INSERT INTO `configuration` VALUES (157,'queue_count','0','number','n','system',
 INSERT INTO `configuration` VALUES (158,'queue_limit','20','number','y','system','2000-01-01 00:00:00','The maximum number of concurrent device scans we should run.');
 INSERT INTO `configuration` VALUES (161,'server_ip','','text','n','system','2000-01-01 00:00:00','The locally detected IP Addresses of this server.');
 INSERT INTO `configuration` VALUES (162,'servers','','text','n','system','2000-01-01 00:00:00','The servers to report to when using Agent / Collector / Server.');
-INSERT INTO `configuration` VALUES (163,'uuid',UUID(),'text','n','system','2000-01-01 00:00:00','The unique identfier of this Open-AudIT server.');
+INSERT INTO `configuration` VALUES (163,'uuid','','text','n','system','2000-01-01 00:00:00','The unique identfier of this Open-AudIT server.');
 INSERT INTO `configuration` VALUES (164,'feature_agents_advanced','n','bool','y','system','2000-01-01 00:00:00','Allow Agents to execute commands and download files.');
 INSERT INTO `configuration` VALUES (165,'feature_queries_advanced','n','bool','y','system','2000-01-01 00:00:00','Allow Queries without a filter.');
 INSERT INTO `configuration` VALUES (166,'feature_executables','n','bool','y','system','2000-01-01 00:00:00','Activate the linux based Executables feature.');
