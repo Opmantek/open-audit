@@ -2,6 +2,20 @@
 
 $output .= "Upgrade database to 6.0.3 commenced.\n\n";
 
+if (! $db->fieldExists('entra_group', 'orgs')) {
+    $sql = "ALTER TABLE `orgs` ADD `entra_group` varchar(100) NOT NULL DEFAULT '' AFTER `ad_group`";
+    $result = $db->query($sql);
+    $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+    log_message('info', (string)$db->getLastQuery());
+}
+
+if (! $db->fieldExists('entra_group', 'roles')) {
+    $sql = "ALTER TABLE `roles` ADD `entra_group` varchar(100) NOT NULL DEFAULT '' AFTER `ad_group`";
+    $result = $db->query($sql);
+    $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+    log_message('info', (string)$db->getLastQuery());
+}
+
 $sql = "INSERT INTO `attributes` VALUES (228,1,'devices','environment','Research and Development','rnd','system','2000-01-01 00:00:00')";
 $result = $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
@@ -118,21 +132,6 @@ $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());
 
 $sql = "INSERT INTO `rules` VALUES (null,'Database Server (SQL Server) Criticality',1,'',100,'[{\"table\":\"service\",\"attribute\":\"name\",\"operator\":\"li\",\"value\":\"MSSQLSERVER\"}]','[{\"table\":\"devices\",\"attribute\":\"criticality\",\"value\":\"medium\",\"value_type\":\"string\"}]','system','2001-01-01 00:00:00')";
-$result = $db->query($sql);
-$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
-log_message('info', (string)$db->getLastQuery());
-
-$sql = "INSERT INTO `rules` VALUES (null,'Azure Document DB Key Exposure Criticality',1,'',100,'[{\"table\":\"service\",\"attribute\":\"name\",\"operator\":\"li\",\"value\":\"%Document DB%\"}]','[{\"table\":\"devices\",\"attribute\":\"criticality\",\"value\":\"high\",\"value_type\":\"string\"}]','system','2001-01-01 00:00:00')";
-$result = $db->query($sql);
-$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
-log_message('info', (string)$db->getLastQuery());
-
-$sql = "INSERT INTO `rules` VALUES (null,'Azure Redis Cache Key Exposure Criticality',1,'',100,'[{\"table\":\"service\",\"attribute\":\"name\",\"operator\":\"li\",\"value\":\"%Redis Cache%\"}]','[{\"table\":\"devices\",\"attribute\":\"criticality\",\"value\":\"high\",\"value_type\":\"string\"}]','system','2001-01-01 00:00:00')";
-$result = $db->query($sql);
-$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
-log_message('info', (string)$db->getLastQuery());
-
-$sql = "INSERT INTO `rules` VALUES (null,'Azure Storage Account Key Exposure Criticality',1,'',100,'[{\"table\":\"service\",\"attribute\":\"name\",\"operator\":\"li\",\"value\":\"%Storage Account Key%\"}]','[{\"table\":\"devices\",\"attribute\":\"criticality\",\"value\":\"high\",\"value_type\":\"string\"}]','system','2001-01-01 00:00:00')";
 $result = $db->query($sql);
 $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
 log_message('info', (string)$db->getLastQuery());

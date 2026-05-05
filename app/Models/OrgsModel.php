@@ -501,7 +501,7 @@ class OrgsModel extends BaseModel
         $dictionary->columns->parent_id = 'The ID of this orgs parent org. Linked to <code>orgs.id</code>';
         $dictionary->columns->type = 'The type of organisation.';
         $dictionary->columns->ad_group = 'Used when LDAP servers have been configured to populate a users details - this includes the Orgs to which they have access. If a user is in this LDAP group, they are assigned this org.';
-        // $dictionary->columns->entra_group = 'Used to associate an Entra Group ID with the Org.';
+        $dictionary->columns->entra_group = 'Used to associate an Entra Group ID with the Org.';
         $dictionary->columns->edited_by = $instance->dictionary->edited_by;
         $dictionary->columns->edited_date = $instance->dictionary->edited_date;
         return $dictionary;
