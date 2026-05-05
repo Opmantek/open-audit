@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Commands;
+namespace App\Commands\Translation;
 
 use App\Libraries\Translation\TranslationCreator;
 use CodeIgniter\CLI\BaseCommand;
@@ -11,7 +11,7 @@ use CodeIgniter\CLI\CLI;
 /**
  * @example php spark translation:add <text>
  */
-class TranslationAddCommand extends BaseCommand
+class AddCommand extends BaseCommand
 {
     protected $group       = 'Translation';
     protected $name        = 'translation:add';

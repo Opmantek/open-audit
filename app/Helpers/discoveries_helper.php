@@ -5,6 +5,27 @@
 
 declare(strict_types=1);
 
+use App\Libraries\Clock\Stopwatch;
+use App\Libraries\Network\Helper\PortHelper;
+use App\Libraries\Network\Nmap\NmapHostHelper;
+use App\Libraries\Network\Nmap\NmapLocator;
+use App\Libraries\Network\Nmap\NmapOptions;
+use App\Libraries\Network\Nmap\NmapHostXmlParser;
+use App\Libraries\Network\Nmap\NmapProcess;
+use Symfony\Component\Process\Process;
+
+if (! function_exists('get_php_scan_command')) {
+    /**
+     * Retrieve the internal PHP scan command.
+     *
+     * @return string[]
+     */
+    function get_php_scan_command(): array
+    {
+        return ['php', ROOTPATH . 'spark', 'network:scan', '--no-header'];
+    }
+}
+
 if (!function_exists('all_ip_list')) {
     /**
      *
@@ -16,6 +37,7 @@ if (!function_exists('all_ip_list')) {
         if (is_null($discovery)) {
             return false;
         }
+
         $discoveryLogModel = new \App\Models\DiscoveryLogModel();
 
         $log = new \StdClass();
@@ -26,6 +48,55 @@ if (!function_exists('all_ip_list')) {
         $log->command_status = 'notice';
         $log->message = 'Retrieving IP list';
         $log->ip = '127.0.0.1';
+
+        $locator = new NmapLocator();
+        $executable = $locator->find() ?? get_php_scan_command();
+
+        $options = new NmapOptions();
+        $options->scanType   = NmapOptions::SCAN_TYPE_LIST;
+        $options->outputType = NmapOptions::OUTPUT_TYPE_XML;
+        $options->outputFile = '-';
+        $options->exePath    = $executable;
+        $options->targets    = $discovery->subnet;
+        $options->noDns      = true;
+
+        if (! empty($discovery->scan_options->exclude_ip)) {
+            $options->excludeHosts = $discovery->scan_options->exclude_ip;
+        }
+
+        $errors      = [];
+        $ipAddresses = [];
+
+        $parser  = new NmapHostXmlParser();
+        $process = new NmapProcess($options, null);
+        log_message('debug', 'Command: ' . $process->getCommandLine());
+        $process->start(function (string $type, string $buffer) use ($parser, &$errors, &$ipAddresses): void {
+            if ($type === Process::ERR) {
+                $errors[] = $buffer;
+            } else {
+                foreach ($parser->feed($buffer) as $host) {
+                    $address = NmapHostHelper::getIpAddress($host);
+                    if ($address) {
+                        $ipAddresses[] = $address['addr'];
+                    }
+                }
+            }
+        });
+
+        $process->wait();
+
+        $output = 'Total IPs: ' . count($ipAddresses);
+
+        if ($errors !== []) {
+            $output .= PHP_EOL . 'Errors: ' . implode(PHP_EOL, $errors);
+        }
+
+        $log->command = $process->getCommandLine();
+        $log->command_output = $output;
+        $discoveryLogModel->create($log);
+
+        return $ipAddresses;
+        // Leave old code below temporarily for a clean diff and review.
 
         $ip_addresses = array();
         if (!empty($discovery->scan_options->exclude_ip)) {
@@ -69,6 +140,7 @@ if (! function_exists('responding_ip_list')) {
         if (is_null($discovery)) {
             return array();
         }
+
         $discoveryLogModel = new \App\Models\DiscoveryLogModel();
 
         $log = new \StdClass();
@@ -79,6 +151,65 @@ if (! function_exists('responding_ip_list')) {
         $log->command_status = 'notice';
         $log->message = 'Sending ping';
         $log->ip = '127.0.0.1';
+
+        $locator = new NmapLocator();
+        $executable = $locator->find() ?? get_php_scan_command();
+
+        $options = new NmapOptions();
+        $options->scanType   = NmapOptions::SCAN_TYPE_LIST;
+        $options->outputType = NmapOptions::OUTPUT_TYPE_XML;
+        $options->outputFile = '-';
+        $options->exePath    = $executable;
+        $options->targets    = $discovery->subnet;
+        $options->noDns      = true;
+
+        if ($discovery->scan_options->ping === 'y') {
+            $options->scanType       = NmapOptions::SCAN_TYPE_PING;
+            $options->maxRetries     = 2;
+            $options->minParallelism = 200;
+            $options->maxParallelism = 256;
+            $options->randomizeHosts = true;
+            $options->timing         = 4;
+        }
+
+        if (! empty($discovery->scan_options->exclude_ip)) {
+            $options->excludeHosts = $discovery->scan_options->exclude_ip;
+        }
+
+        $errors      = [];
+        $ipAddresses = [];
+
+        $parser  = new NmapHostXmlParser();
+        $process = new NmapProcess($options, null);
+        log_message('debug', 'Command: ' . $process->getCommandLine());
+        $process->start(function (string $type, string $buffer) use ($parser, &$errors, &$ipAddresses): void {
+            if ($type === Process::ERR) {
+                $errors[] = $buffer;
+            } else {
+                foreach ($parser->feed($buffer) as $host) {
+                    $state = NmapHostHelper::getState($host);
+                    $address = NmapHostHelper::getIpAddress($host);
+                    if ($state === 'up' && $address) {
+                        $ipAddresses[] = $address['addr'];
+                    }
+                }
+            }
+        });
+
+        $process->wait();
+
+        $output = 'Responding IPs: ' . count($ipAddresses);
+
+        if ($errors !== []) {
+            $output .= PHP_EOL . 'Errors: ' . implode(PHP_EOL, $errors);
+        }
+
+        $log->command = $process->getCommandLine();
+        $log->command_output = $output;
+        $discoveryLogModel->create($log);
+
+        return $ipAddresses;
+        // Leave old code below temporarily for a clean diff and review.
 
         $ip_addresses = array();
         // Nmap:
@@ -360,33 +491,35 @@ if (! function_exists('get_nmap_version')) {
      * Return the integer major Nmap version
      * @return int The Major version of nmap
      */
-    function get_nmap_version()
+    function get_nmap_version(): int
     {
-        $output = '';
-        $nmap_version = 0;
-        if (php_uname('s') === 'Windows NT') {
-            $command_string = 'nmap --version';
-            exec($command_string, $output, $return_var);
+        $locator = new NmapLocator();
+        $executable = $locator->find();
+
+        if ($executable === null) {
+            return 0;
         }
-        if (php_uname('s') === 'Darwin') {
-            $command_string = 'nmap --version';
-            exec($command_string, $output, $return_var);
+
+        $output = [];
+        $result = 0;
+        $command = escapeshellcmd($executable) . ' --version';
+
+        exec($command, $output, $result);
+
+        if ($result !== 0 || empty($output)) {
+            return 0;
         }
-        if (php_uname('s') === 'Linux') {
-            $command_string = 'nmap --version';
-            exec($command_string, $output, $return_var);
-        }
-        if (!empty($output) and is_array($output)) {
-            foreach ($output as $line) {
-                if (stripos($line, 'Nmap version') !== false) {
-                    $output = $line;
-                    break;
+
+        foreach ($output as $line) {
+            if (stripos($line, 'Nmap version') === 0) {
+                // Expecting: "Nmap version 7.94 ( https://nmap.org )"
+                if (preg_match('/Nmap version\s+(\d+)\./', $line, $matches)) {
+                    return (int)$matches[1];
                 }
             }
-            $lines = explode(' ', $output);
-            $nmap_version = intval($lines[2]);
         }
-        return $nmap_version;
+
+        return 0;
     }
 }
 
@@ -401,24 +534,21 @@ if (! function_exists('ip_scan')) {
         if (empty($details)) {
             return false;
         }
-        $start = microtime(true);
+
         $discoveryLogModel = new \App\Models\DiscoveryLogModel();
         $discoveriesModel = new \App\Models\DiscoveriesModel();
         $instance = & get_instance();
-        $db = db_connect();
-        $ip = ip_address_from_db($details->ip);
-
-        $mac_address = '';
-        if (!empty($details->mac_address)) {
-            $mac_address = $details->mac_address;
-        }
-
         $discovery_id = intval($details->discovery_id);
         $discovery = $discoveriesModel->readForDiscovery($discovery_id);
+
         if (empty($discovery)) {
             return false;
         }
+
         $discovery = $discovery[0];
+        $db = db_connect();
+        $ip = ip_address_from_db($details->ip);
+        $macAddress = !empty($details->mac_address) ? $details->mac_address : '';
 
         $log = new \StdClass();
         $log->discovery_id = $discovery->id;
@@ -438,8 +568,249 @@ if (! function_exists('ip_scan')) {
         $device = array();
         $sql = 'SELECT NOW() AS `timestamp`';
         $result = $db->query($sql)->getResult();
-        // $device['timestamp'] = $result[0]->timestamp;
         $timestamp = $result[0]->timestamp;
+
+        $nmapVersion = get_nmap_version();
+
+        $stopwatch = new Stopwatch();
+        $timer     = new Stopwatch();
+        $parser    = new NmapHostXmlParser();
+        $locator   = new NmapLocator();
+        $executable = $locator->find() ?? get_php_scan_command();
+
+        $options = new NmapOptions();
+        $options->outputType = NmapOptions::OUTPUT_TYPE_XML;
+        $options->outputFile = '-';
+        $options->exePath    = $executable;
+        $options->targets    = $ip;
+        $options->timing     = 4;
+
+        if ($discovery->type === 'seed' && $discovery->scan_options->ping === 'y') {
+            $seedDiscovery = clone $discovery;
+            $seedDiscovery->subnet = $ip;
+            $stopwatch->start();
+            $respondingIpAddresses = responding_ip_list($seedDiscovery);
+            $stopwatch->stop();
+
+            if (empty($respondingIpAddresses)) {
+                $log->message = $ip . ' is non-responsive to ping, ignoring.';
+                $discoveryLogModel->create($log);
+
+                // Auditing IP is complete and cannot continue
+                $log->command = 'Peak Memory';
+                $log->command_output = round((memory_get_peak_usage(false) / 1024 / 1024), 3) . ' MiB';
+                $log->command_status = 'device complete';
+                $log->command_time_to_execute = $stopwatch->getElapsedTime();
+                $log->message = 'IP scan finish on device ' . $ip;
+                $discoveryLogModel->create($log);
+
+                // Update the log line to avoid confusion in the GUI
+                $sql = "UPDATE discovery_log SET message = 'IP " . $ip . " responding, adding to device list. Device detected via seed discovery, but not responding to ping, ignoring.' WHERE message = 'IP " . $ip . " responding, adding to device list.' and discovery_id = ?";
+                $db->query($sql, [$discovery->id]);
+
+                // Check if the discovery is now finished
+                discovery_check_finished((int) $discovery->id);
+                return false;
+            }
+
+            $log->message = $ip . ' is responsive to ping, continuing.';
+            $discoveryLogModel->create($log);
+        }
+
+        /**
+         * Establish common options used across all scan types
+         */
+
+        if (isset($nmap->timing) && ctype_digit($nmap->timing) && intval($nmap->timing) > 0 && intval($nmap->timing) < 6) {
+            $options->timing = (int) $nmap->timing;
+        }
+
+        if (isset($nmap->ping) && $nmap->ping === 'n') {
+            $options->noPing = true;
+        }
+
+        if (isset($nmap->service_version) && $nmap->service_version === 'y') {
+            $options->serviceDetection = true;
+        }
+
+        if (isset($nmap->timeout) && ctype_digit($nmap->timing)) {
+            $options->hostTimeout = (int) $nmap->timeout;
+        }
+
+        if (isset($nmap->exclude_ip) && is_string($nmap->exclude_ip)) {
+            $excludeHosts = str_replace(' ', '', $nmap->exclude_ip);
+            $options->excludeHosts = $excludeHosts !== '' ? $excludeHosts : null;
+        }
+
+        $timer->start();
+
+        /**
+         * Perform a top TCP port scan
+         */
+        if (isset($nmap->nmap_tcp_ports) && ctype_digit($nmap->nmap_tcp_ports) && intval($nmap->nmap_tcp_ports) > 0 && intval($nmap->nmap_tcp_ports) < 65536) {
+            $scanOptions = clone $options;
+            $scanOptions->scanType = NmapOptions::SCAN_TYPE_TCP_SYN;
+            $scanOptions->topPorts = (int) $nmap->nmap_tcp_ports;
+
+            if ($executable !== get_php_scan_command() && isset($nmap->exclude_tcp_ports) && $nmapVersion > 6) {
+                $scanOptions->excludeTcpPorts = PortHelper::expand($nmap->exclude_tcp_ports);
+            }
+
+            $stopwatch->start();
+            $process = new NmapProcess($scanOptions, null);
+            log_message('debug', 'Command: ' . $process->getCommandLine());
+            $process->run();
+            $stopwatch->stop();
+            $host = $parser->parse($process->getOutput())[0] ?? [];
+
+            $log->command_time_to_execute = $stopwatch->getElapsedTime();
+            $log->message = 'Nmap Command (Top TCP Ports)';
+            $log->command = "{$process->getCommandLine()} # Top TCP Ports";
+            $log->command_output = json_encode($host);
+            $discoveryLogModel->create($log);
+
+            $result = check_nmap_host_array($discovery, $host, $ip, $process->getCommandLine());
+            $ports  = $device['nmap_ports'] ?? [];
+            $device = array_merge($device, $result);
+
+            if (! empty($ports)) {
+                $device['nmap_ports'] = array_unique(array_merge($ports, $device['nmap_ports']));
+            }
+        }
+
+        /**
+         * Perform a top UDP port scan
+         */
+        if (isset($nmap->nmap_udp_ports) && ctype_digit($nmap->nmap_udp_ports) && intval($nmap->nmap_udp_ports) > 0 && intval($nmap->nmap_udp_ports) < 65536) {
+            $scanOptions = clone $options;
+            $scanOptions->scanType = NmapOptions::SCAN_TYPE_UDP;
+            $scanOptions->topPorts = (int) $nmap->nmap_tcp_ports;
+
+            if ($executable !== get_php_scan_command() && isset($nmap->exclude_udp_ports) && $nmapVersion > 6) {
+                $scanOptions->excludeUdpPorts = PortHelper::expand($nmap->exclude_udp_ports);
+            }
+
+            $stopwatch->start();
+            $process = new NmapProcess($scanOptions, null);
+            log_message('debug', 'Command: ' . $process->getCommandLine());
+            $process->run();
+            $stopwatch->stop();
+            $host = $parser->parse($process->getOutput())[0] ?? [];
+
+            $log->command_time_to_execute = $stopwatch->getElapsedTime();
+            $log->message = 'Nmap Command (Top UDP Ports)';
+            $log->command = "{$process->getCommandLine()} # Top UDP Ports";
+            $log->command_output = json_encode($host);
+            $discoveryLogModel->create($log);
+
+            $result = check_nmap_host_array($discovery, $host, $ip, $process->getCommandLine());
+            $ports  = $device['nmap_ports'] ?? [];
+            $device = array_merge($device, $result);
+
+            if (! empty($ports)) {
+                $device['nmap_ports'] = array_unique(array_merge($ports, $device['nmap_ports']));
+            }
+        }
+
+        /**
+         * Perform a custom TCP port scan
+         */
+        if (! empty($nmap->tcp_ports)) {
+            $scanOptions = clone $options;
+            $scanOptions->scanType = NmapOptions::SCAN_TYPE_TCP_SYN;
+            $scanOptions->ports = PortHelper::expand($nmap->tcp_ports);
+
+            if ($executable !== get_php_scan_command() && isset($nmap->exclude_tcp_ports) && $nmapVersion > 6) {
+                $scanOptions->excludeTcpPorts = PortHelper::expand($nmap->exclude_tcp_ports);
+            }
+
+            $stopwatch->start();
+            $process = new NmapProcess($scanOptions, null);
+            log_message('debug', 'Command: ' . $process->getCommandLine());
+            $process->run();
+            $stopwatch->stop();
+            $host = $parser->parse($process->getOutput())[0] ?? [];
+
+            $log->command_time_to_execute = $stopwatch->getElapsedTime();
+            $log->message = 'Nmap Command (Custom TCP Ports)';
+            $log->command = "{$process->getCommandLine()} # Custom TCP Ports";
+            $log->command_output = json_encode($host);
+            $discoveryLogModel->create($log);
+
+            $result = check_nmap_host_array($discovery, $host, $ip, $process->getCommandLine());
+            $ports = $device['nmap_ports'] ?? [];
+            $device = array_merge($device, $result);
+
+            if (! empty($ports)) {
+                $device['nmap_ports'] = array_unique(array_merge($ports, $device['nmap_ports']));
+            }
+        }
+
+        /**
+         * Perform a custom TCP port scan
+         */
+        if (! empty($nmap->udp_ports)) {
+            $scanOptions = clone $options;
+            $scanOptions->scanType = NmapOptions::SCAN_TYPE_UDP;
+            $scanOptions->ports = PortHelper::expand($nmap->udp_ports);
+
+            if ($executable !== get_php_scan_command() && isset($nmap->exclude_udp_ports) && $nmapVersion > 6) {
+                $scanOptions->excludeUdpPorts = PortHelper::expand($nmap->exclude_udp_ports);
+            }
+
+            $stopwatch->start();
+            $process = new NmapProcess($scanOptions, null);
+            log_message('debug', 'Command: ' . $process->getCommandLine());
+            $process->run();
+            $stopwatch->stop();
+            $host = $parser->parse($process->getOutput())[0] ?? [];
+
+            $log->command_time_to_execute = $stopwatch->getElapsedTime();
+            $log->message = 'Nmap Command (Custom UDP Ports)';
+            $log->command = "{$process->getCommandLine()} # Custom UDP Ports";
+            $log->command_output = json_encode($host);
+            $discoveryLogModel->create($log);
+
+            $result = check_nmap_host_array($discovery, $host, $ip, $process->getCommandLine());
+            $ports = $device['nmap_ports'] ?? [];
+            $device = array_merge($device, $result);
+
+            if (! empty($ports)) {
+                $device['nmap_ports'] = array_unique(array_merge($ports, $device['nmap_ports']));
+            }
+        }
+
+        $timer->stop();
+
+        if (empty($device['mac_address']) && ! empty($macAddress)) {
+            $device['mac_address'] = $macAddress;
+        }
+
+        $device['timestamp'] = $timestamp;
+        $device['nmap_ports'] = implode(',', $device['nmap_ports'] ?? []);
+
+        $sql = "UPDATE discovery_log SET command_time_to_execute = ? WHERE message = 'IP " . $ip . " responding, adding to device list.' and discovery_id = ?";
+        $db->query($sql, [$timer->getElapsedTime(), $discovery->id]);
+
+        if (! empty($discovery->require_port) && $discovery->require_port === 'y' && empty($device['nmap_ports'])) {
+            $log->message = 'IP scan finish on device ' . $ip;
+            $log->command = 'No open ports detected but required for this discovery - halting on this IP.';
+            $log->command_output = json_encode($device);
+            $log->command_time_to_execute = $timer->getElapsedTime();
+            $discoveryLogModel->create($log);
+            $sql = "UPDATE discovery_log SET message = 'IP " . $ip . " not responding, ignoring.' WHERE discovery_id = ? AND message = 'IP " . $ip . " responding, adding to device list.'";
+            $db->query($sql, [$discovery->id]);
+            return false;
+        }
+
+        $log->message = 'IP scan finish on device ' . $ip;
+        $log->command = 'Device details returned';
+        $log->command_output = json_encode($device);
+        $log->command_time_to_execute = $timer->getElapsedTime();
+        $discoveryLogModel->create($log);
+
+        return $device;
+        // Leave old code below temporarily for a clean diff and review.
 
         $nmap_version = get_nmap_version();
 
@@ -660,6 +1031,109 @@ if (! function_exists('ip_scan')) {
         $log->command_time_to_execute = microtime(true) - $start;
         $discoveryLogModel->create($log);
         return($device);
+    }
+}
+
+if (! function_exists('check_nmap_host_array')) {
+    /**
+     * Purpose of this function is to carry out the same checks as the check_nmap_output
+     * function, but instead of processing garbled input, process an array of host information
+     * extracted from Nmap XML output.
+     */
+    function check_nmap_host_array(object $discovery, array $host, string $ip, string $command): array
+    {
+        if (empty($discovery)) {
+            log_message('error', 'No discovery provided to discoveries_helper::check_nmap_host_array.');
+            return [];
+        }
+
+        if (empty($host)) {
+            log_message('error', 'No host provided to discoveries_helper::check_nmap_host_array.');
+            return [];
+        }
+
+        $discoveryLogModel = new \App\Models\DiscoveryLogModel();
+
+        $log = new \StdClass();
+        $log->discovery_id = $discovery->id;
+        $log->ip = $ip;
+        $log->severity = 7;
+        $log->command = $command;
+        $log->command_status = 'notice';
+        $log->file = 'discoveries_helper';
+
+        $device   = [];
+        $sshPorts = explode(',', $discovery->scan_options->ssh_ports ?? '');
+        $states   = ['open', 'closed', 'filtered', 'unfiltered', 'open|filtered', 'closed|filtered'];
+        $options  = [
+            'open'            => $discovery->scan_options->{'open'} ?? 'y',
+            'closed'          => $discovery->scan_options->{'closed'} ?? 'n',
+            'filtered'        => $discovery->scan_options->{'filtered'} ?? 'n',
+            'unfiltered'      => $discovery->scan_options->{'unfiltered'} ?? 'n',
+            'open|filtered'   => $discovery->scan_options->{'open|filtered'} ?? 'y',
+            'closed|filtered' => $discovery->scan_options->{'closed|filtered'} ?? 'n',
+        ];
+
+        $hostState = NmapHostHelper::getState($host);
+
+        if (in_array($hostState, $states) && $options[$hostState] === 'y') {
+            $device['host_is_up'] = 'true';
+            $device['status'] = $hostState;
+            $log->message = "Host {$ip} is up, received {$hostState} response";
+            $log->command_output = "Host {$ip} is up, status: {$hostState}";
+            $discoveryLogModel->create($log);
+        }
+
+        $macAddress = NmapHostHelper::getMacAddress($host);
+
+        if (! empty($macAddress)) {
+            $device['mac_address'] = strtolower($macAddress['addr']);
+            $device['host_is_up'] = 'true';
+            $log->message = "Host {$ip} is up, received MAC address " . $device['mac_address'];
+            $log->command_output = "MAC address: " . $device['mac_address'];
+            $discoveryLogModel->create($log);
+        }
+
+        $ports = NmapHostHelper::getPorts($host);
+
+        if (! empty($ports)) {
+            $devicePorts = [];
+            foreach ($ports as $port) {
+                $portId       = $port['portid'] ?? null;
+                $portProtocol = $port['protocol'] ?? null;
+                $portState    = $port['state']['state'] ?? 'unknown';
+                $serviceName  = $port['service']['name'] ?? null;
+                if ($portId && $portProtocol && in_array($portState, $states) && $options[$portState] === 'y') {
+                    $devicePorts[] = $portId . '/' . $portProtocol . ($serviceName ? '/' . $serviceName : '');
+
+                    $log->command_output = "Host $ip, port $portId/$portProtocol is $portState";
+                    $log->message = "Host $ip, port $portId/$portProtocol is $portState";
+                    $discoveryLogModel->create($log);
+
+                    if ($portId === '22' && $portProtocol === 'tcp') {
+                        $device['ssh_status'] = 'true';
+                    }
+                    if ($portId === '161' && $portProtocol === 'udp') {
+                        $device['snmp_status'] = 'true';
+                    }
+                    if (in_array($portId, ['135', '445']) && $portProtocol === 'tcp') {
+                        $device['wmi_status'] = 'true';
+                    }
+
+                    foreach ($sshPorts as $sshPort) {
+                        if ($portId === $sshPort && $portProtocol === 'tcp') {
+                            $device['ssh_status'] = 'true';
+                            $log->message = "Host $ip is up, received custom SSH port $portId/$portProtocol $portState";
+                            $discoveryLogModel->create($log);
+                        }
+                    }
+                }
+            }
+
+            $device['nmap_ports'] = $devicePorts;
+        }
+
+        return $device;
     }
 }
 
@@ -1507,7 +1981,7 @@ if (! function_exists('ip_audit')) {
                 $nmap_item->ip = (string)$device->ip;
                 $nmap_item->port = $temp[0];
                 $nmap_item->protocol = $temp[1];
-                $nmap_item->program = $temp[2];
+                $nmap_item->program = $temp[2] ?? 'unknown';
                 if (!empty($nmap_item->port)) {
                     $nmap_result[] = $nmap_item;
                 }

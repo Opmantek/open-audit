@@ -1,0 +1,518 @@
+[
+    {
+        "starttime": "1769006058",
+        "endtime": "1769006282",
+        "status": {
+            "state": "up",
+            "reason": "user-set",
+            "reason_ttl": "0"
+        },
+        "address": {
+            "addr": "64.227.71.252",
+            "addrtype": "ipv4"
+        },
+        "hostnames": [],
+        "ports": {
+            "extraports": [
+                {
+                    "state": "filtered",
+                    "count": "65526",
+                    "extrareasons": {
+                        "reason": "no-response",
+                        "count": "65526",
+                        "proto": "tcp",
+                        "ports": "1-21,23-2221,2223-2374,2377-5431,5433-6378,6380-8079,8081-50499,50501-50998,51000-65535"
+                    }
+                },
+                {
+                    "state": "closed",
+                    "count": "2",
+                    "extrareasons": {
+                        "reason": "conn-refused",
+                        "count": "2",
+                        "proto": "tcp",
+                        "ports": "2375-2376"
+                    }
+                }
+            ],
+            "port": [
+                {
+                    "protocol": "tcp",
+                    "portid": "22",
+                    "state": {
+                        "state": "open",
+                        "reason": "syn-ack",
+                        "reason_ttl": "0"
+                    },
+                    "service": {
+                        "name": "ssh",
+                        "method": "table",
+                        "conf": "3"
+                    }
+                },
+                {
+                    "protocol": "tcp",
+                    "portid": "2222",
+                    "state": {
+                        "state": "open",
+                        "reason": "syn-ack",
+                        "reason_ttl": "0"
+                    },
+                    "service": {
+                        "name": "EtherNetIP-1",
+                        "method": "table",
+                        "conf": "3"
+                    }
+                },
+                {
+                    "protocol": "tcp",
+                    "portid": "5432",
+                    "state": {
+                        "state": "open",
+                        "reason": "syn-ack",
+                        "reason_ttl": "0"
+                    },
+                    "service": {
+                        "name": "postgresql",
+                        "method": "table",
+                        "conf": "3"
+                    }
+                },
+                {
+                    "protocol": "tcp",
+                    "portid": "6379",
+                    "state": {
+                        "state": "open",
+                        "reason": "syn-ack",
+                        "reason_ttl": "0"
+                    },
+                    "service": {
+                        "name": "redis",
+                        "method": "table",
+                        "conf": "3"
+                    }
+                },
+                {
+                    "protocol": "tcp",
+                    "portid": "8080",
+                    "state": {
+                        "state": "open",
+                        "reason": "syn-ack",
+                        "reason_ttl": "0"
+                    },
+                    "service": {
+                        "name": "http-proxy",
+                        "method": "table",
+                        "conf": "3"
+                    }
+                },
+                {
+                    "protocol": "tcp",
+                    "portid": "50500",
+                    "state": {
+                        "state": "open",
+                        "reason": "syn-ack",
+                        "reason_ttl": "0"
+                    }
+                },
+                {
+                    "protocol": "tcp",
+                    "portid": "50999",
+                    "state": {
+                        "state": "open",
+                        "reason": "syn-ack",
+                        "reason_ttl": "0"
+                    }
+                }
+            ]
+        },
+        "times": {
+            "srtt": "75374",
+            "rttvar": "2444",
+            "to": "100000"
+        }
+    },
+    {
+        "starttime": "1769006058",
+        "endtime": "1769006284",
+        "status": {
+            "state": "up",
+            "reason": "user-set",
+            "reason_ttl": "0"
+        },
+        "address": {
+            "addr": "164.90.197.207",
+            "addrtype": "ipv4"
+        },
+        "hostnames": [],
+        "ports": {
+            "extraports": [
+                {
+                    "state": "filtered",
+                    "count": "65526",
+                    "extrareasons": {
+                        "reason": "no-response",
+                        "count": "65526",
+                        "proto": "tcp",
+                        "ports": "1-21,23-79,81-2120,2122-2374,2377-27016,27018-50442,50444-50776,50778-52999,53001-65535"
+                    }
+                },
+                {
+                    "state": "closed",
+                    "count": "2",
+                    "extrareasons": {
+                        "reason": "conn-refused",
+                        "count": "2",
+                        "proto": "tcp",
+                        "ports": "2375-2376"
+                    }
+                }
+            ],
+            "port": [
+                {
+                    "protocol": "tcp",
+                    "portid": "22",
+                    "state": {
+                        "state": "open",
+                        "reason": "syn-ack",
+                        "reason_ttl": "0"
+                    },
+                    "service": {
+                        "name": "ssh",
+                        "method": "table",
+                        "conf": "3"
+                    }
+                },
+                {
+                    "protocol": "tcp",
+                    "portid": "80",
+                    "state": {
+                        "state": "open",
+                        "reason": "syn-ack",
+                        "reason_ttl": "0"
+                    },
+                    "service": {
+                        "name": "http",
+                        "method": "table",
+                        "conf": "3"
+                    }
+                },
+                {
+                    "protocol": "tcp",
+                    "portid": "2121",
+                    "state": {
+                        "state": "open",
+                        "reason": "syn-ack",
+                        "reason_ttl": "0"
+                    },
+                    "service": {
+                        "name": "ccproxy-ftp",
+                        "method": "table",
+                        "conf": "3"
+                    }
+                },
+                {
+                    "protocol": "tcp",
+                    "portid": "27017",
+                    "state": {
+                        "state": "open",
+                        "reason": "syn-ack",
+                        "reason_ttl": "0"
+                    },
+                    "service": {
+                        "name": "mongod",
+                        "method": "table",
+                        "conf": "3"
+                    }
+                },
+                {
+                    "protocol": "tcp",
+                    "portid": "50443",
+                    "state": {
+                        "state": "open",
+                        "reason": "syn-ack",
+                        "reason_ttl": "0"
+                    }
+                },
+                {
+                    "protocol": "tcp",
+                    "portid": "50777",
+                    "state": {
+                        "state": "open",
+                        "reason": "syn-ack",
+                        "reason_ttl": "0"
+                    }
+                },
+                {
+                    "protocol": "tcp",
+                    "portid": "53000",
+                    "state": {
+                        "state": "open",
+                        "reason": "syn-ack",
+                        "reason_ttl": "0"
+                    }
+                }
+            ]
+        },
+        "times": {
+            "srtt": "74476",
+            "rttvar": "2415",
+            "to": "100000"
+        }
+    },
+    {
+        "starttime": "1769006058",
+        "endtime": "1769006283",
+        "status": {
+            "state": "up",
+            "reason": "user-set",
+            "reason_ttl": "0"
+        },
+        "address": {
+            "addr": "164.92.215.43",
+            "addrtype": "ipv4"
+        },
+        "hostnames": [],
+        "ports": {
+            "extraports": [
+                {
+                    "state": "filtered",
+                    "count": "65524",
+                    "extrareasons": {
+                        "reason": "no-response",
+                        "count": "65524",
+                        "proto": "tcp",
+                        "ports": "1-21,23-79,81-2374,2377-3305,3307-40997,41000-43209,43211-44887,44889-49221,49223-58776,58778-65535"
+                    }
+                },
+                {
+                    "state": "closed",
+                    "count": "2",
+                    "extrareasons": {
+                        "reason": "conn-refused",
+                        "count": "2",
+                        "proto": "tcp",
+                        "ports": "2375-2376"
+                    }
+                }
+            ],
+            "port": [
+                {
+                    "protocol": "tcp",
+                    "portid": "22",
+                    "state": {
+                        "state": "open",
+                        "reason": "syn-ack",
+                        "reason_ttl": "0"
+                    },
+                    "service": {
+                        "name": "ssh",
+                        "method": "table",
+                        "conf": "3"
+                    }
+                },
+                {
+                    "protocol": "tcp",
+                    "portid": "80",
+                    "state": {
+                        "state": "open",
+                        "reason": "syn-ack",
+                        "reason_ttl": "0"
+                    },
+                    "service": {
+                        "name": "http",
+                        "method": "table",
+                        "conf": "3"
+                    }
+                },
+                {
+                    "protocol": "tcp",
+                    "portid": "3306",
+                    "state": {
+                        "state": "open",
+                        "reason": "syn-ack",
+                        "reason_ttl": "0"
+                    },
+                    "service": {
+                        "name": "mysql",
+                        "method": "table",
+                        "conf": "3"
+                    }
+                },
+                {
+                    "protocol": "tcp",
+                    "portid": "40998",
+                    "state": {
+                        "state": "open",
+                        "reason": "syn-ack",
+                        "reason_ttl": "0"
+                    }
+                },
+                {
+                    "protocol": "tcp",
+                    "portid": "40999",
+                    "state": {
+                        "state": "open",
+                        "reason": "syn-ack",
+                        "reason_ttl": "0"
+                    }
+                },
+                {
+                    "protocol": "tcp",
+                    "portid": "43210",
+                    "state": {
+                        "state": "open",
+                        "reason": "syn-ack",
+                        "reason_ttl": "0"
+                    },
+                    "service": {
+                        "name": "shaperai",
+                        "method": "table",
+                        "conf": "3"
+                    }
+                },
+                {
+                    "protocol": "tcp",
+                    "portid": "44888",
+                    "state": {
+                        "state": "open",
+                        "reason": "syn-ack",
+                        "reason_ttl": "0"
+                    }
+                },
+                {
+                    "protocol": "tcp",
+                    "portid": "49222",
+                    "state": {
+                        "state": "open",
+                        "reason": "syn-ack",
+                        "reason_ttl": "0"
+                    }
+                },
+                {
+                    "protocol": "tcp",
+                    "portid": "58777",
+                    "state": {
+                        "state": "open",
+                        "reason": "syn-ack",
+                        "reason_ttl": "0"
+                    }
+                }
+            ]
+        },
+        "times": {
+            "srtt": "70553",
+            "rttvar": "1908",
+            "to": "100000"
+        }
+    },
+    {
+        "starttime": "1769006058",
+        "endtime": "1769006284",
+        "status": {
+            "state": "up",
+            "reason": "user-set",
+            "reason_ttl": "0"
+        },
+        "address": {
+            "addr": "64.227.69.255",
+            "addrtype": "ipv4"
+        },
+        "hostnames": [],
+        "ports": {
+            "extraports": [
+                {
+                    "state": "filtered",
+                    "count": "65527",
+                    "extrareasons": {
+                        "reason": "no-response",
+                        "count": "65527",
+                        "proto": "tcp",
+                        "ports": "1-21,23-2374,2377-33059,33061-43889,43891-44221,44223-44499,44501-45554,45556-65535"
+                    }
+                },
+                {
+                    "state": "closed",
+                    "count": "2",
+                    "extrareasons": {
+                        "reason": "conn-refused",
+                        "count": "2",
+                        "proto": "tcp",
+                        "ports": "2375-2376"
+                    }
+                }
+            ],
+            "port": [
+                {
+                    "protocol": "tcp",
+                    "portid": "22",
+                    "state": {
+                        "state": "open",
+                        "reason": "syn-ack",
+                        "reason_ttl": "0"
+                    },
+                    "service": {
+                        "name": "ssh",
+                        "method": "table",
+                        "conf": "3"
+                    }
+                },
+                {
+                    "protocol": "tcp",
+                    "portid": "33060",
+                    "state": {
+                        "state": "open",
+                        "reason": "syn-ack",
+                        "reason_ttl": "0"
+                    },
+                    "service": {
+                        "name": "mysqlx",
+                        "method": "table",
+                        "conf": "3"
+                    }
+                },
+                {
+                    "protocol": "tcp",
+                    "portid": "43890",
+                    "state": {
+                        "state": "open",
+                        "reason": "syn-ack",
+                        "reason_ttl": "0"
+                    }
+                },
+                {
+                    "protocol": "tcp",
+                    "portid": "44222",
+                    "state": {
+                        "state": "open",
+                        "reason": "syn-ack",
+                        "reason_ttl": "0"
+                    }
+                },
+                {
+                    "protocol": "tcp",
+                    "portid": "44500",
+                    "state": {
+                        "state": "open",
+                        "reason": "syn-ack",
+                        "reason_ttl": "0"
+                    }
+                },
+                {
+                    "protocol": "tcp",
+                    "portid": "45555",
+                    "state": {
+                        "state": "open",
+                        "reason": "syn-ack",
+                        "reason_ttl": "0"
+                    }
+                }
+            ]
+        },
+        "times": {
+            "srtt": "75849",
+            "rttvar": "2715",
+            "to": "100000"
+        }
+    }
+]

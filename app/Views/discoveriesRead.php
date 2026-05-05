@@ -649,10 +649,6 @@ foreach ($included['discovery_scan_options'] as $item) {
 
             var activeTab = $('ul.nav.nav-pills a[href="' + hash + '"]');
 
-            if (activeTab.length) {
-                activeTab.click();
-            }
-
             $(".nav-link").click(function(e) {
                 window.scrollTo(0, 0);
             });
@@ -663,30 +659,58 @@ foreach ($included['discovery_scan_options'] as $item) {
                 "logs-tab": false,
                 "all_ips-tab": false,
                 "devices-tab": false,
-            }
+                "issues-tab": false,
+            };
 
             $(document).on('shown.bs.tab', 'ul.nav.nav-pills a', function () {
                 var id = $(this).attr('id');
 
                 if (tableState[id] === false) {
                     tableState[id] = true;
-                    if (id === 'logs-tab') {
-                        if (myDataTableLog && myDataTableLog.data().count() === 0) {
-                            myDataTableLog.ajax.reload();
-                        }
-                    }
-                    if (id === 'all_ips-tab') {
-                        if (myDataTableIP && myDataTableIP.data().count() === 0) {
-                            myDataTableIP.ajax.reload();
-                        }
-                    }
-                    if (id === 'devices-tab') {
-                        if (myDataTableDev && myDataTableDev.data().count() === 0) {
-                            myDataTableDev.ajax.reload();
-                        }
-                    }
+                    refreshTables(id);
                 }
             });
+
+            function refreshTables(target) {
+                if (target === undefined || target === 'logs-tab') {
+                    if (myDataTableLog && myDataTableLog.data().count() === 0) {
+                        myDataTableLog.ajax.reload();
+                    }
+                }
+                if (target === undefined || target === 'all_ips-tab') {
+                    if (myDataTableIP && myDataTableIP.data().count() === 0) {
+                        myDataTableIP.ajax.reload();
+                    }
+                }
+                if (target === undefined || target === 'devices-tab') {
+                    if (myDataTableDev && myDataTableDev.data().count() === 0) {
+                        myDataTableDev.ajax.reload();
+                    }
+                }
+                if (target === undefined || target === 'issues-tab') {
+                    if (issuesDataTable && issuesDataTable.data().count() === 0) {
+                        issuesDataTable.ajax.reload();
+                    }
+                }
+            }
+
+            // Extremely hacky, but we need to wrap in a slight delay in order
+            // for DataTables to be ready. I think allot the timing issue stem
+            // from using window.onload and $(document).ready.
+            setTimeout(function () {
+                if (activeTab.length) {
+                    activeTab.click();
+                }
+                // If issues-tab is not active upon load, trigger a table reload
+                // which will fetch initial data and display bubble if applicable
+                if (activeTab.attr('id') !== 'issues-tab') {
+                    if (issuesDataTable && issuesDataTable.data().count() === 0) {
+                        issuesDataTable.ajax.reload();
+                    }
+                }
+                // Ensure charts are sized appropriately
+                updateProgressSizing();
+            }, 500);
 
             // Discovery interval, cleared once no longer running
             var discoveryInterval = null;
@@ -707,15 +731,17 @@ foreach ($included['discovery_scan_options'] as $item) {
                             var item = response.data[0];
                             var attributes = item.attributes || {};
 
+                            var status          = attributes.status;
                             var totalIps        = Number(attributes.ip_all_count);
                             var totalResponding = Number(attributes.ip_responding_count);
                             var totalScanned    = Number(attributes.ip_scanned_count);
                             var totalAudited    = Number(attributes.ip_audited_count);
 
-                            $('#ip_all_count').val(totalIps);
-                            $('#ip_responding_count').val(totalResponding);
-                            $('#ip_scanned_count').val(totalScanned);
-                            $('#ip_audited_count').val(totalAudited);
+                            $('input#status').val(status);
+                            $('input#ip_all_count').val(totalIps);
+                            $('input#ip_responding_count').val(totalResponding);
+                            $('input#ip_scanned_count').val(totalScanned);
+                            $('input#ip_audited_count').val(totalAudited);
 
                             updateProgressData(totalResponding, totalScanned, totalAudited, totalIps);
 
@@ -730,6 +756,8 @@ foreach ($included['discovery_scan_options'] as $item) {
                                 refreshTableData = false;
                                 clearInterval(discoveryInterval);
                                 discoveryInterval = null;
+                                // Refresh all tables encase interval isn't low enough
+                                refreshTables();
                             } else {
                                 refreshTableData = true;
                             }
@@ -1363,7 +1391,7 @@ foreach ($included['discovery_scan_options'] as $item) {
                 lengthChange: false,
                 processing: true,
                 searching: true,
-                serverSide: false,
+                serverSide: true,
                 deferLoading: 0,
                 autoWidth: false,
                 info: true,
@@ -1459,50 +1487,82 @@ foreach ($included['discovery_scan_options'] as $item) {
             var progressFontSize = getProgressFontSize(progressWidth);
             var progressLineWidth = getProgressLineWidth(progressWidth);
 
+            function progressValueFormatter(item) {
+                return function (value) {
+                    // We use rich formatter "percentage" with item.amount to colorize
+                    return '{title|' + item.name + '} {percentage|' + item.amount + '}';
+                };
+            }
+
+            function progressPercentageFormatter(item) {
+                return function (value) {
+                    return '{title|' + item.name + '} {percentage| ' + value + '%} {amount|(' + item.amount + ')}';
+                };
+            }
+
+            /**
+             * value: Equals the percentage calculated from total
+             * amount: Equals the actual figure/quantity
+             */
             var progressData = [
                 {
                     value: 0,
-                    percentage: 0,
-                    name: 'Responding',
+                    amount: 0,
+                    name: 'Total',
                     title: {
-                        offsetCenter: ['0%', '-30%']
+                        show: false,
                     },
                     detail: {
                         valueAnimation: true,
-                        offsetCenter: ['0%', '-20%']
+                        offsetCenter: ['0%', '-30%'],
                     },
                     itemStyle: {
-                        color: '#DC3545'
+                        color: '#6B12A2'
                     },
                 },
                 {
                     value: 0,
-                    percentage: 0,
+                    amount: 0,
+                    name: 'Responding',
+                    title: {
+                        show: false,
+                    },
+                    detail: {
+                        valueAnimation: true,
+                        offsetCenter: ['0%', '-10%'],
+                    },
+                    itemStyle: {
+                        color: '#4AA312'
+                    },
+                },
+                {
+                    value: 0,
+                    amount: 0,
                     name: 'Scanned',
                     title: {
-                        offsetCenter: ['0%', '0%']
+                        show: false,
                     },
                     detail: {
                         valueAnimation: true,
                         offsetCenter: ['0%', '10%']
                     },
                     itemStyle: {
-                        color: '#FFC107'
+                        color: '#0977C1'
                     },
                 },
                 {
                     value: 0,
-                    percentage: 0,
+                    amount: 0,
                     name: 'Audited',
                     title: {
-                        offsetCenter: ['0%', '30%']
+                        show: false,
                     },
                     detail: {
                         valueAnimation: true,
-                        offsetCenter: ['0%', '40%']
+                        offsetCenter: ['0%', '30%']
                     },
                     itemStyle: {
-                        color: '#8CC152'
+                        color: '#E6BC04'
                     },
                 }
             ];
@@ -1514,6 +1574,7 @@ foreach ($included['discovery_scan_options'] as $item) {
                         radius: '100%',
                         startAngle: 90,
                         endAngle: -270,
+                        max: 100,
                         pointer: {
                             show: false
                         },
@@ -1556,23 +1617,29 @@ foreach ($included['discovery_scan_options'] as $item) {
                             borderColor: 'inherit',
                             borderRadius: 0,
                             borderWidth: 0,
-                            formatter: function (value) {
-                                var amount = $.isArray(value) ? value[0] : value;
-                                var percentage = $.isArray(value) ? value[1] : value;
-                                return '{percentage| ' + percentage + '%} {amount|(' + amount + ')}';
-                            },
                             rich: {
                                 percentage: {
                                     color: 'inherit',
                                 },
                                 amount: {
                                     color: '#666666',
+                                },
+                                title: {
+                                    color: '#888888',
                                 }
                             }
                         }
                     }
                 ]
             };
+
+            progressData.forEach(item => {
+                if (item.name === 'Total') {
+                    item.detail.formatter = progressValueFormatter(item);
+                } else {
+                    item.detail.formatter = progressPercentageFormatter(item);
+                }
+            });
 
             progressChart.setOption(progressOption);
 
@@ -1582,14 +1649,14 @@ foreach ($included['discovery_scan_options'] as $item) {
 
             function getProgressFontSize(containerWidth) {
                 if (containerWidth < 250) return 10;
-                if (containerWidth < 300) return 12;
+                if (containerWidth < 350) return 12;
                 return 14;
             }
 
             function getProgressLineWidth(containerWidth) {
-                if (containerWidth < 250) return 24;
-                if (containerWidth < 300) return 32;
-                return 40;
+                if (containerWidth < 250) return 22;
+                if (containerWidth < 350) return 44;
+                return 66;
             }
 
             function updateProgressSizing() {
@@ -1618,13 +1685,22 @@ foreach ($included['discovery_scan_options'] as $item) {
 
             function updateProgressData(responding, scanned, audited, total) {
                 if (total === 0) {
-                    progressData[0].value = [0, 0];
-                    progressData[1].value = [0, 0];
-                    progressData[2].value = [0, 0];
+                    progressData.forEach(item => {
+                        item.value = 0;
+                        item.percentage = 0;
+                    });
                 } else {
-                    progressData[0].value = [responding, Math.round((responding / total) * 100).toFixed(2)];
-                    progressData[1].value = [scanned, Math.round((scanned / total) * 100).toFixed(2)];
-                    progressData[2].value = [audited, Math.round((audited / total) * 100).toFixed(2)];
+                    progressData[0].value = 100; // Always 100, since other values derived from this value
+                    progressData[0].amount = total;
+
+                    progressData[1].value = Math.round((responding / total) * 100);
+                    progressData[1].amount = responding;
+
+                    progressData[2].value = Math.round((scanned / total) * 100);
+                    progressData[2].amount = scanned;
+
+                    progressData[3].value = Math.round((audited / total) * 100);
+                    progressData[3].amount = audited;
                 }
 
                 progressChart.setOption({

@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace App\Commands;
+namespace App\Commands\Translation;
 
-use App\Libraries\Translation\TranslationGenerator;
+use App\Libraries\Translation\TranslationUpdater;
 use CodeIgniter\CLI\BaseCommand;
 use CodeIgniter\CLI\CLI;
 
 /**
- * @example php spark translation:generate \
+ * @example php spark translation:update \
  *   --api http://localhost:5003 \
  *   --timeout 30 \
  *   --concurrency 4 \
@@ -17,18 +17,18 @@ use CodeIgniter\CLI\CLI;
  *   --input /usr/local/open-audit/app/Views/lang/default.php
  *   --output /usr/local/open-audit/app/Views/lang
  */
-class TranslationGenerateCommand extends BaseCommand
+class UpdateCommand extends BaseCommand
 {
     protected $group       = 'Translation';
-    protected $name        = 'translation:generate';
-    protected $description = 'Generates individual translation files from extracted translation strings';
+    protected $name        = 'translation:update';
+    protected $description = 'Updated individual translation files which are missing translation strings';
     protected $options = [
         '--api'         => 'The base URI in which the translation service is accessible (default=http://localhost:5003)',
         '--timeout'     => 'The maximum duration of an API request (default=30.0)',
         '--concurrency' => 'The amount of translations processed at once (default=4)',
         '--languages'   => 'A comma delimited list of language codes to filter by (default=ar,az,bg,cs,da,de,el,eo,es,et,fi,fr,ga,hi,hu,id,it,ja,ko,lt,lv,nl,pb,pl,ru,sq,tr,uk,zh)',
         '--input'       => 'The input file containing extracted translation strings (default=/usr/local/open-audit/app/Views/lang/default.php)',
-        '--output'      => 'The path to output generated files (default=/usr/local/open-audit/app/Views/lang)',
+        '--output'      => 'The path to output updated files (default=/usr/local/open-audit/app/Views/lang)',
     ];
 
     public function run(array $params): void
@@ -46,7 +46,7 @@ class TranslationGenerateCommand extends BaseCommand
         }
 
         if (! is_file($input)) {
-            CLI::error('Input file does not exist. Use --input "/path/translations.php"');
+            CLI::error('Input file does not exist. Use --input "/usr/local/open-audit/app/Views/lang/default.php"');
             return;
         }
 
@@ -57,23 +57,23 @@ class TranslationGenerateCommand extends BaseCommand
             return;
         }
 
-        $generator = new TranslationGenerator();
-        $generator->setTranslations($translations);
+        $updater = new TranslationUpdater();
+        $updater->setTranslations($translations);
 
         if (is_string($api)) {
-            $generator->setBaseUri($api);
+            $updater->setBaseUri($api);
         }
 
         if (is_numeric($timeout)) {
-            $generator->setTimeout((float) $timeout);
+            $updater->setTimeout((float) $timeout);
         }
 
         if (is_numeric($concurrency)) {
-            $generator->setConcurrency((int) $concurrency);
+            $updater->setConcurrency((int) $concurrency);
         }
 
         if (! empty($languages)) {
-            $generator->setLanguages($languages);
+            $updater->setLanguages($languages);
         }
 
         if (is_string($output)) {
@@ -81,15 +81,15 @@ class TranslationGenerateCommand extends BaseCommand
                 CLI::error('Output path is invalid or cannot be created.');
                 return;
             }
-            $generator->setOutputPath($output);
+            $updater->setOutputPath($output);
         }
 
-        $success = $generator->execute();
+        $success = $updater->execute();
 
         if ($success) {
-            CLI::write('Translations generated successfully to ' . $generator->getOutputPath(), 'green');
+            CLI::write('Translations updated successfully to ' . $updater->getOutputPath(), 'green');
         } else {
-            CLI::error('Failed to write the generated translations to path ' . $generator->getOutputPath());
+            CLI::error('Failed to write the updated translations to path ' . $updater->getOutputPath());
         }
     }
 }
