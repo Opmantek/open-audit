@@ -69,6 +69,10 @@ class NmapOptionsParser
                 $options->randomizeHosts = true;
                 return 0;
 
+            case '--unprivileged':
+                $options->unprivileged = true;
+                return 0;
+
             case '--min-parallelism':
                 $value                 ??= $this->parseNextValue($args, $index);
                 $options->minParallelism = $value ? (int) $value : null;

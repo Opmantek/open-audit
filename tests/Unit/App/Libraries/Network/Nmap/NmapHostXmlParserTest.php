@@ -82,6 +82,47 @@ final class NmapHostXmlParserTest extends TestCase
                     ],
                 ],
             ],
+            'multiple hosts with hosthint'  => [
+                'chunk'    => '
+                    <nmaprun>
+                        <hosthint><status state="up" reason="unknown-response" reason_ttl="0"/></hosthint>
+                        <host><address addr="10.0.0.1"/></host>
+                        <host><address addr="10.0.0.2"/></host>
+                    </nmaprun>
+                ',
+                'expected' => [
+                    [
+                        'address' => [
+                            'addr' => '10.0.0.1',
+                        ],
+                    ],
+                    [
+                        'address' => [
+                            'addr' => '10.0.0.2',
+                        ],
+                    ],
+                ],
+            ],
+            'multiple hosts in single xml'  => [
+                'chunk'    => '
+                    <nmaprun>
+                        <host><address addr="10.0.0.1"/></host>
+                        <host><address addr="10.0.0.2"/></host>
+                    </nmaprun>
+                ',
+                'expected' => [
+                    [
+                        'address' => [
+                            'addr' => '10.0.0.1',
+                        ],
+                    ],
+                    [
+                        'address' => [
+                            'addr' => '10.0.0.2',
+                        ],
+                    ],
+                ],
+            ],
         ];
     }
 

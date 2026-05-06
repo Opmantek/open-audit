@@ -16,6 +16,10 @@ class NmapCommand
     {
         $command = is_array($options->exePath) ? $options->exePath : [$options->exePath];
 
+        if ($options->unprivileged) {
+            $command[] = '--unprivileged';
+        }
+
         if ($options->fast) {
             $command[] = '-F';
         }
@@ -52,7 +56,7 @@ class NmapCommand
                 $command[] = '-sP';
                 break;
             case NmapOptions::SCAN_TYPE_TCP_SYN:
-                $command[] = '-sS';
+                $command[] = $options->unprivileged ? '-sT' : '-sS';
                 break;
             case NmapOptions::SCAN_TYPE_TCP_CON:
                 $command[] = '-sT';
