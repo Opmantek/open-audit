@@ -47,6 +47,7 @@ class NmapOptions
     // Detection
     public ?bool $osDetection      = null; // -O
     public ?bool $serviceDetection = null; // -sV
+    public ?bool $unprivileged     = null; // --unprivileged
 
     // Ports
     public ?array $ports           = null; // -p
