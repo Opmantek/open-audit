@@ -14,7 +14,7 @@ use phpseclib3\Net\SSH2;
  * @param string $key     Encryption key
  * @return string         The decrypted string
  */
-function ssh_fortinet_audit(string $ip = '', int $discovery_id = 0, array $credentials = null): object
+function ssh_fortinet_audit(string $ip = '', int $discovery_id = 0, ?array $credentials = null): object
 {
     $removals = array('uptime:');
     $ssh_port = 22;
