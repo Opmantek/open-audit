@@ -44,6 +44,13 @@ final class NmapHostXmlParser
                 break;
             }
 
+            $nextChar = $this->buffer[$startOffset + 5] ?? null;
+
+            if ($nextChar !== ' ' && $nextChar !== '>') {
+                $this->buffer = substr($this->buffer, $startOffset + 6);
+                continue;
+            }
+
             $endOffset = strpos($this->buffer, '</host>', $startOffset);
             if ($endOffset === false) {
                 break;
