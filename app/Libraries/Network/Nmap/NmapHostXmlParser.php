@@ -60,11 +60,13 @@ final class NmapHostXmlParser
             $hostXml      = substr($this->buffer, $startOffset, $endOffset - $startOffset);
             $this->buffer = substr($this->buffer, $endOffset);
 
-            if (! str_contains($hostXml, '<address')) {
+            $parsed = XmlHelper::xmlToArray($hostXml);
+
+            if (empty($parsed['address'])) {
                 continue;
             }
 
-            yield XmlHelper::xmlToArray($hostXml);
+            yield $parsed;
         }
     }
 }
