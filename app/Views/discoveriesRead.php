@@ -97,7 +97,11 @@ if ($resource->last_finished === '2001-01-01 00:00:00') {
 if ($resource->status === 'running') {
     $now = new DateTime();
     $date = new DateTime($resource->last_run);
-
+    $resource->duration = $date->diff($now)->format("%H:%I:%S");
+}
+if ($resource->status === 'killed') {
+    $now = new DateTime($included['last_log']);
+    $date = new DateTime($resource->last_run);
     $resource->duration = $date->diff($now)->format("%H:%I:%S");
 }
 ?>

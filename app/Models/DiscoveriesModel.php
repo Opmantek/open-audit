@@ -663,6 +663,11 @@ class DiscoveriesModel extends BaseModel
         $included['networks_url'] = implode(',', $templ);
         unset($temp, $templ);
 
+        $sql = "SELECT `timestamp` FROM `discovery_log` WHERE `discovery_id` = ? ORDER BY `timestamp` ASC LIMIT 1";
+        $temp = $this->db->query($sql, [$id])->getResult();
+        $included['last_log'] = (!empty($temp[0]->timestamp)) ? $temp[0]->timestamp : '';
+
+
         return $included;
     }
 
