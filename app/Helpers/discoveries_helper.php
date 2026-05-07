@@ -7,6 +7,7 @@ declare(strict_types=1);
 
 use App\Libraries\Clock\Stopwatch;
 use App\Libraries\Network\Helper\PortHelper;
+use App\Libraries\Network\Nmap\NmapExecutable;
 use App\Libraries\Network\Nmap\NmapHostHelper;
 use App\Libraries\Network\Nmap\NmapLocator;
 use App\Libraries\Network\Nmap\NmapOptions;
@@ -49,16 +50,16 @@ if (!function_exists('all_ip_list')) {
         $log->message = 'Retrieving IP list';
         $log->ip = '127.0.0.1';
 
-        $locator = new NmapLocator();
-        $executable = $locator->find() ?? get_php_scan_command();
+        $executable = new NmapExecutable();
 
         $options = new NmapOptions();
-        $options->scanType   = NmapOptions::SCAN_TYPE_LIST;
-        $options->outputType = NmapOptions::OUTPUT_TYPE_XML;
-        $options->outputFile = '-';
-        $options->exePath    = $executable;
-        $options->targets    = $discovery->subnet;
-        $options->noDns      = true;
+        $options->scanType     = NmapOptions::SCAN_TYPE_LIST;
+        $options->outputType   = NmapOptions::OUTPUT_TYPE_XML;
+        $options->outputFile   = '-';
+        $options->exePath      = $executable->getExePath();
+        $options->unprivileged = $executable->isUnprivileged();
+        $options->targets      = $discovery->subnet;
+        $options->noDns        = true;
 
         if (! empty($discovery->scan_options->exclude_ip)) {
             $options->excludeHosts = $discovery->scan_options->exclude_ip;
@@ -87,7 +88,7 @@ if (!function_exists('all_ip_list')) {
 
         $output = 'Total IPs: ' . count($ipAddresses);
 
-        if ($errors !== []) {
+        if (! $process->isSuccessful() && $errors !== []) {
             $output .= PHP_EOL . 'Errors: ' . implode(PHP_EOL, $errors);
         }
 
@@ -152,16 +153,16 @@ if (! function_exists('responding_ip_list')) {
         $log->message = 'Sending ping';
         $log->ip = '127.0.0.1';
 
-        $locator = new NmapLocator();
-        $executable = $locator->find() ?? get_php_scan_command();
+        $executable = new NmapExecutable();
 
         $options = new NmapOptions();
-        $options->scanType   = NmapOptions::SCAN_TYPE_LIST;
-        $options->outputType = NmapOptions::OUTPUT_TYPE_XML;
-        $options->outputFile = '-';
-        $options->exePath    = $executable;
-        $options->targets    = $discovery->subnet;
-        $options->noDns      = true;
+        $options->scanType     = NmapOptions::SCAN_TYPE_LIST;
+        $options->outputType   = NmapOptions::OUTPUT_TYPE_XML;
+        $options->outputFile   = '-';
+        $options->exePath      = $executable->getExePath();
+        $options->unprivileged = $executable->isUnprivileged();
+        $options->targets      = $discovery->subnet;
+        $options->noDns        = true;
 
         if ($discovery->scan_options->ping === 'y') {
             $options->scanType       = NmapOptions::SCAN_TYPE_PING;
@@ -200,7 +201,7 @@ if (! function_exists('responding_ip_list')) {
 
         $output = 'Responding IPs: ' . count($ipAddresses);
 
-        if ($errors !== []) {
+        if (! $process->isSuccessful() && $errors !== []) {
             $output .= PHP_EOL . 'Errors: ' . implode(PHP_EOL, $errors);
         }
 
@@ -572,18 +573,18 @@ if (! function_exists('ip_scan')) {
 
         $nmapVersion = get_nmap_version();
 
-        $stopwatch = new Stopwatch();
-        $timer     = new Stopwatch();
-        $parser    = new NmapHostXmlParser();
-        $locator   = new NmapLocator();
-        $executable = $locator->find() ?? get_php_scan_command();
+        $stopwatch  = new Stopwatch();
+        $timer      = new Stopwatch();
+        $parser     = new NmapHostXmlParser();
+        $executable = new NmapExecutable();
 
         $options = new NmapOptions();
-        $options->outputType = NmapOptions::OUTPUT_TYPE_XML;
-        $options->outputFile = '-';
-        $options->exePath    = $executable;
-        $options->targets    = $ip;
-        $options->timing     = 4;
+        $options->outputType   = NmapOptions::OUTPUT_TYPE_XML;
+        $options->outputFile   = '-';
+        $options->exePath      = $executable->getExePath();
+        $options->unprivileged = $executable->isUnprivileged();
+        $options->targets      = $ip;
+        $options->timing       = 4;
 
         if ($discovery->type === 'seed' && $discovery->scan_options->ping === 'y') {
             $seedDiscovery = clone $discovery;

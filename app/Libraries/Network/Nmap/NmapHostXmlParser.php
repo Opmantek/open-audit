@@ -44,6 +44,13 @@ final class NmapHostXmlParser
                 break;
             }
 
+            $nextChar = $this->buffer[$startOffset + 5] ?? null;
+
+            if ($nextChar !== ' ' && $nextChar !== '>') {
+                $this->buffer = substr($this->buffer, $startOffset + 6);
+                continue;
+            }
+
             $endOffset = strpos($this->buffer, '</host>', $startOffset);
             if ($endOffset === false) {
                 break;
@@ -53,11 +60,13 @@ final class NmapHostXmlParser
             $hostXml      = substr($this->buffer, $startOffset, $endOffset - $startOffset);
             $this->buffer = substr($this->buffer, $endOffset);
 
-            if (! str_contains($hostXml, '<address')) {
+            $parsed = XmlHelper::xmlToArray($hostXml);
+
+            if (empty($parsed['address'])) {
                 continue;
             }
 
-            yield XmlHelper::xmlToArray($hostXml);
+            yield $parsed;
         }
     }
 }
