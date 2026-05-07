@@ -5,7 +5,7 @@
 $title = 'Open-AudIT ' . __('and') . ' Nmap';
 
 $intro = '<p>' . __('Open-AudIT uses Nmap in its Discovery function. Without Nmap, Open-AudIT will not function correctly. Every Open-AudIT install assumes Nmap is installed and will test for it on the Discovery web pages.') . '<br>
-<br>
+<br>' . __('NOTE - As at 6.0.3 if Nmap is not installed, Open-AudIT will try to run discoveries without it. This is less than ideal and may not produce the expected results - but should produce ') . '<strong>' . __('something') . '</strong>. ' . __('You should attempt to install Nmap as soon as possible for the best discovery results.') . '
 </p>';
 
 $body = '<h2>' . __('Linux') . '</h2>
