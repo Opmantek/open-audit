@@ -263,15 +263,17 @@ if (config('Openaudit')->uuid === '79ef9ada-f4fb-11f0-a02e-000c294b745f') {
     $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
     log_message('info', (string)$db->getLastQuery());
 
-    $sql = "SELECT value FROM configuration WHERE name = 'uuid'";
+    $sql = "SELECT `value` FROM `configuration` WHERE `name` = 'uuid'";
     $result = $db->query($sql)->getResult();
     $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
     log_message('info', (string)$db->getLastQuery());
 
-    config('Openaudit')->uuid = $result[0]->value;
+    $uuid = (!empty($result[0]->value)) ? $result[0]->value : '';
+
+    config('Openaudit')->uuid = $uuid;
 
     $sql = "UPDATE tasks SET uuid = ? WHERE uuid = '79ef9ada-f4fb-11f0-a02e-000c294b745f'";
-    $result = $db->query($sql, [$result[0]->value])->getResult();
+    $result = $db->query($sql, [$uuid])->getResult();
     $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
     log_message('info', (string)$db->getLastQuery());
 }

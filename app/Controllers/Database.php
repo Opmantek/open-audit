@@ -268,8 +268,8 @@ class Database extends BaseController
             $item->{"Open-AudIT--Commercial--" . config('OpenAudit')->display_version} = time();
             $eula->new_value = json_encode($item);
             $errors = array();
-            \Config\Services::session()->setFlashdata('success', "Database upgraded successfully. New database version is " . config('OpenAudit')->display_version . " (" . config('OpenAudit')->internal_version . ").");
             $config = new \Config\OpenAudit();
+            \Config\Services::session()->setFlashdata('success', "Database upgraded successfully. New database version is " . $config->display_version . " (" . $config->internal_version . ").");
             return view('shared/header', [
                 'config' => $config,
                 'dashboards' => filter_response($this->dashboards),
