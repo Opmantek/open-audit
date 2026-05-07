@@ -90,6 +90,16 @@ foreach ($included['discovery_scan_options'] as $item) {
         $scan_options_name = $item->attributes->name;
     }
 }
+
+if ($resource->last_finished === '2001-01-01 00:00:00') {
+    $resource->last_finished = '';
+}
+if ($resource->status === 'running') {
+    $now = new DateTime();
+    $date = new DateTime($resource->last_run);
+
+    $resource->duration = $date->diff($now)->format("%H:%I:%S");
+}
 ?>
 <main class="container-fluid">
     <div class="card">
@@ -120,8 +130,8 @@ foreach ($included['discovery_scan_options'] as $item) {
                         <div class="col-12 col-md-6 col-lg-4">
                             <?= read_field('status', $resource->status, $dictionary->columns->status, false, '', '', '', '', $meta->collection) ?>
                             <?= read_field('last_run', $resource->last_run, $dictionary->columns->last_run, false, '', '', '', '', $meta->collection) ?>
-                            <?= read_field('duration', $resource->duration, $dictionary->columns->duration, false, '', '', '', '', $meta->collection) ?>
                             <?= read_field('last_finished', $resource->last_finished, $dictionary->columns->last_finished, false, '', '', '', '', $meta->collection) ?>
+                            <?= read_field('duration', $resource->duration, $dictionary->columns->duration, false, '', '', '', '', $meta->collection) ?>
                         </div>
                         <div class="col-12 col-md-6 col-lg-4">
                             <?= read_field('ip_all_count', $resource->ip_all_count, $dictionary->columns->ip_all_count, false, __('Total IP Addresses'), '', '', '', $meta->collection) ?>
@@ -1506,63 +1516,48 @@ foreach ($included['discovery_scan_options'] as $item) {
              */
             var progressData = [
                 {
-                    value: 0,
+                    value: 100,
                     amount: 0,
-                    name: 'Total',
+                    name: 'Responding: ',
                     title: {
                         show: false,
                     },
                     detail: {
                         valueAnimation: true,
-                        offsetCenter: ['0%', '-30%'],
+                        offsetCenter: ['0%', '-20%'],
                     },
                     itemStyle: {
-                        color: '#6B12A2'
+                        color: '#ffc107'
+                    },
+                },
+                {
+                    amount: 0,
+                    value: 0,
+                    name: 'Scanned: ',
+                    title: {
+                        show: false,
+                    },
+                    detail: {
+                        valueAnimation: true,
+                        offsetCenter: ['0%', '0%']
+                    },
+                    itemStyle: {
+                        color: '#4fc1e9'
                     },
                 },
                 {
                     value: 0,
                     amount: 0,
-                    name: 'Responding',
+                    name: 'Audited: ',
                     title: {
                         show: false,
                     },
                     detail: {
                         valueAnimation: true,
-                        offsetCenter: ['0%', '-10%'],
+                        offsetCenter: ['0%', '20%']
                     },
                     itemStyle: {
-                        color: '#4AA312'
-                    },
-                },
-                {
-                    value: 0,
-                    amount: 0,
-                    name: 'Scanned',
-                    title: {
-                        show: false,
-                    },
-                    detail: {
-                        valueAnimation: true,
-                        offsetCenter: ['0%', '10%']
-                    },
-                    itemStyle: {
-                        color: '#0977C1'
-                    },
-                },
-                {
-                    value: 0,
-                    amount: 0,
-                    name: 'Audited',
-                    title: {
-                        show: false,
-                    },
-                    detail: {
-                        valueAnimation: true,
-                        offsetCenter: ['0%', '30%']
-                    },
-                    itemStyle: {
-                        color: '#E6BC04'
+                        color: '#a0d468'
                     },
                 }
             ];
@@ -1634,11 +1629,12 @@ foreach ($included['discovery_scan_options'] as $item) {
             };
 
             progressData.forEach(item => {
-                if (item.name === 'Total') {
-                    item.detail.formatter = progressValueFormatter(item);
-                } else {
-                    item.detail.formatter = progressPercentageFormatter(item);
-                }
+                item.detail.formatter = progressValueFormatter(item);
+                // if (item.name === 'Responding: ') {
+                //     item.detail.formatter = progressValueFormatter(item);
+                // } else {
+                //     item.detail.formatter = progressPercentageFormatter(item);
+                // }
             });
 
             progressChart.setOption(progressOption);
@@ -1690,17 +1686,18 @@ foreach ($included['discovery_scan_options'] as $item) {
                         item.percentage = 0;
                     });
                 } else {
-                    progressData[0].value = 100; // Always 100, since other values derived from this value
-                    progressData[0].amount = total;
+                    //progressData[0].value = 0; // Always 100, since other values derived from this value
+                    //progressData[0].amount = <?= $resource->ip_all_count ?>;
 
-                    progressData[1].value = Math.round((responding / total) * 100);
-                    progressData[1].amount = responding;
+                    //progressData[0].value = Math.round((responding / total) * 100);
+                    progressData[0].value = 100;
+                    progressData[0].amount = responding + ' / ' + total;
 
-                    progressData[2].value = Math.round((scanned / total) * 100);
-                    progressData[2].amount = scanned;
+                    progressData[1].value = Math.round((scanned / responding) * 100);
+                    progressData[1].amount = scanned + ' / ' + responding;
 
-                    progressData[3].value = Math.round((audited / total) * 100);
-                    progressData[3].amount = audited;
+                    progressData[2].value = Math.round((audited / scanned) * 100);
+                    progressData[2].amount = audited + ' / ' + scanned;
                 }
 
                 progressChart.setOption({
