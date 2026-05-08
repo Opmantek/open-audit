@@ -2228,7 +2228,7 @@ if (empty($resource->type)) {
                                                                 json_encode(json_decode(html_entity_decode($cli_config->config)), JSON_PRETTY_PRINT) :
                                                                 html_entity_decode($cli_config->config); ?>
                                                     <label for="cli_config_<?= $cli_config->hash ?>" class="form-label"><?= $cli_config->name ?></label>
-                                                    <textarea id="cli_config_<?= $cli_config->hash ?>" class="form-control" rows="10" style="font-family: courier;"><?= $myConfig ?></textarea>
+                                                    <textarea id="cli_config_<?= $cli_config->hash ?>" class="form-control" rows="10" style="font-family: courier,'Open Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;"><?= $myConfig ?></textarea>
                                                     <br><br>
                                                 <?php } ?>
                                             </div>
