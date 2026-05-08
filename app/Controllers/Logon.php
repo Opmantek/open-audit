@@ -139,7 +139,7 @@ class Logon extends Controller
 
         if (!empty($server_os) and $server_os === 'Windows NT' and !stripos($server_platform, 'server')) {
             $query = $db->query("UPDATE `configuration` SET `value` = 1 WHERE `name` = 'queue_limit'");
-            log_message('info', 'Discovery queue limit set to 1 as running on Windows but not Server, running on: ' . $server_os);
+            log_message('info', 'Discovery queue limit set to 1 as running on Windows but not Server, running on: ' . $server_platform);
         }
 
         $sql = 'UPDATE configuration SET value = ? WHERE name = "server_os"';
