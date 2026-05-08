@@ -10,7 +10,6 @@ use App\Libraries\Network\Scan\ListScan;
 use App\Libraries\Network\Scan\PingScan;
 use App\Libraries\Network\Scan\TcpScan;
 use App\Libraries\Network\Scan\UdpScan;
-use App\Libraries\Network\Scanner\BasicScanner;
 use CodeIgniter\CLI\BaseCommand;
 use CodeIgniter\CLI\CLI;
 use InvalidArgumentException;

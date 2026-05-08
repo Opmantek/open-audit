@@ -225,6 +225,7 @@ class Database extends BaseController
 
     public function update($action)
     {
+        helper('language');
         $this->databaseModel = model('App\Models\DatabaseModel');
         $this->integrationsModel = model('App\Models\IntegrationsModel');
         $meta = new stdClass();
@@ -269,7 +270,8 @@ class Database extends BaseController
             $eula->new_value = json_encode($item);
             $errors = array();
             $config = new \Config\OpenAudit();
-            \Config\Services::session()->setFlashdata('success', "Database upgraded successfully. New database version is " . $config->display_version . " (" . $config->internal_version . ").");
+            $message = sprintf('%s %s (%s).', __('Database upgraded successfully. New database version is'), $config->display_version, $config->internal_version);
+            \Config\Services::session()->setFlashdata('success', $message);
             return view('shared/header', [
                 'config' => $config,
                 'dashboards' => filter_response($this->dashboards),

@@ -68,25 +68,25 @@ class QueriesModel extends BaseModel
                 $error['message'] = 'SQL cannot contain UPDATE clause';
                 \Config\Services::session()->setFlashdata('error', json_encode($error));
                 log_message('error', 'SQL cannot contain UPDATE clause');
-                return false;
+                return null;
             }
             if (stripos($data->sql, 'delete from ') !== false or stripos($data->sql, 'delete from`') !== false) {
                 $error['message'] = 'SQL cannot contain DELETE clause';
                 \Config\Services::session()->setFlashdata('error', json_encode($error));
                 log_message('error', 'SQL cannot contain DELETE clause');
-                return false;
+                return null;
             }
             if (stripos($data->sql, 'insert into ') !== false or stripos($data->sql, 'insert into`') !== false) {
                 $error['message'] = 'SQL cannot contain INSERT clause';
                 \Config\Services::session()->setFlashdata('error', json_encode($error));
                 log_message('error', 'SQL cannot contain INSERT clause');
-                return false;
+                return null;
             }
             if (stripos($data->sql, 'where @filter') === false or stripos($data->sql, 'where @filter or') !== false) {
                 $error['message'] = 'SQL must contain @filter clause';
                 \Config\Services::session()->setFlashdata('error', json_encode($error));
                 log_message('error', 'SQL must contain @filter clause');
-                return false;
+                return null;
             }
         }
 

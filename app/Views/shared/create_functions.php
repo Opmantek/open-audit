@@ -1,7 +1,8 @@
 <?php
 
-function create_card_header(string $collection = '', string $icon = '', object $user = stdClass): string
+function create_card_header(string $collection = '', string $icon = '', ?object $user = null): string
 {
+    $user ??= new stdClass();
     $style = (!empty($user->toolbar_style)) ? $user->toolbar_style : 'icontext';
     $collection_title = __(ucwords(str_replace('_', ' ', $collection)));
     if ($collection_title === 'Ldap Servers') {

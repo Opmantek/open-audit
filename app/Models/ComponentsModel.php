@@ -363,7 +363,7 @@ class ComponentsModel extends BaseModel
             } elseif (!empty($data->filename)) {
                 $sql = 'INSERT INTO `image` VALUES (NULL, ?, ?, ?, ?, ?, NOW())';
                 $this->db->query($sql, [$data->device_id, $data->name, $data->filename, $data->orientation, $instance->user->full_name]);
-                return true;
+                return null;
             }
         }
         return null;
