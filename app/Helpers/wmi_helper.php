@@ -545,6 +545,8 @@ if (! function_exists('delete_windows_result')) {
             return $return;
         }
     }
+
+    return false;
 }
 
 
@@ -761,6 +763,7 @@ if (!function_exists('copy_from_windows')) {
             }
         }
     }
+    return false;
 }
 
 if (! function_exists('wmi_command')) {
