@@ -4,20 +4,6 @@ declare(strict_types=1);
 
 namespace App\Libraries\Network\Nmap;
 
-use App\Libraries\Network\Helper\IpAddressHelper;
-use RuntimeException;
-
-use function array_flip;
-use function fclose;
-use function fopen;
-use function fwrite;
-use function preg_split;
-use function sprintf;
-use function trim;
-
-use const PHP_EOL;
-use const PREG_SPLIT_NO_EMPTY;
-
 final class NmapTopPorts
 {
     /**

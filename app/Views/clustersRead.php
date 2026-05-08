@@ -60,7 +60,7 @@ if ($style === 'icontext') {
                                                 </div>
                                                 <?php } else { ?>
                                                 <div class="pull-right" style="padding-left:30px; padding-top:5px;">
-                                                    <div data-attribute="name" class="btn btn-outline" style="color:fff;"></div>
+                                                    <div data-attribute="name" class="btn btn-outline" style="color:#fff;"></div>
                                                 </div>
                                                 <?php } ?>
                                             </div>
@@ -89,7 +89,7 @@ if ($style === 'icontext') {
                                                 </div>
                                                 <?php } else { ?>
                                                 <div class="pull-right" style="padding-left:30px; padding-top:5px;">
-                                                    <div data-attribute="purpose" class="btn btn-outline" style="color:fff;"></div>
+                                                    <div data-attribute="purpose" class="btn btn-outline" style="color:#fff;"></div>
                                                 </div>
                                                 <?php } ?>
                                             </div>
@@ -114,7 +114,7 @@ if ($style === 'icontext') {
                                                 </div>
                                                 <?php } else { ?>
                                                 <div class="pull-right" style="padding-left:30px; padding-top:5px;">
-                                                    <div data-attribute="status" class="btn btn-outline" style="color:fff;"></div>
+                                                    <div data-attribute="status" class="btn btn-outline" style="color:#fff;"></div>
                                                 </div>
                                                 <?php } ?>
                                             </div>
@@ -139,7 +139,7 @@ if ($style === 'icontext') {
                                                 </div>
                                                 <?php } else { ?>
                                                 <div class="pull-right" style="padding-left:30px; padding-top:5px;">
-                                                    <div data-attribute="scaling" class="btn btn-outline" style="color:fff;"></div>
+                                                    <div data-attribute="scaling" class="btn btn-outline" style="color:#fff;"></div>
                                                 </div>
                                                 <?php } ?>
                                             </div>
@@ -168,7 +168,7 @@ if ($style === 'icontext') {
                                                 </div>
                                                 <?php } else { ?>
                                                 <div class="pull-right" style="padding-left:30px; padding-top:5px;">
-                                                    <div data-attribute="configuration" class="btn btn-outline" style="color:fff;"></div>
+                                                    <div data-attribute="configuration" class="btn btn-outline" style="color:#fff;"></div>
                                                 </div>
                                                 <?php } ?>
                                             </div>
@@ -197,7 +197,7 @@ if ($style === 'icontext') {
                                                 </div>
                                                 <?php } else { ?>
                                                 <div class="pull-right" style="padding-left:30px; padding-top:5px;">
-                                                    <div data-attribute="environment" class="btn btn-outline" style="color:fff;"></div>
+                                                    <div data-attribute="environment" class="btn btn-outline" style="color:#fff;"></div>
                                                 </div>
                                                 <?php } ?>
                                             </div>

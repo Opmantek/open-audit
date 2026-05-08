@@ -30,13 +30,11 @@ final class TranslationCreator
     private function outputTranslationFiles(array $translations): bool
     {
         $outputPhpFile = APPPATH . 'Views/lang/default.php';
-        $outputJsonFile = APPPATH . 'Views/lang/default.json';
 
         $json = json_encode($translations, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
         $array = json_decode($json, true);
         $content = "<?php\n\nreturn " . var_export($array, true) . ";\n";
 
-        return file_put_contents($outputJsonFile, $json) !== false &&
-            file_put_contents($outputPhpFile, $content) !== false;
+        return file_put_contents($outputPhpFile, $content) !== false;
     }
 }

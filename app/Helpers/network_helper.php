@@ -292,7 +292,7 @@ if (! function_exists('dotbin')) {
         }
         $oct = rtrim(chunk_split($binin, 8, "."), ".");
         if ($cdr_nmask > 0) {
-            $offset = sprintf("%u", $cdr_nmask / 8) + $cdr_nmask;
+            $offset = (int) ($cdr_nmask / 8);
 
             return mb_substr($oct, 0, $offset) . "&nbsp;&nbsp;&nbsp;" . mb_substr($oct, $offset);
         } else {

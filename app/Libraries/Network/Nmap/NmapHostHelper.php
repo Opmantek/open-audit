@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Libraries\Network\Nmap;
 
 use DOMDocument;
+use DOMException;
 
 final class NmapHostHelper
 {
