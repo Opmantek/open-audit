@@ -561,7 +561,7 @@ class IntegrationsModel extends BaseModel
                     $item->discovery_id = intval($integration->attributes->discovery_id);
                     $details = json_encode($item);
                     unset($item);
-                    $queueModel->create('ip_scan', $details);
+                    $queueModel->create($details);
                     $count = $count + 1;
                     $message = 'IP ' . $device->devices->ip . ' responding, adding to device list.';
                     $sql = "INSERT INTO discovery_log VALUES (null, ?, ?, NOW(), 7, 'debug', ?, ?, 'm_integrations', 'execute', ?, '', 'notice', 0, '')";
