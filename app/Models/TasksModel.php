@@ -112,7 +112,7 @@ class TasksModel extends BaseModel
         }
         $this->builder->insert($data);
         if ($this->sqlError($this->db->error())) {
-            return false;
+            return null;
         }
         return (intval($this->db->insertID()));
     }
