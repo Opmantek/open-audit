@@ -8,7 +8,7 @@ include 'shared/collection_functions.php';
                 <div class="card-header">
                     <div class="row">
                         <div class="col-4 clearfix">
-                                <h5 class="mt-2" style="dddpadding-top:10px;"><span class="icon-layers-2 oa-icon"></span><?= __('Resources') ?></h5>
+                                <h5 class="mt-2" style="padding-top:10px;"><span class="icon-layers-2 oa-icon"></span><?= __('Resources') ?></h5>
                         </div>
                     </div>
                 </div>
@@ -85,7 +85,7 @@ include 'shared/collection_functions.php';
                 <div class="card-header">
                     <div class="row">
                         <div class="col-4 clearfix">
-                                <h5 class="mt-2" style="dddpadding-top:10px;"><span class="icon-layers-2 oa-icon"></span><?= __('Admin Resources') ?></h5>
+                                <h5 class="mt-2" style="padding-top:10px;"><span class="icon-layers-2 oa-icon"></span><?= __('Admin Resources') ?></h5>
                         </div>
                     </div>
                 </div>
