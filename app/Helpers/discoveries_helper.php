@@ -441,7 +441,7 @@ if (! function_exists('discover_subnet')) {
             $start = microtime(true);
             $responding_ip_list = responding_ip_list($discovery);
             $log->command_time_to_execute = microtime(true) - $start;
-            $log->message = 'Nmap response scanning completed.';
+            $log->message = 'Response scanning completed.';
             $discoveryLogModel->create($log);
             update_non_responding($discovery->id, $all_ip_list, $responding_ip_list);
         }
@@ -665,7 +665,7 @@ if (! function_exists('ip_scan')) {
             $host = $parser->parse($process->getOutput())[0] ?? [];
 
             $log->command_time_to_execute = $stopwatch->getElapsedTime();
-            $log->message = 'Nmap Command (Top TCP Ports)';
+            $log->message = $executable->getTitle() . ' Command (Top TCP Ports)';
             $log->command = "{$process->getCommandLine()} # Top TCP Ports";
             $log->command_output = json_encode($host);
             $discoveryLogModel->create($log);
@@ -699,7 +699,7 @@ if (! function_exists('ip_scan')) {
             $host = $parser->parse($process->getOutput())[0] ?? [];
 
             $log->command_time_to_execute = $stopwatch->getElapsedTime();
-            $log->message = 'Nmap Command (Top UDP Ports)';
+            $log->message = $executable->getTitle() . ' Command (Top UDP Ports)';
             $log->command = "{$process->getCommandLine()} # Top UDP Ports";
             $log->command_output = json_encode($host);
             $discoveryLogModel->create($log);
@@ -733,7 +733,7 @@ if (! function_exists('ip_scan')) {
             $host = $parser->parse($process->getOutput())[0] ?? [];
 
             $log->command_time_to_execute = $stopwatch->getElapsedTime();
-            $log->message = 'Nmap Command (Custom TCP Ports)';
+            $log->message = $executable->getTitle() . ' Command (Custom TCP Ports)';
             $log->command = "{$process->getCommandLine()} # Custom TCP Ports";
             $log->command_output = json_encode($host);
             $discoveryLogModel->create($log);
@@ -767,7 +767,7 @@ if (! function_exists('ip_scan')) {
             $host = $parser->parse($process->getOutput())[0] ?? [];
 
             $log->command_time_to_execute = $stopwatch->getElapsedTime();
-            $log->message = 'Nmap Command (Custom UDP Ports)';
+            $log->message = $executable->getTitle() . ' Command (Custom UDP Ports)';
             $log->command = "{$process->getCommandLine()} # Custom UDP Ports";
             $log->command_output = json_encode($host);
             $discoveryLogModel->create($log);
