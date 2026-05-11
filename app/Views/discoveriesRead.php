@@ -1504,7 +1504,7 @@ if ($resource->status === 'killed') {
             function progressValueFormatter(item) {
                 return function (value) {
                     // We use rich formatter "percentage" with item.amount to colorize
-                    return '{title|' + item.name + '} {percentage|' + item.amount + '}';
+                    return '{title|' + item.name + ':}  {percentage|' + item.amount + '}';
                 };
             }
 
@@ -1522,7 +1522,7 @@ if ($resource->status === 'killed') {
                 {
                     value: 100,
                     amount: 0,
-                    name: 'Responding: ',
+                    name: 'Responding',
                     title: {
                         show: false,
                     },
@@ -1537,7 +1537,7 @@ if ($resource->status === 'killed') {
                 {
                     amount: 0,
                     value: 0,
-                    name: 'Scanned: ',
+                    name: 'Scanned',
                     title: {
                         show: false,
                     },
@@ -1552,7 +1552,7 @@ if ($resource->status === 'killed') {
                 {
                     value: 0,
                     amount: 0,
-                    name: 'Audited: ',
+                    name: 'Audited',
                     title: {
                         show: false,
                     },

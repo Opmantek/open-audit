@@ -33,7 +33,7 @@ if (!function_exists('all_ip_list')) {
      * @param  object $discovery The discovery object with all its parameters
      * @return array|false       All the IP addresses in this discovery (excluding the excluded list)
      */
-    function all_ip_list($discovery = null)
+    function all_ip_list($discovery = null, ?NmapExecutable $executable = null)
     {
         if (is_null($discovery)) {
             return false;
@@ -50,7 +50,7 @@ if (!function_exists('all_ip_list')) {
         $log->message = 'Retrieving IP list';
         $log->ip = '127.0.0.1';
 
-        $executable = new NmapExecutable();
+        $executable ??= new NmapExecutable();
 
         $options = new NmapOptions();
         $options->scanType     = NmapOptions::SCAN_TYPE_LIST;
@@ -136,7 +136,7 @@ if (! function_exists('responding_ip_list')) {
      * @param  object $discovery The discovery object with all its parameters
      * @return array|false The array of all responding IP addresses in the discovery
      */
-    function responding_ip_list($discovery = null)
+    function responding_ip_list($discovery = null, ?NmapExecutable $executable = null)
     {
         if (is_null($discovery)) {
             return array();
@@ -153,7 +153,7 @@ if (! function_exists('responding_ip_list')) {
         $log->message = 'Sending ping';
         $log->ip = '127.0.0.1';
 
-        $executable = new NmapExecutable();
+        $executable ??= new NmapExecutable();
 
         $options = new NmapOptions();
         $options->scanType     = NmapOptions::SCAN_TYPE_LIST;
@@ -409,6 +409,8 @@ if (! function_exists('discover_subnet')) {
             return false;
         }
 
+        $executable = new NmapExecutable();
+
         $log->command_status = 'notice';
         if ($discovery->type === 'seed') {
             $all_ip_list = array($discovery->seed_ip);
@@ -419,7 +421,7 @@ if (! function_exists('discover_subnet')) {
                 $discoveryLogModel->create($log);
                 $ping_temp = $discovery->scan_options->ping;
                 $discovery->scan_options->ping = 'y';
-                responding_ip_list($discovery);
+                responding_ip_list($discovery, $executable);
                 $discovery->scan_options->ping = $ping_temp;
                 unset($ping_temp);
             } else {
@@ -429,19 +431,19 @@ if (! function_exists('discover_subnet')) {
             $log->message = 'Assuming ' . $discovery->seed_ip . ' is responding.';
             $discoveryLogModel->create($log);
         } else {
-            $all_ip_list = all_ip_list($discovery);
+            $all_ip_list = all_ip_list($discovery, $executable);
             $count = (!empty($all_ip_list)) ? count($all_ip_list) : 0;
             $log->command_status = 'notice';
             if ($discovery->scan_options->ping === 'n') {
                 $log->message = 'Ping response not required, assuming all ' . $count . ' IP addresses are up.';
             } else {
-                $log->message = 'Scanning ' . $count . ' IP addresses using Nmap to test for response.';
+                $log->message = 'Scanning ' . $count . ' IP addresses using ' . $executable->getTitle() . ' to test for response.';
             }
             $discoveryLogModel->create($log);
             $start = microtime(true);
-            $responding_ip_list = responding_ip_list($discovery);
+            $responding_ip_list = responding_ip_list($discovery, $executable);
             $log->command_time_to_execute = microtime(true) - $start;
-            $log->message = 'Nmap response scanning completed.';
+            $log->message = $executable->getTitle() . ' response scanning completed.';
             $discoveryLogModel->create($log);
             update_non_responding($discovery->id, $all_ip_list, $responding_ip_list);
         }
@@ -665,7 +667,7 @@ if (! function_exists('ip_scan')) {
             $host = $parser->parse($process->getOutput())[0] ?? [];
 
             $log->command_time_to_execute = $stopwatch->getElapsedTime();
-            $log->message = 'Nmap Command (Top TCP Ports)';
+            $log->message = $executable->getTitle() . ' Command (Top TCP Ports)';
             $log->command = "{$process->getCommandLine()} # Top TCP Ports";
             $log->command_output = json_encode($host);
             $discoveryLogModel->create($log);
@@ -699,7 +701,7 @@ if (! function_exists('ip_scan')) {
             $host = $parser->parse($process->getOutput())[0] ?? [];
 
             $log->command_time_to_execute = $stopwatch->getElapsedTime();
-            $log->message = 'Nmap Command (Top UDP Ports)';
+            $log->message = $executable->getTitle() . ' Command (Top UDP Ports)';
             $log->command = "{$process->getCommandLine()} # Top UDP Ports";
             $log->command_output = json_encode($host);
             $discoveryLogModel->create($log);
@@ -733,7 +735,7 @@ if (! function_exists('ip_scan')) {
             $host = $parser->parse($process->getOutput())[0] ?? [];
 
             $log->command_time_to_execute = $stopwatch->getElapsedTime();
-            $log->message = 'Nmap Command (Custom TCP Ports)';
+            $log->message = $executable->getTitle() . ' Command (Custom TCP Ports)';
             $log->command = "{$process->getCommandLine()} # Custom TCP Ports";
             $log->command_output = json_encode($host);
             $discoveryLogModel->create($log);
@@ -767,7 +769,7 @@ if (! function_exists('ip_scan')) {
             $host = $parser->parse($process->getOutput())[0] ?? [];
 
             $log->command_time_to_execute = $stopwatch->getElapsedTime();
-            $log->message = 'Nmap Command (Custom UDP Ports)';
+            $log->message = $executable->getTitle() . ' Command (Custom UDP Ports)';
             $log->command = "{$process->getCommandLine()} # Custom UDP Ports";
             $log->command_output = json_encode($host);
             $discoveryLogModel->create($log);
