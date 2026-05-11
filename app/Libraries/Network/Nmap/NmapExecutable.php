@@ -40,6 +40,16 @@ class NmapExecutable
     }
 
     /**
+     * Retrieve the executable title being used.
+     *
+     * @return string Either 'Nmap' or 'PHP'.
+     */
+    public function getTitle(): string
+    {
+        return $this->type === self::TYPE_NMAP ? 'Nmap' : 'PHP';
+    }
+
+    /**
      * Retrieve the executable type being used. This can be usefully when
      * wanting to determine whether Nmap or the PHP-based scanner is used.
      *
