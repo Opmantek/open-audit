@@ -1913,7 +1913,7 @@ if ($skip_sections.Contains("user_group,") -eq $false) {
             $item.description  = $_.Description
             $item.sid = if ($_.SID) { $_.SID } else { "" }
             $members = @()
-            Get-LocalGroupMember $_.Name -ErrorAction Ignore | Sort-Object -Property Name | ForEach {
+            Get-LocalGroupMember "$_.Name" -ErrorAction Ignore | Sort-Object -Property Name | ForEach {
                 $members += $_.Name
             }
             $item.members = [string]::join(", ", $members)
