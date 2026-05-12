@@ -951,7 +951,7 @@ if ($resource->status === 'killed') {
                     {className: "text-center", target: 1, width: "10em"},
                     {className: "text-start", target: 2},
                     {className: "text-start", target: 3, width: "10em"},
-                    {className: "text-start", title: "Status", target: 4, width: "10em"},
+                    {className: "text-start", target: 4, title: "Status", width: "10em"},
                     {className: "text-start", target: 5}
                 ],
                 info: true,
@@ -1106,7 +1106,7 @@ if ($resource->status === 'killed') {
                     { data: 'attributes.icon',
                         render: function (icon) {
                             return icon
-                                ? '<img style="width:30px;" src="<?= base_url() ?>device_images/' + icon + '.svg">'
+                                ? '<img style="width:42px;" src="<?= base_url() ?>device_images/' + icon + '.svg">'
                                 : '';
                         }
                     },
@@ -1333,7 +1333,7 @@ if ($resource->status === 'killed') {
                     { data: 'attributes.message' },
                     { data: 'attributes.command_time_to_execute',
                         render: function (data, type, row, meta) {
-                            return data;
+                            return data + ' seconds';
                         }
                     },
                 ],
@@ -1343,7 +1343,7 @@ if ($resource->status === 'killed') {
                     {className: "text-start", target: 2},
                     {className: "text-start", target: 3},
                     {className: "text-start", target: 4},
-                    {className: "text-start", target: 5, width: "15em", title: "Duration (h:m:s)"}
+                    {className: "text-start", target: 5, width: "15em", title: "Duration"}
                 ],
                 info: true,
                 language: {
