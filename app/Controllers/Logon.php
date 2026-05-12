@@ -131,6 +131,15 @@ class Logon extends Controller
         }
         $duration = (microtime(true) - $start);
         log_message('debug', 'Discoveries, ' . $duration);
+
+        # This will only alter the task on first install
+        $sql = "UPDATE tasks SET `minute` = FLOOR(RAND() * 30), `hour` = FLOOR(RAND() * (3) + 1) WHERE name = 'Vulnerability Retrieval' AND `minute` = '0' AND `hour` = '0'";
+        $db->query($sql);
+
+        # This will only alter the task on first install
+        $sql = "UPDATE `tasks` SET `minute` = FLOOR(RAND() * (19) + 40), `hour` = FLOOR(RAND()*(3)+4) WHERE `name` = 'Run All Vulnerabilities' AND `minute` = '1' AND `hour` = '1'";
+        $db->query($sql);
+
         $start = microtime(true);
         helper('utility');
         $os = getOS();

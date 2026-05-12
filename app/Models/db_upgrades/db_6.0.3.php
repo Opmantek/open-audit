@@ -259,7 +259,7 @@ log_message('info', (string)$db->getLastQuery());
 // A bad Windows UUID duplicated across installs
 if (config('Openaudit')->uuid === '79ef9ada-f4fb-11f0-a02e-000c294b745f') {
     $sql = "UPDATE configuration SET value = UUID() WHERE name = 'uuid'";
-    $result = $db->query($sql);
+    $db->query($sql);
     $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
     log_message('info', (string)$db->getLastQuery());
 
@@ -273,10 +273,31 @@ if (config('Openaudit')->uuid === '79ef9ada-f4fb-11f0-a02e-000c294b745f') {
     config('Openaudit')->uuid = $uuid;
 
     $sql = "UPDATE tasks SET uuid = ? WHERE uuid = '79ef9ada-f4fb-11f0-a02e-000c294b745f'";
-    $result = $db->query($sql, [$uuid])->getResult();
+    $db->query($sql, [$uuid])->getResult();
     $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
     log_message('info', (string)$db->getLastQuery());
 }
+
+
+$sql = "UPDATE tasks SET `minute` = FLOOR(RAND() * 30), `hour` = FLOOR(RAND() * (3) + 1) WHERE name = 'Vulnerability Retrieval'";
+$db->query($sql);
+$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+log_message('info', (string)$db->getLastQuery());
+
+$sql = "UPDATE `tasks` SET `minute` = FLOOR(RAND() * (19) + 40), `hour` = FLOOR(RAND()*(3)+4) WHERE `name` = 'Run All Vulnerabilities'";
+$db->query($sql);
+$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+log_message('info', (string)$db->getLastQuery());
+
+$sql = "DELETE FROM `tasks` WHERE name = 'Vendor Retrieval'";
+$db->query($sql);
+$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+log_message('info', (string)$db->getLastQuery());
+
+$sql = "DELETE FROM `tasks` WHERE name = 'Vulnerabilities by Vendors'";
+$db->query($sql);
+$output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
+log_message('info', (string)$db->getLastQuery());
 
 // set our versions
 $sql = "UPDATE `configuration` SET `value` = '20260218' WHERE `name` = 'internal_version'";
