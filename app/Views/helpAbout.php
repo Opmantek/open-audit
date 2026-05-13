@@ -41,7 +41,7 @@ $operating_system = $config->server_platform;
                     <?= __('Various') ?> <a href="<?= url_to('appLicenses') ?>"><?= __('licenses') ?></a> <?= __('are used.') ?><br>
                 </p>
                 <br>
-                <?= __('Please visit the homepage at') ?> <a target="_blank" href="http://www.open-audit.org">http://www.open-audit.org</a> <?= __('or the GitHub page at') ?> <a target="_blank" href="https://github.com/Opmantek/open-audit">https://github.com/Opmantek/open-audit</a>.<br>
+                <?= __('Please visit the homepage at') ?> <a target="_blank" href="http://www.open-audit.com">http://www.open-audit.com</a> <?= __('or the GitHub page at') ?> <a target="_blank" href="https://github.com/Opmantek/open-audit">https://github.com/Opmantek/open-audit</a>.<br>
                 <?= __('Consulting, implementation and other services are available through') ?> <a target="_blank" href="https://www.firstwave.com">Firstwave</a>.<br><br>
                 <?= __('We hope you find Open-AudIT as useful as we do.') ?><br><br><br>
 
