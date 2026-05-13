@@ -11,7 +11,18 @@ $intro = '<p>' . __('You can create a script with all the options for any of the
 
 $body = '<h2>' . __('Modifying an Existing Script') . '</h2>
 
-<p>' . __('You are always free to modify the audit scripts themselves to suit your specific requirements. You will need to (re)incorporate those changes whenever you upgrade as they will be overwritten by the default scripts. I would suggest saving a master copy of your modified script, upgrading Open-AudIT, then running a diff between the new default script and your modified script and applying the differences. The audit scripts are native scripts (Windows is VBScript, all others are Bash). Simple and easy to modify - just make sure to have a copy of your changes before you upgrade.') . '</p>
+<p>' . __('You are always free to modify the audit scripts themselves to suit your specific requirements. You will need to (re)incorporate those changes whenever you upgrade as they will be overwritten by the default scripts. I would suggest saving a master copy of your modified script, upgrading Open-AudIT, then running a diff between the new default script and your modified script and applying the differences. The audit scripts are native scripts (Windows is PowerShell, all others are Bash). Simple and easy to modify - just make sure to have a copy of your changes before you upgrade.') . '</p>
+
+<br>
+<h2>' . __('Manually Generating an Audit Result') . '</h2>
+
+<p>' . __('The audit scripts have arguments for submitting the result directly to the server and creating an XML or JSON file. You can run the script directly on the target machine, using the options as below. This will not submit it to the server and will create the result file. You can then upload that file using the GUI at menu -> Manage -> Devices -> Import Devices from Audit Script Result.') . '</p>
+
+<pre>powershell.exe -executionpolicy bypass -file .\audit_windows.ps1 -debugging 5 -submit_online n -create_file y</pre>
+
+' . __('Or') . '<br><br>
+
+<pre>./audit_linux.sh debugging=5 submit_online=n create_file=y</pre>
 
 <br>
 <h2>' . __('Debugging a Script') . '</h2>
