@@ -34,7 +34,7 @@
         "paragonie/random_compat": "^2.0",
         "paragonie/sodium_compat": "^1.24",
         "phpoffice/phpspreadsheet": "^5.7",
-        "phpseclib/phpseclib": "^",
+        "phpseclib/phpseclib": "^3.0",
         "symfony/deprecation-contracts": "2.5.2",
         "thenetworg/oauth2-azure": "^2.2"
     },
