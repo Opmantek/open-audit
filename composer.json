@@ -24,7 +24,7 @@
         "codeigniter4/framework": "4.6.3.0",
         "doctrine/instantiator": "1.5.0",
         "foxworth42/oauth2-okta": "^1.0",
-        "google/auth": "^1.37",
+        "google/auth": "^1.50",
         "gravitypdf/querypath": "^4.1",
         "kint-php/kint": "^5.1",
         "laminas/laminas-escaper": "2.17.0",
@@ -35,7 +35,6 @@
         "paragonie/sodium_compat": "^1.24",
         "phpoffice/phpspreadsheet": "^5.7",
         "phpseclib/phpseclib": "^3.0",
-        "psr/cache": "1.0.1",
         "symfony/deprecation-contracts": "2.5.2",
         "thenetworg/oauth2-azure": "^2.2"
     },
@@ -69,15 +68,6 @@
     "config": {
         "allow-plugins": {
             "ergebnis/composer-normalize": true
-        },
-        "audit": {
-            "ignore": {
-                "PKSA-cncr-q695-v65g": "Uses insecure CSPRNG openssl_random_pseudo_bytes",
-                "PKSA-y2cr-5h3j-g3ys": "Google Auth uses php-jwt which contains weak encryption"
-            }
-        },
-        "platform": {
-            "php": "8.2.27"
         },
         "process-timeout": 0
     },
