@@ -161,6 +161,7 @@ $routes->cli('util/feeds', 'Util::feeds');
 $routes->cli('queue/start', 'Queue::start');
 $routes->cli('rotateLogs', 'Cli::rotateLogs', ['as' => 'rotateLogs']);
 $routes->cli('tasks/execute', 'Cli::executeTasks', ['as' => 'executeTasks']);
+$routes->post('tasks/disable', 'Tasks::disable', ['as' => 'disableTasks']);
 $routes->cli('benchmarks/(:num)/execute', 'Cli::executeBenchmark/$1', ['as' => 'executeBenchmark']);
 #$routes->cli('benchmarks/test', 'Cli::testBenchmarks');
 $routes->cli('discoveries/(:num)/execute', 'Cli::executeDiscovery/$1', ['as' => 'executeDiscovery']);
