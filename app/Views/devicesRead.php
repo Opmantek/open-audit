@@ -980,7 +980,7 @@ if (! empty($included['nmap'])) {
                                     <?= device_panel('service', $user->toolbar_style, 0, '', $update); ?>
                                     <div class="card-body">
                                         <div class="row">
-                                            <div class="col-lg-3">
+                                            <div class="col-12">
                                                 <div>
                                                     <?php foreach ($linkableServices as $service): ?>
                                                         <?php
