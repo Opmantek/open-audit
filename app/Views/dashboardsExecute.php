@@ -39,6 +39,7 @@ $message = '';
 if ($resource->name === 'Windows Security Dashboard') {
     $message = 'NOTE - The queries for Latest Build must be kept up-to-date by the user. Edit and update the build numbers for the Windows x Latest Build <a href="' . url_to('queriesCollection') . '?queries.name=LIKELatest Build">queries</a> as Microsoft updates them.';
 }
+$widgets = $included['widgets'] ?? [];
 
 ?>
         <main class="container-fluid">
@@ -308,7 +309,7 @@ window.onload = function () {
         }
 
         <?php
-        foreach ($included['widgets'] as $widget) {
+        foreach ($widgets as $widget) {
             if (!empty($widget->formatted) and !empty($widget->type) and $widget->type !== 'traffic' and $widget->type !== 'status') {
                 $wf = json_encode($widget->formatted);
                 $wf = htmlspecialchars_decode($wf, ENT_QUOTES);
@@ -319,7 +320,7 @@ window.onload = function () {
         } ?>
 
         <?php
-        foreach ($included['widgets'] as $widget) {
+        foreach ($widgets as $widget) {
             if (!empty($widget->type) and $widget->type === 'traffic') {
                 echo "$(\"#widget_" . $widget->id . "\").html('" . traffic_widget($widget) . "');\n";
             }
