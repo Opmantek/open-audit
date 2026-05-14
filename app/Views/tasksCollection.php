@@ -86,6 +86,7 @@ include 'shared/collection_functions.php';
                         className: 'btn btn-sm btn-danger',
                         action: function () {
                             var button = this.node();
+                            $(button).prop('disabled', true);
 
                             $.post('<?php echo base_url(); ?>index.php/tasks/disable', {
                                 // Not sending data or individual IDs
@@ -96,7 +97,7 @@ include 'shared/collection_functions.php';
                                     window.location.reload(true);
                                 }
                             }).always(function() {
-                                $(button).prop('disabled', true);
+                                $(button).prop('disabled', false);
                             });
                         }
                     }
