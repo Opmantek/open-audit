@@ -133,6 +133,10 @@ if (!function_exists('response_create')) {
             $permission_requested['issues'] = 'r';
         }
 
+        if ($response->meta->collection === 'tasks' and $response->meta->action === 'disable') {
+            $permission_requested['disable'] = 'u';
+        }
+
         if ($response->meta->collection === 'configuration' and $response->meta->action === 'executeformemail') {
             $response->meta->action = 'read';
         }

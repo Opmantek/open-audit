@@ -375,19 +375,27 @@ $(document).ready(function () {
     });
     */
 
-    $('.dataTable').dataTable( {
-        "lengthMenu": [ [10, 25, 50, -1], [10, 25, 50, "All"] ],
-        "paging": true,
-        "searching": true,
-        "order": [[ 1, 'asc' ]],
-        "info": true,
-        "pageLength": 50,
-        "autoWidth": false,
-        "oSearch": {
-            "bSmart": false,
-            "bRegex": true,
-            "sSearch": ""
-        }
+    $('.dataTable').each(function () {
+        // Define some sane defaults
+        const defaults = {
+            lengthMenu: [[10, 25, 50, -1], [10, 25, 50, "All"]],
+            paging: true,
+            searching: true,
+            order: [[1, 'asc']],
+            info: true,
+            pageLength: 50,
+            autoWidth: false,
+            oSearch: {
+                bSmart: false,
+                bRegex: true,
+                sSearch: ""
+            }
+        };
+
+        // Gather additional options if provided
+        const options = $(this).data('datatable-options') || {};
+        // Build the table including additional options
+        $(this).dataTable($.extend(true, {}, defaults, options));
     });
 
     /* DataTables Init Secondary */

@@ -7,6 +7,8 @@ declare(strict_types=1);
 
 namespace App\Controllers;
 
+use App\Models\TasksModel;
+
 /**
  * PHP version 7.4
  *
@@ -40,5 +42,38 @@ class Tasks extends BaseController
     public function execute($id)
     {
         return redirect()->route('tasksRead', [$id]);
+    }
+
+    public function disable(): void
+    {
+        $taskIds = $_POST['ids'] ?? [];
+
+        /** @var TasksModel $tasksModel */
+        $tasksModel = model('App\Models\TasksModel');
+        $updateData = [];
+
+        foreach ($tasksModel->listUser() as $task) {
+            if ($task->attributes->enabled === 'n') {
+                continue;
+            }
+
+            if (! empty($taskIds) && ! in_array($task->id, $taskIds)) {
+                continue;
+            }
+
+            $updateData[] = [
+                'id' => $task->id,
+                'enabled' => 'n'
+            ];
+        }
+
+        if (! empty($updateData)) {
+            $tasksModel->setAllowedFields(['enabled']);
+            $tasksModel->updateBatch($updateData, 'id');
+        }
+
+        $this->resp->data = ['success' => true, 'affected' => count($updateData)];
+
+        output($this);
     }
 }

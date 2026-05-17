@@ -18,6 +18,15 @@ if (empty($resource->icon)) {
 if (empty($resource->type)) {
     $resource->type = 'unknown';
 }
+$linkableServices = [];
+if (! empty($included['nmap'])) {
+    $linkableServicePorts = [22, 80, 443, 3389];
+    foreach ($included['nmap'] as $nmapData) {
+        if (in_array((int)$nmapData->port, $linkableServicePorts)) {
+            $linkableServices[] = $nmapData;
+        }
+    }
+}
 ?>
         <main class="container-fluid">
             <div class="card">
@@ -60,6 +69,9 @@ if (empty($resource->type)) {
                                                     <?php } ?>
                                                     <li class="list-group-item section_toggle" data-section="location_section"><img class="device-menu-icon" src="<?= base_url() ?>icons/location.svg" alt=""> <a href="#"><?= __('Location') ?></a></li>
                                                     <li class="list-group-item section_toggle" data-section="purchase_section"><img class="device-menu-icon" src="<?= base_url() ?>icons/purchase.svg" alt=""> <a href="#"><?= __('Purchase') ?></a></li>
+                                                    <?php if (! empty($linkableServices)): ?>
+                                                    <li class="list-group-item section_toggle" data-section="service_section"><img class="device-menu-icon" src="<?= base_url() ?>icons/service.svg" alt=""> <a href="#"><?= __('Services') ?></a></li>
+                                                    <?php endif; ?>
                                                     <?php if (!empty($resource->snmp_oid)) { ?>
                                                     <li class="list-group-item section_toggle" data-section="snmp_section"><img class="device-menu-icon" src="<?= base_url() ?>icons/snmp_details.svg" alt=""> <a href="#"><?= __('SNMP Details') ?></a></li>
                                                     <?php } ?>
@@ -298,7 +310,7 @@ if (empty($resource->type)) {
                                             <?php if (!empty($included['attachment'])) {
                                                 foreach ($included['attachment'] as $row) { ?>
                                                 <tr id="components_attachment_<?= $row->id ?>">
-                                                    <td class="text-center"><a href="<?= url_to('componentsRead', $row->id) ?>/attachment/download?components.type=attachment" role="button" class="btn btn-sm btn-primary"><span style="width:1rem;" title="<?= __('Download') ?>" class="icon-download"></span></button></td>
+                                                    <td class="text-center"><a href="<?= url_to('componentsRead', $row->id) ?>/attachment/download?components.type=attachment" role="button" class="btn btn-sm btn-primary"><span style="width:1rem;" title="<?= __('Download') ?>" class="icon-download"></span></a></td>
                                                     <td><?= $row->name ?></td>
                                                     <td><?= $row->filename ?></td>
                                                     <td><?= $row->edited_by ?></td>
@@ -945,6 +957,59 @@ if (empty($resource->type)) {
                                     </div>
                                 </div>
                             </div>
+
+                            <?php if (! empty($linkableServices)): ?>
+                                <style>
+                                    .service-link {
+                                        color: #666666;
+                                        min-width: 100px;
+                                    }
+                                    .service-link > .service-icon {
+                                        font-size: 48px;
+                                        width: 48px;
+                                        height: 48px;
+                                        line-height: 48px;
+                                        color: #666666;
+                                    }
+                                    .service-link:hover,
+                                    .service-link:hover > .service-icon {
+                                        color: rgba(var(--bs-primary-rgb), 1) !important;
+                                    }
+                                </style>
+                                <div style="margin-bottom:20px; display:none;" class="card" id="service_section">
+                                    <?= device_panel('service', $user->toolbar_style, 0, '', $update); ?>
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-12">
+                                                <div>
+                                                    <?php foreach ($linkableServices as $service): ?>
+                                                        <?php
+                                                            $serviceIcon = match ((int)$service->port) {
+                                                                80      => 'icon-globe',
+                                                                443     => 'icon-globe-lock',
+                                                                22      => 'icon-square-terminal',
+                                                                3389    => 'icon-screen-share',
+                                                                default => 'icon-link',
+                                                            };
+                                                            $serviceLink = match ((int)$service->port) {
+                                                                80      => 'http://' . $service->ip,
+                                                                443     => 'https://' . $service->ip,
+                                                                22      => 'ssh://' . $service->ip . ':' . $service->port,
+                                                                3389    => 'rdp://' . $service->ip . ':' . $service->port,
+                                                                default => '#',
+                                                            };
+                                                        ?>
+                                                        <a target="_blank" href="<?php echo $serviceLink; ?>" class="service-link position-relative d-inline-block text-decoration-none text-center border rounded p-2 me-2" title="<?php echo $service->name; ?>">
+                                                            <span class="service-icon <?php echo $serviceIcon; ?>"></span>
+                                                            <br><?php echo $service->program; ?>
+                                                        </a>
+                                                    <?php endforeach; ?>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            <?php endif; ?>
 
                             <div style="margin-bottom:20px; display:none;" class="card" id="snmp_section">
                                 <?=  device_panel('snmp', $user->toolbar_style, 0, base_url() . "icons/snmp_details.svg", $update); ?>
