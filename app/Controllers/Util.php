@@ -112,9 +112,9 @@ class Util extends Controller
     public function testWindowsClient()
     {         
         //LDAP Bind paramters, need to be a normal AD User account.
-        $ldap_password = 'NM1$88NM1$88';
-        $ldap_username = 'administrator@opmantek.net';
-        $ldap_connect_string = 'ldap://192.168.88.124';
+        $ldap_password = '';
+        $ldap_username = '';
+        $ldap_connect_string = 'ldap://192.168';
 
         ldap_set_option(null, LDAP_OPT_NETWORK_TIMEOUT, 5);
         ldap_set_option(null, LDAP_OPT_DEBUG_LEVEL, 7);
