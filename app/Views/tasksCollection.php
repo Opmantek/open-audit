@@ -83,7 +83,7 @@ include 'shared/collection_functions.php';
                 buttons: [
                     {
                         text: '<?php echo __('Disable All Tasks'); ?>',
-                        className: 'btn btn-sm btn-danger',
+                        className: 'btn btn-sm btn-outline-danger btn-light',
                         action: function () {
                             var button = this.node();
                             $(button).prop('disabled', true);
