@@ -57,7 +57,7 @@ include 'shared/collection_functions.php';
 </main>
 <script {csp-script-nonce}>
 (function($) {
-    var windowsInfo = "<?php echo __('To execute the Windows PowerShell script, open a command prompt as Administrator, change directory to where you downloaded this script and use the following command'); ?>:<br><code>powershell.exe -executionpolicy bypass -file .\\audit_windows.ps1 --debugging 1</code>";
+    var windowsInfo = "<?php echo __('To execute the Windows PowerShell script, open a command prompt as Administrator, change directory to where you downloaded this script and use the following command'); ?>:<br><code>powershell.exe -executionpolicy bypass -file .\\audit_windows.ps1 -debug y -url <?php echo base_url(); ?>index.php</code>";
     var linuxInfo = "<?php echo __('To execute the audit script, open a terminal and use the following command'); ?>: <code>sudo ./audit_linux.sh</code><br><?php echo __('Note, you may need to make the script executable with'); ?> <code>chmod +x audit_linux.sh</code><br><?php echo __('You may also wish to enable debugging to view the progress in the terminal thus:'); ?> <code>sudo ./audit_linux.sh debugging=1</code>";
     var siteUrl = '<?php echo site_url(); ?>';
     var detectSystems = [
