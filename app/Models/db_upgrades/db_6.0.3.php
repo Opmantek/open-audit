@@ -273,7 +273,7 @@ if (config('Openaudit')->uuid === '79ef9ada-f4fb-11f0-a02e-000c294b745f') {
     config('Openaudit')->uuid = $uuid;
 
     $sql = "UPDATE tasks SET uuid = ? WHERE uuid = '79ef9ada-f4fb-11f0-a02e-000c294b745f'";
-    $db->query($sql, [$uuid])->getResult();
+    $db->query($sql, [$uuid]);
     $output .= str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
     log_message('info', (string)$db->getLastQuery());
 }
