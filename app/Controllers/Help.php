@@ -71,7 +71,7 @@ class Help extends BaseController
             . view('shared/footer', ['license_string' => $this->resp->meta->license_string]);
     }
 
-    public function auditMyPc()
+    public function audit_my_pc()
     {
         return view('shared/header', [
                 'config' => $this->config,
@@ -82,7 +82,7 @@ class Help extends BaseController
                 'roles' => filter_response($this->roles),
                 'user' => filter_response($this->user)]
             ) .
-            view('helpAuditMyPc') .
+            view('help_audit_my_pc') .
             view('shared/footer', ['license_string' => $this->resp->meta->license_string]);
     }
 

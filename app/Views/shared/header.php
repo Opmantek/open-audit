@@ -524,7 +524,7 @@ if (!empty($config->servers)) {
                                 <li><a class="dropdown-item" href="<?= url_to('about') ?>"><?= __('About') ?></a></li>
                                 <li><a class="dropdown-item" href="<?= url_to('appLicenses') ?>"><?= __('Application Licenses') ?></a></li>
                                 <li><a class="dropdown-item" href="<?= url_to('api') ?>"><?= __('API Documentation') ?></a></li>
-                                <li><a class="dropdown-item" href="<?= url_to('auditMyPc') ?>"><?= __('Audit My PC') ?></a></li>
+                                <li><a class="dropdown-item" href="<?= url_to('audit_my_pc') ?>"><?= __('Audit My PC') ?></a></li>
                                 <li><a class="dropdown-item dropdown-toggle first-level-dropdown-toggle" href="#"><?= __('Defaults') ?></a>
                                     <ul class="dropdown-menu">
                                         <?= menuItem('attributes', '', $user, 'attributesDefaults', 'Attributes') ?>

@@ -13,12 +13,9 @@ include 'shared/collection_functions.php';
         </div>
         <div class="card-body">
             <div class="row">
-                <div class="col-8 offset-2">
+                <div class="col-10 offset-1">
                     <div class="text-center">
-                        <button id="audit-button" name="audit" type="button" class="btn btn-primary" data-bs-toggle="collapse" data-bs-target="#audit-selection">
-                            <?= __('Audit My PC') ?>
-                        </button>
-                        <div id="audit-selection" class="collapse">
+                        <div id="audit-selection" >
                             <div class="row pt-4">
                                 <form>
                                     <div class="offset-4 col-4">

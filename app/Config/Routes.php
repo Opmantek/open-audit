@@ -118,7 +118,7 @@ $routes->cli('news/execute/vendors', 'Cli::executeNews/vendors', ['as' => 'execu
 
 $routes->get('about', 'Help::about', ['filter' => \App\Filters\Session::class, 'as' => 'about']);
 $routes->get('api', 'Help::api', ['filter' => \App\Filters\Session::class, 'as' => 'api']);
-$routes->get('auditMyPc', 'Help::auditMyPc', ['filter' => \App\Filters\Session::class, 'as' => 'auditMyPc']);
+$routes->get('audit_my_pc', 'Help::audit_my_pc', ['filter' => \App\Filters\Session::class, 'as' => 'audit_my_pc']);
 $routes->get('help', 'Help::about', ['filter' => \App\Filters\Session::class, 'as' => 'helpCollection']);
 $routes->get('faq', 'Help::faq', ['filter' => \App\Filters\Session::class, 'as' => 'helpFAQ']);
 $routes->get('features', 'Help::features', ['filter' => \App\Filters\Session::class, 'as' => 'features']);
