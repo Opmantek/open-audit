@@ -7,7 +7,7 @@ $intro = '<p>' . __('Rules are created and run against a device when the device 
 <br>
 <h2>' . __('How Does it Work?') . '</h2>
 
-<p>' . __('Each time a device is discovered or an audit result is processed, all rules are retrieved from the database and run against the attributes of the specific device. Rules run against one device at a time - there is no facility to say <i>Run the rules against all devices<i> or <i>Run the rules against these devices<i>. An individual rule will test one or more attributes of the device and if they match the rule, the result will be applied. Several attributes can be tested. Several attributes can be set. Think of this as an If This, Then That system for Open-AudIT.') . '</p>';
+<p>' . __('Each time a device is discovered or an audit result is processed, all rules are retrieved from the database and run against the attributes of the specific device. Rules run against one device at a time - there is no facility to say <i>Run the rules against all devices</i> or <i>Run the rules against these devices</i>. An individual rule will test one or more attributes of the device and if they match the rule, the result will be applied. Several attributes can be tested. Several attributes can be set. Think of this as an If This, Then That system for Open-AudIT.') . '</p>';
 
 $body = '<h2>' . __('Notes') . '</h2>
 
