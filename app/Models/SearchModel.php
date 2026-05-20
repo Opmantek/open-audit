@@ -25,9 +25,7 @@ class SearchModel extends BaseModel
     /**
      * Create an individual item in the database
      *
-     * @param  object|array|null $data The data attributes
-     *
-     * @return int|null              The integer ID of the newly created item, or null on failure
+     * @return array
      */
     public function create()
     {
@@ -52,6 +50,7 @@ class SearchModel extends BaseModel
             $tables = '';
         }
         $return = array();
+        // @todo: Discuss limiting access based on user privileges
 
         // This is our standard menu bar search for name or IP
         if (isset($tables[0]) && $tables[0] === 'devices' && isset($columns[0]) && $columns[0] === 'name' && isset($columns[1]) && $columns[1] === 'ip') {
@@ -75,42 +74,52 @@ class SearchModel extends BaseModel
         } else {
             $instance->resp->meta->data_order = array('devices.id', 'devices.icon', 'devices.type', 'devices.name', 'table', 'column', 'value');
             $tables = array('bios','disk','dns','file','ip','license','log','memory','module','monitor','motherboard','netstat','network','nmap','optical','partition','pagefile','print_queue','processor','route','san','scsi','service','server','server_item','share','software','software_key','sound','task','user','user_group','variable','video','vm','windows');
+
+            $ipParts = explode('.', $value);
+            for ($i = 0; $i < count($ipParts); $i++) {
+                $ipParts[$i] = substr('000' . $ipParts[$i], -3);
+            }
+
+            $paddedIp = implode('.', $ipParts);
+            $searchValue = "%{$value}%";
+            $searchIpValue = "%{$paddedIp}%";
+
             foreach ($tables as $table) {
                 unset($result);
                 $columns = $this->db->getFieldNames($table);
                 $sql = "SELECT `{$table}`.*, devices.id AS `devices.id`, devices.name AS `devices.name`, devices.type AS `devices.type`, devices.icon AS `devices.icon` FROM `{$table}` LEFT JOIN `devices` ON (`{$table}`.device_id = devices.id AND `{$table}`.current = 'y') WHERE devices.org_id IN ({$instance->user->org_list}) AND ( ";
+
+                $bindings = [];
+                $conditions = [];
+
                 foreach ($columns as $column) {
                     if ($column !== 'id' && $column !== 'device_id' && $column !== 'current' && $column !== 'first_seen' && $column !== 'last_seen') {
                         if ($column === 'ip') {
-                            $temp = explode('.', $value);
-                            for ($i = 0; $i < count($temp); $i++) {
-                                $temp[$i] = substr('000' . $temp[$i], -3);
-                            }
-                            $temp_value = implode('.', $temp);
-                            $sql .= "`{$table}`.`{$column}` LIKE \"%{$temp_value}%\" OR ";
-                            $sql .= "`{$table}`.`{$column}` LIKE \"%{$value}%\" OR ";
+                            $conditions[] = "`{$table}`.`{$column}` LIKE ?";
+                            $bindings[] = $searchIpValue;
+
+                            $conditions[] = "`{$table}`.`{$column}` LIKE ?";
+                            $bindings[] = $searchValue;
                         } else {
-                            $sql .= "`{$table}`.`{$column}` LIKE \"%{$value}%\" OR ";
+                            $conditions[] = "`{$table}`.`{$column}` LIKE ?";
+                            $bindings[] = $searchValue;
                         }
                     }
                 }
-                $sql = substr($sql, 0, -3);
-                $sql .= ')';
-                $result = $this->db->query($sql)->getResult();
-                if (!empty($result)) {
-                    $new_result = array();
+
+                if (! empty($conditions)) {
+                    $sql .= implode(' OR ', $conditions) . ' )';
+                    $result = $this->db->query($sql, $bindings)->getResult();
+                } else {
+                    continue;
+                }
+
+                if (! empty($result)) {
+                    $new_result = [];
                     foreach ($result as $item) {
                         foreach ($item as $item_key => $item_value) {
-                            if ($item_key === 'ip') {
-                                $temp = explode('.', $value);
-                                for ($i = 0; $i < count($temp); $i++) {
-                                    $temp[$i] = substr('000' . $temp[$i], -3);
-                                }
-                                $temp_value = implode('.', $temp);
-                            } else {
-                                $temp_value = $value;
-                            }
-                            if (stripos($item_value, $temp_value) !== false) {
+                            $comp_value = ($item_key === 'ip') ? $paddedIp : $value;
+                            if (stripos($item_value, $comp_value) !== false) {
                                 $new_item = new \stdClass();
                                 $new_item->{'devices.id'} = $item->{'devices.id'};
                                 $new_item->{'devices.icon'} = $item->{'devices.icon'};
@@ -120,56 +129,45 @@ class SearchModel extends BaseModel
                                 $new_item->{'column'} = $item_key;
                                 $new_item->{'value'} = $item_value;
                                 $new_result[] = $new_item;
-                                unset($new_item);
                             }
                         }
                     }
                     $return = array_merge($return, format_data($new_result, 'devices'));
                 }
             }
+
             $columns = $this->db->getFieldNames('devices');
             $sql = "SELECT * FROM `devices` WHERE devices.org_id IN ({$instance->user->org_list}) AND ( ";
+
+            $deviceConditions = [];
+            $deviceBindings = [];
+
             foreach ($columns as $column) {
+                $deviceConditions[] = "`{$column}` LIKE ?";
                 if ($column === 'ip') {
-                    $temp = explode('.', $value);
-                    for ($i = 0; $i < count($temp); $i++) {
-                        $temp[$i] = substr('000' . $temp[$i], -3);
-                    }
-                    $temp_value = implode('.', $temp);
+                    $deviceBindings[] = $searchIpValue;
                 } else {
-                    $temp_value = $value;
+                    $deviceBindings[] = $searchValue;
                 }
-                $sql .= "`{$column}` LIKE \"%{$temp_value}%\" OR ";
             }
-            $sql = substr($sql, 0, -3);
-            $sql .= ')';
-            $result = $this->db->query($sql)->getResult();
-            $new_result = array();
-            if (!empty($result)) {
+
+            $sql .= implode(' OR ', $deviceConditions) . ' )';
+            $result = $this->db->query($sql, $deviceBindings)->getResult();
+
+            $new_result = [];
+            if (! empty($result)) {
                 foreach ($result as $item) {
                     foreach ($item as $item_key => $item_value) {
-                        if ($item_key === 'ip') {
-                            $temp = explode('.', $value);
-                            for ($i = 0; $i < count($temp); $i++) {
-                                $temp[$i] = substr('000' . $temp[$i], -3);
-                            }
-                            $temp_value = implode('.', $temp);
-                        } else {
-                            $temp_value = $value;
-                        }
-                        if (!is_null($item_value)) {
-                            if (stripos($item_value, $value) !== false) {
-                                $new_item = new \stdClass();
-                                $new_item->{'devices.id'} = $item->{'id'};
-                                $new_item->{'devices.icon'} = $item->{'icon'};
-                                $new_item->{'devices.type'} = $item->{'type'};
-                                $new_item->{'devices.name'} = $item->{'name'};
-                                $new_item->{'table'} = 'devices';
-                                $new_item->{'column'} = $item_key;
-                                $new_item->{'value'} = $item_value;
-                                $new_result[] = $new_item;
-                                unset($new_item);
-                            }
+                        if ($item_value !== null && stripos($item_value, $value) !== false) {
+                            $new_item = new \stdClass();
+                            $new_item->{'devices.id'} = $item->{'id'};
+                            $new_item->{'devices.icon'} = $item->{'icon'};
+                            $new_item->{'devices.type'} = $item->{'type'};
+                            $new_item->{'devices.name'} = $item->{'name'};
+                            $new_item->{'table'} = 'devices';
+                            $new_item->{'column'} = $item_key;
+                            $new_item->{'value'} = $item_value;
+                            $new_result[] = $new_item;
                         }
                     }
                 }
