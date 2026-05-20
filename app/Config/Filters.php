@@ -108,6 +108,12 @@ class Filters extends BaseFilters
 
     public function __construct()
     {
+        if (ENVIRONMENT === 'development') {
+            $this->filters['toolbar'] = [
+                'after' => ['*'],
+            ];
+        }
+
         if (!empty($_SERVER['REQUEST_URI'])) {
             if (stripos($_SERVER['REQUEST_URI'], 'scripts') and stripos($_SERVER['REQUEST_URI'], 'download')) {
                 $this->globals['after'] = array();
