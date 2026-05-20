@@ -172,6 +172,29 @@ class Database extends BaseController
 
     public function export(string $table = '')
     {
+        $allowedTables = [
+            'access_point', 'agents', 'antivirus', 'application', 'applications', 'arp', 'attachment', 'attributes',
+            'audit_log', 'auth', 'baselines', 'baselines_policies', 'baselines_results', 'benchmarks',
+            'benchmarks_exceptions', 'benchmarks_log', 'benchmarks_policies', 'benchmarks_result', 'bios', 'certificate',
+            'certificates', 'change_log', 'cli_config', 'cloud_log', 'clouds', 'cluster', 'clusters', 'collectors',
+            'configuration', 'connections', 'credential', 'credentials', 'dashboards', 'devices', 'discoveries',
+            'discovery_log', 'discovery_scan_options', 'disk', 'dns', 'edit_log', 'enterprise', 'executable',
+            'executables', 'field', 'fields', 'file', 'files', 'firewall', 'firewall_rule', 'groups', 'image',
+            'integrations', 'integrations_log', 'invoice', 'invoice_item', 'ip', 'license', 'licenses', 'locations',
+            'log', 'maps', 'memory', 'module', 'monitor', 'motherboard', 'netstat', 'network', 'networks', 'news',
+            'nmap', 'optical', 'orgs', 'packages', 'pagefile', 'partition', 'policy', 'print_queue', 'processor',
+            'queries', 'queue', 'rack_devices', 'racks', 'radio', 'roles', 'route', 'rules', 'san', 'scripts', 'scsi',
+            'server', 'server_item', 'service', 'share', 'software', 'software_key', 'sound', 'standards',
+            'standards_policies', 'standards_results', 'summaries', 'task', 'tasks', 'usb', 'user', 'user_group',
+            'users', 'variable', 'vendors', 'video', 'vm', 'vulnerabilities', 'vulnerabilities_cache', 'warranty',
+            'widgets', 'windows',
+        ];
+
+        if (empty($table) || ! in_array($table, $allowedTables)) {
+            log_message('error', 'Database export failed. Please make sure table names are correct.');
+            return $this->response->setStatusCode(403)->setJSON(['error' => 'Table name is invalid or restricted.']);
+        }
+
         if ($this->resp->meta->format !== 'sql') {
             $this->resp->meta->heading = $table;
             $this->resp->data = $this->databaseModel->export($table);
@@ -188,7 +211,7 @@ class Database extends BaseController
                 $return[] = $item;
             }
             $this->resp->data = $return;
-            $this->config->output_escape_csv = 'n';
+            //$this->config->output_escape_csv = 'n'; Commented out to retain cell escaping
             output($this);
         }
         if ($this->resp->meta->format === 'json' or $this->resp->meta->format === 'json_data') {
@@ -215,12 +238,21 @@ class Database extends BaseController
                 $mysqldump = $temp[0];
                 unset($temp);
             }
-            $command = '"' . $mysqldump . '" --extended-insert=FALSE -u ' . $db->username . ' -p' . $db->password . ' -h' . $db->hostname . ' ' . $db->database . ' ' . $table;
+
+            $safeDump     = escapeshellarg($mysqldump);
+            $safeUsername = escapeshellarg($db->username);
+            $safePassword = escapeshellarg($db->password);
+            $safeHostname = escapeshellarg($db->hostname);
+            $safeDatabase = escapeshellarg($db->database);
+            $safeTable    = escapeshellarg($table);
+
+            $command = "{$safeDump} --extended-insert=FALSE -u {$safeUsername} -p {$safePassword} -h {$safeHostname} {$safeDatabase} {$safeTable}";
             exec($command, $backup);
             $backup = implode("\n", $backup);
             return $this->response->download('open-audit_' . $table . '.sql', $backup);
         }
-        return;
+
+        return $this->response->setStatusCode(403)->setJSON(['error' => 'Invalid format.']);
     }
 
     public function update($action)
