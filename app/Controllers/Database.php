@@ -223,16 +223,55 @@ class Database extends BaseController
                 unset($temp);
             }
 
+            $tempPath = WRITEPATH . 'tmp' . DIRECTORY_SEPARATOR;
+            if (! is_dir($tempPath) && ! mkdir($tempPath, 0755, true)) {
+                return $this->response->setStatusCode(403)->setJSON(['error' => 'Temporary directory does not exist or is not writable.']);
+            }
+
+            $cnfFile = $tempPath . '.my.cnf';
+            $sqlFile = $tempPath . 'open-audit_' . $table . '.sql';
+
+            $cnfContent  = '[mysqldump]' . PHP_EOL;
+            $cnfContent .= 'user=' . $db->username . PHP_EOL;
+            $cnfContent .= 'password="' . str_replace('"', '\\"', $db->password) . '"' . PHP_EOL;
+            $cnfContent .= 'host=' . $db->hostname . PHP_EOL;
+
+            file_put_contents($cnfFile, $cnfContent);
+            chmod($cnfFile, 0600);
+
+            $safeCnf      = escapeshellarg($cnfFile);
+            $safeSql      = escapeshellarg($sqlFile);
             $safeDump     = escapeshellarg($mysqldump);
-            $safeUsername = escapeshellarg($db->username);
-            $safePassword = escapeshellarg($db->password);
-            $safeHostname = escapeshellarg($db->hostname);
             $safeDatabase = escapeshellarg($db->database);
             $safeTable    = escapeshellarg($table);
 
-            $command = "{$safeDump} --extended-insert=FALSE -u {$safeUsername} -p {$safePassword} -h {$safeHostname} {$safeDatabase} {$safeTable}";
-            exec($command, $backup);
-            $backup = implode("\n", $backup);
+            $command = "{$safeDump} --defaults-file={$safeCnf} --extended-insert=FALSE {$safeDatabase} {$safeTable} > {$safeSql}";
+
+            if (php_uname('s') === 'Windows NT') {
+                $command = 'cmd /c ' . $command;
+            }
+
+            exec($command, $output, $returnCode);
+
+            $backup = '';
+            if ($returnCode === 0 && file_exists($sqlFile)) {
+                $backup = file_get_contents($sqlFile);
+            } else {
+                log_message('error', 'MySQL dump failed with exit code: ' . $returnCode);
+            }
+
+            if (file_exists($cnfFile)) {
+                unlink($cnfFile);
+            }
+
+            if (file_exists($sqlFile)) {
+                unlink($sqlFile);
+            }
+
+            if (empty($backup)) {
+                return $this->response->setStatusCode(500)->setJSON(['error' => 'Database export failed.']);
+            }
+
             return $this->response->download('open-audit_' . $table . '.sql', $backup);
         }
 
