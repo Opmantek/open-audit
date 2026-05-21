@@ -179,12 +179,6 @@ class Database extends BaseController
             log_message('error', 'Database export failed. Please make sure table names are correct.');
             return $this->response->setStatusCode(403)->setJSON(['error' => 'Table name is invalid or restricted.']);
         }
-
-        if ($this->resp->meta->format !== 'sql') {
-            $this->resp->meta->heading = $table;
-            $this->resp->data = $this->databaseModel->export($table);
-            $this->resp->meta->collection = $table;
-        }
         if ($this->resp->meta->format === 'csv') {
             // Don't run format_data as this will insert devices.id (for example).
             // We want the raw table data and no extra columns, but formatted as usual (using attributes->).
@@ -214,10 +208,7 @@ class Database extends BaseController
                     $mysqldump = 'c:\\xampp\\mysql\\bin\\mysqldump.exe';
                 }
             }
-            if (php_uname('s') === 'Darwin') {
-                $mysqldump = '/usr/local/mysql/bin/mysqldump';
-            }
-            if (php_uname('s') === 'Linux') {
+            if (php_uname('s') === 'Linux' or php_uname('s') === 'Darwin') {
                 exec('which mysqldump', $temp);
                 $mysqldump = $temp[0];
                 unset($temp);
