@@ -172,23 +172,8 @@ class Database extends BaseController
 
     public function export(string $table = '')
     {
-        $allowedTables = [
-            'access_point', 'agents', 'antivirus', 'application', 'applications', 'arp', 'attachment', 'attributes',
-            'audit_log', 'auth', 'baselines', 'baselines_policies', 'baselines_results', 'benchmarks',
-            'benchmarks_exceptions', 'benchmarks_log', 'benchmarks_policies', 'benchmarks_result', 'bios', 'certificate',
-            'certificates', 'change_log', 'cli_config', 'cloud_log', 'clouds', 'cluster', 'clusters', 'collectors',
-            'configuration', 'connections', 'credential', 'credentials', 'dashboards', 'devices', 'discoveries',
-            'discovery_log', 'discovery_scan_options', 'disk', 'dns', 'edit_log', 'enterprise', 'executable',
-            'executables', 'field', 'fields', 'file', 'files', 'firewall', 'firewall_rule', 'groups', 'image',
-            'integrations', 'integrations_log', 'invoice', 'invoice_item', 'ip', 'license', 'licenses', 'locations',
-            'log', 'maps', 'memory', 'module', 'monitor', 'motherboard', 'netstat', 'network', 'networks', 'news',
-            'nmap', 'optical', 'orgs', 'packages', 'pagefile', 'partition', 'policy', 'print_queue', 'processor',
-            'queries', 'queue', 'rack_devices', 'racks', 'radio', 'roles', 'route', 'rules', 'san', 'scripts', 'scsi',
-            'server', 'server_item', 'service', 'share', 'software', 'software_key', 'sound', 'standards',
-            'standards_policies', 'standards_results', 'summaries', 'task', 'tasks', 'usb', 'user', 'user_group',
-            'users', 'variable', 'vendors', 'video', 'vm', 'vulnerabilities', 'vulnerabilities_cache', 'warranty',
-            'widgets', 'windows',
-        ];
+        $db = db_connect();
+        $allowedTables = $db->listTables();
 
         if (empty($table) || ! in_array($table, $allowedTables)) {
             log_message('error', 'Database export failed. Please make sure table names are correct.');
@@ -223,7 +208,6 @@ class Database extends BaseController
             output($this);
         }
         if ($this->resp->meta->format === 'sql') {
-            $db = db_connect();
             if (php_uname('s') === 'Windows NT') {
                 $mysqldump = 'c:\\xampplite\\mysql\\bin\\mysqldump.exe';
                 if (file_exists('c:\\xampp\\mysql\\bin\\mysqldump.exe')) {
