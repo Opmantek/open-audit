@@ -149,6 +149,7 @@ if (!function_exists('response_create')) {
             $response->meta->action = 'create';
         }
         if ($response->meta->collection === 'users' and $response->meta->action === 'update' and $response->meta->id === $instance->user->id) {
+            $instance->user->permissions['users'] ??= '';
             if (!str_contains($instance->user->permissions['users'], 'r')) {
                 // Allowed to read self
                 $instance->user->permissions['users'] .= 'r';
