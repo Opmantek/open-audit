@@ -178,8 +178,6 @@ class ComponentsModel extends BaseModel
         }
         /** @var \App\Controllers\BaseController $instance */
         $instance = & get_instance();
-        /** @var \CodeIgniter\HTTP\IncomingRequest $request */
-        $request = $instance->getRequest();
         $device_ids = array();
         if (!empty($data->device_id)) {
             $device_ids[] = $data->device_id;
