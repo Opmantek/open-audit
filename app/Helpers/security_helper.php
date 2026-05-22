@@ -30,7 +30,7 @@ function simpleDecrypt(string $message = '', string $key = ''): string
 
     $message = @hex2bin($message);
     if ($message === false || mb_strlen($message, '8bit') < 24) {
-        log_message('error', 'simpleDecrypt could convert message to hex string');
+        log_message('error', 'simpleDecrypt could not convert hex message to binary');
         return '';
     }
 
