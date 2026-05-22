@@ -107,7 +107,6 @@ class Encryption extends BaseConfig
                 // Store the existing value without hex2bin: prefix
                 if (empty($setting) || empty($setting->id)) {
                     $database->table('configuration')
-                        ->where('id', $setting->id)
                         ->insert([
                             'name'        => 'encryption_key',
                             'value'       => 'openaudit',
