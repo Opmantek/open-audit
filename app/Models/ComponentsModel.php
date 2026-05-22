@@ -227,7 +227,7 @@ class ComponentsModel extends BaseModel
             $allowedExtensions = ['jpg', 'jpeg', 'png'];
             $extension = strtolower(pathinfo($filename, PATHINFO_EXTENSION));
 
-            if (! in_array($mimeType, $allowedFiletypes) && !in_array($extension, $allowedExtensions)) {
+            if (! in_array($mimeType, $allowedFiletypes) || ! in_array($extension, $allowedExtensions)) {
                 unlink($_FILES['attachment']['tmp_name']);
                 log_message('warning', sprintf('Attachment file type %s or extension %s is not allowed', $mimeType, $extension));
                 \Config\Services::session()->setFlashdata('warning', sprintf('File type not supported, must be either: %s.', implode(', ', $allowedFiletypes)));
@@ -370,9 +370,8 @@ class ComponentsModel extends BaseModel
                 // disabled SVG because of XSS issues when requesting the direct image
                 $filetypes = array('image/png', 'image/jpeg');
                 $extensions = array('jpg', 'jpeg', 'png');
-                $temp = explode('.', $filename);
-                $extension = strtolower($temp[count($temp) - 1]);
-                if (!in_array($mime_type, $filetypes) or !in_array($extension, $extensions)) {
+                $extension = strtolower(pathinfo($filename, PATHINFO_EXTENSION));
+                if (!in_array($mime_type, $filetypes) || !in_array($extension, $extensions)) {
                     unlink($_FILES['attachment']['tmp_name']);
                     log_message('warning', 'Only jpg and png files are accepted (' . $extension . ') (' . $mime_type . ')');
                     \Config\Services::session()->setFlashdata('warning', 'Only jpg, jpeg and png files are accepted (provided: ' . $extension . ') (which is a: ' . $mime_type . ')');
@@ -393,8 +392,9 @@ class ComponentsModel extends BaseModel
                     return null;
                 }
             } elseif (!empty($data->filename)) {
+                $sanitizedName = preg_replace('/[^a-zA-Z0-9_.-]/', '', pathinfo($data->filename, PATHINFO_BASENAME));
                 $sql = 'INSERT INTO `image` VALUES (NULL, ?, ?, ?, ?, ?, NOW())';
-                $this->db->query($sql, [$data->device_id, $data->name, $data->filename, $data->orientation, $instance->user->full_name]);
+                $this->db->query($sql, [$data->device_id, $data->name, $sanitizedName, $data->orientation, $instance->user->full_name]);
                 return null;
             }
         }
