@@ -1224,6 +1224,17 @@ class Collections extends BaseController
             output($this);
             return;
         }
+        $attributes = $this->resp->meta->received_data->attributes;
+        if ($this->resp->meta->collection === 'users' && $this->resp->meta->action === 'update') {
+            if ($this->resp->meta->id === $this->user->id && $this->user->permissions['users'] !== 'crud') {
+                $allowedFields = ['name', 'lang'];
+                foreach ($attributes as $key => $value) {
+                    if (! in_array($key, $allowedFields)) {
+                        unset($attributes->{$key});
+                    }
+                }
+            }
+        }
         if ($this->{$this->resp->meta->collection . 'Model'}->update($this->resp->meta->received_data->id, $this->resp->meta->received_data->attributes)) {
             output($this);
         } else {
