@@ -3,6 +3,7 @@
 namespace Config;
 
 use CodeIgniter\Config\BaseConfig;
+use Throwable;
 
 /**
  * Encryption configuration.
@@ -89,4 +90,47 @@ class Encryption extends BaseConfig
      * by CI3 Encryption default configuration.
      */
     public string $cipher = 'AES-256-CTR';
+
+    public function __construct()
+    {
+        $defaultKey = $this->key;
+
+        parent::__construct();
+
+        try {
+            if ($defaultKey === 'openaudit') {
+                $database = Database::connect();
+                $configTable = $database->table('configuration');
+                $setting = $configTable->where('name', 'encryption_key')->get()->getRow();
+                log_message('info', 'Maybe generate encryption Key: ' . print_r($setting, true));
+
+                // If the setting does not exist in the database, we must assume this is an
+                // existing install, whereby changing the key now would break their system.
+                if (empty($setting) || empty($setting->id)) {
+                    log_message('info', 'Not generating key, existing installation');
+                    return;
+                }
+
+                // If the setting value is an empty string, a temporary value defined in the
+                // open-audit.sql file, which is imported upon a fresh installation.
+                if ($setting->value === '') {
+                    log_message('info', 'Generating key, new installation');
+                    $rawKey = \CodeIgniter\Encryption\Encryption::createKey();
+                    $hexKey = bin2hex($rawKey);
+                    $database->table('configuration')
+                        ->where('id', $setting->id)
+                        ->update([
+                            'value'       => $hexKey,
+                            'edited_date' => date('Y-m-d H:i:s'),
+                        ]);
+                    $this->key = $rawKey;
+                } else {
+                    log_message('info', 'Loading generated key');
+                    $this->key = hex2bin($setting->value);
+                }
+            }
+        } catch (Throwable $error) {
+            log_message('error', 'Could not load dynamic encryption key: ' . $error->getMessage());
+        }
+    }
 }
