@@ -1212,7 +1212,7 @@ CREATE TABLE `configuration` (
   `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
   `description` mediumtext NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=195 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=196 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1406,6 +1406,7 @@ INSERT INTO `configuration` VALUES (191,'feature_syslog_devices','n','bool','y',
 INSERT INTO `configuration` VALUES (192,'feature_syslog_vulnerabilities','n','bool','y','system','2000-01-01 00:00:00','Should Open-AudIT create an entry in syslog if a device has a vulnerability detected.');
 INSERT INTO `configuration` VALUES (193,'feature_vulnerabilities_alert_date','n','date','y','system','2000-01-01 00:00:00','The last time a vulnerabilitiy alert was shown.');
 INSERT INTO `configuration` VALUES (194,'locations_query_id','0','number','y','system','2000-01-01 00:00:00','The default Query ID to use when viewing a location.');
+INSERT INTO `configuration` VALUES (195,'encryption_key','','text','n','system','2000-01-01 00:00:00','Encryption Key');
 /*!40000 ALTER TABLE `configuration` ENABLE KEYS */;
 UNLOCK TABLES;
 
