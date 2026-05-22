@@ -72,14 +72,17 @@ class Input extends BaseController
         $device = $devicesModel->read($json->device_id)[0];
         if (empty($device)) {
             log_message('error', 'Invalid device ID supplied to Input::benchmarks. Supplied: ' . $json->device_id);
-            $sql = "INSERT INTO benchmarks_log VALUES (null, $json->benchmark_id, $json->device_id, NOW(), 'error', Invalid device ID supplied, $json->device_id', '')";
-            $db->query($sql);
-            $sql = "INSERT INTO benchmarks_log VALUES (null, $json->benchmark_id, $json->device_id, NOW(), 'error', Completed. Memory: " . round((memory_get_peak_usage(false) / 1024 / 1024), 3) . " MiB', '')";
-            $db->query($sql);
+
+            $sql = "INSERT INTO benchmarks_log VALUES (null, ?, ?, NOW(), 'error', ?, '')";
+            $db->query($sql, [$json->benchmark_id, $json->device_id, 'Invalid device ID supplied: ' . $json->device_id]);
+
+            $sql = "INSERT INTO benchmarks_log VALUES (null, ?, ?, NOW(), 'info', ?, '')";
+            $db->query($sql, [$json->benchmark_id, $json->device_id, 'Completed. Memory: ' . round(memory_get_peak_usage(false) / 1024 / 1024, 3) . ' MiB']);
+
             return;
         }
-        $sql = "INSERT INTO benchmarks_log VALUES (null, $json->benchmark_id, $json->device_id, NOW(), 'info', 'Processing report file.', '')";
-        $db->query($sql);
+        $sql = "INSERT INTO benchmarks_log VALUES (null, ?, ?, NOW(), 'info', 'Processing report file.', '')";
+        $db->query($sql, [$json->benchmark_id, $json->device_id]);
 
         $sql = "DELETE FROM benchmarks_result WHERE device_id = ? AND benchmark_id = ?";
         $db->query($sql, [$json->device_id, $json->benchmark_id]);
@@ -87,14 +90,13 @@ class Input extends BaseController
         foreach ($json->result as $result) {
             $sql = "INSERT INTO benchmarks_result VALUES (NULL, ?, 'y', NOW(), NOW(), ?, ?, ?)";
             $db->query($sql, [$json->device_id, $json->benchmark_id, trim($result->external_ident), $result->result]);
-            // echo str_replace("\n", " ", (string)$db->getLastQuery()) . "\n\n";
         }
 
-        #$sql = "INSERT INTO benchmarks_log VALUES (null, $json->benchmark_id, $json->device_id, NOW(), 'info', 'Processing report file completed. ' . intval(count($json->result)) . ' inserted.', '')";
-        $sql = "INSERT INTO benchmarks_log VALUES (null, $json->benchmark_id, $json->device_id, NOW(), 'info', 'Processing report file completed.', '')";
-        $db->query($sql);
-            $sql = "INSERT INTO benchmarks_log VALUES (null, $json->benchmark_id, $json->device_id, NOW(), 'info', 'Completed. Memory: " . round((memory_get_peak_usage(false) / 1024 / 1024), 3) . " MiB', '')";
-        $db->query($sql);
+        $sql = "INSERT INTO benchmarks_log VALUES (null, ?, ?, NOW(), 'info', 'Processing report file completed.', '')";
+        $db->query($sql, [$json->benchmark_id, $json->device_id]);
+
+        $sql = "INSERT INTO benchmarks_log VALUES (null, ?, ?, NOW(), 'info', ?, '')";
+        $db->query($sql, [$json->benchmark_id, $json->device_id, 'Completed. Memory: ' . round(memory_get_peak_usage(false) / 1024 / 1024, 3) . ' MiB']);
     }
 
     public function devices()
