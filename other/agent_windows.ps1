@@ -17,7 +17,7 @@ param (
 )
 
 $url = ''
-$programVersion = "6.0.3"
+$programVersion = "6.0.4"
 $programPath = 'C:\Program Files\Open-AudIT Agent'
 $programReg = 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\Open-AudIT Agent'
 $agentId = ''

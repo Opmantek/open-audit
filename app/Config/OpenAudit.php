@@ -9,9 +9,9 @@ use Config\Database;
 
 class OpenAudit extends BaseConfig
 {
-    # leave for backwards compat $this->displayVersion = '6.0.3';
-    public string $displayVersion = '6.0.3';
-    public int $appVersion = 20260218;
+    # leave for backwards compat $this->displayVersion = '6.0.4';
+    public string $displayVersion = '6.0.4';
+    public int $appVersion = 20260512;
 
     public float $microtime = 0;
     public int $collector_connect_timeout = 10;
