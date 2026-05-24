@@ -1227,7 +1227,7 @@ class Collections extends BaseController
         $attributes = $this->resp->meta->received_data->attributes;
         if ($this->resp->meta->collection === 'users' && $this->resp->meta->action === 'update') {
             if ($this->resp->meta->id === $this->user->id && $this->user->permissions['users'] !== 'crud') {
-                $allowedFields = ['name', 'lang'];
+                $allowedFields = ['name', 'full_name', 'password', 'email', 'lang', 'toolbar_style', 'list_table_format'];
                 foreach ($attributes as $key => $value) {
                     if (! in_array($key, $allowedFields)) {
                         unset($attributes->{$key});

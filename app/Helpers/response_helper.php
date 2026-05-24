@@ -148,6 +148,13 @@ if (!function_exists('response_create')) {
         if ($response->meta->collection === 'configuration' and $response->meta->action === 'executeemail') {
             $response->meta->action = 'create';
         }
+        if ($response->meta->collection === 'users' and $response->meta->action === 'read' and $response->meta->id === $instance->user->id) {
+            $instance->user->permissions['users'] ??= '';
+            if (!str_contains($instance->user->permissions['users'], 'r')) {
+                // Allowed to read self
+                $instance->user->permissions['users'] .= 'r';
+            }
+        }
         if ($response->meta->collection === 'users' and $response->meta->action === 'update' and $response->meta->id === $instance->user->id) {
             $instance->user->permissions['users'] ??= '';
             if (!str_contains($instance->user->permissions['users'], 'r')) {
