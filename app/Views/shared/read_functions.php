@@ -189,9 +189,9 @@ function read_field_header(string $collection = '', string $name = '', string $d
     $count = $GLOBALS['header_count'];
 
     $label = (empty($label)) ? ucwords(str_replace('_', ' ', __($name))) : $label;
-    $label = ($label === 'org_id') ? 'organisation' : $label;
-    $label = ($label === 'location_id') ? 'location' : $label;
-    $label = ($label === 'group_id') ? 'group' : $label;
+    $label = ($label === 'Org Id') ? 'Organisation' : $label;
+    $label = ($label === 'Location Id') ? 'Location' : $label;
+    $label = ($label === 'Group Id') ? 'Group' : $label;
 
     $label = str_replace('credentials.', 'Credentials ', $label);
     $label = str_replace('scan_options.', 'Scan Options ', $label);
