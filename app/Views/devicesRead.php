@@ -2306,7 +2306,7 @@ if (! empty($included['nmap'])) {
                                     <?=  device_panel('cli_config', $user->toolbar_style, $resource->id, '', false, $count); ?>
                                     <div class="card-body">
                                         <div class="row">
-                                            <?= html_entity_decode($included['cli_config_diff']) ?>
+                                            <pre><code class="diff"><?= htmlspecialchars($included['cli_config_diff'], ENT_QUOTES, 'UTF-8') ?></code></pre>
                                         </div>
                                     </div>
                                 </div>
