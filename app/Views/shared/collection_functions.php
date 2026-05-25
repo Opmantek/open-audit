@@ -27,7 +27,8 @@ function collection_card_header(string $collection = '', string $icon = '', ?obj
 
     $export_link = url_to($collection . 'Collection') . '?format=';
     if (!empty($url)) {
-        $export_link = url_to($collection . 'Collection') . '?' . $url . '&format=';
+        $sanitizedUrl = htmlspecialchars($url, ENT_QUOTES, 'UTF-8');
+        $export_link = url_to($collection . 'Collection') . '?' . $sanitizedUrl . '&format=';
     }
 
     if (str_contains($user->permissions[$collection], 'c') and $collection !== 'database' and $collection !== 'vendors' and !str_contains($label, 'About')) {

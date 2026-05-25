@@ -225,7 +225,6 @@ if (!function_exists('response_create')) {
         if ($replace_like) {
             $response->meta->query_string = str_replace('like', 'like%', $response->meta->query_string);
         }
-        $response->meta->query_string = html_entity_decode($response->meta->query_string);
         $response->meta->requestor = '';
         if (!empty($_SERVER['HTTP_REQUESTOR'])) {
             $response->meta->requestor = (string)$_SERVER['HTTP_REQUESTOR'];
