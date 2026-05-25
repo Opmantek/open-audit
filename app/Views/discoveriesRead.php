@@ -647,8 +647,8 @@ if ($resource->status === 'killed') {
             var discoveryId = Number('<?php echo $meta->id ?>');
             $("#devices_assigned_to_org").append($('<option>', { value: '', text: ''}));
             $("#devices_assigned_to_location").append($('<option>', { value: '', text: ''}));
-            $("#devices_assigned_to_org").val("<?= $resource->devices_assigned_to_org ?>");
-            $("#devices_assigned_to_location").val("<?= $resource->devices_assigned_to_location ?>");
+            $("#devices_assigned_to_org").val("<?= esc($resource->devices_assigned_to_org, 'js') ?>");
+            $("#devices_assigned_to_location").val("<?= esc($resource->devices_assigned_to_location, 'js') ?>");
 
             var hash = window.location.hash;
             if (hash == "") {

@@ -71,7 +71,7 @@ include 'shared/common_functions.php';
 <script {csp-script-nonce}>
 window.onload = function () {
     $(document).ready(function() {
-        $("#menu_display").val("<?= $resource->menu_display ?>");
+        $("#menu_display").val("<?= esc($resource->menu_display, 'js') ?>");
         $("#button_export_csv").remove();
     });
 }

@@ -163,9 +163,9 @@ include 'shared/read_functions.php';
 <script {csp-script-nonce}>
 window.onload = function () {
     $(document).ready(function() {
-        $("#applied").val("<?= $resource->applied ?>");
-        $("#result").val("<?= $resource->result ?>");
-        $("#maturity_level").val("<?= $resource->maturity_level ?>");
+        $("#applied").val("<?= esc($resource->applied, 'js') ?>");
+        $("#result").val("<?= esc($resource->result, 'js') ?>");
+        $("#maturity_level").val("<?= esc($resource->maturity_level, 'js') ?>");
         $("#button_export_csv").remove();
         $("#button_export_json").remove();
         $("#button_delete").remove();

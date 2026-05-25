@@ -63,9 +63,9 @@ include 'shared/common_functions.php';
 window.onload = function () {
     $(document).ready(function() {
         $("#data\\[attributes\\]\\[name\\]").focus();
-        $("#data\\[attributes\\]\\[name\\]").val("<?= @$_SERVER['SERVER_NAME'] ?>");
-        $("#data\\[attributes\\]\\[os\\]").val("<?= $config->server_platform ?>");
-        $("#data\\[attributes\\]\\[uuid\\]").val("<?= $config->uuid ?>");
+        $("#data\\[attributes\\]\\[name\\]").val("<?= esc(@$_SERVER['SERVER_NAME'], 'js') ?>");
+        $("#data\\[attributes\\]\\[os\\]").val("<?= esc($config->server_platform, 'js') ?>");
+        $("#data\\[attributes\\]\\[uuid\\]").val("<?= esc($config->uuid, 'js') ?>");
         $("#data\\[attributes\\]\\[community\\]").val("/open-audit");
         $("#data\\[attributes\\]\\[host\\]").val("http://");
     });

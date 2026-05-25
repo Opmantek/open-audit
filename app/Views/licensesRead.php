@@ -132,7 +132,7 @@ if ($style === 'icontext') {
 <script {csp-script-nonce}>
 window.onload = function () {
     $(document).ready(function() {
-        $("#org_descendants").val("<?= $resource->org_descendants ?>");
+        $("#org_descendants").val("<?= esc($resource->org_descendants, 'js') ?>");
 
         var hash = window.location.hash;
         if (hash == "") {
