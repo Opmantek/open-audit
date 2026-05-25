@@ -48,7 +48,7 @@ class Logon extends Controller
 
         $session = session();
         if (!empty($session->get('user_id'))) {
-            if ($config->device_count === 0) {
+            if ($config->device_count === 0 or $config->device_count === 1) {
                 return redirect()->to(url_to('welcome'));
             } else {
                 return redirect()->to(url_to('home'));
@@ -305,7 +305,7 @@ class Logon extends Controller
                     header('Location: ' . $_POST['url']);
                     exit;
                 }
-                if ($config->device_count === 0) {
+                if ($config->device_count === 0 or $config->device_count === 1) {
                     return redirect()->to(url_to('welcome'));
                 } else {
                     return redirect()->to(url_to('home'));
