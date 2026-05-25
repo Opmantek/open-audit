@@ -174,39 +174,73 @@ final class SubnetHelperTest extends TestCase
         ];
     }
 
+    /**
+     * @dataProvider allExpansionDataProvidersMerged
+     */
+    public function testCountMatchesExpansion(string $input, array $expected, bool $excludeNetworkBroadcast = true): void
+    {
+        $calculatedSize = SubnetHelper::count($input, $excludeNetworkBroadcast);
+
+        $this->assertEquals(count($expected), $calculatedSize);
+    }
+
+    public static function allExpansionDataProvidersMerged(): array
+    {
+        return array_merge(
+            self::ipv4CidrExpansionDataProvider(),
+            self::ipv4RangeExpansionDataProvider(),
+            self::ipv6RangeExpansionDataProvider(),
+            self::ipv6CidrExpansionDataProvider(),
+            self::mixedInputExpansionDataProvider()
+        );
+    }
+
+    /**
+     * @dataProvider invalidInputDataProvider
+     */
+    public function testExpandThrowsErrorOnInvalidInput(string $invalidInput): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        iterator_to_array(SubnetHelper::expand($invalidInput));
+    }
+
+    /**
+     * @dataProvider invalidInputDataProvider
+     */
+    public function testCountThrowsErrorOnInvalidInput(string $invalidInput): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        SubnetHelper::count($invalidInput);
+    }
+
+    public static function invalidInputDataProvider(): array
+    {
+        return [
+            ['invalid-input'],
+            ['2001:db8::5-1'],
+            ['10.0.0.1/not-a-number'],
+            ['10.0.0.300-400'],
+            ['10.0.0.1/33'],
+            ['2001:db8::/129'],
+        ];
+    }
+
+    public function testCountHandlesHugeNetworksWithoutTimeout(): void
+    {
+        $ipv4Size = SubnetHelper::count('10.0.0.0/8', false);
+        $this->assertEquals(16777216, $ipv4Size);
+
+        $ipv6Size = SubnetHelper::count('2001:db8::/64');
+        $this->assertEquals(pow(2, 64), $ipv6Size);
+    }
+
     public function testMaxResultsIsEnforced(): void
     {
         $this->expectException(RuntimeException::class);
 
         iterator_to_array(SubnetHelper::expand('10.0.0.0/24', 10));
-    }
-
-    public function testInvalidInputThrowsException(): void
-    {
-        $this->expectException(InvalidArgumentException::class);
-
-        iterator_to_array(SubnetHelper::expand('invalid-input'));
-    }
-
-    public function testInvalidIpv6RangeThrowsException(): void
-    {
-        $this->expectException(InvalidArgumentException::class);
-
-        iterator_to_array(SubnetHelper::expand('2001:db8::5-1'));
-    }
-
-    public function testInvalidCidrThrowsException(): void
-    {
-        $this->expectException(InvalidArgumentException::class);
-
-        iterator_to_array(SubnetHelper::expand('10.0.0.1/not-a-number'));
-    }
-
-    public function testInvalidIpv4RangeThrowsException(): void
-    {
-        $this->expectException(InvalidArgumentException::class);
-
-        iterator_to_array(SubnetHelper::expand('10.0.0.300-400'));
     }
 
     public function testOutputIsDeterministic(): void
