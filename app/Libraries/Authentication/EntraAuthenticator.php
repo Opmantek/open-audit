@@ -113,10 +113,11 @@ final class EntraAuthenticator
         }
 
         $ownerDetails = $resourceOwner->toArray();
+        $entraUid = $ownerDetails['sub'] ?? $ownerDetails['oid'] ?? null;
         $username = $ownerDetails['preferred_username'] ?? null;
 
-        if (! $username) {
-            $message = 'Entra authentication claim `preferred_username` is required';
+        if (! $entraUid || ! $username) {
+            $message = 'Entra authentication claim `sub`/`oid` and `preferred_username` are required';
             log_message('error', $message);
             $this->session->setFlashdata('error', $message);
             return site_url('logon');
@@ -127,13 +128,18 @@ final class EntraAuthenticator
         }
 
         $localUser = $this->database->query(
-            'SELECT * FROM users WHERE name = ? ORDER BY id LIMIT 1',
-            [$username]
+            'SELECT u.* FROM users AS u 
+             JOIN user_oauth_identities AS oi ON oi.user_id = u.id 
+             WHERE oi.provider = "entra" 
+               AND oi.provider_uid = ? 
+               AND u.active = "y" 
+             LIMIT 1',
+            [$entraUid]
         )->getRow();
 
         if (! $useAuthorisation) {
             if (! $localUser) {
-                $message = sprintf('Entra authentication without authorisation, user `%s` not found', $username);
+                $message = sprintf('Entra authentication failed: Account not linked for user `%s`', $username);
                 log_message('error', $message);
                 $this->session->setFlashdata('error', $message);
                 return site_url('logon');
@@ -164,6 +170,12 @@ final class EntraAuthenticator
         }
 
         if (! $localUser) {
+            $duplicateCheck = $this->database->query('SELECT id FROM users WHERE name = ? LIMIT 1', [$username])->getRow();
+
+            if ($duplicateCheck) {
+                $username = $username . '_' . bin2hex(random_bytes(3));
+            }
+
             $userData = new stdClass();
             $userData->org_id = 1;
             $userData->orgs = $organisations;
@@ -174,6 +186,7 @@ final class EntraAuthenticator
             $userData->password = '';
             $userData->type = 'user';
             $userData->lang = 'en';
+            $userData->active = 'y';
 
             $localUser = $this->createLocalUser($userData);
 
@@ -183,6 +196,12 @@ final class EntraAuthenticator
                 $this->session->setFlashdata('error', $message);
                 return site_url('logon');
             }
+
+            $this->database->table('user_oauth_identities')->insert([
+                'user_id'      => $localUser->id,
+                'provider'     => 'entra',
+                'provider_uid' => $entraUid
+            ]);
 
             log_message('info', sprintf('Entra authentication with authorisation, user `%s` created', $username));
         }

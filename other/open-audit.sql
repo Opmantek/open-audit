@@ -4789,6 +4789,32 @@ LOCK TABLES `user_group` WRITE;
 UNLOCK TABLES;
 
 --
+-- Table structure for table `user_oauth_identities`
+--
+
+DROP TABLE IF EXISTS `user_oauth_identities`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8mb4 */;
+CREATE TABLE `user_oauth_identities` (
+  `id` INT AUTO_INCREMENT PRIMARY KEY,
+  `user_id` INT NOT NULL,
+  `provider` ENUM('entra','github','okta') NOT NULL,
+  `provider_uid` VARCHAR(255) NOT NULL,
+  `created_at` DATETIME DEFAULT CURRENT_TIMESTAMP,
+  UNIQUE KEY `provider_uid_idx` (`provider`, `provider_uid`),
+  CONSTRAINT `user_oauth_identities_user_id` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE CASCADE
+);
+
+--
+-- Dumping data for table `user_oauth_identities`
+--
+
+LOCK TABLES `user_oauth_identities` WRITE;
+/*!40000 ALTER TABLE `user_oauth_identities` DISABLE KEYS */;
+/*!40000 ALTER TABLE `user_oauth_identities` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `users`
 --
 
