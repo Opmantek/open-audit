@@ -302,8 +302,10 @@ class Logon extends Controller
             $session->set('user_language', $user->lang ?? 'en');
             if ($format !== 'json') {
                 if (!empty($_POST['url'])) {
-                    header('Location: ' . $_POST['url']);
-                    exit;
+                    $targetUrl = $_POST['url'];
+                    if (strpos($targetUrl, '/') === 0 && strpos($targetUrl, '//') !== 0) {
+                        return redirect()->to(site_url($targetUrl));
+                    }
                 }
                 if ($config->device_count === 0 or $config->device_count === 1) {
                     return redirect()->to(url_to('welcome'));
