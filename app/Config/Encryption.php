@@ -100,7 +100,7 @@ class Encryption extends BaseConfig
                 $database = Database::connect();
                 $configTable = $database->table('configuration');
                 $setting = $configTable->where('name', 'encryption_key')->get()->getRow();
-                log_message('info', 'Maybe generate encryption Key: ' . print_r($setting, true));
+                log_message('debug', 'Maybe generate encryption Key: ' . print_r($setting, true));
 
                 // If the setting does not exist in the database, we must assume this is an
                 // existing install, whereby changing the key now would break their system.
@@ -131,7 +131,7 @@ class Encryption extends BaseConfig
                         ]);
                     $this->key = $rawKey;
                 } else {
-                    log_message('info', 'Loading generated key');
+                    log_message('debug', 'Loading generated key');
                     $this->key = $setting->value;
                 }
             }
