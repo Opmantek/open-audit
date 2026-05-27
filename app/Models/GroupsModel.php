@@ -7,6 +7,7 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Libraries\Exception\FormValidationException;
 use stdClass;
 
 class GroupsModel extends BaseModel
@@ -69,6 +70,11 @@ class GroupsModel extends BaseModel
         if (empty($data)) {
             return null;
         }
+
+        if (! isset($data->sql) || ! is_string($data->sql) || ! str_contains($data->sql, '@filter') || strlen($data->sql) < 50) {
+            throw FormValidationException::forField('sql', 'Invalid SQL supplied');
+        }
+
         $this->builder->insert($data);
         if ($error = $this->sqlError($this->db->error())) {
             \Config\Services::session()->setFlashdata('error', json_encode($error));
