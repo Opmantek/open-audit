@@ -154,6 +154,15 @@ class WidgetsModel extends BaseModel
         return ($widget);
     }
 
+    private function hasPermission(string $type, string $permissions): bool
+    {
+        $instance = &get_instance();
+        $user = $instance->user ?? new \stdClass();
+        $userPermissions = $user->permissions ?? [];
+        $typePermissions = $userPermissions[$type] ?? '';
+        return $typePermissions === $permissions;
+    }
+
     public function findIdByName(string $name = ''): int
     {
         $this->builder->select('id');
@@ -212,6 +221,12 @@ class WidgetsModel extends BaseModel
         $org_list = implode(',', $org_list);
         $instance = & get_instance();
         if (!empty($widget->sql)) {
+            if (! $this->hasPermission('widgets', 'crud')) {
+                $message = 'Permission denied when executing widget SQL query.';
+                log_message('error', $message);
+                \Config\Services::session()->setFlashdata('error', $message);
+                return false;
+            }
             $sql = $widget->sql;
             if (stripos($sql, 'where @filter and') === false && stripos($sql, 'where @filter group by') === false) {
                 // These entries must only be created by a user with Admin role as no filter allows anything in the DB to be queried (think multi-tenancy).
@@ -303,6 +318,12 @@ class WidgetsModel extends BaseModel
             $sql = "SELECT DATE(change_log.timestamp) AS `date`, count(DATE(change_log.timestamp)) AS `count`  FROM change_log LEFT JOIN devices ON (devices.id = change_log.device_id) WHERE @filter AND change_log.timestamp >= DATE_SUB(CURDATE(), INTERVAL " . intval($widget->line_days) . " DAY) AND change_log.db_table = '" . $widget->line_table . "'  AND change_log.db_action = '" . $widget->line_event . "' GROUP BY DATE(change_log.timestamp)";
             $filter = "devices.org_id IN (" . $org_list . ")";
             if (!empty($widget->where)) {
+                if (! $this->hasPermission('widgets', 'crud')) {
+                    $message = 'Permission denied when executing widget SQL where clause.';
+                    log_message('error', $message);
+                    \Config\Services::session()->setFlashdata('error', $message);
+                    return false;
+                }
                 $sql .= " AND " . $widget->where;
             }
             $sql = str_replace('@filter', $filter, $sql);
@@ -450,6 +471,12 @@ class WidgetsModel extends BaseModel
         $instance = & get_instance();
 
         if (!empty($widget->sql)) {
+            if (! $this->hasPermission('widgets', 'crud')) {
+                $message = 'Permission denied when executing widget SQL query.';
+                log_message('error', $message);
+                \Config\Services::session()->setFlashdata('error', $message);
+                return false;
+            }
             // remove excessive white space and line breaks
             $sql = preg_replace('/\s+/u', ' ', $widget->sql);
             if (stripos($sql, 'where @filter and') === false && stripos($sql, 'where @filter group by') === false) {
@@ -501,6 +528,12 @@ class WidgetsModel extends BaseModel
                                 " WHERE @filter GROUP BY " . preg_replace($pattern, "", $group_by);
             $filter = "devices.org_id in (" . $org_list . ")";
             if (!empty($widget->where)) {
+                if (! $this->hasPermission('widgets', 'crud')) {
+                    $message = 'Permission denied when executing widget SQL where clause.';
+                    log_message('error', $message);
+                    \Config\Services::session()->setFlashdata('error', $message);
+                    return false;
+                }
                 $filter .= " AND " . $widget->where;
             }
             $sql = str_replace('@filter', $filter, $sql);
@@ -522,6 +555,12 @@ class WidgetsModel extends BaseModel
                                 " WHERE @filter GROUP BY " . preg_replace($pattern, "", $group_by);
             $filter = "devices.org_id in (" . $org_list . ")";
             if (!empty($widget->where)) {
+                if (! $this->hasPermission('widgets', 'crud')) {
+                    $message = 'Permission denied when executing widget SQL where clause.';
+                    log_message('error', $message);
+                    \Config\Services::session()->setFlashdata('error', $message);
+                    return false;
+                }
                 $filter .= " AND " . $widget->where;
             }
             $sql = str_replace('@filter', $filter, $sql);
@@ -658,6 +697,12 @@ class WidgetsModel extends BaseModel
         }
 
         if (!empty($widget->sql)) {
+            if (! $this->hasPermission('widgets', 'crud')) {
+                $message = 'Permission denied when executing widget SQL query.';
+                log_message('error', $message);
+                \Config\Services::session()->setFlashdata('error', $message);
+                return false;
+            }
             $sql = $widget->sql;
             if (str_contains($sql, 'WHERE @filter')) {
                 $filter = "WHERE devices.org_id in (" . $org_list . ")";
@@ -703,6 +748,12 @@ class WidgetsModel extends BaseModel
         }
         log_message('debug', 'Resulset is ' . $return->result);
         if (!empty($widget->status_secondary_sql)) {
+            if (! $this->hasPermission('widgets', 'crud')) {
+                $message = 'Permission denied when executing widget secondary SQL query.';
+                log_message('error', $message);
+                \Config\Services::session()->setFlashdata('error', $message);
+                return null;
+            }
             $sql = $widget->status_secondary_sql;
             if (str_contains($sql, 'WHERE @filter')) {
                 $filter = "WHERE devices.org_id in (" . $org_list . ")";
