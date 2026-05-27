@@ -11,6 +11,37 @@ use RuntimeException;
 final class SubnetHelper
 {
     /**
+     * Validate whether a given string is a properly formatted IPv4 or IPv6 CIDR block.
+     *
+     * @param string $input The network string to validate
+     * @return bool bool True if the input is a valid CIDR block, false otherwise
+     */
+    public static function isValidCidr(string $input): bool
+    {
+        if (substr_count($input, '/') !== 1) {
+            return false;
+        }
+
+        [$ip, $netmask] = explode('/', $input);
+
+        if (! ctype_digit($netmask)) {
+            return false;
+        }
+
+        $netmask = (int) $netmask;
+
+        if (filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4) !== false) {
+            return ($netmask >= 0 && $netmask <= 32);
+        }
+
+        if (filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6) !== false) {
+            return ($netmask >= 0 && $netmask <= 128);
+        }
+
+        return false;
+    }
+
+    /**
      * Expand a whitespace-delimited string of IPv4/IPv6 addresses, CIDR blocks,
      * and dash ranges into individual IP addresses.
      *
