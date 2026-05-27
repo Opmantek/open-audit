@@ -345,7 +345,7 @@ class ComponentsModel extends BaseModel
                 return null;
             }
 
-            $targetPath = WRITEPATH . 'uploads/custom_images/';
+            $targetPath = ROOTPATH . 'public' . DIRECTORY_SEPARATOR . 'custom_images' . DIRECTORY_SEPARATOR;
             if (! file_exists($targetPath)) {
                 mkdir($targetPath, 0755, true);
             }
@@ -379,9 +379,6 @@ class ComponentsModel extends BaseModel
                     return null;
                 }
                 $target = $targetPath . $filename;
-                if (php_uname('s') === 'Windows NT') {
-                    //$target = 'c:\\xampp\\htdocs\\open-audit\\custom_images\\' . $filename;
-                }
                 if (@move_uploaded_file($_FILES['attachment']['tmp_name'], $target)) {
                     $sql = 'INSERT INTO `image` VALUES (NULL, ?, ?, ?, ?, ?, NOW())';
                     $this->db->query($sql, [$data->device_id, $data->name, $filename, $data->orientation, $instance->user->full_name]);
