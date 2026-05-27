@@ -719,7 +719,10 @@ if (!empty($config->modules)) {
         <div class="container-fluid">
             <div class="alert alert-danger alert-dismissable fade show" role="alert">
                 <?php if (!empty($json)) {?>
-                    <?= 'Message: ' . $json->message . '<br>SQL: ' . $json->sql ?>
+                    <?= 'Message: ' . $json->message ?>
+                    <?php if (!empty($json->sql)): ?>
+                        <br>SQL: <?php echo $json->sql; ?>
+                    <?php endif; ?>
                 <?php } else { ?>
                     <?= $_SESSION['error'] ?>
                 <?php } ?>
