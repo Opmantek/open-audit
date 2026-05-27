@@ -14,30 +14,42 @@ declare(strict_types=1);
  */
 function simpleDecrypt(string $message = '', string $key = ''): string
 {
-    if (empty($message) or empty($key)) {
+    $key = $key === '' ? config('Encryption')->key : $key;
+
+    if (empty($message) || empty($key)) {
+        log_message('error', 'simpleDecrypt supplied empty message/key');
         return '';
     }
-    $key = mb_substr("00000000000000000000000000000000" . $key, -32);
+
+    if (mb_strlen($key, '8bit') !== 32) {
+        // We cannot change this due to existing data in the wild.
+        $key = mb_substr(str_repeat("0", 32) . $key, -32, null, '8bit');
+        // Ideally should have been
+        //$key = mb_substr(str_repeat("\0", 32) . $key, -32, null, '8bit');
+    }
+
     $message = @hex2bin($message);
-    if (empty($message)) {
+    if ($message === false || mb_strlen($message, '8bit') < 24) {
+        log_message('error', 'simpleDecrypt could not convert hex message to binary');
         return '';
     }
+
     $nonce = mb_substr($message, 0, 24, '8bit');
-    $ciphertext = mb_substr($message, 24, strlen($message), '8bit');
-    $plaintext = '';
+    $ciphertext = mb_substr($message, 24, null, '8bit');
+
     try {
-        // Use the Sodium Compat library
-        // $plaintext = sodium_crypto_aead_xchacha20poly1305_ietf_decrypt($ciphertext, $nonce, $nonce, $key);
-        $plaintext = ParagonIE_Sodium_Compat::crypto_aead_xchacha20poly1305_ietf_decrypt($ciphertext, $nonce, $nonce, $key);
+        $plaintext = ParagonIE_Sodium_Compat::crypto_aead_xchacha20poly1305_ietf_decrypt(
+            $ciphertext,
+            $nonce,
+            $nonce,
+            $key
+        );
     } catch (Exception $e) {
-        log_message('error', 'simpleDecrypt error: ' . json_encode($e));
+        log_message('error', 'simpleDecrypt error: ' . $e->getMessage());
         return '';
     }
-    // Sodium returns false on decryption failure (e.g., wrong key or corrupted ciphertext)
-    if ($plaintext === false) {
-        return '';
-    }
-    return $plaintext;
+
+    return is_string($plaintext) ? $plaintext : '';
 }
 
 /**
@@ -49,10 +61,31 @@ function simpleDecrypt(string $message = '', string $key = ''): string
  */
 function simpleEncrypt(string $message = '', string $key = ''): string
 {
-    $key = mb_substr("00000000000000000000000000000000" . $key, -32);
-    $nonce = random_bytes(24);
-    // Use the Sodium Compat library
-    // $encrypted = sodium_crypto_aead_xchacha20poly1305_ietf_encrypt($message, $nonce, $nonce, $key);
-    $encrypted = ParagonIE_Sodium_Compat::crypto_aead_xchacha20poly1305_ietf_encrypt($message, $nonce, $nonce, $key);
-    return bin2hex($nonce . $encrypted);
+    $key = $key === '' ? config('Encryption')->key : $key;
+
+    if (empty($key)) {
+        log_message('error', 'simpleEncrypt supplied empty key');
+        return '';
+    }
+
+    if (mb_strlen($key, '8bit') !== 32) {
+        // We cannot change this due to existing data in the wild.
+        $key = mb_substr(str_repeat("0", 32) . $key, -32, null, '8bit');
+        // Ideally should have been
+        //$key = mb_substr(str_repeat("\0", 32) . $key, -32, null, '8bit');
+    }
+
+    try {
+        $nonce = random_bytes(24);
+        $encrypted = ParagonIE_Sodium_Compat::crypto_aead_xchacha20poly1305_ietf_encrypt(
+            $message,
+            $nonce,
+            $nonce,
+            $key
+        );
+        return bin2hex($nonce . $encrypted);
+    } catch (Exception $error) {
+        log_message('error', 'simpleEncrypt error: ' . $error->getMessage());
+        return '';
+    }
 }
