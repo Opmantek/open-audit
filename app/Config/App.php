@@ -471,7 +471,7 @@ class App extends BaseConfig
 
         # Set CPSEnabled depending on environment
         if (!empty($_SERVER['CI_ENVIRONMENT']) and $_SERVER['CI_ENVIRONMENT'] === 'development') {
-            $this->CSPEnabled = false;
+            //$this->CSPEnabled = false;
         }
 
         $timezone = '';

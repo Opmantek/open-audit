@@ -31,4 +31,15 @@ class Services extends BaseService
 
         return new AuditService();
     }
+
+    public static function csp(?\Config\ContentSecurityPolicy $config = null, bool $getShared = true)
+    {
+        if ($getShared) {
+            return static::getSharedInstance('csp', $config);
+        }
+
+        $config ??= config(\Config\ContentSecurityPolicy::class);
+
+        return new \App\Libraries\Http\ContentSecurityPolicy($config);
+    }
 }
