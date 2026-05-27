@@ -7,6 +7,7 @@ declare(strict_types=1);
 
 namespace App\Controllers;
 
+use App\Libraries\Exception\FormValidationException;
 use stdClass;
 
 /**
@@ -272,7 +273,13 @@ class Collections extends BaseController
         }
 
         if (empty($this->resp->meta->id) and !empty($this->resp->meta->received_data->attributes)) {
-            $id = $this->{strtolower($this->resp->meta->collection) . "Model"}->create($this->resp->meta->received_data->attributes);
+            try {
+                $id = $this->{strtolower($this->resp->meta->collection) . "Model"}->create($this->resp->meta->received_data->attributes);
+            } catch (FormValidationException $error) {
+                return redirect()->back()
+                    ->with('error', $error->getErrorMessages())
+                    ->withInput();
+            }
         }
 
         if (!empty($id)) {
