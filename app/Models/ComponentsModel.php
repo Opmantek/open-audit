@@ -176,6 +176,7 @@ class ComponentsModel extends BaseModel
         if (empty($data)) {
             return null;
         }
+        /** @var \App\Controllers\BaseController $instance */
         $instance = & get_instance();
         $device_ids = array();
         if (!empty($data->device_id)) {
@@ -193,6 +194,7 @@ class ComponentsModel extends BaseModel
             \Config\Services::session()->setFlashdata('error', 'Insufficient details supplied to create credential.');
             if (!empty($data->device_id)) {
                 redirect()->route('devicesRead', [$data->device_id]);
+                return null;
             }
             redirect()->route('devicesCollection');
             return null;
@@ -211,8 +213,34 @@ class ComponentsModel extends BaseModel
                 redirect()->route('devicesRead', [$data->device_id]);
                 return null;
             }
-            $filename = $data->device_id . '_' . basename($_FILES['attachment']['name']);
-            $target = APPPATH . 'Attachments/' . $filename;
+            $sanitizedName = pathinfo($_FILES['attachment']['name'], PATHINFO_BASENAME);
+            $filename = intval($data->device_id) . '_' . preg_replace('/[^a-zA-Z0-9_.-]/', '', $sanitizedName);
+
+            if (function_exists('mime_content_type')) {
+                $mimeType = mime_content_type($_FILES['attachment']['tmp_name']);
+            } else {
+                $mimeType = '';
+            }
+
+            // @todo Confirm these are the only file types allowed
+            $allowedFiletypes = ['image/png', 'image/jpeg'];
+            $allowedExtensions = ['jpg', 'jpeg', 'png'];
+            $extension = strtolower(pathinfo($filename, PATHINFO_EXTENSION));
+
+            if (! in_array($mimeType, $allowedFiletypes) || ! in_array($extension, $allowedExtensions)) {
+                unlink($_FILES['attachment']['tmp_name']);
+                log_message('warning', sprintf('Attachment file type %s or extension %s is not allowed', $mimeType, $extension));
+                \Config\Services::session()->setFlashdata('warning', sprintf('File type not supported, must be either: %s.', implode(', ', $allowedFiletypes)));
+                redirect()->route('devicesRead', [$data->device_id]);
+                return null;
+            }
+
+            $targetPath = WRITEPATH . 'uploads/attachments/';
+            if (! file_exists($targetPath)) {
+                mkdir($targetPath, 0755, true);
+            }
+
+            $target = $targetPath . $filename;
             if (@move_uploaded_file($_FILES['attachment']['tmp_name'], $target)) {
                 $sql = "INSERT INTO `attachment` VALUES (null, ?, ?, ?, ?, NOW())";
                 $query = $this->db->query($sql, [$data->device_id, $data->name, $filename, $instance->user->full_name]);
@@ -316,17 +344,21 @@ class ComponentsModel extends BaseModel
                 redirect()->route('devicesRead', [$data->device_id]);
                 return null;
             }
-            if (!file_exists(ROOTPATH . 'public/custom_images')) {
-                mkdir(ROOTPATH . 'public/custom_images');
+
+            $targetPath = WRITEPATH . 'uploads/custom_images/';
+            if (! file_exists($targetPath)) {
+                mkdir($targetPath, 0755, true);
             }
-            if (!file_exists(ROOTPATH . 'public/custom_images')) {
+
+            if (! is_dir($targetPath)) {
                 log_message('error', 'Custom Images directory does not exist and cannot be created.');
                 \Config\Services::session()->setFlashdata('error', 'Custom Images directory does not exist and cannot be created. Check filesystem permissions.');
                 redirect()->route('devicesRead', [$data->device_id]);
                 return null;
             }
             if (!empty($_FILES['attachment']['name'])) {
-                $filename = (string)basename($_FILES['attachment']['name']);
+                $sanitizedName = pathinfo($_FILES['attachment']['name'], PATHINFO_BASENAME);
+                $filename = preg_replace('/[^a-zA-Z0-9_.-]/', '', $sanitizedName);
                 // Ensure we only accept JPG, PNG and SVG files
                 if (function_exists('mime_content_type')) {
                     $mime_type = mime_content_type($_FILES['attachment']['tmp_name']);
@@ -336,20 +368,19 @@ class ComponentsModel extends BaseModel
                 // $filetypes = array('image/png', 'image/svg+xml', 'image/svg', 'image/jpeg', '');
                 // $extensions = array('jpg', 'jpeg', 'png', 'svg');
                 // disabled SVG because of XSS issues when requesting the direct image
-                $filetypes = array('image/png', 'image/jpeg', '');
+                $filetypes = array('image/png', 'image/jpeg');
                 $extensions = array('jpg', 'jpeg', 'png');
-                $temp = explode('.', $filename);
-                $extension = strtolower($temp[count($temp) - 1]);
-                if (!in_array($mime_type, $filetypes) or !in_array($extension, $extensions)) {
+                $extension = strtolower(pathinfo($filename, PATHINFO_EXTENSION));
+                if (!in_array($mime_type, $filetypes) || !in_array($extension, $extensions)) {
                     unlink($_FILES['attachment']['tmp_name']);
                     log_message('warning', 'Only jpg and png files are accepted (' . $extension . ') (' . $mime_type . ')');
                     \Config\Services::session()->setFlashdata('warning', 'Only jpg, jpeg and png files are accepted (provided: ' . $extension . ') (which is a: ' . $mime_type . ')');
                     redirect()->route('devicesRead', [$data->device_id]);
                     return null;
                 }
-                $target = ROOTPATH . 'public/custom_images/' . $filename;
+                $target = $targetPath . $filename;
                 if (php_uname('s') === 'Windows NT') {
-                    $target = 'c:\\xampp\\htdocs\\open-audit\\custom_images\\' . $filename;
+                    //$target = 'c:\\xampp\\htdocs\\open-audit\\custom_images\\' . $filename;
                 }
                 if (@move_uploaded_file($_FILES['attachment']['tmp_name'], $target)) {
                     $sql = 'INSERT INTO `image` VALUES (NULL, ?, ?, ?, ?, ?, NOW())';
@@ -361,8 +392,9 @@ class ComponentsModel extends BaseModel
                     return null;
                 }
             } elseif (!empty($data->filename)) {
+                $sanitizedName = preg_replace('/[^a-zA-Z0-9_.-]/', '', pathinfo($data->filename, PATHINFO_BASENAME));
                 $sql = 'INSERT INTO `image` VALUES (NULL, ?, ?, ?, ?, ?, NOW())';
-                $this->db->query($sql, [$data->device_id, $data->name, $data->filename, $data->orientation, $instance->user->full_name]);
+                $this->db->query($sql, [$data->device_id, $data->name, $sanitizedName, $data->orientation, $instance->user->full_name]);
                 return null;
             }
         }
