@@ -469,7 +469,6 @@ class WidgetsModel extends BaseModel
         unset($temp);
 
         $instance = & get_instance();
-        $widgetPermissions = $user->permissions['widgets'] ?? '';
 
         if (!empty($widget->sql)) {
             if (! $this->hasPermission('widgets', 'crud')) {
@@ -529,7 +528,7 @@ class WidgetsModel extends BaseModel
                                 " WHERE @filter GROUP BY " . preg_replace($pattern, "", $group_by);
             $filter = "devices.org_id in (" . $org_list . ")";
             if (!empty($widget->where)) {
-                if ($widgetPermissions !== 'crud') {
+                if (! $this->hasPermission('widgets', 'crud')) {
                     $message = 'Permission denied when executing widget SQL where clause.';
                     log_message('error', $message);
                     \Config\Services::session()->setFlashdata('error', $message);
