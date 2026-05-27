@@ -85,32 +85,17 @@ if (! function_exists('execute_windows')) {
             return false;
         }
 
-        $discoveryLogModel = new \App\Models\DiscoveryLogModel();
-        $log = new \stdClass();
-        $log->file = 'wmi_helper';
-        $log->function = 'execute_windows';
-        $log->command = '';
-        $log->discovery_id = $discovery_id;
-
-        if (function_exists('get_instance')) {
-            $instance = & get_instance();
-        } else {
-            $instance = new stdClass();
-            $instance->config = config('OpenAudit');
-        }
-
         if (empty($ip)) {
             log_message('warning', 'No IP supplied to wmi_helper::execute_windows');
             return false;
         }
 
-        if (!filter_var($ip, FILTER_VALIDATE_IP)) {
+        if (! filter_var($ip, FILTER_VALIDATE_IP)) {
             log_message('warning', 'No valid IP supplied to wmi_helper::execute_windows');
             return false;
         }
-        $log->ip = $ip;
 
-        if (!is_object($credentials)) {
+        if (! is_object($credentials)) {
             log_message('warning', 'No credentials passed to wmi_helper::execute_windows');
             return false;
         }
@@ -120,13 +105,34 @@ if (! function_exists('execute_windows')) {
             return false;
         }
 
+        $discoveryLogModel = new \App\Models\DiscoveryLogModel();
+        $log = new \stdClass();
+        $log->file = 'wmi_helper';
+        $log->function = 'execute_windows';
+        $log->command = '';
+        $log->discovery_id = $discovery_id;
+        $log->ip = $ip;
+
+        if (function_exists('get_instance')) {
+            $instance = & get_instance();
+        } else {
+            $instance = new stdClass();
+            $instance->config = config('OpenAudit');
+        }
+
         if (php_uname('s') === 'Linux') {
             $filepath = ROOTPATH . 'other';
             $filename = credentials_file($ip, $credentials);
+
+            $safeIp       = escapeshellarg('//' . $ip);
+            $safeFilename = escapeshellarg($filename);
+            $safeCommand  = escapeshellarg($command);
+            $safeTimeout  = escapeshellarg((string) $instance->config->discovery_wmi_timeout);
+
             // For an unknown reason, if we attempt to execute an SMB2 command first and it does not work, the return var is NULL, which means success.
             // So before we attempt to actually run the audit script, try a WMIC query using SMB2 and determine which to use for the script.
-            // $command_string = "timeout 1m " . $filepath . "/winexe-static-2 -A " . $filename . " --uninstall //" . $ip . " \"wmic csproduct get uuid\" 2>&1";
-            $command_string = "timeout 1m " . $filepath . "/winexe-static-2 -A " . $filename . " --uninstall //" . $ip . " 'powershell -c \"Get-WmiObject -Class Win32_ComputerSystemProduct | Select-Object -ExpandProperty UUID\"' 2>&1";
+            $powershellArgs = escapeshellarg('powershell -c "Get-WmiObject -Class Win32_ComputerSystemProduct | Select-Object -ExpandProperty UUID"');
+            $command_string = "timeout 1m " . $filepath . "/winexe-static-2 -A " . $safeFilename . " --uninstall //" . $safeIp . " " . $powershellArgs . " 2>&1";
             $item_start = microtime(true);
             exec($command_string, $output, $return_var);
             $log->command_time_to_execute = (microtime(true) - $item_start);
@@ -135,13 +141,13 @@ if (! function_exists('execute_windows')) {
             $log->command = $command_string;
             $output = '';
             $log->message = 'Winexe 2 tested and failed, so using Winexe.';
-            $command_string = "timeout " . $instance->config->discovery_wmi_timeout . "s " . $filepath . "/winexe-static -A " . $filename . " --uninstall //$ip \"$command\" 2>&1";
+            $command_string = "timeout " . $safeTimeout . "s " . $filepath . "/winexe-static -A " . $safeFilename . " --uninstall " . $safeIp . " " . $safeCommand . " 2>&1";
             $win = 'winexe-static';
             if ($return_var == 0) {
                 // Success, use SMB2
                 $log->severity = 7;
                 $log->message = 'Winexe 2 tested and working.';
-                $command_string = "timeout " . $instance->config->discovery_wmi_timeout . "s " . $filepath . "/winexe-static-2 -A " . $filename . " --uninstall //$ip \"$command\" 2>&1";
+                $command_string = "timeout " . $safeTimeout . "s " . $filepath . "/winexe-static-2 -A " . $safeFilename . " --uninstall " . $safeIp . " " . $command . " 2>&1";
                 $win = 'winexe-static-2';
             }
             $discoveryLogModel->create($log);
@@ -165,9 +171,13 @@ if (! function_exists('execute_windows')) {
         }
 
         if (php_uname('s') == 'Windows NT') {
-            $password = str_replace('"', '\"', $credentials->credentials->password);
-            $command_string  = ROOTPATH . 'other\\paexec.exe \\\\' . $ip . ' -s -noname -u ' . $credentials->credentials->username . ' -p "' . $password . '" cmd /c "' . $command . '"';
-            $log->command    = ROOTPATH . 'other\\paexec.exe \\\\' . $ip . ' -s -noname -u ' . $credentials->credentials->username . ' -p "' . '*******' . '" cmd /c "' . $command . '"';
+            $safeIp       = escapeshellarg('\\\\' . $ip);
+            $safeUsername = escapeshellarg((string) $credentials->credentials->username);
+            $safePassword = escapeshellarg((string) $credentials->credentials->password);
+            $safeCommand  = escapeshellarg($command);
+
+            $command_string  = ROOTPATH . 'other\\paexec.exe ' . $safeIp . ' -s -noname -u ' . $safeUsername . ' -p ' . $safePassword . ' cmd /c ' . $safeCommand;
+            $log->command    = ROOTPATH . 'other\\paexec.exe \\\\' . $ip . ' -s -noname -u ' . $safeUsername . ' -p ' . '*******' . ' cmd /c ' . $safeCommand;
             exec($command_string, $output, $return_var);
             $log->message = 'Running command script on ' . $ip;
             $log->command_output = json_encode($output);
@@ -206,24 +216,17 @@ if (! function_exists('copy_to_windows')) {
      */
     function copy_to_windows(string $ip = '', ?object $credentials = null, string $share = '', string $source = '', string $destination = '', ?int $discovery_id = null): bool
     {
-        $discoveryLogModel = new \App\Models\DiscoveryLogModel();
-        $log = new \StdClass();
-        $log->file = 'wmi_helper';
-        $log->function = 'copy_to_windows';
-        $log->discovery_id = $discovery_id;
-
         if (empty($ip)) {
             log_message('warning', 'No IP supplied to wmi_helper::copy_to_windows');
             return false;
         }
 
-        if (!filter_var($ip, FILTER_VALIDATE_IP)) {
+        if (! filter_var($ip, FILTER_VALIDATE_IP)) {
             log_message('warning', 'No valid IP supplied to wmi_helper::copy_to_windows ' . $ip);
             return false;
         }
-        $log->ip = $ip;
 
-        if (!is_object($credentials)) {
+        if (! is_object($credentials)) {
             log_message('warning', 'No credentials passed to wmi_helper::copy_to_windows');
             return false;
         }
@@ -242,6 +245,13 @@ if (! function_exists('copy_to_windows')) {
             log_message('warning', 'No destination passed to wmi_helper::copy_to_windows');
             return false;
         }
+
+        $discoveryLogModel = new \App\Models\DiscoveryLogModel();
+        $log = new \StdClass();
+        $log->file = 'wmi_helper';
+        $log->function = 'copy_to_windows';
+        $log->discovery_id = $discovery_id;
+        $log->ip = $ip;
 
         if (php_uname('s') === 'Darwin') {
             $timestamp = date('Y_m_d_H_i_s');
@@ -265,8 +275,12 @@ if (! function_exists('copy_to_windows')) {
             }
             $log->command = '';
 
-            $command =      'mount -t smbfs "smb://' . $domain . ';' . $username . ':' . $password . '@' . $ip . '/admin$" /private/tmp/' . $timestamp;
-            $log->command = 'mount -t smbfs "smb://' . $domain . ';' . $username . ':' . '*******' . '@' . $ip . '/admin$" /private/tmp/' . $timestamp;
+            $smbUri       = 'smb://' . $domain . ';' . $username . ':' . $password . '@' . $ip . '/admin$';
+            $smbUriMasked = 'smb://' . $domain . ';' . $username . ':*******@' . $ip . '/admin$';
+            $mountPoint   = '/private/tmp/' . $timestamp;
+
+            $command =      'mount -t smbfs ' . escapeshellarg($smbUri) . ' ' . escapeshellarg($mountPoint);
+            $log->command = 'mount -t smbfs ' . escapeshellarg($smbUriMasked) . ' ' . escapeshellarg($mountPoint);
             exec($command, $output, $return_var);
             if ($return_var != 0) {
                 $log->message = 'Attempt to mount admin$ share in wmi_helper::copy_to_windows failed.';
@@ -296,7 +310,7 @@ if (! function_exists('copy_to_windows')) {
             }
             $log->command = '';
 
-            $command = 'umount /private/tmp/' . $timestamp;
+            $command = 'umount ' . escapeshellarg('/private/tmp/' . $timestamp);
             $log->command = $command;
             exec($command, $output, $return_var);
             if ($return_var != 0) {
@@ -326,7 +340,13 @@ if (! function_exists('copy_to_windows')) {
             }
             $log->command = '';
             $filename = credentials_file($ip, $credentials);
-            $command = $smbclient . ' -m SMB2 \\\\\\\\' . $ip . '\\\\' . $share . ' -A ' . $filename . ' -c "put ' . $source . ' ' . $destination . ' 2>&1"';
+
+            $safeUncPath  = escapeshellarg('\\\\\\\\' . $ip . '\\\\' . $share);
+            $safeFilename = escapeshellarg($filename);
+            $safePutArgs  = 'put ' . $source . ' ' . $destination;
+            $safePayload  = escapeshellarg('put ' . $source . ' ' . $destination);
+
+            $command = $smbclient . ' -m SMB2 ' . $safeUncPath . ' -A ' . $safeFilename . ' -c ' . $safePayload . ' 2>&1';
             $log->command = $command;
             exec($command, $output, $return_var);
             if ($return_var == 0) {
@@ -341,7 +361,7 @@ if (! function_exists('copy_to_windows')) {
                 $log->command_output = json_encode($output);
                 $log->severity = 7;
                 $discoveryLogModel->create($log);
-                $command = $smbclient . ' \\\\\\\\' . $ip . '\\\\' . $share . ' -A ' . $filename . ' -c "put ' . $source . ' ' . $destination . ' 2>&1"';
+                $command = $smbclient . ' ' . $safeUncPath . ' -A ' . $safeFilename . ' -c ' . $safePayload . ' 2>&1';
                 $log->command = $command;
                 exec($command, $output, $return_var);
                 if ($return_var == 0) {
@@ -371,8 +391,14 @@ if (! function_exists('copy_to_windows')) {
             $password = str_replace('"', '\"', $credentials->credentials->password);
             $username = $credentials->credentials->username;
 
-            $command      = 'net use "\\\\' . $ip . '\\admin$" /u:' . $username . ' "' . $password . '"';
-            $log->command = 'net use "\\\\' . $ip . '\\admin$" /u:' . $username . ' "' . '*******' . '"';
+            $safeUncPath     = escapeshellarg('\\\\\\\\' . $ip . '\\admin$');
+            $safeUsername    = escapeshellarg('/u:' . $username);
+            $safePassword    = escapeshellarg($password);
+            $safeSource      = escapeshellarg($source);
+            $safeDestination = escapeshellarg('\\\\' . $ip . '\\admin$\\' . $destination);
+
+            $command      = 'net use ' . $safeUncPath . ' ' . $safeUsername . ' ' . $safePassword;
+            $log->command = 'net use ' . $safeUncPath . ' ' . $safeUsername . ' ' . escapeshellarg('*******');
             $output = '';
 
             exec($command, $output, $return_var);
@@ -384,8 +410,8 @@ if (! function_exists('copy_to_windows')) {
             }
             $discoveryLogModel->create($log);
 
-            $command      = 'copy "' . $source . '" "\\\\' . $ip . '\\admin$\\' .  $destination . '"';
-            $log->command = 'copy "' . $source . '" "\\\\' . $ip . '\\admin$\\' .  $destination . '"';
+            $command      = 'copy ' . $safeSource . ' ' . $safeDestination;
+            $log->command = 'copy ' . $safeSource . ' ' . $safeDestination;
             $output = '';
             exec($command, $output, $return_var);
             $log->command_status = 'fail';
@@ -397,8 +423,8 @@ if (! function_exists('copy_to_windows')) {
             }
             $discoveryLogModel->create($log);
 
-            $command      = 'net use "\\\\' . $ip . '\\admin$" /D';
-            $log->command = 'net use "\\\\' . $ip . '\\admin$" /D';
+            $command      = 'net use ' . $safeUncPath . ' /D';
+            $log->command = 'net use ' . $safeUncPath . ' /D';
             $output = '';
             exec($command, $output, $return_var);
             $log->command_status = 'fail';
