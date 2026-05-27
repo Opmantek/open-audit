@@ -223,19 +223,26 @@ class ComponentsModel extends BaseModel
             }
 
             // @todo Confirm these are the only file types allowed
-            $allowedFiletypes = ['image/png', 'image/jpeg'];
-            $allowedExtensions = ['jpg', 'jpeg', 'png'];
-            $extension = strtolower(pathinfo($filename, PATHINFO_EXTENSION));
-
-            if (! in_array($mimeType, $allowedFiletypes) || ! in_array($extension, $allowedExtensions)) {
+            $allowedFiletypes = [
+                'image/png', 'image/jpeg',
+                'application/excel', 'application/vnd.msexcel', 'text/x-csv', 'application/csv', 'application/vnd.ms-excel',
+                    'application/msexcel', 'application/x-msexcel', 'application/x-ms-excel', 'application/x-excel',
+                    'application/x-dos_ms_excel', 'application/xls', 'application/x-xls', 'application/excel',
+                    'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+                'application/pdf',
+                'application/vnd.ms-powerpoint', 'application/powerpoint',
+                'application/x-zip', 'application/zip', 'application/x-zip-compressed', 'application/s-compressed', 'multipart/x-zip',
+                'application/msword', 'application/vnd.ms-office', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 'application/vnd.ms-office'
+            ];
+            if (! in_array($mimeType, $allowedFiletypes)) {
                 unlink($_FILES['attachment']['tmp_name']);
-                log_message('warning', sprintf('Attachment file type %s or extension %s is not allowed', $mimeType, $extension));
-                \Config\Services::session()->setFlashdata('warning', sprintf('File type not supported, must be either: %s.', implode(', ', $allowedFiletypes)));
+                log_message('warning', sprintf('Attachment file type %s is not allowed', $mimeType));
+                \Config\Services::session()->setFlashdata('warning', sprintf('File type not supported: %s, must be one of: %s.', $mimeType, implode(', ', $allowedFiletypes)));
                 redirect()->route('devicesRead', [$data->device_id]);
                 return null;
             }
 
-            $targetPath = WRITEPATH . 'uploads/attachments/';
+            $targetPath = APPPATH . 'Attachments' . DIRECTORY_SEPARATOR;
             if (! file_exists($targetPath)) {
                 mkdir($targetPath, 0755, true);
             }
