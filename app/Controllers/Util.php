@@ -7,8 +7,10 @@ declare(strict_types=1);
 
 namespace App\Controllers;
 
+use App\Libraries\Network\Helper\SubnetHelper;
 use CodeIgniter\API\ResponseTrait;
 use CodeIgniter\Controller;
+use InvalidArgumentException;
 
 /**
  * PHP version 7.4
@@ -69,30 +71,19 @@ class Util extends Controller
 
     public function subnetSize()
     {
-        // NOTE #1 - We cannot restrict the source (like the Google function below) because it is called from the client browser.
-        // NOTE #2 - it would be nice do run the below, but unsure that Windows would handle 2>/dev/null
-        // nmap -n -sL $subnet 2>/dev/null | grep "^Nmap done" | awk '{print $3}'
-        $subnet = (!empty($_POST['subnet'])) ? $_POST['subnet'] : '';
-        if (empty($subnet)) {
-            return;
+        $subnet = $this->request->getPost('subnet');
+
+        if (empty($subnet) || ! is_string($subnet)) {
+            return $this->response->setStatusCode(400)->setBody('0');
         }
-        # filter out all characters not in the $chars list
-        $chars = "0123456789-./";
-        $pattern = "/[^" . preg_quote($chars, "/") . "]/";
-        $subnet = preg_replace($pattern, '', $subnet);
-        # now run the command
-        $command = "nmap -n -sL " . $subnet;
-        exec($command, $output, $return_var);
-        $count = 0;
-        if ($return_var === 0) {
-            foreach ($output as $line) {
-                if (stripos($line, 'Nmap scan report for') === 0) {
-                    $count = $count + 1;
-                }
-            }
+
+        try {
+            $count = SubnetHelper::count($subnet, true);
+            return $this->response->setBody((string)$count);
+
+        } catch (InvalidArgumentException $error) {
+            return $this->response->setStatusCode(400)->setBody('0');
         }
-        echo $count;
-        return;
     }
 
     public function testWindowsClient1()

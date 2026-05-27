@@ -225,7 +225,6 @@ if (!function_exists('response_create')) {
         if ($replace_like) {
             $response->meta->query_string = str_replace('like', 'like%', $response->meta->query_string);
         }
-        $response->meta->query_string = html_entity_decode($response->meta->query_string);
         $response->meta->requestor = '';
         if (!empty($_SERVER['HTTP_REQUESTOR'])) {
             $response->meta->requestor = (string)$_SERVER['HTTP_REQUESTOR'];
@@ -548,14 +547,17 @@ if (!function_exists('response_create')) {
             }
             $sql = "SELECT * FROM enterprise WHERE id = $id";
             $result = $db->query($sql)->getResult();
+            $r = null;
             // Convert the response
-            try {
-                $r = json_decode($result[0]->response, false, 512, JSON_THROW_ON_ERROR);
-            } catch (\JsonException $e) {
-                log_message('error', 'Could not decode JSON. File:' . basename(__FILE__) . ', Line:' . __LINE__ . ', Error: ' . $e->getMessage());
-                \Config\Services::session()->setFlashdata('error', 'There is an issue with Enterprise functionality. Please contact <a target="_blank" href="https://firstwave.com">FirstWave</a> for support.');
-                log_message('error', 'Could not decode JSON response from enterprise.');
-                log_message('error', "Response: " . @$result[0]->response . "\n");
+            if (! empty($result[0]->response)) {
+                try {
+                    $r = json_decode((string)$result[0]->response, false, 512, JSON_THROW_ON_ERROR);
+                } catch (\JsonException $e) {
+                    log_message('error', 'Could not decode JSON. File:' . basename(__FILE__) . ', Line:' . __LINE__ . ', Error: ' . $e->getMessage());
+                    \Config\Services::session()->setFlashdata('error', 'There is an issue with Enterprise functionality. Please contact <a target="_blank" href="https://firstwave.com">FirstWave</a> for support.');
+                    log_message('error', 'Could not decode JSON response from enterprise.');
+                    log_message('error', "Response: " . @$result[0]->response . "\n");
+                }
             }
             if (!empty($r)) {
                 $response = $r;
