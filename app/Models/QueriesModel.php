@@ -80,6 +80,13 @@ class QueriesModel extends BaseModel
                 $this->setJsonFlashError('SQL must contain @filter clause');
                 return null;
             }
+
+            if (str_contains($data->sql, ';')) {
+                if ((substr_count($data->sql, ';') === 1 and strpos($data->sql, ';') !== strlen($data->sql)) or substr_count($data->sql, ';') > 1) {
+                    $this->setJsonFlashError('SQL be a single statement');
+                    return null;
+                }
+            }
         }
 
         if (empty($data->sql) && ! empty($selectFields)) {
