@@ -90,11 +90,11 @@ $fields->all = array('client_ident', 'client_secret', 'redirect_uri', 'issuer', 
 <script {csp-script-nonce}>
 window.onload = function () {
     $(document).ready(function() {
-        $("#secure").val("<?= $resource->secure ?>");
-        $("#use_authorisation").val("<?= $resource->use_authorisation ?>");
-        $("#use_authentication").val("<?= $resource->use_authentication ?>");
-        $("#type").val("<?= $resource->type ?>");
-        $("#lang").val("<?= $resource->lang ?>");
+        $("#secure").val("<?= esc($resource->secure, 'js') ?>");
+        $("#use_authorisation").val("<?= esc($resource->use_authorisation, 'js') ?>");
+        $("#use_authentication").val("<?= esc($resource->use_authentication, 'js') ?>");
+        $("#type").val("<?= esc($resource->type, 'js') ?>");
+        $("#lang").val("<?= esc($resource->lang, 'js') ?>");
 
         $("#ldap_dn_password").val("");
         <?php if (isset($resource->ldap_dn_password)) {

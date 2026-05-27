@@ -3,6 +3,7 @@
 namespace Config;
 
 use CodeIgniter\Config\BaseConfig;
+use Throwable;
 
 /**
  * Encryption configuration.
@@ -89,4 +90,55 @@ class Encryption extends BaseConfig
      * by CI3 Encryption default configuration.
      */
     public string $cipher = 'AES-256-CTR';
+
+    public function __construct()
+    {
+        $defaultKey = $this->key;
+
+        try {
+            if ($defaultKey === 'openaudit') {
+                $database = Database::connect();
+                $configTable = $database->table('configuration');
+                $setting = $configTable->where('name', 'encryption_key')->get()->getRow();
+                log_message('debug', 'Maybe generate encryption Key: ' . print_r($setting, true));
+
+                // If the setting does not exist in the database, we must assume this is an
+                // existing install, whereby changing the key now would break their system.
+                // Store the existing value without hex2bin: prefix
+                if (empty($setting) || empty($setting->id)) {
+                    $database->table('configuration')
+                        ->insert([
+                            'name'        => 'encryption_key',
+                            'value'       => 'openaudit',
+                            'type'        => 'text',
+                            'description' => 'Encryption Key',
+                            'editable'    => 'n',
+                            'edited_by'   => 'system',
+                            'edited_date' => date('Y-m-d H:i:s'),
+                        ]);
+                }
+                // If the setting value is an empty string, a temporary value defined in the
+                // open-audit.sql file, which is imported upon a fresh installation.
+                else if ($setting->value === '') {
+                    log_message('info', 'Generating key, new installation');
+                    $rawKey = \CodeIgniter\Encryption\Encryption::createKey();
+                    $hexKey = 'hex2bin:' . bin2hex($rawKey);
+                    $database->table('configuration')
+                        ->where('id', $setting->id)
+                        ->update([
+                            'value'       => $hexKey,
+                            'edited_date' => date('Y-m-d H:i:s'),
+                        ]);
+                    $this->key = $rawKey;
+                } else {
+                    log_message('debug', 'Loading generated key');
+                    $this->key = $setting->value;
+                }
+            }
+        } catch (Throwable $error) {
+            log_message('error', 'Could not load dynamic encryption key: ' . $error->getMessage());
+        }
+
+        parent::__construct();
+    }
 }

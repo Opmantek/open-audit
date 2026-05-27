@@ -118,7 +118,7 @@ include 'shared/common_functions.php';
 window.onload = function () {
     $(document).ready(function() {
         <?php if ($resource->table === 'software') { ?>
-        $("#tests\\.operator").val("<?= html_entity_decode($test_operator) ?>");
+        $("#tests\\.operator").val("<?= esc(html_entity_decode($test_operator), 'js') ?>");
         <?php } ?>
         $("#button_create").remove();
     });

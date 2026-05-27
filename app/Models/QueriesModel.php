@@ -63,91 +63,107 @@ class QueriesModel extends BaseModel
         if (empty($data)) {
             return null;
         }
-        if (!empty($data->sql) and (empty($data->advanced) or $data->advanced === 'n')) {
-            if (stripos($data->sql, 'update ') !== false or stripos($data->sql, 'update`') !== false) {
-                $error['message'] = 'SQL cannot contain UPDATE clause';
-                \Config\Services::session()->setFlashdata('error', json_encode($error));
-                log_message('error', 'SQL cannot contain UPDATE clause');
+
+        $selectFields    = $_POST['select'] ?? [];
+        $whereConditions = $_POST['where'] ?? [];
+        $groupByField    = $_POST['group_by'] ?? null;
+        $orderByField    = $_POST['order_by'] ?? null;
+
+        if (! empty($data->sql) && (empty($data->advanced) || $data->advanced === 'n')) {
+            $trimmedSql = ltrim(string: $data->sql);
+            if (stripos($trimmedSql, 'select') !== 0) {
+                $this->setJsonFlashError('SQL must be a SELECT statement');
                 return null;
             }
-            if (stripos($data->sql, 'delete from ') !== false or stripos($data->sql, 'delete from`') !== false) {
-                $error['message'] = 'SQL cannot contain DELETE clause';
-                \Config\Services::session()->setFlashdata('error', json_encode($error));
-                log_message('error', 'SQL cannot contain DELETE clause');
+
+            if (stripos($data->sql, 'where @filter') === false || stripos($data->sql, 'where @filter or') !== false) {
+                $this->setJsonFlashError('SQL must contain @filter clause');
                 return null;
             }
-            if (stripos($data->sql, 'insert into ') !== false or stripos($data->sql, 'insert into`') !== false) {
-                $error['message'] = 'SQL cannot contain INSERT clause';
-                \Config\Services::session()->setFlashdata('error', json_encode($error));
-                log_message('error', 'SQL cannot contain INSERT clause');
-                return null;
-            }
-            if (stripos($data->sql, 'where @filter') === false or stripos($data->sql, 'where @filter or') !== false) {
-                $error['message'] = 'SQL must contain @filter clause';
-                \Config\Services::session()->setFlashdata('error', json_encode($error));
-                log_message('error', 'SQL must contain @filter clause');
-                return null;
+
+            if (str_contains($data->sql, ';')) {
+                if ((substr_count($data->sql, ';') === 1 and strpos($data->sql, ';') !== strlen($data->sql)) or substr_count($data->sql, ';') > 1) {
+                    $this->setJsonFlashError('SQL be a single statement');
+                    return null;
+                }
             }
         }
 
-        if (empty($data->sql) and !empty($_POST['select'])) {
-            # Build the query
-            $columns = array();
-            $tables = array();
-            if (!empty($_POST['select'])) {
-                foreach ($_POST['select'] as $column) {
-                    if (preg_match('/^[a-z_.]+$/', $column)) {
-                        $columns[] = $column;
-                    }
+        if (empty($data->sql) && ! empty($selectFields)) {
+            $columns = [];
+            $tables  = [];
+
+            foreach ($selectFields as $column) {
+                if ($this->isValidTableField($column)) {
+                    $columns[] = $column;
+                    $tables[] = explode('.', $column)[0];
                 }
-                for ($i = 0; $i < count($columns); $i++) {
-                    $tables[] = explode('.', $columns[$i])[0];
-                    $columns[$i] = $columns[$i] . ' AS `' . $columns[$i] . '`';
+            }
+
+            if (empty($columns)) {
+                $this->setJsonFlashError('No valid columns selected.');
+                return null;
+            }
+
+            $builder = $this->db->table('devices');
+            $builder->select(implode(', ', $columns));
+            $tables = array_unique($tables);
+
+            foreach ($tables as $table) {
+                if ($table !== 'devices' && $this->db->tableExists($table)) {
+                    $builder->join($table, "{$table}.device_id = devices.id AND {$table}.current = 'y'", 'left');
                 }
-                $sql = 'SELECT ' . implode(', ', $columns) . ' FROM devices ';
-                $tables = array_unique($tables);
-                foreach ($tables as $table) {
-                    if ($table !== 'devices') {
-                        $sql .= " LEFT JOIN $table ON ($table.device_id = devices.id AND $table.current = 'y')";
-                    }
-                }
-                $sql .= ' WHERE @filter';
-                $allowed_operators = array('=', '!=', 'LIKE', 'NOT LIKE', '>', '=>', '<', '=<', 'IN', 'NOT IN');
-                if (!empty($_POST['where'])) {
-                    foreach ($_POST['where'] as $where) {
-                        if (!empty($where['field'])) {
-                            if (preg_match('/^[a-z_.]+$/', $where['field'])) {
-                                if (in_array($where['operator'], $allowed_operators)) {
-                                    $sql .= ' AND ' . $where['field'] . ' ' . $where['operator'] . ' ' . $this->db->escape($where['value']);
-                                }
-                            }
-                        }
-                    }
-                }
-                if (!empty($_POST['group_by'])) {
-                    if (preg_match('/^[a-z_.]+$/', $_POST['group_by'])) {
-                        $sql .= ' GROUP BY ' . $_POST['group_by'];
-                    }
-                }
-                if (!empty($_POST['order_by'])) {
-                    if (preg_match('/^[a-z_.]+$/', $_POST['order_by'])) {
-                        $sql .= ' ORDER BY ' . $_POST['order_by'];
+            }
+
+            $allowedOperators = ['=', '!=', 'LIKE', 'NOT LIKE', '>', '=>', '<', '=<', 'IN', 'NOT IN'];
+
+            foreach ($whereConditions as $where) {
+                if (! empty($where['field']) && ! empty($where['operator'])) {
+                    if ($this->isValidTableField($where['field']) && in_array($where['operator'], $allowedOperators)) {
+                        $builder->where("{$where['field']} {$where['operator']}", $where['value']);
                     }
                 }
             }
-            $data->sql = $sql;
+
+            if ($groupByField && $this->isValidTableField($groupByField)) {
+                $builder->groupBy($groupByField);
+            }
+
+            if ($orderByField && $this->isValidTableField($orderByField)) {
+                $builder->orderBy($orderByField);
+            }
+
+            $data->sql = $builder->getCompiledSelect() . ' AND @filter';
         }
 
-        if (!empty($data->sql)) {
+        if (! empty($data->sql)) {
             $data = $this->createFieldData('queries', $data);
             $this->builder->insert($data);
         }
 
         if ($error = $this->sqlError($this->db->error())) {
-            \Config\Services::session()->setFlashdata('error', json_encode($error));
+            $this->setJsonFlashError($error);
             return null;
         }
-        return (intval($this->db->insertID()));
+
+        return (int) $this->db->insertID();
+    }
+
+    private function isValidTableField(string $field): bool
+    {
+        if (str_contains($field, '.')) {
+            [$table, $column] = explode('.', $field, 2);
+            return $this->db->tableExists($table) && $this->db->fieldExists($column, $table);
+        }
+
+        return $this->db->fieldExists($field, 'devices');
+    }
+
+    private function setJsonFlashError(string|array $message): void
+    {
+        $error = is_string($message) ? ['message' => $message] : $message;
+        \Config\Services::session()->setFlashdata('error', json_encode($error));
+        log_message('error', $message);
     }
 
     /**

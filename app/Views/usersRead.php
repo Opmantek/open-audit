@@ -208,9 +208,9 @@ $lang = [
 <script {csp-script-nonce}>
 window.onload = function () {
     $(document).ready(function() {
-        $("#lang").val("<?= $resource->lang ?>");
-        $("#toolbar_style").val("<?= $resource->toolbar_style ?>");
-        $("#list_table_format").val("<?= $resource->list_table_format ?>");
+        $("#lang").val("<?= esc($resource->lang, 'js') ?>");
+        $("#toolbar_style").val("<?= esc($resource->toolbar_style, 'js') ?>");
+        $("#list_table_format").val("<?= esc($resource->list_table_format, 'js') ?>");
         <?php if (isset($resource->password)) {
             if ($resource->password !== '') { ?>
                 $("#password").attr("placeholder", "<?= __('removed from display, but has been set') ?>");

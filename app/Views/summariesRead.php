@@ -36,9 +36,9 @@ include 'shared/common_functions.php';
 <script {csp-script-nonce}>
 window.onload = function () {
     $(document).ready(function() {
-        $("#menu_category").val("<?= $resource->menu_category ?>");
-        $("#menu_display").val("<?= $resource->menu_display ?>");
-        $("#table").val("<?= $resource->table ?>");
+        $("#menu_category").val("<?= esc($resource->menu_category, 'js') ?>");
+        $("#menu_display").val("<?= esc($resource->menu_display, 'js') ?>");
+        $("#table").val("<?= esc($resource->table, 'js') ?>");
     });
 }
 </script>

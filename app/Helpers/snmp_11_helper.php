@@ -73,7 +73,7 @@ $get_oid_details = function ($ip, $credentials, $oid) {
     if (empty($details->os_version) and stripos($sysDescr, 'laserjet') !== false) {
         $details->os_version = my_snmp_get($ip, $credentials, '1.3.6.1.4.1.11.2.3.9.4.2.1.1.18.7.0');
     }
-    $device->os_version = preg_replace('/[\x00-\x1F\x80-\xFF]/', '', $device->os_version);
+    $details->os_version = preg_replace('/[\x00-\x1F\x80-\xFF]/', '', $details->os_version);
 
     return($details);
 };

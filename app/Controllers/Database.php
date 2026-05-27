@@ -17,7 +17,7 @@ use stdClass;
  * @author    Mark Unwin <mark.unwin@firstwave.com>
  * @copyright 2023 FirstWave
  * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
- * @version   GIT: Open-AudIT_6.0.3
+ * @version   GIT: Open-AudIT_6.0.4
  * @link      http://www.open-audit.org
  */
 
@@ -172,10 +172,12 @@ class Database extends BaseController
 
     public function export(string $table = '')
     {
-        if ($this->resp->meta->format !== 'sql') {
-            $this->resp->meta->heading = $table;
-            $this->resp->data = $this->databaseModel->export($table);
-            $this->resp->meta->collection = $table;
+        $db = db_connect();
+        $allowedTables = $db->listTables();
+
+        if (empty($table) || ! in_array($table, $allowedTables)) {
+            log_message('error', 'Database export failed. Please make sure table names are correct.');
+            return $this->response->setStatusCode(403)->setJSON(['error' => 'Table name is invalid or restricted.']);
         }
         if ($this->resp->meta->format === 'csv') {
             // Don't run format_data as this will insert devices.id (for example).
@@ -188,7 +190,7 @@ class Database extends BaseController
                 $return[] = $item;
             }
             $this->resp->data = $return;
-            $this->config->output_escape_csv = 'n';
+            //$this->config->output_escape_csv = 'n'; Commented out to retain cell escaping
             output($this);
         }
         if ($this->resp->meta->format === 'json' or $this->resp->meta->format === 'json_data') {
@@ -200,27 +202,71 @@ class Database extends BaseController
             output($this);
         }
         if ($this->resp->meta->format === 'sql') {
-            $db = db_connect();
             if (php_uname('s') === 'Windows NT') {
                 $mysqldump = 'c:\\xampplite\\mysql\\bin\\mysqldump.exe';
                 if (file_exists('c:\\xampp\\mysql\\bin\\mysqldump.exe')) {
                     $mysqldump = 'c:\\xampp\\mysql\\bin\\mysqldump.exe';
                 }
             }
-            if (php_uname('s') === 'Darwin') {
-                $mysqldump = '/usr/local/mysql/bin/mysqldump';
-            }
-            if (php_uname('s') === 'Linux') {
+            if (php_uname('s') === 'Linux' or php_uname('s') === 'Darwin') {
                 exec('which mysqldump', $temp);
                 $mysqldump = $temp[0];
                 unset($temp);
             }
-            $command = '"' . $mysqldump . '" --extended-insert=FALSE -u ' . $db->username . ' -p' . $db->password . ' -h' . $db->hostname . ' ' . $db->database . ' ' . $table;
-            exec($command, $backup);
-            $backup = implode("\n", $backup);
+
+            $tempPath = WRITEPATH . 'tmp' . DIRECTORY_SEPARATOR;
+            if (! is_dir($tempPath) && ! mkdir($tempPath, 0755, true)) {
+                return $this->response->setStatusCode(403)->setJSON(['error' => 'Temporary directory does not exist or is not writable.']);
+            }
+
+            $cnfFile = $tempPath . '.my.cnf';
+            $sqlFile = $tempPath . 'open-audit_' . $table . '.sql';
+
+            $cnfContent  = '[mysqldump]' . PHP_EOL;
+            $cnfContent .= 'user=' . $db->username . PHP_EOL;
+            $cnfContent .= 'password="' . str_replace('"', '\\"', $db->password) . '"' . PHP_EOL;
+            $cnfContent .= 'host=' . $db->hostname . PHP_EOL;
+
+            file_put_contents($cnfFile, $cnfContent);
+            chmod($cnfFile, 0600);
+
+            $safeCnf      = escapeshellarg($cnfFile);
+            $safeSql      = escapeshellarg($sqlFile);
+            $safeDump     = escapeshellarg($mysqldump);
+            $safeDatabase = escapeshellarg($db->database);
+            $safeTable    = escapeshellarg($table);
+
+            $command = "{$safeDump} --defaults-file={$safeCnf} --extended-insert=FALSE {$safeDatabase} {$safeTable} > {$safeSql}";
+
+            if (php_uname('s') === 'Windows NT') {
+                $command = 'cmd /c ' . $command;
+            }
+
+            exec($command, $output, $returnCode);
+
+            $backup = '';
+            if ($returnCode === 0 && file_exists($sqlFile)) {
+                $backup = file_get_contents($sqlFile);
+            } else {
+                log_message('error', 'MySQL dump failed with exit code: ' . $returnCode);
+            }
+
+            if (file_exists($cnfFile)) {
+                unlink($cnfFile);
+            }
+
+            if (file_exists($sqlFile)) {
+                unlink($sqlFile);
+            }
+
+            if (empty($backup)) {
+                return $this->response->setStatusCode(500)->setJSON(['error' => 'Database export failed.']);
+            }
+
             return $this->response->download('open-audit_' . $table . '.sql', $backup);
         }
-        return;
+
+        return $this->response->setStatusCode(403)->setJSON(['error' => 'Invalid format.']);
     }
 
     public function update($action)

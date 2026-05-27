@@ -53,7 +53,7 @@ include 'shared/common_functions.php';
 <script {csp-script-nonce}>
 window.onload = function () {
     $(document).ready(function() {
-        $("#exclude").val("<?= $resource->exclude ?>");
+        $("#exclude").val("<?= esc($resource->exclude, 'js') ?>");
     });
 }
 </script>

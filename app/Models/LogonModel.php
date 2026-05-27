@@ -162,7 +162,9 @@ class LogonModel extends Model
                     if ($ldap->type === 'openldap') {
                         foreach ($roles as $role) {
                             if (!empty($role->ad_group)) {
-                                $ldap->filter = "(&(cn={$role->ad_group})({$ldap->openldap_user_membership_attribute}={$user->uid}))";
+                                $safeAdGroup = ldap_escape($role->ad_group, '', LDAP_ESCAPE_FILTER);
+                                $safeUid = ldap_escape($user->uid, '', LDAP_ESCAPE_FILTER);
+                                $ldap->filter = "(&(cn={$safeAdGroup})({$ldap->openldap_user_membership_attribute}={$safeUid}))";
                                 if ($result = @ldap_search($ldap_connection, $ldap->ldap_base_dn, $ldap->filter)) {
                                     $entries = @ldap_get_entries($ldap_connection, $result);
                                     if (!empty($entries[0]['cn'][0])) {
@@ -180,7 +182,9 @@ class LogonModel extends Model
                         }
                         foreach ($orgs as $org) {
                             if (!empty($org->ad_group)) {
-                                $ldap->filter = "(&(cn={$org->ad_group})({$ldap->openldap_user_membership_attribute}={$user->uid}))";
+                                $safeAdGroup = ldap_escape($role->ad_group, '', LDAP_ESCAPE_FILTER);
+                                $safeUid = ldap_escape($user->uid, '', LDAP_ESCAPE_FILTER);
+                                $ldap->filter = "(&(cn={$safeAdGroup})({$ldap->openldap_user_membership_attribute}={$safeUid}))";
                                 if ($result = ldap_search($ldap_connection, $ldap->ldap_base_dn, $ldap->filter)) {
                                     $entries = ldap_get_entries($ldap_connection, $result);
                                     if (!empty($entries[0]['cn'][0])) {
@@ -363,12 +367,15 @@ class LogonModel extends Model
     public function my_ldap_search($ldap, $ldap_connection, $user)
     {
         if ($ldap->type === 'active directory') {
-            $ldap->filter = '(samaccountname=' . $user->name . ')';
+            $safeName = ldap_escape($user->name, '', LDAP_ESCAPE_FILTER);
+            $ldap->filter = '(samaccountname=' . $safeName . ')';
         }
         if ($ldap->type === 'openldap') {
+            $safeName = ldap_escape($user->name, '', LDAP_ESCAPE_FILTER);
+            $safeDomain = ldap_escape($user->domain, '', LDAP_ESCAPE_FILTER);
             $ldap->filter = '(' . $ldap->openldap_user_dn . ')';
-            $ldap->filter = str_replace('@username', $user->name, $ldap->filter);
-            $ldap->filter = str_replace('@domain', $user->domain, $ldap->filter);
+            $ldap->filter = str_replace('@username', $safeName, $ldap->filter);
+            $ldap->filter = str_replace('@domain', $safeDomain, $ldap->filter);
             $temp = explode(',', $ldap->openldap_user_dn);
             for ($i = 0; $i < count($temp); $i++) {
                 if (stripos($temp[$i], '@username') !== false) {

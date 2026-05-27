@@ -190,8 +190,8 @@ if ($style === 'icontext') {
 <script {csp-script-nonce}>
 window.onload = function () {
     $(document).ready(function() {
-        $("#type").val("<?= $resource->type ?>");
-        $("#environment").val("<?= $resource->environment ?>");
+        $("#type").val("<?= esc($resource->type, 'js') ?>");
+        $("#environment").val("<?= esc($resource->environment, 'js') ?>");
     });
 }
 </script>

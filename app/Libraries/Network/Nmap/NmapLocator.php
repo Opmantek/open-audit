@@ -46,6 +46,7 @@ class NmapLocator
                 '/opt/nmap/bin/nmap',
                 '/usr/local/bin/nmap',
                 '/usr/bin/nmap',
+                '/opt/homebrew/bin/nmap'
             ],
         };
     }

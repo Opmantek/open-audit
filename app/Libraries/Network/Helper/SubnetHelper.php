@@ -11,6 +11,143 @@ use RuntimeException;
 final class SubnetHelper
 {
     /**
+     * Validate whether a given string is a properly formatted IPv4 or IPv6 CIDR block.
+     *
+     * @param string $input The network string to validate
+     * @return bool bool True if the input is a valid CIDR block, false otherwise
+     */
+    public static function isValidCidr(string $input): bool
+    {
+        if (substr_count($input, '/') !== 1) {
+            return false;
+        }
+
+        [$ip, $netmask] = explode('/', $input);
+
+        if (! ctype_digit($netmask)) {
+            return false;
+        }
+
+        $netmask = (int) $netmask;
+
+        if (filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4) !== false) {
+            return ($netmask >= 0 && $netmask <= 32);
+        }
+
+        if (filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6) !== false) {
+            return ($netmask >= 0 && $netmask <= 128);
+        }
+
+        return false;
+    }
+
+    /**
+     * Calculate the total size (number of IP addresses) for a whitespace-delimited
+     * string of IPv4/IPv6 addresses, CIDR blocks, and dash ranges.
+     * * Runs in O(N) where N is the number of whitespace-separated blocks, regardless
+     * of how large the subnets actually are.
+     *
+     * @param string $input Whitespace-delimited input string
+     * @param bool $excludeNetworkBroadcast Whether to exclude network/broadcast in IPv4
+     * @return float|int The total address count (Uses float if count exceeds PHP_INT_MAX for IPv6)
+     * @throws InvalidArgumentException For invalid input or formats
+     */
+    public static function count(string $input, bool $excludeNetworkBroadcast = true): float|int
+    {
+        $parts = preg_split('/\s+/', trim($input), -1, PREG_SPLIT_NO_EMPTY);
+        $parts = array_map(fn(string $part) => trim($part), $parts);
+        $totalCount = 0;
+
+        foreach ($parts as $part) {
+            if (str_contains($part, '/')) {
+                [$ip, $prefix] = explode('/', $part, 2);
+
+                if (! ctype_digit($prefix)) {
+                    throw new InvalidArgumentException(sprintf('Invalid CIDR prefix: "%s"', $prefix));
+                }
+
+                $prefix = (int) $prefix;
+
+                if (filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4)) {
+                    if ($prefix < 0 || $prefix > 32) {
+                        throw new InvalidArgumentException(sprintf('Invalid IPv4 prefix: "%s"', $prefix));
+                    }
+                    $size = 2 ** (32 - $prefix);
+                    if ($excludeNetworkBroadcast && $size > 2) {
+                        $size -= 2;
+                    }
+                    $totalCount += $size;
+                } elseif (filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6)) {
+                    if ($prefix < 0 || $prefix > 128) {
+                        throw new InvalidArgumentException(sprintf('Invalid IPv6 prefix: "%s"', $prefix));
+                    }
+                    $totalCount += pow(2, 128 - $prefix);
+                } else {
+                    throw new InvalidArgumentException(sprintf('Invalid CIDR: "%s"', $part));
+                }
+                continue;
+            }
+
+            if (str_contains($part, ':')) {
+                $hextets = self::expandIpv6ToFull($part);
+                $subTotal = 1;
+                foreach ($hextets as $hextet) {
+                    [$start, $end] = self::parseHexRange($hextet);
+                    $subTotal *= ($end - $start + 1);
+                }
+                $totalCount += $subTotal;
+                continue;
+            }
+
+            if (str_contains($part, '.')) {
+                if (filter_var($part, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4)) {
+                    $totalCount += 1;
+                    continue;
+                }
+
+                $octets = array_map(fn(string $octet) => trim($octet), explode('.', $part, 4));
+                if (count($octets) !== 4) {
+                    throw new InvalidArgumentException(sprintf('Invalid IPv4 format: "%s"', $part));
+                }
+
+                $subTotal = 1;
+                foreach ($octets as $index => $octet) {
+                    if (str_contains($octet, '-')) {
+                        [$start, $end] = array_map(fn($v) => (int) trim($v), explode('-', $octet, 2));
+                        if ($start < 0 || $start > 255 || $end < 0 || $end > 255 || $start > $end) {
+                            throw new InvalidArgumentException(sprintf('Invalid IPv4 range: "%s"', $octet));
+                        }
+
+                        if ($excludeNetworkBroadcast && $index === 3) {
+                            $validOts = 0;
+                            for ($i = $start; $i <= $end; $i++) {
+                                if ($i !== 0 && $i !== 255) $validOts++;
+                            }
+                            $subTotal *= $validOts;
+                        } else {
+                            $subTotal *= ($end - $start + 1);
+                        }
+                    } else {
+                        $value = (int) $octet;
+                        if ($value < 0 || $value > 255) {
+                            throw new InvalidArgumentException(sprintf('Invalid IPv4 octet: "%s"', $octet));
+                        }
+                        if ($excludeNetworkBroadcast && $index === 3 && ($value === 0 || $value === 255)) {
+                            $subTotal *= 0; // Targeted IP is a broad/net address and should be skipped
+                        }
+                    }
+                }
+                $totalCount += $subTotal;
+                continue;
+            }
+
+            throw new InvalidArgumentException(sprintf('Invalid input: "%s"', $part));
+        }
+
+        return $totalCount;
+    }
+
+    /**
      * Expand a whitespace-delimited string of IPv4/IPv6 addresses, CIDR blocks,
      * and dash ranges into individual IP addresses.
      *
@@ -42,6 +179,9 @@ final class SubnetHelper
                 $prefix = (int) $prefix;
 
                 if (filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4)) {
+                    if ($prefix < 0 || $prefix > 32) {
+                        throw new InvalidArgumentException(sprintf('Invalid IPv4 CIDR prefix: "%s"', $prefix));
+                    }
                     foreach (self::expandIpv4Cidr($ip, $prefix, $excludeNetworkBroadcast, $count, $maxResults) as $ip) {
                         yield $ip;
                     }

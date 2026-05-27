@@ -1212,7 +1212,7 @@ CREATE TABLE `configuration` (
   `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
   `description` mediumtext NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=195 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=196 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1331,7 +1331,7 @@ INSERT INTO `configuration` VALUES (109,'discovery_use_dns','y','bool','y','syst
 INSERT INTO `configuration` VALUES (111,'discovery_use_org_id_match','n','bool','y','system','2000-01-01 00:00:00','When matching a device and assign_devices_to_org is set, use that attribute in the relevant match rules.');
 INSERT INTO `configuration` VALUES (112,'discovery_use_vintage_service','n','bool','y','system','2000-01-01 00:00:00','On Windows, use the old way of running discovery with the Apache service account.');
 INSERT INTO `configuration` VALUES (113,'discovery_wmi_timeout','900','number','y','system','2000-01-01 00:00:00','Timeout duration (in seconds) when discovering a device from Linux via WMI.');
-INSERT INTO `configuration` VALUES (114,'display_version','6.0.3','text','n','system','2000-01-01 00:00:00','The version shown on the web pages.');
+INSERT INTO `configuration` VALUES (114,'display_version','6.0.4','text','n','system','2000-01-01 00:00:00','The version shown on the web pages.');
 INSERT INTO `configuration` VALUES (116,'mail_domain','','text','y','system','2000-01-01 00:00:00','Email domain to use.');
 INSERT INTO `configuration` VALUES (117,'mail_from','','text','y','system','2000-01-01 00:00:00','Email address used for as the sender.');
 INSERT INTO `configuration` VALUES (118,'mail_password','','text','y','system','2000-01-01 00:00:00','Email password for the email account.');
@@ -1342,7 +1342,7 @@ INSERT INTO `configuration` VALUES (122,'mail_user','','text','y','system','2000
 INSERT INTO `configuration` VALUES (123,'firstwave_prompt','2000-01-01','date','n','system','2000-01-01 00:00:00','Prompt about FirstWave products.');
 INSERT INTO `configuration` VALUES (124,'graph_days','30','number','y','system','2000-01-01 00:00:00','The number of days to report on for the Enterprise graphs.');
 INSERT INTO `configuration` VALUES (126,'homepage','summaries','text','y','system','2000-01-01 00:00:00','Any links to the default page should be directed to this endpoint.');
-INSERT INTO `configuration` VALUES (127,'internal_version','20260218','number','n','system','2000-01-01 00:00:00','The internal numerical version.');
+INSERT INTO `configuration` VALUES (127,'internal_version','20260512','number','n','system','2000-01-01 00:00:00','The internal numerical version.');
 INSERT INTO `configuration` VALUES (128,'maps_api_key','','text','y','system','2000-01-01 00:00:00','Your API key for Google Maps.');
 INSERT INTO `configuration` VALUES (129,'match_dbus','n','bool','y','system','2000-01-01 00:00:00','Should we match a device based on its dbus id.');
 INSERT INTO `configuration` VALUES (130,'match_dns_fqdn','n','bool','y','system','2000-01-01 00:00:00','Should we match a device based on its DNS fqdn.');
@@ -1406,6 +1406,7 @@ INSERT INTO `configuration` VALUES (191,'feature_syslog_devices','n','bool','y',
 INSERT INTO `configuration` VALUES (192,'feature_syslog_vulnerabilities','n','bool','y','system','2000-01-01 00:00:00','Should Open-AudIT create an entry in syslog if a device has a vulnerability detected.');
 INSERT INTO `configuration` VALUES (193,'feature_vulnerabilities_alert_date','n','date','y','system','2000-01-01 00:00:00','The last time a vulnerabilitiy alert was shown.');
 INSERT INTO `configuration` VALUES (194,'locations_query_id','0','number','y','system','2000-01-01 00:00:00','The default Query ID to use when viewing a location.');
+INSERT INTO `configuration` VALUES (195,'encryption_key','','text','n','system','2000-01-01 00:00:00','Encryption Key');
 /*!40000 ALTER TABLE `configuration` ENABLE KEYS */;
 UNLOCK TABLES;
 

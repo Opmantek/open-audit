@@ -24,7 +24,7 @@ class BaseModel extends Model
      * @access public
      * @param  string       $table  The database table
      * @param  object|null  $data   The object of data attributes
-     * @return object
+     * @return object|false
      */
     public function createFieldData(string $table, object $data)
     {
@@ -41,10 +41,9 @@ class BaseModel extends Model
         # Our MUST have attributes
         foreach ($dictionary->attributes->create as $field) {
             if (!isset($data->{$field}) or $data->{$field} === '') {
-                $session = \Config\Services::session();
-                $session->setFlashdata('error', "Object in {$table} could not be created, no {$field} supplied.");
-                log_message('warning', "Object in {$table} could not be created, no {$field} supplied. Data: " . json_encode($data));
-                return false;
+                $message = "Object in {$table} could not be created, no {$field} supplied.";
+                log_message('warning', $message . " Data: " . json_encode($data));
+                throw \App\Libraries\Exception\FormValidationException::forField($field, $message);
             }
         }
 

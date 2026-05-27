@@ -93,7 +93,7 @@ $total_widgets = intval($rows * $columns);
 <script {csp-script-nonce}>
 window.onload = function () {
     $(document).ready(function() {
-        $("#options\\.layout").val("<?= $resource->options->layout ?>");
+        $("#options\\.layout").val("<?= esc($resource->options->layout, 'js') ?>");
     });
 }
 </script>

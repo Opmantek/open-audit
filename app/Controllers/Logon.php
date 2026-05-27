@@ -21,7 +21,7 @@ use League\OAuth2\Client;
  * @author    Mark Unwin <mark.unwin@firstwave.com>
  * @copyright 2023 FirstWave
  * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
- * @version   GIT: Open-AudIT_6.0.3
+ * @version   GIT: Open-AudIT_6.0.4
  * @link      http://www.open-audit.org
  */
 
@@ -48,7 +48,7 @@ class Logon extends Controller
 
         $session = session();
         if (!empty($session->get('user_id'))) {
-            if ($config->device_count === 0) {
+            if ($config->device_count === 0 or $config->device_count === 1) {
                 return redirect()->to(url_to('welcome'));
             } else {
                 return redirect()->to(url_to('home'));
@@ -302,10 +302,12 @@ class Logon extends Controller
             $session->set('user_language', $user->lang ?? 'en');
             if ($format !== 'json') {
                 if (!empty($_POST['url'])) {
-                    header('Location: ' . $_POST['url']);
-                    exit;
+                    $targetUrl = $_POST['url'];
+                    if (strpos($targetUrl, '/') === 0 && strpos($targetUrl, '//') !== 0) {
+                        return redirect()->to(site_url($targetUrl));
+                    }
                 }
-                if ($config->device_count === 0) {
+                if ($config->device_count === 0 or $config->device_count === 1) {
                     return redirect()->to(url_to('welcome'));
                 } else {
                     return redirect()->to(url_to('home'));

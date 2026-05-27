@@ -7,6 +7,7 @@ declare(strict_types=1);
 
 namespace App\Controllers;
 
+use App\Libraries\Exception\FormValidationException;
 use stdClass;
 
 /**
@@ -17,7 +18,7 @@ use stdClass;
  * @author    Mark Unwin <mark.unwin@firstwave.com>
  * @copyright 2023 FirstWave
  * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
- * @version   GIT: Open-AudIT_6.0.3
+ * @version   GIT: Open-AudIT_6.0.4
  * @link      http://www.open-audit.org
  */
 
@@ -272,7 +273,13 @@ class Collections extends BaseController
         }
 
         if (empty($this->resp->meta->id) and !empty($this->resp->meta->received_data->attributes)) {
-            $id = $this->{strtolower($this->resp->meta->collection) . "Model"}->create($this->resp->meta->received_data->attributes);
+            try {
+                $id = $this->{strtolower($this->resp->meta->collection) . "Model"}->create($this->resp->meta->received_data->attributes);
+            } catch (FormValidationException $error) {
+                return redirect()->back()
+                    ->with('error', $error->getErrorMessages())
+                    ->withInput();
+            }
         }
 
         if (!empty($id)) {
@@ -1223,6 +1230,17 @@ class Collections extends BaseController
             // Enterprise will have taken care of this
             output($this);
             return;
+        }
+        $attributes = $this->resp->meta->received_data->attributes;
+        if ($this->resp->meta->collection === 'users' && $this->resp->meta->action === 'update') {
+            if ($this->resp->meta->id === $this->user->id && $this->user->permissions['users'] !== 'crud') {
+                $allowedFields = ['name', 'full_name', 'password', 'email', 'lang', 'toolbar_style', 'list_table_format'];
+                foreach ($attributes as $key => $value) {
+                    if (! in_array($key, $allowedFields)) {
+                        unset($attributes->{$key});
+                    }
+                }
+            }
         }
         if ($this->{$this->resp->meta->collection . 'Model'}->update($this->resp->meta->received_data->id, $this->resp->meta->received_data->attributes)) {
             output($this);

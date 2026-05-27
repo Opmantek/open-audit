@@ -181,18 +181,19 @@ if (!function_exists('integrations_pre')) {
         }
         if (empty($external_locations)) {
             if ($integration->log) {
-                $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'warning', '[integrations_pre] No locations returned from NMIS, output: " . (string)$output . ".')";
-                $db->query($sql, [$integration->id, microtime(true)]);
+                $message = '[integrations_pre] No locations returned from NMIS, output: ' . (string) $output . '.';
+                $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'warning', ?)";
+                $db->query($sql, [$integration->id, microtime(true), $message]);
             }
         } else {
             if ($integration->log) {
                 $message = "[integrations_pre] " . count($external_locations) . " locations returned from NMIS.";
-                $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'info', '$message')";
-                $db->query($sql, [$integration->id, microtime(true)]);
+                $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'info', ?)";
+                $db->query($sql, [$integration->id, microtime(true), $message]);
                 if ($integration->attributes->debug) {
                     $message = "[integrations_pre] Locations: " . json_encode($external_locations);
-                    $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'debug', '$message')";
-                    $db->query($sql, [$integration->id, microtime(true)]);
+                    $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'debug', ?)";
+                    $db->query($sql, [$integration->id, microtime(true), $message]);
                 }
             }
         }
@@ -403,13 +404,14 @@ if (!function_exists('integrations_pre')) {
                     log_message('error', 'Could not decode JSON. File:' . basename(__FILE__) . ', Line:' . __LINE__ . ', Error: ' . $e->getMessage());
                 }
                 if (empty($external_location)) {
-                    $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'error', '[integrations_pre] Invalid JSON in result from NMIS. Result: ' . (string)$output)";
-                    $data = array($integration->id, microtime(true));
+                    $message = '[integrations_pre] Invalid JSON in result from NMIS. Result: ' . (string) $output;
+                    $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'error', ?)";
+                    $data = [$integration->id, microtime(true), $message];
                     $query = $db->query($sql, $data);
-                    log_message('error', '[integrations_pre] Invalid JSON in result from NMIS. Result: ' . (string)$output);
+                    log_message('error', $message);
                     curl_close($ch);
                     unlink($ckfile);
-                    return array();
+                    return [];
                 }
                 if (empty($external_location)) {
                     $message = '[integrations_pre] No JSON in result from NMIS. Result: ' . (string)$output;
@@ -1046,13 +1048,14 @@ if (!function_exists('integrations_create')) {
                 log_message('error', 'Could not decode JSON. File:' . basename(__FILE__) . ', Line:' . __LINE__ . ', Error: ' . $e->getMessage());
             }
             if (empty($external_device)) {
-                $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'error', '[integrations_create] Invalid JSON in result from NMIS. Result: ' . (string)$output)";
-                $data = array($integration->id, microtime(true));
+                $message = '[integrations_create] Invalid JSON in result from NMIS. Result: ' . (string) $output;
+                $sql = "INSERT INTO integrations_log VALUES (null, ?, null, ?, 'error', ?)";
+                $data = [$integration->id, microtime(true), $message];
                 $query = $db->query($sql, $data);
-                log_message('error', '[integrations_create] Invalid JSON in result from NMIS. Result: ' . (string)$output);
+                log_message('error', $message);
                 curl_close($ch);
                 unlink($ckfile);
-                return array();
+                return [];
             }
             if (empty($external_device)) {
                 $message = '[integrations_create] No JSON in result from NMIS. Result: ' . (string)$output;

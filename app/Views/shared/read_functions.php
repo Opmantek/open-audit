@@ -189,9 +189,9 @@ function read_field_header(string $collection = '', string $name = '', string $d
     $count = $GLOBALS['header_count'];
 
     $label = (empty($label)) ? ucwords(str_replace('_', ' ', __($name))) : $label;
-    $label = ($label === 'org_id') ? 'organisation' : $label;
-    $label = ($label === 'location_id') ? 'location' : $label;
-    $label = ($label === 'group_id') ? 'group' : $label;
+    $label = ($label === 'Org Id') ? 'Organisation' : $label;
+    $label = ($label === 'Location Id') ? 'Location' : $label;
+    $label = ($label === 'Group Id') ? 'Group' : $label;
 
     $label = str_replace('credentials.', 'Credentials ', $label);
     $label = str_replace('scan_options.', 'Scan Options ', $label);
@@ -263,14 +263,14 @@ function read_field(string $name = '', string $value = '', string $dictionary = 
         $type = 'text';
     }
     if (!empty($placeholder)) {
-        $placeholder = 'placeholder="' . $placeholder . '"';
+        $placeholder = 'placeholder="' . esc($placeholder, 'attr') . '"';
     }
 
     $return = '
                         <div class="row" style="padding-top:1rem;">
                             <div class="offset-2 col-8" style="position:relative;">' . read_field_header($collection, $name, $dictionary, $label) . '
                                 <div class="input-group">
-                                    <input disabled type="' . $type . '" class="form-control" id="' . $name . '" value="' . $value . '" data-original-value="' . $value . '" ' . $placeholder . '>';
+                                    <input disabled type="' . esc($type, 'attr') . '" class="form-control" id="' . esc($name, 'attr') . '" value="' . esc($value, 'attr') . '" data-original-value="' . esc($value, 'attr') . '" ' . $placeholder . '>';
 
     if ($update) {
         $return = $return . '

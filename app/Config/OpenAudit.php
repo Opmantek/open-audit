@@ -9,9 +9,9 @@ use Config\Database;
 
 class OpenAudit extends BaseConfig
 {
-    # leave for backwards compat $this->displayVersion = '6.0.3';
-    public string $displayVersion = '6.0.3';
-    public int $appVersion = 20260218;
+    # leave for backwards compat $this->displayVersion = '6.0.4';
+    public string $displayVersion = '6.0.4';
+    public int $appVersion = 20260512;
 
     public float $microtime = 0;
     public int $collector_connect_timeout = 10;
@@ -321,7 +321,8 @@ class OpenAudit extends BaseConfig
                 $this->servers = json_decode($this->servers, false, 512, JSON_THROW_ON_ERROR);
             } catch (\JsonException $e) {
                 log_message('error', 'Could not decode JSON. File:' . basename(__FILE__) . ', Line:' . __LINE__ . ', Error: ' . $e->getMessage());
-                $this->servers = '';
+                $emptyString = '';
+                $this->servers = $emptyString;
             }
         }
 
@@ -354,19 +355,22 @@ class OpenAudit extends BaseConfig
         }
 
         if ($this->internal_version < 20230615) {
-            # TODO - remove this and just set both to 0
-            $query = $db->query('SELECT count(*) as device_count FROM `system`');
-            if (!empty($query)) {
-                $result = $query->getRow();
-                if (!empty($result->device_count)) {
-                    $this->device_count = (int)$result->device_count;
+            $hasSystemTable = $db->tableExists('system');
+            if ($hasSystemTable) {
+                # TODO - remove this and just set both to 0
+                $query = $db->query('SELECT count(*) as device_count FROM `system`');
+                if (!empty($query)) {
+                    $result = $query->getRow();
+                    if (!empty($result->device_count)) {
+                        $this->device_count = (int)$result->device_count;
+                    }
                 }
-            }
-            $query = $db->query("SELECT count(*) as device_count FROM `system` WHERE `type` NOT IN ('unknown', 'unclassified') and ip != '' AND status NOT IN ('deleted', 'retired')");
-            if (!empty($query)) {
-                $result = $query->getRow();
-                if (!empty($result->device_count)) {
-                    $this->device_known = (int)$result->device_count;
+                $query = $db->query("SELECT count(*) as device_count FROM `system` WHERE `type` NOT IN ('unknown', 'unclassified') and ip != '' AND status NOT IN ('deleted', 'retired')");
+                if (!empty($query)) {
+                    $result = $query->getRow();
+                    if (!empty($result->device_count)) {
+                        $this->device_known = (int)$result->device_count;
+                    }
                 }
             }
         }

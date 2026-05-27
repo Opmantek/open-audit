@@ -750,7 +750,7 @@ if (! function_exists('ip_scan')) {
         }
 
         /**
-         * Perform a custom TCP port scan
+         * Perform a custom UDP port scan
          */
         if (! empty($nmap->udp_ports)) {
             $scanOptions = clone $options;
@@ -766,7 +766,9 @@ if (! function_exists('ip_scan')) {
             log_message('debug', 'Command: ' . $process->getCommandLine());
             $process->run();
             $stopwatch->stop();
-            $host = $parser->parse($process->getOutput())[0] ?? [];
+            $output = $process->getOutput();
+            log_message('debug', json_encode($output));
+            $host = $parser->parse($output)[0] ?? [];
 
             $log->command_time_to_execute = $stopwatch->getElapsedTime();
             $log->message = $executable->getTitle() . ' Command (Custom UDP Ports)';
