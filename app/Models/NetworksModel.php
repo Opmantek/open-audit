@@ -7,6 +7,8 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Libraries\Exception\FormValidationException;
+use App\Libraries\Network\Helper\SubnetHelper;
 use stdClass;
 
 class NetworksModel extends BaseModel
@@ -70,6 +72,11 @@ class NetworksModel extends BaseModel
         if (empty($data)) {
             return null;
         }
+
+        if (! isset($data->network) || ! is_string($data->network) || ! SubnetHelper::isValidCidr($data->network)) {
+            throw FormValidationException::forField('network', 'Invalid Network CIDR');
+        }
+
         $this->builder->insert($data);
         if ($error = $this->sqlError($this->db->error())) {
             \Config\Services::session()->setFlashdata('error', json_encode($error));
