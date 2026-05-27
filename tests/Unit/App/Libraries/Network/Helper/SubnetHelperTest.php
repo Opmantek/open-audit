@@ -12,6 +12,86 @@ use RuntimeException;
 final class SubnetHelperTest extends TestCase
 {
     /**
+     * @dataProvider cidrValidationDataProvider
+     */
+    public function testIsValidCidr(string $input, bool $expected): void
+    {
+        $result = SubnetHelper::isValidCidr($input);
+
+        $this->assertSame($expected, $result);
+    }
+
+    public static function cidrValidationDataProvider(): array
+    {
+        return [
+            'valid standard ipv4 cidr' => [
+                'input' => '10.88.44.0/24',
+                'expected' => true,
+            ],
+            'valid ipv4 cidr single host boundary' => [
+                'input' => '192.168.1.1/32',
+                'expected' => true,
+            ],
+            'valid ipv4 cidr zero mask boundary' => [
+                'input' => '0.0.0.0/0',
+                'expected' => true,
+            ],
+            'valid standard ipv6 cidr' => [
+                'input' => '2001:db8::/32',
+                'expected' => true,
+            ],
+            'valid ipv6 cidr single host boundary' => [
+                'input' => 'fe80::1/128',
+                'expected' => true,
+            ],
+            'valid ipv6 compressed format' => [
+                'input' => '::1/128',
+                'expected' => true,
+            ],
+            'invalid missing slash separator' => [
+                'input' => '10.88.44.0',
+                'expected' => false,
+            ],
+            'invalid multiple slash separators' => [
+                'input' => '10.88.44.0/24/12',
+                'expected' => false,
+            ],
+            'invalid non-numeric mask' => [
+                'input' => '10.88.44.0/abc',
+                'expected' => false,
+            ],
+            'invalid float mask' => [
+                'input' => '10.88.44.0/24.5',
+                'expected' => false,
+            ],
+            'invalid negative mask' => [
+                'input' => '10.88.44.0/-1',
+                'expected' => false,
+            ],
+            'invalid octet out of range ipv4' => [
+                'input' => '10.256.44.0/24',
+                'expected' => false,
+            ],
+            'invalid malformed ipv6 characters' => [
+                'input' => '2001:db8:g::/32',
+                'expected' => false,
+            ],
+            'invalid text string' => [
+                'input' => 'not-a-cidr-block',
+                'expected' => false,
+            ],
+            'invalid ipv4 mask exceeds 32' => [
+                'input' => '10.88.44.0/33',
+                'expected' => false,
+            ],
+            'invalid ipv6 mask exceeds 128' => [
+                'input' => '2001:db8::/129',
+                'expected' => false,
+            ],
+        ];
+    }
+
+    /**
      * @dataProvider ipv4CidrExpansionDataProvider
      */
     public function testIpv4CidrExpansion(string $input, array $expected, bool $excludeNetworkBroadcast): void
