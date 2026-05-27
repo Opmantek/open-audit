@@ -71,7 +71,7 @@ include 'shared/common_functions.php';
 <script {csp-script-nonce}>
 window.onload = function () {
     $(document).ready(function() {
-        $("#resource").val("<?= $resource->resource ?>");
+        $("#resource").val("<?= esc($resource->resource, 'js') ?>");
     });
     $(document).ready(function() {
         $("#type").children().remove();
@@ -90,7 +90,7 @@ window.onload = function () {
         if ($("#resource").val() == 'orgs') {
             $("#type").append($('<option>', { value: 'type', text: 'Type' }));
         }
-        $("#type").val("<?= $resource->type ?>");
+        $("#type").val("<?= esc($resource->type, 'js') ?>");
     });
     $(document).ready(function () {
         $(document).on('change', "#resource", function () {

@@ -2306,7 +2306,7 @@ if (! empty($included['nmap'])) {
                                     <?=  device_panel('cli_config', $user->toolbar_style, $resource->id, '', false, $count); ?>
                                     <div class="card-body">
                                         <div class="row">
-                                            <?= html_entity_decode($included['cli_config_diff']) ?>
+                                            <pre><code class="diff"><?= htmlspecialchars($included['cli_config_diff'], ENT_QUOTES, 'UTF-8') ?></code></pre>
                                         </div>
                                     </div>
                                 </div>
@@ -3094,12 +3094,12 @@ window.onload = function () {
         echo "});\n";
     } ?>
 
-    $("#nmis_manage").val("<?= $resource->nmis_manage ?>");
-    $("#nmis_group").val("<?= $resource->nmis_group ?>");
-    $("#nmis_role").val("<?= $resource->nmis_role ?>");
-    $("#nmis_business_service").val("<?= $resource->nmis_business_service ?>");
-    $("#nmis_customer").val("<?= $resource->nmis_customer ?>");
-    $("#nmis_poller_uuid").val("<?= $resource->nmis_poller_uuid ?>");
+    $("#nmis_manage").val("<?= esc($resource->nmis_manage, 'js') ?>");
+    $("#nmis_group").val("<?= esc($resource->nmis_group, 'js') ?>");
+    $("#nmis_role").val("<?= esc($resource->nmis_role, 'js') ?>");
+    $("#nmis_business_service").val("<?= esc($resource->nmis_business_service, 'js') ?>");
+    $("#nmis_customer").val("<?= esc($resource->nmis_customer, 'js') ?>");
+    $("#nmis_poller_uuid").val("<?= esc($resource->nmis_poller_uuid, 'js') ?>");
 
     <?php $form_contents = '<input type="hidden" id="data[access_token]" name="data[access_token]" value="' . $meta->access_token . '">\
             <input type="hidden" id="data[type]" name="data[type]" value="components">\

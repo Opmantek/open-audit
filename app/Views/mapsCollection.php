@@ -109,11 +109,17 @@ window.onload = function () {
                 $table .= '</table>';
                 $i += 1;
                 $icon = strtolower(str_replace(' ', '_', $key->attributes->type));
-                if ($i === 1) { ?>
-                    ['<?= $key->attributes->name ?>', <?= $key->attributes->latitude ?>, <?= $key->attributes->longitude ?>, <?= $i ?>, '<?= $table ?>', '<?= $meta->baseurl ?>images/map_icons/32_<?= $icon ?>.png']
-                <?php } else { ?>
-                    ,['<?= $key->attributes->name ?>', <?= $key->attributes->latitude ?>, <?= $key->attributes->longitude ?>, <?= $i ?>, '<?= $table ?>', '<?= $meta->baseurl ?>images/map_icons/32_<?= $icon ?>.png']
-                <?php }
+                $markerData = [
+                    $key->attributes->name,
+                    (float) $key->attributes->latitude,
+                    (float) $key->attributes->longitude,
+                    $i,
+                    $table,
+                    $meta->baseurl . 'images/map_icons/32_' . $icon . '.png'
+                ];
+                $jsonData = json_encode($markerData, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT);
+                $prefix = $i > 1 ? ',' : '';
+                echo $prefix . $jsonData;
             }
         } ?>
     ];

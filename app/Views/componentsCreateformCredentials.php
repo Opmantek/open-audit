@@ -132,7 +132,7 @@ window.onload = function () {
 
     <?php if (!empty($type)) { ?>
     $(document).ready(function(){
-        $("#data\\[attributes\\]\\[type\\]").val("<?= $type ?>");
+        $("#data\\[attributes\\]\\[type\\]").val("<?= esc($type, 'js') ?>");
         $("#data\\[attributes\\]\\[type\\]").trigger("change");
     });
     <?php } ?>

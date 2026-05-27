@@ -113,7 +113,7 @@ include 'shared/common_functions.php';
 <script {csp-script-nonce}>
 window.onload = function () {
     $(document).ready(function() {
-        $("#type").val("<?= $resource->type ?>");
+        $("#type").val("<?= esc($resource->type, 'js') ?>");
 
         <?php if (isset($resource->credentials->community)) {
             if ($resource->credentials->community !== '') { ?>

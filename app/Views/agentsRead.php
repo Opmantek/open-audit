@@ -70,8 +70,8 @@ window.onload = function () {
 
         $("#action_devices_assigned_to_org").append($('<option>', { value: '', text: ''}));
         $("#action_devices_assigned_to_location").append($('<option>', { value: '', text: ''}));
-        $("#action_devices_assigned_to_org").val("<?= $resource->action_devices_assigned_to_org ?>");
-        $("#action_devices_assigned_to_location").val("<?= $resource->action_devices_assigned_to_location ?>");
+        $("#action_devices_assigned_to_org").val("<?= esc($resource->action_devices_assigned_to_org, 'js') ?>");
+        $("#action_devices_assigned_to_location").val("<?= esc($resource->action_devices_assigned_to_location, 'js') ?>");
 
         var input_count = <?= $input_count ?>;
         var output_count = <?= $output_count ?>;

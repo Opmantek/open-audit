@@ -355,7 +355,7 @@ if ($style === 'icontext') {
 window.onload = function () {
     $(document).ready(function () {
 
-        $("#select_internal_type").val("<?= $resource->select_internal_type ?>");
+        $("#select_internal_type").val("<?= esc($resource->select_internal_type, 'js') ?>");
         $(".page-title-middle").append('<?= $support_button ?>');
 
         /* Delete integration field */
