@@ -2,6 +2,7 @@
 
 namespace Config;
 
+use App\Filters\CsrfHeaderFilter;
 use CodeIgniter\Config\BaseConfig;
 use CodeIgniter\Config\Filters as BaseFilters;
 use CodeIgniter\Filters\Cors;
@@ -35,6 +36,7 @@ class Filters extends BaseFilters
         'forcehttps'    => ForceHTTPS::class,
         'pagecache'     => PageCache::class,
         'performance'   => PerformanceMetrics::class,
+        'csrfheader'    => CsrfHeaderFilter::class,
     ];
 
     /**
@@ -75,6 +77,7 @@ class Filters extends BaseFilters
             'honeypot',
         ],
         'after' => [
+            'csrfheader',
             'secureheaders',
             'honeypot',
         ],
