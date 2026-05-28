@@ -60,8 +60,6 @@
                     });
 
                     <?php if ($config->device_count === 0 or $config->device_count === 1) { ?>
-                    $("#username").val("admin");
-                    $("#password").val("password");
                     <?php } ?>
                     var testWin = navigator.userAgent.match(/Windows NT/i);
                     if (testWin) {
