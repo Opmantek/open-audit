@@ -19,6 +19,7 @@ if (!empty($_GET['application_id'])) {
                     <div class="row">
                         <div class="col-md-6">
                             <form class="form-horizontal" method="post" action="<?= url_to($meta->collection . 'Create') ?>?type=application" accept-charset="utf-8">
+                                <?= csrf_field() ?>
                                 <input type="hidden" value="<?= $meta->access_token ?>" id="data[access_token]" name="data[access_token]" />
                                 <input type="hidden" value="<?= $application_id ?>" id="data[attributes][application_id]" name="data[attributes][application_id]" />
                                 <input type="hidden" value="" id="data[attributes][primary_internal_id_a]" name="data[attributes][primary_internal_id_a]" />

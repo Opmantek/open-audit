@@ -74,11 +74,11 @@ include 'shared/common_functions.php';
 window.onload = function () {
     $(document).ready(function() {
         <?php if (!empty($user->toolbar_style) and $user->toolbar_style === 'icontext') { ?>
-        $("#oa_panel_buttons").append('<form style="padding-left:4px;" id="<?= $meta->collection ?>ResetForm" method="post" action="<?= url_to($meta->collection . 'Reset') ?>"><button id="<?= $meta->collection ?>Reset" class="btn btn-light mb-2" type="submit" title="<?= __('Reset') ?>"><span class="icon-rotate-cw text-success"></span>&nbsp;<?= __('Reset') ?></button></form>');
+        $("#oa_panel_buttons").append('<form style="padding-left:4px;" id="<?= $meta->collection ?>ResetForm" method="post" action="<?= url_to($meta->collection . 'Reset') ?>"><?= csrf_field() ?><button id="<?= $meta->collection ?>Reset" class="btn btn-light mb-2" type="submit" title="<?= __('Reset') ?>"><span class="icon-rotate-cw text-success"></span>&nbsp;<?= __('Reset') ?></button></form>');
         <?php } elseif (!empty($user->toolbar_style) and $user->toolbar_style === 'icon') { ?>
-        $("#oa_panel_buttons").append('<form style="padding-left:4px;" id="<?= $meta->collection ?>ResetForm" method="post" action="<?= url_to($meta->collection . 'Reset') ?>"><button id="<?= $meta->collection ?>Reset" class="btn btn-light mb-2" type="submit" title="<?= __('Reset') ?>"><span class="icon-rotate-cw text-success"></span></button></form>');
+        $("#oa_panel_buttons").append('<form style="padding-left:4px;" id="<?= $meta->collection ?>ResetForm" method="post" action="<?= url_to($meta->collection . 'Reset') ?>"><?= csrf_field() ?><button id="<?= $meta->collection ?>Reset" class="btn btn-light mb-2" type="submit" title="<?= __('Reset') ?>"><span class="icon-rotate-cw text-success"></span></button></form>');
         <?php } else { ?>
-        $("#oa_panel_buttons").append('<form style="padding-left:4px;" id="<?= $meta->collection ?>ResetForm" method="post" action="<?= url_to($meta->collection . 'Reset') ?>"><button id="<?= $meta->collection ?>Reset" class="btn btn-light mb-2" type="submit" title="<?= __('Reset') ?>"><?= __('Reset') ?></button></form>');
+        $("#oa_panel_buttons").append('<form style="padding-left:4px;" id="<?= $meta->collection ?>ResetForm" method="post" action="<?= url_to($meta->collection . 'Reset') ?>"><?= csrf_field() ?><button id="<?= $meta->collection ?>Reset" class="btn btn-light mb-2" type="submit" title="<?= __('Reset') ?>"><?= __('Reset') ?></button></form>');
         <?php } ?>
 
         document.getElementById('<?= $meta->collection ?>ResetForm').addEventListener('submit', function(e){

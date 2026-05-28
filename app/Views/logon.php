@@ -226,6 +226,7 @@
                                             <div class="collapse" id="audit_select">
                                                 <div class="row" style="padding-top:16px;">
                                                     <form>
+                                                        <?= csrf_field() ?>
                                                         <div class="offset-4 col-4">
                                                             <div class="input-group">
                                                                 <select class="form-select" name="script_type" id="script_type" required>

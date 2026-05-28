@@ -19,6 +19,7 @@ include 'shared/create_functions.php';
                         <br>
                         <div class="text-center">
                             <form action="<?= url_to('devicesDeleteExample') ?>" method="post">
+                                <?= csrf_field() ?>
                                 <button id="submit" name="submit" type="submit" class="btn btn-danger" aria-label="<?= __('Delete') ?>"><?= __('Delete') ?></button>
                             </form>
                         </div>

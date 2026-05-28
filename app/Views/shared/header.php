@@ -654,6 +654,7 @@ if (!empty($config->modules)) {
 
                     <div class="col-6 clearfix text-end" style="padding-bottom: 2px; padding-top: 10px;">
                         <form class="float-end row row-cols-lg-auto g-3 align-items-center" method="post" action="<?= url_to('searchCreate') ?>" role="search">
+                            <?= csrf_field() ?>
                             <input type="hidden" name="data[access_token]" value="<?= $meta->access_token; ?>">
                             <input type="hidden" name="data[attributes][tables]"  value='["devices"]'>
                             <input type="hidden" name="data[attributes][columns]" value='["name","ip","hostname","domain","dns_hostname","dns_domain","sysName"]'>
