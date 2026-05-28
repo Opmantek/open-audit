@@ -12,7 +12,7 @@ $(document).ready(function () {
 
     $(document).ajaxComplete(function (event, xhr) {
         const renewedHash = xhr.getResponseHeader('X-CSRF-RENEWED-HASH');
-        if (renewedHash) {
+        if (renewedHash && window.CI_CSRF) {
             window.CI_CSRF.hash = renewedHash;
         }
     });
