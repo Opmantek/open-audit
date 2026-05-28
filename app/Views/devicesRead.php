@@ -959,7 +959,7 @@ if (! empty($included['nmap'])) {
                             </div>
 
                             <?php if (! empty($linkableServices)): ?>
-                                <style>
+                                <style {csp-style-nonce}>
                                     .service-link {
                                         color: #666666;
                                         min-width: 100px;

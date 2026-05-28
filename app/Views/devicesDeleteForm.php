@@ -60,7 +60,7 @@ include 'shared/create_functions.php';
             </div>
         </main>
 
-<style>
+<style {csp-style-nonce}>
     #spinner {
       animation: spin 1s linear infinite;
     }
