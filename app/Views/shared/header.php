@@ -678,6 +678,15 @@ if (!empty($config->modules)) {
             <br>
         </div>
 
+        <?php if (session()->get('user_has_default_password')): ?>
+            <div class="container-fluid">
+                <div class="alert alert-danger fade show" role="alert">
+                    <?php echo __('Your account is currently using a temporary password.'); ?>
+                    <a href="<?php echo base_url(['index.php/users', session('user_id')]); ?>"><?php echo __('Please change it now.'); ?></a>
+                </div>
+            </div>
+        <?php endif; ?>
+
         <?php if (!empty($config->server_os) and $config->server_os === 'Windows NT' and !stripos($config->server_platform, 'server')) { ?>
         <div class="container-fluid">
             <div class="alert alert-danger alert-dismissable fade show" role="alert">
