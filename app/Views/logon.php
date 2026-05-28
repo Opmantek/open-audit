@@ -13,6 +13,13 @@
         <link rel="shortcut icon" href="<?= base_url('favicon.png') ?>" type="image/x-icon">
         <title>Open-AudIT</title>
 
+        <script {csp-script-nonce}>
+            window.CI_CSRF = {
+                name: '<?= csrf_token() ?>',
+                hash: '<?= csrf_hash() ?>'
+            };
+        </script>
+
         <!-- JS -->
         <script {csp-script-nonce} src="<?= base_url('js/jquery.min.js') ?>"></script>
         <script {csp-script-nonce} src="<?= base_url('js/popper.min.js') ?>"></script>
@@ -113,6 +120,7 @@
     <body class="d-flex flex-column h-100">
         <br>
         <form class="form-horizontal" id="form" name="form" method="post" action="logon">
+            <?= csrf_field() ?>
             <input type="hidden" name="url" id="url" value="<?= @$_SESSION['url'] ?>" />
             <div class="row">
                 <div class="col-8 offset-2 text-center">

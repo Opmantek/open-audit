@@ -11,11 +11,19 @@ $errorId = uniqid('error', true);
     <meta name="robots" content="noindex">
 
     <title><?= esc($title) ?></title>
-    <style>
+
+    <script {csp-script-nonce}>
+        window.CI_CSRF = {
+            name: '<?= csrf_token() ?>',
+            hash: '<?= csrf_hash() ?>'
+        };
+    </script>
+
+    <style {csp-style-nonce}>
         <?= preg_replace('#[\r\n\t ]+#', ' ', file_get_contents(__DIR__ . DIRECTORY_SEPARATOR . 'debug.css')) ?>
     </style>
 
-    <script>
+    <script {csp-script-nonce}>
         <?= file_get_contents(__DIR__ . DIRECTORY_SEPARATOR . 'debug.js') ?>
     </script>
 </head>
