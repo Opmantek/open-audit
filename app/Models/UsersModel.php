@@ -7,6 +7,7 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Libraries\Exception\FormValidationException;
 use stdClass;
 
 class UsersModel extends BaseModel
@@ -237,21 +238,46 @@ class UsersModel extends BaseModel
      */
     public function update($id = null, $data = null): bool
     {
-        // JSON encode our roles
-        if (!empty($data->roles)) {
+        if (! empty($data->roles)) {
             $data->roles = json_encode($data->roles);
         }
-        // JSON encode our orgs
-        if (!empty($data->orgs)) {
+
+        if (! empty($data->orgs)) {
             $data->orgs = json_encode(array_map('intval', $data->orgs));
         }
-        if (!empty($data->password)) {
-            $data->password = password_hash($data->password, PASSWORD_DEFAULT);
+
+        if (! empty($data->password)) {
+            unset($data->password);
         }
+
+        if (! empty($data->current_password) && ! empty($data->new_password)) {
+            log_message('info', "Current password {$data->current_password} and new password {$data->new_password}");
+            $user = $this->db
+                ->table('users')
+                ->select()
+                ->where('id', $id)
+                ->where('active', 'y')
+                ->get()->getRow();
+
+            if (empty($user)) {
+                throw FormValidationException::forField('id', 'Account not found');
+            }
+
+            if (! password_verify($data->current_password, $user->password)) {
+                throw FormValidationException::forField('current_password', 'Current password is incorrect');
+            }
+
+            $data->password = password_hash($data->new_password, PASSWORD_DEFAULT);
+
+            if ($data->password !== 'password') {
+                session()->remove('user_has_default_password');
+            }
+        }
+
         $data = $this->updateFieldData('users', $data);
-        // And update the record
         $this->builder->where('id', intval($id));
         $this->builder->update($data);
+
         if ($this->sqlError($this->db->error())) {
             return false;
         }
