@@ -777,12 +777,12 @@ if (!empty($config->modules)) {
             $extra = 'For a free license, click <a href="#" data-bs-toggle="modal" data-bs-target="#modalCompareLicense">here</a>.';
         }
         ?>
-        <div aria-live="polite" aria-atomic="true" class="position-relative">
-            <div class="toast-container top-0 end-0 p-3">
+        <div aria-live="polite" aria-atomic="true" class="position-fixed" style="top: 120px; right: 60px; z-index: 1090;">
+            <div class="toast-container" style="position: static !important; width: max-content !important; max-width: none !important;">
                 <div class="toast toast-ent" role="alert" aria-live="assertive" aria-atomic="true" id="liveToastEnterprise">
                     <div class="toast-header">
                         <strong class="me-auto">Enterprise Feature</strong>
-                        <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close" style="padding-top:34px; padding-right:50px;"></button>
+                        <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close" style="padding: 4px; margin-top:8px; margin-right:8px;"></button>
                     </div>
                     <div class="toast-body">
                         This feature is limited to Enterprise licenses only. <?= $extra ?>
@@ -791,7 +791,7 @@ if (!empty($config->modules)) {
                 <div class="toast toast-pro" role="alert" aria-live="assertive" aria-atomic="true" id="liveToastProfessional">
                     <div class="toast-header">
                         <strong class="me-auto">Professional Feature</strong>
-                        <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close" style="padding-top:34px; padding-right:50px;"></button>
+                        <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close" style="padding: 4px; margin-top:8px; margin-right:8px;"></button>
                     </div>
                     <div class="toast-body">
                         This feature is limited to Professional licenses only. <?= $extra ?>
@@ -800,7 +800,7 @@ if (!empty($config->modules)) {
                 <div class="toast toast-perm" role="alert" aria-live="assertive" aria-atomic="true" id="liveToastPermission">
                     <div class="toast-header">
                         <strong class="me-auto">Not Authorized</strong>
-                        <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close" style="padding-top:34px; padding-right:50px;"></button>
+                        <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close" style="padding: 4px; margin-top:8px; margin-right:8px;"></button>
                     </div>
                     <div class="toast-body">
                         Your user account does not have permission to perform this function.
@@ -809,7 +809,7 @@ if (!empty($config->modules)) {
                 <div class="toast toast-success" role="alert" aria-live="assertive" aria-atomic="true" id="liveToastSuccess">
                     <div class="toast-header">
                         <strong id="liveToastSuccess-header" class="me-auto"></strong>
-                        <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close" style="padding-top:34px; padding-right:50px;"></button>
+                        <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close" style="padding: 4px; margin-top:8px; margin-right:8px;"></button>
                     </div>
                     <div class="toast-body" id="liveToastSuccess-body">
                     </div>
@@ -817,7 +817,7 @@ if (!empty($config->modules)) {
                 <div class="toast toast-failure" role="alert" aria-live="assertive" aria-atomic="true" id="liveToastFailure">
                     <div class="toast-header">
                         <strong id="liveToastFailure-header" class="me-auto"></strong>
-                        <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close" style="padding-top:34px; padding-right:50px;"></button>
+                        <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close" style="padding: 4px; margin-top:8px; margin-right:8px;"></button>
                     </div>
                     <div class="toast-body" id="liveToastFailure-body">
                     </div>
