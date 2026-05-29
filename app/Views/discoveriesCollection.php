@@ -141,6 +141,7 @@ if (count($included['issues']) > 0) {
                         </div>
                     <?php } ?>
                     <form class="form-horizontal">
+                        <?= csrf_field() ?>
                         <div class="row">
                             <div class="col-md-12">
                                 <br>

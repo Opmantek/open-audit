@@ -212,13 +212,13 @@ window.onload = function () {
             <input type="hidden" id="data[attributes][subnet]" name="data[attributes][subnet]" value="' . $resource->network . '">';
 
         if (!empty($user->toolbar_style) and $user->toolbar_style === 'icontext') { ?>
-        $("#oa_panel_buttons").append('<form style="padding-right:4px;" id="discoveriesCreate" method="post" action="<?= url_to('discoveriesCreate') ?>"><?= $form_contents ?><button style="margin-right:6px; margin-left:6px;" id="discoveriesButton" class="btn btn-light mb-2" type="submit" title="<?= __('Discover') ?>"><span class="icon-satellite-dish text-oa-success"></span><?= __('Discover') ?></button></form>');
+        $("#oa_panel_buttons").append('<form style="padding-right:4px;" id="discoveriesCreate" method="post" action="<?= url_to('discoveriesCreate') ?>"><?= csrf_field() ?><?= $form_contents ?><button style="margin-right:6px; margin-left:6px;" id="discoveriesButton" class="btn btn-light mb-2" type="submit" title="<?= __('Discover') ?>"><span class="icon-satellite-dish text-oa-success"></span><?= __('Discover') ?></button></form>');
 
         <?php } elseif (!empty($user->toolbar_style) and $user->toolbar_style === 'icon') { ?>
-        $("#oa_panel_buttons").append('<form style="padding-right:4px;" id="componentsCreate" method="post" action="<?= url_to('discoveriesCreate') ?>"><?= $form_contents ?><button style="margin-right:6px; margin-left:6px;" id="discoveriesButton" class="btn btn-light mb-2" type="submit" title="<?= __('Discover') ?>"><span class="icon-satellite-dish text-oa-success"></span></button></form>');
+        $("#oa_panel_buttons").append('<form style="padding-right:4px;" id="componentsCreate" method="post" action="<?= url_to('discoveriesCreate') ?>"><?= csrf_field() ?><?= $form_contents ?><button style="margin-right:6px; margin-left:6px;" id="discoveriesButton" class="btn btn-light mb-2" type="submit" title="<?= __('Discover') ?>"><span class="icon-satellite-dish text-oa-success"></span></button></form>');
 
         <?php } else { ?>
-        $("#oa_panel_buttons").append('<form style="padding-right:4px;" id="componentsCreate" method="post" action="<?= url_to('discoveriesCreate') ?>"><?= $form_contents ?><button style="margin-right:6px; margin-left:6px;" id="discoveriesButton" class="btn btn-light mb-2" type="submit" title="<?= __('Discover') ?>"><?= __('Discover') ?></button></form>');
+        $("#oa_panel_buttons").append('<form style="padding-right:4px;" id="componentsCreate" method="post" action="<?= url_to('discoveriesCreate') ?>"><?= csrf_field() ?><?= $form_contents ?><button style="margin-right:6px; margin-left:6px;" id="discoveriesButton" class="btn btn-light mb-2" type="submit" title="<?= __('Discover') ?>"><?= __('Discover') ?></button></form>');
         <?php } ?>
     <?php } else {
         if (!empty($user->toolbar_style) and $user->toolbar_style === 'icontext') { ?>

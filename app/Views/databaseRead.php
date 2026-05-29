@@ -35,6 +35,7 @@ if (!in_array($meta->id, ['attributes', 'configuration', 'dashboards', 'fields',
                                     <div class="row" style="padding-top:16px;">
                                         <div class="offset-2 col-8" style="position:relative;">
                                             <form id="status_form" method="post" action="<?= url_to($data[0]->id.'Reset') ?>?status=<?= $status->status ?>">
+                                                <?= csrf_field() ?>
                                                 <label for="<?= $status->status ?>" class="form-label"><?php echo __('Device Status' . ': ' . $status->status); ?></label>
                                                 <div class="input-group">
                                                     <input disabled type="text" class="form-control" id="<?= $status->status ?>" value="<?php echo $status->count; ?>">
@@ -69,7 +70,7 @@ if (!in_array($meta->id, ['attributes', 'configuration', 'dashboards', 'fields',
                                         <td class="text-center"><a id="export_json" class="btn btn-sm btn-primary" href="<?= url_to('databaseExport', $data[0]->id) ?>?format=json"><?= __('JSON') ?></a></td>
                                         <td class="text-center"><a id="export_xml" class="btn btn-sm btn-primary" href="<?= url_to('databaseExport', $data[0]->id) ?>?format=xml"><?= __('XML') ?></a></td>
                                         <?php if (!empty($user->permissions[$meta->id]) and str_contains($user->permissions[$meta->id], 'd')) { ?>
-                                        <td class="text-center"><form id="<?= $data[0]->id ?>ResetForm" method="post" action="<?= url_to($data[0]->id.'Reset') ?>"><button id="<?= $data[0]->id ?>Reset" class="btn btn-sm btn-danger" type="submit"><?= __('Reset') ?></button></form></td>
+                                        <td class="text-center"><form id="<?= $data[0]->id ?>ResetForm" method="post" action="<?= url_to($data[0]->id.'Reset') ?>"><?= csrf_field() ?><button id="<?= $data[0]->id ?>Reset" class="btn btn-sm btn-danger" type="submit"><?= __('Reset') ?></button></form></td>
                                         <?php } ?>
                                     </tr>
                                 </table>

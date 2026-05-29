@@ -13,6 +13,7 @@ include 'shared/common_functions.php';
                     <div class="row">
                         <div class="col-6">
                             <form class="form-horizontal" id="form_update" method="post" action="<?= url_to('databaseUpdate') ?>">
+                                <?= csrf_field() ?>
                                 <?= read_field('Open-AudIT Current Version', $data->current_version . ' (' . $config->internal_version . ')', '', '') ?>
                                 <?php if (intval($config->internal_version) < intval($config->appVersion)) {
                                     echo read_field('Open-AudIT Upgrade to Version', $data->new_version . ' (' . $config->appVersion . ')', '', '');

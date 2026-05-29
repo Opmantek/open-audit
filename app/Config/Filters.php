@@ -2,6 +2,7 @@
 
 namespace Config;
 
+use App\Filters\CsrfHeaderFilter;
 use CodeIgniter\Config\BaseConfig;
 use CodeIgniter\Config\Filters as BaseFilters;
 use CodeIgniter\Filters\Cors;
@@ -35,6 +36,7 @@ class Filters extends BaseFilters
         'forcehttps'    => ForceHTTPS::class,
         'pagecache'     => PageCache::class,
         'performance'   => PerformanceMetrics::class,
+        'csrfheader'    => CsrfHeaderFilter::class,
     ];
 
     /**
@@ -58,7 +60,6 @@ class Filters extends BaseFilters
         'after' => [
             'pagecache',   // Web Page Caching
             'performance', // Performance Metrics
-            'toolbar',     // Debug Toolbar
         ],
     ];
 
@@ -71,14 +72,14 @@ class Filters extends BaseFilters
      */
     public array $globals = [
         'before' => [
-            // 'honeypot',
-            // 'csrf',
-            // 'invalidchars',
+            'csrf',
+            'invalidchars',
+            'honeypot',
         ],
         'after' => [
-            'toolbar',
-            // 'honeypot',
-            // 'secureheaders',
+            'csrfheader',
+            'secureheaders',
+            'honeypot',
         ],
     ];
 
@@ -110,6 +111,12 @@ class Filters extends BaseFilters
 
     public function __construct()
     {
+        if (ENVIRONMENT === 'development') {
+            $this->filters['toolbar'] = [
+                'after' => ['*'],
+            ];
+        }
+
         if (!empty($_SERVER['REQUEST_URI'])) {
             if (stripos($_SERVER['REQUEST_URI'], 'scripts') and stripos($_SERVER['REQUEST_URI'], 'download')) {
                 $this->globals['after'] = array();

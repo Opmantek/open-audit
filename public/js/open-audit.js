@@ -1,6 +1,22 @@
 /* inline edit */
 $(document).ready(function () {
 
+    $.ajaxSetup({
+        beforeSend: function(xhr, settings) {
+            xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+            if (!/^(GET|HEAD|OPTIONS|TRACE)$/i.test(settings.type) && window.CI_CSRF) {
+                xhr.setRequestHeader('X-CSRF-TOKEN', window.CI_CSRF.hash);
+            }
+        }
+    });
+
+    $(document).ajaxComplete(function (event, xhr) {
+        const renewedHash = xhr.getResponseHeader('X-CSRF-RENEWED-HASH');
+        if (renewedHash && window.CI_CSRF) {
+            window.CI_CSRF.hash = renewedHash;
+        }
+    });
+
     $(".select2").select2({
         theme: "bootstrap-5",
         selectionCssClass: "select2--small",

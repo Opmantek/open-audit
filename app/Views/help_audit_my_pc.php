@@ -18,6 +18,7 @@ include 'shared/collection_functions.php';
                         <div id="audit-selection" >
                             <div class="row pt-4">
                                 <form>
+                                    <?= csrf_field() ?>
                                     <div class="offset-4 col-4">
                                         <div class="input-group">
                                             <select class="form-select" name="script_type" id="script_type" required>

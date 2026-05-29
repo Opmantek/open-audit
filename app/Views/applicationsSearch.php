@@ -45,7 +45,7 @@ include 'shared/collection_functions.php';
 <script {csp-script-nonce}>
 window.onload = function () {
     $(document).ready(function() {
-        $("#oa_panel_buttons").append('<form style="padding-left:4px;" method="post" action="<?= url_to('applicationsSearch') ?>"><div class="input-group"><input type="text" class="form-control mb-2" id="search" name="search" placeholder="Search for a component."><div class="float-end" style="padding-left:4px;"><button class="btn btn-primary mb-2" title="Submit">Search</button></div></div></form>');
+        $("#oa_panel_buttons").append('<form style="padding-left:4px;" method="post" action="<?= url_to('applicationsSearch') ?>"><?= csrf_field() ?><div class="input-group"><input type="text" class="form-control mb-2" id="search" name="search" placeholder="Search for a component."><div class="float-end" style="padding-left:4px;"><button class="btn btn-primary mb-2" title="Submit">Search</button></div></div></form>');
     });
 }
 </script>

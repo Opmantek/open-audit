@@ -10,6 +10,7 @@ include 'shared/create_functions.php';
                 </div>
                 <div class="card-body">
                     <form class="form-horizontal" method="post" action="<?= url_to($meta->collection . 'Create') ?>">
+                        <?= csrf_field() ?>
                         <div class="row">
                             <div class="col-md-6">
                                 <input type="hidden" value="<?= $meta->access_token ?>" id="data[access_token]" name="data[access_token]" />

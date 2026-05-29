@@ -12,6 +12,7 @@ include 'shared/create_functions.php';
                     <div class="row">
                         <div class="col-md-6">
                             <form class="form-horizontal" method="post" action="<?= url_to('configurationExecuteEmail') ?>">
+                                <?= csrf_field() ?>
                                 <input type="hidden" value="<?= $meta->access_token ?>" id="data[access_token]" name="data[access_token]" />
 
                                 <?= create_text_field('data[attributes][email]', __('Email to send test to')) ?>

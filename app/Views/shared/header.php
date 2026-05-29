@@ -50,6 +50,13 @@ if (!empty($config->servers)) {
         <link rel="shortcut icon" href="<?= base_url('favicon.png') ?>" type="image/x-icon">
         <title>Open-AudIT</title>
 
+        <script {csp-script-nonce}>
+            window.CI_CSRF = {
+                name: '<?= csrf_token() ?>',
+                hash: '<?= csrf_hash() ?>'
+            };
+        </script>
+
         <!-- JS -->
         <script {csp-script-nonce} src="<?= base_url('js/jquery.min.js') ?>"></script>
         <script {csp-script-nonce} defer src="<?= base_url('js/popper.min.js') ?>"></script>
@@ -647,6 +654,7 @@ if (!empty($config->modules)) {
 
                     <div class="col-6 clearfix text-end" style="padding-bottom: 2px; padding-top: 10px;">
                         <form class="float-end row row-cols-lg-auto g-3 align-items-center" method="post" action="<?= url_to('searchCreate') ?>" role="search">
+                            <?= csrf_field() ?>
                             <input type="hidden" name="data[access_token]" value="<?= $meta->access_token; ?>">
                             <input type="hidden" name="data[attributes][tables]"  value='["devices"]'>
                             <input type="hidden" name="data[attributes][columns]" value='["name","ip","hostname","domain","dns_hostname","dns_domain","sysName"]'>
