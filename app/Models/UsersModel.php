@@ -251,7 +251,6 @@ class UsersModel extends BaseModel
         }
 
         if (! empty($data->current_password) && ! empty($data->new_password)) {
-            log_message('info', "Current password {$data->current_password} and new password {$data->new_password}");
             $user = $this->db
                 ->table('users')
                 ->select()
