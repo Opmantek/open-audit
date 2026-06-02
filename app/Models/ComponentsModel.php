@@ -949,6 +949,7 @@ class ComponentsModel extends BaseModel
                         $network = new \stdClass();
                         $network->name = $data[$i]->network;
                         $network->network = $data[$i]->network;
+                        $network->type = 'Local Area Network';
                         $network->org_id = 1;
                         if (!empty($device->org_id)) {
                             $network->org_id = intval($device->org_id);
