@@ -251,10 +251,17 @@ class UsersModel extends BaseModel
         }
 
         if (! empty($data->current_password) && ! empty($data->new_password)) {
+            /**
+             * While the controller handles general permission checks, we must
+             * explicitly verify the current password here to ensure the logged-in
+             * user is authorizing this sensitive change themselves.
+             */
+            $sessionUserId = (int) session()->get('user_id');
+
             $user = $this->db
                 ->table('users')
                 ->select()
-                ->where('id', $id)
+                ->where('id', $sessionUserId)
                 ->where('active', 'y')
                 ->get()->getRow();
 
