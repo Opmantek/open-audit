@@ -367,14 +367,13 @@ if (!function_exists('output')) {
         $item->name = @$data->primary_text;
         $item->colorByPoint = true;
         $item->data = array();
-        for ($i = 0; $i < count($data->result); $i++) {
+
+        // Note: $data->result items are not zero indexed.
+        foreach ($data->result as $resultItem) {
             $slice = new \StdClass();
-            $slice->name = $data->result[$i]->name;
-            if (empty($slice->name)) {
-                $slice->name = 'NoData';
-            }
-            $slice->y = intval($data->result[$i]->count);
-            $slice->url = base_url() . 'index.php/' . $data->result[$i]->link;
+            $slice->name = ! empty($resultItem->name) ? $resultItem->name : 'NoData';
+            $slice->y = intval($resultItem->count);
+            $slice->url = base_url() . 'index.php/' . $resultItem->link;
             $item->data[] = $slice;
         }
         $output->series[] = $item;
