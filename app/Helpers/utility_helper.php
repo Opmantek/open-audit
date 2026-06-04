@@ -1182,6 +1182,9 @@ function format_data($result, $type)
 
     if ($type === 'users') {
         foreach ($result as $item) {
+            if (isset($item->password)) {
+                unset($item->password);
+            }
             if (!empty($item->roles)) {
                 try {
                     $item->roles = json_decode($item->roles, false, 512, JSON_THROW_ON_ERROR);
