@@ -1609,7 +1609,7 @@ if (!function_exists('response_valid_formats')) {
      */
     function response_valid_formats(): array
     {
-        return ['csv','highcharts','html','html_data','json','json_data','report','sql','table','xml'];
+        return ['csv','echarts','highcharts','html','html_data','json','json_data','report','sql','table','xml'];
     }
 }
 
