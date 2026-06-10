@@ -46,10 +46,10 @@ class Widgets extends BaseController
         $this->resp->meta->total = (!empty($this->resp->data) and is_countable($this->resp->data)) ? count($this->resp->data) : 0;
         $this->resp->meta->filtered = (!empty($this->resp->data) and is_countable($this->resp->data)) ? count($this->resp->data) : 0;
         if ($this->resp->data->type === 'pie') {
-            $this->resp->data->formatted = formatHighchartsPie($this->resp->data);
+            $this->resp->data->formatted = formatEchartsPie($this->resp->data);
         }
         if ($this->resp->data->type === 'line') {
-            $this->resp->data->formatted = formatHighchartsLine($this->resp->data);
+            $this->resp->data->formatted = formatEchartsLine($this->resp->data);
         }
         if ($this->resp->meta->format !== 'html') {
             output($this);
