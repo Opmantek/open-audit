@@ -71,6 +71,11 @@ class ContentSecurityPolicy extends BaseConfig
     public $styleSrc = "'self' 'unsafe-inline' fonts.googleapis.com";
 
     /**
+     * Lists allowed stylesheets' element attributes.
+     */
+    public $styleSrcAttr = "'unsafe-inline'";
+
+    /**
      * Defines the origins from which images can be loaded.
      *
      * @var string|string[]

@@ -184,6 +184,7 @@ if (!empty($meta->filter)) {
                         <div class="card-body">
                             <br>
                             <form action="<?= base_url() ?>index.php/devices?action=update" method="post" id="bulk_edit" name="bulk_edit">
+                                <?= csrf_field() ?>
                                 <div class="table-responsive">
                                     <table class="table <?= $GLOBALS['table'] ?> table-striped table-hover dataTableDevices">
                                         <thead>

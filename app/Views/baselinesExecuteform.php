@@ -14,6 +14,7 @@ include 'shared/common_functions.php';
                     <div class="row">
                         <div class="col-md-6">
                             <form class="form-horizontal" method="post" action="<?= url_to($meta->collection . 'Execute', $meta->id) ?>">
+                                <?= csrf_field() ?>
                                 <input type="hidden" value="<?= $meta->access_token ?>" id="data[access_token]" name="data[access_token]" />
 
                                 <?php $link = "<a role=\"button\" title=\"" . __('View') . "\" class=\"btn btn-outline-secondary link_button\" href=\"" . url_to('baselinesRead', $data[0]->id) . "\"><span title=\"" . __('View') . "\" class=\"icon-link\" aria-hidden=\"true\"></span></a>"; ?>

@@ -959,7 +959,7 @@ if (! empty($included['nmap'])) {
                             </div>
 
                             <?php if (! empty($linkableServices)): ?>
-                                <style>
+                                <style {csp-style-nonce}>
                                     .service-link {
                                         color: #666666;
                                         min-width: 100px;
@@ -3107,13 +3107,13 @@ window.onload = function () {
             <input type="hidden" id="data[attributes][device_id]" name="data[attributes][device_id]" value="' . $meta->id . '">'; ?>
 
     <?php if (!empty($user->toolbar_style) and $user->toolbar_style === 'icontext') { ?>
-    $("#oa_panel_buttons").prepend('<form style="padding-right:4px;" id="componentsCreate" method="post" action="<?= url_to('componentsCreate') ?>"><?= $form_contents ?><button id="componentsCreateButton" class="btn btn-light mb-2" type="submit" title="<?= __('Discover') ?>"><span class="icon-satellite-dish text-oa-success"></span>&nbsp;<?= __('Discover') ?></button></form>');
+    $("#oa_panel_buttons").prepend('<form style="padding-right:4px;" id="componentsCreate" method="post" action="<?= url_to('componentsCreate') ?>"><?= csrf_field() ?><?= $form_contents ?><button id="componentsCreateButton" class="btn btn-light mb-2" type="submit" title="<?= __('Discover') ?>"><span class="icon-satellite-dish text-oa-success"></span>&nbsp;<?= __('Discover') ?></button></form>');
 
     <?php } elseif (!empty($user->toolbar_style) and $user->toolbar_style === 'icon') { ?>
-    $("#oa_panel_buttons").append('<form style="padding-right:4px;" id="componentsCreate" method="post" action="<?= url_to('componentsCreate') ?>"><?= $form_contents ?><button id="componentsCreateButton" class="btn btn-light mb-2" type="submit" title="<?= __('Discover') ?>"><span class="icon-satellite-dish text-success"></span></button></form>');
+    $("#oa_panel_buttons").append('<form style="padding-right:4px;" id="componentsCreate" method="post" action="<?= url_to('componentsCreate') ?>"><?= csrf_field() ?><?= $form_contents ?><button id="componentsCreateButton" class="btn btn-light mb-2" type="submit" title="<?= __('Discover') ?>"><span class="icon-satellite-dish text-success"></span></button></form>');
 
     <?php } else { ?>
-    $("#oa_panel_buttons").append('<form style="padding-right:4px;" id="componentsCreate" method="post" action="<?= url_to('componentsCreate') ?>"><?= $form_contents ?><button id="componentsCreateButton" class="btn btn-light mb-2" type="submit" title="<?= __('Discover') ?>"><?= __('Discover') ?></button></form>');
+    $("#oa_panel_buttons").append('<form style="padding-right:4px;" id="componentsCreate" method="post" action="<?= url_to('componentsCreate') ?>"><?= csrf_field() ?><?= $form_contents ?><button id="componentsCreateButton" class="btn btn-light mb-2" type="submit" title="<?= __('Discover') ?>"><?= __('Discover') ?></button></form>');
     <?php } ?>
 
     $("#device_panel_tags").append('<div id="tags_control" class="btn-group" style="padding-left:20px; height:40px; display:none;" role="group"><div class="input-group"><input type="text" data-tags=\'<?= json_encode($resource->tags) ?>\' id="tags_add" class="form-control form-control-sm"><div class="float-end" style="padding-left:4px;"><button data-attribute="tags" class="btn btn-outline-success submit" title="Submit" style=""><span style="font-size: 1.2rem;" class="icon-check"></span></button></div></div></div>');

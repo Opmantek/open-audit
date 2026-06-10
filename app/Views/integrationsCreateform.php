@@ -24,6 +24,7 @@ if (php_uname('s') === 'Windows NT') {
                 </div>
                 <div class="card-body">
                     <form class="form-horizontal" method="post" action="<?= url_to($meta->collection . 'Create') ?>">
+                        <?= csrf_field() ?>
                         <div class="row">
                             <div class="col-md-6">
                             

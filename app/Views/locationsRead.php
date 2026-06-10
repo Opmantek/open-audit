@@ -124,7 +124,7 @@ if ($user->toolbar_style === 'icontext') {
         </main>
 
 <?php if ($disabled === '') { ?>
-<script src="https://maps.google.com/maps/api/js?key=<?= $config->maps_api_key ?>"></script>
+<script {csp-script-nonce} src="https://maps.google.com/maps/api/js?key=<?= $config->maps_api_key ?>"></script>
 
 <script {csp-script-nonce}>
 window.onload = function () {

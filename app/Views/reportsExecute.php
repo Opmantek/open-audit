@@ -13,6 +13,7 @@ include 'shared/common_functions.php';
                 <div class="card-body">
                     <br>
                     <form action="devices?action=update" method="post" id="bulk_edit" name="bulk_edit">
+                        <?= csrf_field() ?>
                         <div class="table-responsive">
                             <?php if (!empty($audit_status)) {
                                 echo '<table class="table ' . $GLOBALS['table'] . ' table-striped table-hover dataTable" id="table_result" data-order=\'[[4,"asc"]]\' style="width:100%">';

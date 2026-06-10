@@ -156,6 +156,7 @@ if (!empty($meta->filter)) {
     <div class="modal-dialog">
         <div class="modal-content">
             <form method="post" action="<?= url_to('vulnerabilitiesRequestSingle') ?>" id="vulnerabilityRequestForm">
+                <?= csrf_field() ?>
                 <input type="hidden" value="<?= $meta->access_token ?>" id="data[access_token]" name="data[access_token]" />
                 <div class="modal-header">
                     <h1 class="modal-title fs-5" id="requestVulnerabilityModalLabel"><?= __('Request a Specific CVE') ?></h1>

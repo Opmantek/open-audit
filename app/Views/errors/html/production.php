@@ -12,7 +12,14 @@ if (php_uname('s') === 'Windows NT') {
 
     <title><?= lang('Errors.whoops') ?></title>
 
-    <style>
+    <script {csp-script-nonce}>
+        window.CI_CSRF = {
+            name: '<?= csrf_token() ?>',
+            hash: '<?= csrf_hash() ?>'
+        };
+    </script>
+
+    <style {csp-style-nonce}>
         <?= preg_replace('#[\r\n\t ]+#', ' ', file_get_contents(__DIR__ . DIRECTORY_SEPARATOR . 'debug.css')) ?>
     </style>
 </head>

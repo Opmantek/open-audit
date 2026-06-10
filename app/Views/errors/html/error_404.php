@@ -4,7 +4,14 @@
     <meta charset="utf-8">
     <title><?= lang('Errors.pageNotFound') ?></title>
 
-    <style>
+    <script {csp-script-nonce}>
+        window.CI_CSRF = {
+            name: '<?= csrf_token() ?>',
+            hash: '<?= csrf_hash() ?>'
+        };
+    </script>
+
+    <style {csp-style-nonce}>
         div.logo {
             height: 200px;
             width: 155px;

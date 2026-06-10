@@ -13,6 +13,7 @@ include 'shared/common_functions.php';
                     <div class="row">
                         <div class="col-md-6">
                             <form class="form-horizontal" method="post" action="<?= url_to($meta->collection . 'Create') ?>" accept-charset="utf-8" enctype="multipart/form-data" id="devicesCreateform" name="devicesCreateform">
+                                <?= csrf_field() ?>
                                 <input type="hidden" value="<?= $meta->access_token ?>" id="data[access_token]" name="data[access_token]" />
 
 
