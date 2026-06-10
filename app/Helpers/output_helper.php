@@ -35,11 +35,8 @@ if (!function_exists('output')) {
                 break;
 
             case 'echarts':
-                outputEcharts($instance);
-                break;
-
             case 'highcharts':
-                output_highcharts($instance);
+                outputEcharts($instance);
                 break;
 
             case 'html_data':
