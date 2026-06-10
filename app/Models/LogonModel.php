@@ -265,6 +265,9 @@ class LogonModel extends Model
             foreach ($result as $db_user) {
                 if (password_verify($password, $db_user->password)) {
                     $db_user->password = '';
+                    if ($password === 'password') {
+                        session()->set('user_has_default_password', true);
+                    }
                     return $db_user;
                 }
             }
@@ -283,6 +286,9 @@ class LogonModel extends Model
                     $db->query($sql, [password_hash($password, PASSWORD_DEFAULT), $db_user->id]);
                     log_message('info', 'ACCESS:users:update:' . $db_user->id . ':' . $db_user->full_name . ':{"password":"removed for logging"}');
                     $db_user->password = '';
+                    if ($password === 'password') {
+                        session()->set('user_has_default_password', true);
+                    }
                     return $db_user;
                 }
             }

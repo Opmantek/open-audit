@@ -246,7 +246,7 @@ class Collections extends BaseController
     /**
      * Accept a POST and create the item
      *
-     * @return void
+     * @return \CodeIgniter\HTTP\ResponseInterface|void
      */
     public function create()
     {
@@ -1211,7 +1211,7 @@ class Collections extends BaseController
     /**
      * Undocumented function
      *
-     * @return void
+     * @return \CodeIgniter\HTTP\ResponseInterface|void
      */
     public function update()
     {
@@ -1234,7 +1234,7 @@ class Collections extends BaseController
         $attributes = $this->resp->meta->received_data->attributes;
         if ($this->resp->meta->collection === 'users' && $this->resp->meta->action === 'update') {
             if ($this->resp->meta->id === $this->user->id && $this->user->permissions['users'] !== 'crud') {
-                $allowedFields = ['name', 'full_name', 'password', 'email', 'lang', 'toolbar_style', 'list_table_format'];
+                $allowedFields = ['name', 'full_name', 'current_password', 'new_password', 'email', 'lang', 'toolbar_style', 'list_table_format'];
                 foreach ($attributes as $key => $value) {
                     if (! in_array($key, $allowedFields)) {
                         unset($attributes->{$key});
@@ -1242,14 +1242,25 @@ class Collections extends BaseController
                 }
             }
         }
-        if ($this->{$this->resp->meta->collection . 'Model'}->update($this->resp->meta->received_data->id, $this->resp->meta->received_data->attributes)) {
-            output($this);
+        if (! empty($this->resp->meta->received_data->id) && ! empty($this->resp->meta->received_data->attributes)) {
+            try {
+                $this->{$this->resp->meta->collection . 'Model'}->update($this->resp->meta->received_data->id, $this->resp->meta->received_data->attributes);
+                output($this);
+            } catch (FormValidationException $error) {
+                if ($this->request->isAJAX()) {
+                    return $this->response
+                        ->setStatusCode(400)
+                        ->setJSON(['message' => $error->getErrorMessages()]);
+                }
+                return redirect()->to(current_url())
+                    ->with('error', $error->getErrorMessages())
+                    ->withInput();
+            }
         } else {
             $this->response->setStatusCode(400);
             if (!empty($GLOBALS['stash'])) {
                 print_r(json_encode($GLOBALS['stash']));
             }
         }
-        return;
     }
 }

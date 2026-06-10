@@ -59,7 +59,7 @@ $lang = [
                             <?= read_field('name', $resource->name, $dictionary->columns->name, $update, '', '', '', '', $meta->collection) ?>
                             <?= read_field('full_name', $resource->full_name, $dictionary->columns->full_name, $self_update, '', '', '', '', $meta->collection) ?>
                             <?= read_select('org_id', $resource->org_id, $dictionary->columns->org_id, $update, '', $orgs, $meta->collection) ?>
-                            <?= read_field('password', '', $dictionary->columns->password, $self_update, '', '', '', 'password', $meta->collection) ?>
+                            <?= ''//read_field('password', '', $dictionary->columns->password, $self_update, '', '', '', 'password', $meta->collection) ?>
                             <?= read_field('email', $resource->email, $dictionary->columns->email, $self_update, '', '', '', '', $meta->collection) ?>
                             <?php
                             $value = $resource->devices_default_display_columns;
@@ -193,6 +193,54 @@ $lang = [
                             <?php // TODO - dashboard and default display columns ?>
                             <?= read_field('edited_by', $resource->edited_by, $dictionary->columns->edited_by, false, '', '', '', '', $meta->collection) ?>
                             <?= read_field('edited_date', $resource->edited_date, $dictionary->columns->edited_date, false, '', '', '', '', $meta->collection) ?>
+
+                            <div class="row pt-3">
+                                <div class="offset-2 col-8 position-relative">
+                                    <hr class="border-1 border-top" />
+
+                                    <div class="row" id="header_row_current_password">
+                                        <div class="col-10 clearfix">
+                                            <label for="current_password" class="form-label" title="Current Password">Current Password</label>
+                                        </div>
+                                        <div class="col-2">
+                                            <div class="float-end">
+                                                <a role="button" tabindex="0" class="btn btn-clear btn-sm" data-bs-container="#header_row_current_password" data-bs-html="true" data-bs-toggle="popover" data-bs-placement="right" data-bs-trigger="focus" data-bs-content="&lt;code&gt;users.password&lt;/code&gt;&lt;br&gt;Enter your current password in order to change it."><i class="icon-circle-question-mark" style="color:#74C0FC;"></i></a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="input-group">
+                                        <input id="current_password" type="password" class="form-control" value="" placeholder="">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row pt-3">
+                                <div class="offset-2 col-8 position-relative">
+                                    <div class="row" id="header_row_new_password">
+                                        <div class="col-10 clearfix">
+                                            <label for="new_password" class="form-label" title="New Password">New Password</label>
+                                        </div>
+                                        <div class="col-2">
+                                            <div class="float-end">
+                                                <a role="button" tabindex="0" class="btn btn-clear btn-sm" data-bs-container="#header_row_new_password" data-bs-html="true" data-bs-toggle="popover" data-bs-placement="right" data-bs-trigger="focus" data-bs-content="&lt;code&gt;users.password&lt;/code&gt;&lt;br&gt;Enter a new password."><i class="icon-circle-question-mark" style="color:#74C0FC;"></i></a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="input-group">
+                                        <input id="new_password" type="password" class="form-control" value="" disabled="" placeholder="">
+                                        <div class="float-end">
+                                            <button id="save-password-btn" class="btn btn-outline-success ms-2" disabled=""><span class="icon-check"></span></button>
+                                        </div>
+                                    </div>
+                                    <div class="password-meter mb-5">
+                                        <div class="meter-section rounded me-2"></div>
+                                        <div class="meter-section rounded me-2"></div>
+                                        <div class="meter-section rounded me-2"></div>
+                                        <div class="meter-section rounded"></div>
+                                    </div>
+                                </div>
+                            </div>
+
                         </div>
                         <div class="col-6">
                             <br>
@@ -205,19 +253,159 @@ $lang = [
             </div>
         </main>
 
+<style {csp-style-nonce}>
+    #save-password-btn:disabled {
+        border-color: #6c757d !important;
+        color: #6c757d !important;
+        background-color: transparent;
+    }
+
+    .password-meter {
+        display: flex;
+        height: 5px;
+        margin-top: 10px;
+    }
+
+    .meter-section {
+        flex: 1;
+        background-color: #ddd;
+    }
+
+    .weak {
+        background-color: #ff4d4d;
+    }
+
+    .medium {
+        background-color: #ffd633;
+    }
+
+    .strong {
+        background-color: #00b300;
+    }
+
+    .very-strong {
+        background-color: #009900;
+    }
+</style>
+
 <script {csp-script-nonce}>
+    function updatePasswordMeter(password) {
+        var meterSections = $('.meter-section');
+        var strength = calculatePasswordStrength(password);
+
+        meterSections.removeClass('weak', 'medium', 'strong', 'very-strong');
+
+        if (strength >= 1) {
+            meterSections.eq(0).addClass('weak');
+        }
+        if (strength >= 2) {
+            meterSections.eq(1).addClass('medium');
+        }
+        if (strength >= 3) {
+            meterSections.eq(2).addClass('strong');
+        }
+        if (strength >= 4) {
+            meterSections.eq(3).addClass('very-strong');
+        }
+    }
+
+    function calculatePasswordStrength(password) {
+        var lengthWeight = 0.2;
+        var uppercaseWeight = 0.5;
+        var lowercaseWeight = 0.5;
+        var numberWeight = 0.7;
+        var symbolWeight = 1;
+        var strength = 0;
+
+        strength += password.length * lengthWeight;
+
+        if (/[A-Z]/.test(password)) {
+            strength += uppercaseWeight;
+        }
+
+        if (/[a-z]/.test(password)) {
+            strength += lowercaseWeight;
+        }
+
+        if (/\d/.test(password)) {
+            strength += numberWeight;
+        }
+
+        if (/[^A-Za-z0-9]/.test(password)) {
+            strength += symbolWeight;
+        }
+
+        return strength;
+    }
 window.onload = function () {
     $(document).ready(function() {
         $("#lang").val("<?= esc($resource->lang, 'js') ?>");
         $("#toolbar_style").val("<?= esc($resource->toolbar_style, 'js') ?>");
         $("#list_table_format").val("<?= esc($resource->list_table_format, 'js') ?>");
-        <?php if (isset($resource->password)) {
-            if ($resource->password !== '') { ?>
-                $("#password").attr("placeholder", "<?= __('removed from display, but has been set') ?>");
-            <?php } else { ?>
-                $("#password").attr("placeholder", "<?= __('has not been set') ?>");
-            <?php }
-        } ?>
+
+        $('#current_password').on('input', function() {
+            if ($(this).val() !== '') {
+                $('#new_password').attr('disabled', false);
+            } else {
+                $('#new_password').attr('disabled', true);
+                $('#new_password').val('');
+            }
+        });
+
+        $('#new_password').on('input', function() {
+            var password = $(this).val()
+            if (password !== '') {
+                $('#save-password-btn').attr('disabled', false);
+            } else {
+                $('#save-password-btn').attr('disabled', true);
+            }
+            updatePasswordMeter(password);
+        });
+
+        $('#save-password-btn').on('click', function() {
+            $(this).attr('disabled', true);
+
+            var currentPassword = $('#current_password').val();
+            var newPassword = $('#new_password').val();
+            var payload = {
+                data: {
+                    id: "<?php echo esc($meta->id, 'js'); ?>",
+                    type: "<?php echo esc($meta->collection, 'js'); ?>",
+                    attributes: {
+                        current_password: currentPassword,
+                        new_password: newPassword
+                    }
+                }
+            };
+
+            $.ajax({
+                type: 'PATCH',
+                url: window.location.href,
+                contentType: 'application/json',
+                data: {data: JSON.stringify(payload)},
+                success: function (data) {
+                    $('#liveToastSuccess-header').text('Update Succeeded');
+                    $('#liveToastSuccess-body').text('password has been updated.');
+                    $('.toast-success').each(function() {
+                        $(this).toast('show');
+                    });
+                },
+                error: function (xhr) {
+                    var response = JSON.parse(xhr.responseText);
+                    if (response.message) {
+                        $('#liveToastFailure-header').text('Update Failed');
+                        $('#liveToastFailure-body').text(response.message);
+                        $('.toast-failure').each(function() {
+                            $(this).toast('show');
+                        });
+                    }
+                },
+                complete: function () {
+                    $('#current_password').val('');
+                    $('#new_password').val('');
+                }
+            });
+        });
     });
 }
 </script>
