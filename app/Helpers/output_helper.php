@@ -34,6 +34,10 @@ if (!function_exists('output')) {
                 output_csv($instance);
                 break;
 
+            case 'echarts':
+                outputEcharts($instance);
+                break;
+
             case 'highcharts':
                 output_highcharts($instance);
                 break;
@@ -322,6 +326,239 @@ if (!function_exists('output')) {
 
         $output->subtitle->text = $sub_title_text;
         return $output;
+    }
+
+    function echartsInputFromResponse($response): \StdClass
+    {
+        /** @var object $object */
+        $object = $response->included[0];
+
+        $input = new \StdClass();
+        $input->id = $object->id;
+        $input->type = $object->attributes->type;
+        $input->name = $object->attributes->name;
+        $input->primary_text = $object->attributes->primary_text;
+        $input->result = [];
+
+        foreach ($response->data as $item) {
+            $value = intval($item->attributes->count);
+
+            if (empty($item->attributes->name) || $value < 1) {
+                continue;
+            }
+
+            $resultItem = new \StdClass();
+            $resultItem->count = $value;
+            $resultItem->name = $item->attributes->name;
+            $resultItem->link = $item->attributes->link ?? null;
+            $resultItem->date = $item->attributes->date ?? null;
+
+            $input->result[] = $resultItem;
+        }
+
+        return $object;
+    }
+
+    function echartsLineResponse($response): \StdClass
+    {
+        $input = echartsInputFromResponse($response);
+        return formatEchartsLine($input);
+    }
+
+    function echartsPieResponse($response): \StdClass
+    {
+        $input = echartsInputFromResponse($response);
+        return formatEchartsPie($input);
+    }
+
+    function formatEchartsLine(object $data): \StdClass
+    {
+        $output = new \StdClass();
+
+        $output->domId = 'widget_' . $data->id;
+
+        $output->title = new \StdClass();
+        $output->title->text = $data->name ?? '';
+        $output->title->left = 'center';
+        $output->title->subtext = '';
+
+        $output->tooltip = new \StdClass();
+        $output->tooltip->trigger = 'axis';
+        $output->tooltip->formatter = '<b>{b}</b><br/>Count: {c}';
+
+        $output->xAxis = new \StdClass();
+        $output->xAxis->type = 'category';
+        $output->xAxis->data = [];
+        $output->xAxis->axisLabel = new \StdClass();
+        $output->xAxis->axisLabel->interval = 3;
+
+        $output->yAxis = new \StdClass();
+        $output->yAxis->type = 'value';
+        $output->yAxis->name = $data->primary_text ?? '';
+        $output->yAxis->nameLocation = 'middle';
+        $output->yAxis->nameGap = 40;
+
+        $output->grid = new \StdClass();
+        $output->grid->top = '18%';
+        $output->grid->bottom = '10%';
+        $output->grid->containLabel = true;
+
+        $dataset = new \StdClass();
+        $dataset->name = $data->primary_text ?? '';
+        $dataset->type = 'line';
+        $dataset->data = [];
+
+        $dataset->lineStyle = new \StdClass();
+        $dataset->lineStyle->width = 2;
+
+        $dataset->showSymbol = false;
+
+        $dataset->emphasis = new \StdClass();
+        $dataset->emphasis->lineStyle = new \StdClass();
+        $dataset->emphasis->lineStyle->width = 3;
+
+        $totalCount = 0;
+        $subTitleText = '';
+        $resultsArray = $data->result ?? [];
+        $dataCount = count($resultsArray);
+        $currentIndex = 0;
+
+        foreach ($resultsArray as $resultItem) {
+            if (! isset($resultItem->date)) {
+                continue;
+            }
+
+            $value = intval($resultItem->count ?? 0);
+            $dateObj = date_create($resultItem->date);
+
+            $point = new \StdClass();
+            $point->value = $value;
+
+            $rawLink = str_replace('@date', $resultItem->date, $resultItem->link ?? '');
+            $point->url = base_url() . 'index.php/' . $rawLink;
+
+            $totalCount += $value;
+            $dataset->data[] = $point;
+
+            if ($currentIndex === 0) {
+                $subTitleText = date_format($dateObj, 'D, M j') . ' to ';
+            }
+
+            if ($currentIndex === $dataCount - 1) {
+                $subTitleText .= date_format($dateObj, 'D, M j Y.');
+            }
+
+            $output->xAxis->data[] = date_format($dateObj, 'j M');
+
+            $currentIndex++;
+        }
+
+        $output->title->subtext = $subTitleText;
+
+        if (!empty($dataset->data) && $totalCount > 0) {
+            $output->series = [$dataset];
+        } else {
+            $output->series = [];
+            $output->xAxis->data = [];
+
+            $graphic = new \StdClass();
+            $graphic->type = 'text';
+            $graphic->left = 'center';
+            $graphic->top = 'middle';
+
+            $graphic->style = new \StdClass();
+            $graphic->style->text = 'No Data Available';
+            $graphic->style->fill = '#999999';
+            $graphic->style->font = 'bold 16px sans-serif';
+
+            $output->graphic = [$graphic];
+        }
+
+        return $output;
+    }
+
+    function formatEchartsPie(object $data): \StdClass
+    {
+        $output = new \StdClass();
+
+        $output->domId = 'widget_' . $data->id;
+
+        $output->title = new \StdClass();
+        $output->title->text = $data->name;
+        $output->title->left = 'center';
+
+        $output->tooltip = new \StdClass();
+        $output->tooltip->trigger = 'item';
+        $output->tooltip->formatter = '<b>{b}</b><br/>Count: {c}<br/>Percentage: {d}%';
+
+        $output->legend = new \StdClass();
+        $output->legend->orient = 'horizontal';
+        $output->legend->bottom = '0';
+
+        $item = new \StdClass();
+        $item->name = $data->primary_text ?? '';
+        $item->type = 'pie';
+        $item->radius = '50%';
+        $item->data = [];
+
+        $totalCount = 0;
+
+        foreach ($data->result as $resultItem) {
+            $value = intval($resultItem->count);
+
+            if (empty($resultItem->name) || $value < 1) {
+                continue;
+            }
+
+            $slice = new \StdClass();
+            $slice->name = $resultItem->name;
+            $slice->value = intval($resultItem->count);
+            $slice->url = base_url() . 'index.php/' . $resultItem->link;
+
+            $totalCount += $slice->value;
+
+            $item->data[] = $slice;
+        }
+
+        if (! empty($item->data) && $totalCount > 0) {
+            $output->series = [$item];
+        } else {
+            $output->series = [];
+            $output->legend->show = false;
+
+            $graphic = new \StdClass();
+            $graphic->type = 'text';
+            $graphic->left = 'center';
+            $graphic->top = 'middle';
+
+            $graphic->style = new \StdClass();
+            $graphic->style->text = 'No Data Available';
+            $graphic->style->fill = '#999999';
+            $graphic->style->font = 'bold 16px sans-serif';
+
+            $output->graphic = [$graphic];
+        }
+
+        return $output;
+    }
+
+    function outputEcharts(object $instance): void
+    {
+        $object = $instance->resp->included[0];
+
+        switch ($object->attributes->type) {
+            case 'line':
+                $instance->resp = echartsLineResponse($instance->resp);
+                break;
+            case 'pie':
+                $instance->resp = echartsPieResponse($instance->resp);
+                break;
+        }
+
+        $instance->response->setContentType('application/json');
+        $instance->response->noCache();
+
+        echo json_encode($instance->resp, JSON_PRETTY_PRINT);
     }
 
     function formatHighchartsPie($data)
