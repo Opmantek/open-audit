@@ -79,10 +79,6 @@ Open-AudIT when downloaded from FirstWave may include the following libraries an
             <td>Lucide Icons</td>
             <td><a href="<?= url_to('appLicenses') ?>?license=lucide">ISC / MIT</a></td>
         </tr>
-        <tr>
-            <td>HighCharts</td>
-            <td><?= __('Proprietary. If you want to modify HighCharts you may require a') ?> <a target="_blank" href="https://shop.highcharts.com"><?= __('license') ?></a>, <?= __('you do not require a HighCharts license to use Firstwave products. License') ?> <a href="https://shop.highcharts.com/license" target="_blank"><?= __('details') ?></a>.</td>
-        </tr>
     </tbody>
 </table>
 <?php } ?>

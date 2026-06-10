@@ -98,10 +98,10 @@ class Dashboards extends BaseController
                 }
             }
             if (!empty($widget->type) and $widget->type === 'pie') {
-                $widget->formatted = formatHighchartsPie($widget);
+                $widget->formatted = formatEchartsPie($widget);
             }
             if (!empty($widget->type) and $widget->type === 'line') {
-                $widget->formatted = formatHighchartsLine($widget);
+                $widget->formatted = formatEchartsLine($widget);
             }
             if (!empty($widget)) {
                 $this->resp->included['widgets'][] = $widget;

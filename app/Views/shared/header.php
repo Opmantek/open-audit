@@ -59,14 +59,15 @@ if (!empty($config->servers)) {
 
         <!-- JS -->
         <script {csp-script-nonce} src="<?= base_url('js/jquery.min.js') ?>"></script>
-        <script {csp-script-nonce} defer src="<?= base_url('js/popper.min.js') ?>"></script>
-        <script {csp-script-nonce} defer src="<?= base_url('js/bootstrap.bundle.min.js') ?>"></script>
-        <script {csp-script-nonce} defer src="<?= base_url('js/datatables.min.js') ?>"></script>
-        <script {csp-script-nonce} defer src="<?= base_url('js/datatables.extra.js') ?>"></script>
-        <script {csp-script-nonce} defer src="<?= base_url('js/apexcharts.js') ?>"></script>
-        <script {csp-script-nonce} defer src="<?= base_url('js/echarts.min.js') ?>"></script>
-        <script {csp-script-nonce} defer src="<?= base_url('js/select2.full.min.js') ?>"></script>
-        <script {csp-script-nonce} defer src="<?= base_url('js/open-audit.js') ?>"></script>
+        <script {csp-script-nonce} src="<?= base_url('js/popper.min.js') ?>"></script>
+        <script {csp-script-nonce} src="<?= base_url('js/bootstrap.bundle.min.js') ?>"></script>
+        <script {csp-script-nonce} src="<?= base_url('js/datatables.min.js') ?>"></script>
+        <script {csp-script-nonce} src="<?= base_url('js/datatables.extra.js') ?>"></script>
+        <script {csp-script-nonce} src="<?= base_url('js/apexcharts.js') ?>"></script>
+        <script {csp-script-nonce} src="<?= base_url('js/echarts.min.js') ?>"></script>
+        <script {csp-script-nonce} src="<?= base_url('js/echarts.theme.js') ?>"></script>
+        <script {csp-script-nonce} src="<?= base_url('js/select2.full.min.js') ?>"></script>
+        <script {csp-script-nonce} src="<?= base_url('js/open-audit.js') ?>"></script>
 
         <!-- CSS -->
         <link href="<?= base_url('css/inter.css') ?>" rel="stylesheet">
