@@ -16,6 +16,10 @@ class CsrfHeaderFilter implements FilterInterface
 
     public function after(RequestInterface $request, ResponseInterface $response, $arguments = null)
     {
+        if ($request instanceof CLIRequest) {
+            return $response;
+        }
+
         if ($request->isAJAX()) {
             $response->setHeader('X-CSRF-RENEWED-HASH', csrf_hash());
         }
