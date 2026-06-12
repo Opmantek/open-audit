@@ -16,7 +16,7 @@ class CsrfHeaderFilter implements FilterInterface
 
     public function after(RequestInterface $request, ResponseInterface $response, $arguments = null)
     {
-        if ($request instanceof CLIRequest) {
+        if (! method_exists($request, 'isAJAX')) {
             return $response;
         }
 
