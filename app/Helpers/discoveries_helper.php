@@ -164,6 +164,8 @@ if (! function_exists('responding_ip_list')) {
         $options->targets      = $discovery->subnet;
         $options->noDns        = true;
 
+        $checkState = $discovery->scan_options->ping === 'y';
+
         if ($discovery->scan_options->ping === 'y') {
             $options->scanType       = NmapOptions::SCAN_TYPE_PING;
             $options->maxRetries     = 2;
@@ -183,14 +185,14 @@ if (! function_exists('responding_ip_list')) {
         $parser  = new NmapHostXmlParser();
         $process = new NmapProcess($options, null);
         log_message('debug', 'Command: ' . $process->getCommandLine());
-        $process->start(function (string $type, string $buffer) use ($parser, &$errors, &$ipAddresses): void {
+        $process->start(function (string $type, string $buffer) use ($parser, &$errors, &$ipAddresses, $checkState): void {
             if ($type === Process::ERR) {
                 $errors[] = $buffer;
             } else {
                 foreach ($parser->feed($buffer) as $host) {
                     $state = NmapHostHelper::getState($host);
                     $address = NmapHostHelper::getIpAddress($host);
-                    if ($state === 'up' && $address) {
+                    if ($address && ($state === 'up' || ! $checkState)) {
                         $ipAddresses[] = $address['addr'];
                     }
                 }
