@@ -2889,37 +2889,10 @@ if [ -z $(echo "$skip_sections" | grep "software,") ]; then
 		echo "			<installed_on>$(escape_xml $installed_on)</installed_on>" >> "$xml_file"
 		echo "		</item>" >> "$xml_file"
 	fi
-	# Detect Wordpress
-	for file in $(find / -path "*wp-includes/version.php" 2>/dev/null); do
-		version=$(grep "wp_version = " "$file" | cut -d\' -f2)
-		if [ -n "$version" ]; then
-			file=$(echo "$file" | sed "s/\/wp-includes\/version\.php//")
-			echo "		<item>" >> "$xml_file"
-			echo "			<name>WordPress</name>" >> "$xml_file"
-			echo "			<version>$(escape_xml $version)</version>" >> "$xml_file"
-			echo "			<install_directory>$(escape_xml $file)</install_directory>" >> "$xml_file"
-			echo "		</item>" >> "$xml_file"
-		fi
-	done
-	# Detect Joomla
-	for file in $(find / -path "*language/en-GB/langmetadata.xml" 2>/dev/null); do
-		version=$(grep -F "<version>" "$file" | cut -d\> -f2 | cut -d\< -f1)
-		if [ -n "$version" ]; then
-			file=$(echo "$file" | sed "s/\/language\/en-GB\/langmetadata\.xml//")
-			echo "		<item>" >> "$xml_file"
-			echo "			<name>Joomla</name>" >> "$xml_file"
-			echo "			<version>$(escape_xml $version)</version>" >> "$xml_file"
-			echo "			<install_directory>$(escape_xml $file)</install_directory>" >> "$xml_file"
-			echo "		</item>" >> "$xml_file"
-		fi
-	done
-
 
 	# Note the new parsing for Debian and Redhat based distro's.
 	# We take versions like 1:2.38.1-5+deb12u3 and make them 2.38.1
 	# The entire canonical version is now stored in version_raw
-
-
 	IFS="$NEWLINEIFS"
 	case $system_os_family in
 			'Ubuntu' | 'Debian' | 'LinuxMint' | 'Raspbian' )
