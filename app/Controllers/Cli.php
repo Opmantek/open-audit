@@ -361,6 +361,23 @@ class Cli extends Controller
         $result = $db->query($sql, [$id])->getResult();
         if (!empty($result[0])) {
             $cloud = $result[0];
+        } else {
+            log_message('error', 'Invalid ID provided to Cli::executeCloud of ' . $id . ', exiting.');
+            return;
+        }
+        if (empty($cloud->type)) {
+            log_message('error', 'Empty cloud->type for ' . $cloud->name . ' for Cli::cloudsExecute, exiting.');
+            $cloudsModel->log($id, 'Empty cloud->type for Cli::cloudsExecute, exiting.', 'error', 0);
+            $sql = 'UPDATE `clouds` SET `status` = "completed" WHERE id = ?';
+            $db->query($sql, [$id]);
+            return;
+        }
+        if (!in_array($cloud->type, ['google', 'amazon', 'microsoft'])) {
+            log_message('error', 'Invalid cloud->type of ' . $cloud->type . ' for ' . $cloud->name . ' for Cli::cloudsExecute, exiting.');
+            $cloudsModel->log($id, 'Invalid cloud->type for Cli::cloudsExecute, exiting.', 'error', 0);
+            $sql = 'UPDATE `clouds` SET `status` = "completed" WHERE id = ?';
+            $db->query($sql, [$id]);
+            return;
         }
         if (!empty($cloud->options)) {
             $cloud->options = json_decode($cloud->options);
@@ -373,6 +390,80 @@ class Cli extends Controller
         // Delete any existing logs
         $sql = "DELETE FROM cloud_log WHERE cloud_id = " . $id;
         $result = $db->query($sql);
+
+        if (!empty($cloud->credentials)) {
+            try {
+                $cloud->credentials = json_decode(simpleDecrypt($cloud->credentials, config('Encryption')->key), false, 512, JSON_THROW_ON_ERROR);
+            } catch (\JsonException $e) {
+                log_message('error', 'Could not decode JSON. File:' . basename(__FILE__) . ', Line:' . __LINE__ . ', Error: ' . $e->getMessage());
+                log_message('error', 'No credentials decrypted for ' . $cloud->name . ', exiting.');
+                $cloudsModel->log($id, 'No credentials decrypted, exiting.', 'error', 0);
+                $sql = 'UPDATE `clouds` SET `status` = "completed" WHERE id = ?';
+                $db->query($sql, [$id]);
+                return;
+            }
+        } else {
+            log_message('error', 'No credentials for ' . $cloud->name . ' supplied, exiting.');
+            $cloudsModel->log($id, 'No credentials supplied, exiting.', 'error', 0);
+            $sql = 'UPDATE `clouds` SET `status` = "completed" WHERE id = ?';
+            $db->query($sql, [$id]);
+            return;
+        }
+
+        if ($cloud->type === 'google') {
+            if (!empty($cloud->credentials['json'])) {
+                try {
+                    $cloud->jsonKey = json_decode($cloud->credentials['json'], true, 512, JSON_THROW_ON_ERROR);
+                } catch (\JsonException $e) {
+                    log_message('error', 'Could not decode JSON. File:' . basename(__FILE__) . ', Line:' . __LINE__ . ', Error: ' . $e->getMessage());
+                    log_message('error', 'No credentials::JSON decoded for ' . $cloud->name . ', exiting.');
+                    $cloudsModel->log($id, 'No credentials::JSON decoded, exiting.', 'error', 0);
+                    $sql = 'UPDATE `clouds` SET `status` = "completed" WHERE id = ?';
+                    $db->query($sql, [$id]);
+                    return;
+                }
+            } else {
+                log_message('error', 'No credentials::json supplied, exiting.');
+                $cloudsModel->log($id, 'No credentials::JSON supplied, exiting.', 'error', 0);
+                $sql = 'UPDATE `clouds` SET `status` = "completed" WHERE id = ?';
+                $db->query($sql, [$id]);
+                return;
+            }
+        }
+
+        if ($cloud->type === 'microsoft') {
+            if (empty($cloud->credentials->subscription_id) or !is_string($cloud->credentials->subscription_id)) {
+                log_message('error', 'No Subscription ID in credentials exiting.');
+                $cloudsModel->log($id, 'No Subscription ID in credentials exiting.', 'error', 0);
+                $sql = 'UPDATE `clouds` SET `status` = "completed" WHERE id = ?';
+                $db->query($sql, [$id]);
+                return;
+            }
+
+            if (empty($cloud->credentials->tenant_id) or !is_string($cloud->credentials->tenant_id)) {
+                log_message('error', 'No Tenant ID in credentials exiting.');
+                $cloudsModel->log($id, 'No Tenant ID in credentials exiting.', 'error', 0);
+                $sql = 'UPDATE `clouds` SET `status` = "completed" WHERE id = ?';
+                $db->query($sql, [$id]);
+                return;
+            }
+
+            if (empty($cloud->credentials->client_id) or !is_string($cloud->credentials->client_id)) {
+                log_message('error', 'No Client ID in credentials exiting.');
+                $cloudsModel->log($id, 'No Client ID in credentials exiting.', 'error', 0);
+                $sql = 'UPDATE `clouds` SET `status` = "completed" WHERE id = ?';
+                $db->query($sql, [$id]);
+                return;
+            }
+
+            if (empty($cloud->credentials->client_secret) or !is_string($cloud->credentials->client_secret)) {
+                log_message('error', 'No Client Secret in credentials exiting.');
+                $cloudsModel->log($id, 'No Client Secret in credentials exiting.', 'error', 0);
+                $sql = 'UPDATE `clouds` SET `status` = "completed" WHERE id = ?';
+                $db->query($sql, [$id]);
+                return;
+            }
+        }
 
         // Get the locations, networks and devices
         if (!empty($cloud->type)) {
@@ -393,6 +484,14 @@ class Cli extends Controller
                     // code...
                     break;
             }
+        }
+
+        // Guard
+        if (empty($details)) {
+            $cloudsModel->log($id, 'Could not retrieve details from ' . ucfirst($cloud->type) . ', exiting.', 'info', 0);
+            $sql = 'UPDATE `clouds` SET `status` = "completed" WHERE id = ?';
+            $db->query($sql, [$id]);
+            return;
         }
 
         // Empty rule to defer to global config
@@ -438,7 +537,7 @@ class Cli extends Controller
                     if ($insert) {
                         $location_id = $locationsModel->create($cloud_location->attributes);
                         if (empty($location_id)) {
-                            $message = 'Could not create location named ' . $cloud_location->attributes->name . ' for cloud ' . $cloud->name;
+                            $message = 'Could not create location named ' . $cloud_location->attributes->name;
                             log_message('error', $message);
                             $cloudsModel->log($id, $message, 'error', 0);
                         } else {
@@ -451,13 +550,12 @@ class Cli extends Controller
                 } else {
                     $location_id = $locationsModel->create($cloud_location->attributes);
                     if (empty($location_id)) {
-                        $message = 'Could not create location named ' . $cloud_location->attributes->name . ' for cloud ' . $cloud->name;
+                        $message = 'Could not create location named ' . $cloud_location->attributes->name;
                         log_message('error', $message);
                         $cloudsModel->log($id, $message, 'error', 0);
                     } else {
-                            $message = 'Location with name ' . $cloud_location->attributes->name . ' was created.';
-                            log_message('debug', $message);
-                            $cloudsModel->log($id, $message, 'info', 0);
+                        $message = 'Location with name ' . $cloud_location->attributes->name . ' was created.';
+                        $cloudsModel->log($id, $message, 'info', 0);
                         $count++;
                     }
                 }
@@ -496,9 +594,8 @@ class Cli extends Controller
                     if ($insert) {
                         $network_id = $networksModel->create($cloud_network->attributes);
                         if (empty($network_id)) {
-                            $message = 'Could not create network named ' . $cloud_network->attributes->name . ' for cloud ' . $cloud->name;
-                            log_message('error', $message);
-                            $cloudsModel->log($id, $message, 'error', 0);
+                            log_message('error', 'Could not create network named ' . $cloud_network->attributes->name . ' for ' . $cloud->name);
+                            $cloudsModel->log($id, 'Could not create network named ' . $cloud_network->attributes->name, 'error', 0);
                         } else {
                             $message = 'Network named ' . $cloud_network->attributes->name . ' created.';
                             log_message('debug', $message);
@@ -509,9 +606,8 @@ class Cli extends Controller
                 } else {
                     $network_id = $networksModel->create($cloud_network->attributes);
                     if (empty($network_id)) {
-                        $message = 'Could not create network with name ' . $cloud_network->attributes->name . ' for cloud ' . $cloud->name;
-                        log_message('error', $message);
-                        $cloudsModel->log($id, $message, 'error', 0);
+                        log_message('error', 'Could not create network with name ' . $cloud_network->attributes->name . ' for ' . $cloud->name);
+                        $cloudsModel->log($id, 'Could not create network with name ' . $cloud_network->attributes->name, 'error', 0);
                     } else {
                         $message = 'Network with name ' . $cloud_network->attributes->name . ' created.';
                         log_message('debug', $message);
@@ -543,19 +639,12 @@ class Cli extends Controller
             $discovery_id = $discoveriesModel->create($discovery->attributes);
             unset($discovery);
             if (empty($discovery_id)) {
-                $message = 'Could not create discovery entry for cloud ' . $cloud->name;
-                log_message('error', $message);
-                $cloudsModel->log($id, $message, 'error', 0);
+                log_message('error', 'Could not create discovery entry for ' . $cloud->name);
+                $cloudsModel->log($id, 'Could not create discovery entry.', 'error', 0);
+                $execute_discovery = false;
             }
-        }
-        $sql = "SELECT id FROM discoveries WHERE cloud_id = ?";
-        $discovery_id = @$db->query($sql, [$id])->getResult()[0]->id;
-        if (empty($discovery_id)) {
-            $message = 'Could not retrieve discovery entry for cloud ' . $cloud->name;
-            log_message('error', $message);
-            $cloudsModel->log($id, $message, 'error', 0);
         } else {
-            $discovery_id = intval($discovery_id);
+            $discovery_id = intval($discoveries[0]->id);
         }
 
         // Remove any logs
@@ -1041,20 +1130,9 @@ class Cli extends Controller
 
     public function microsoft($cloud)
     {
-        if (empty($cloud)) {
-            log_message('error', 'A request for the Microsoft API was received, but no cloud data was present in the request.');
-            $this->response->setStatusCode(400);
-            return;
-        }
-
         helper('security');
         helper('network');
         $db = db_connect();
-        try {
-            $cloud->credentials = json_decode(simpleDecrypt($cloud->credentials, config('Encryption')->key), false, 512, JSON_THROW_ON_ERROR);
-        } catch (\JsonException $e) {
-            log_message('error', 'Could not decode JSON. File:' . basename(__FILE__) . ', Line:' . __LINE__ . ', Error: ' . $e->getMessage());
-        }
 
         $projects = array();
         $projects[0] = new stdClass();
@@ -1084,195 +1162,265 @@ class Cli extends Controller
         try {
             $json = json_decode($body, false, 512, JSON_THROW_ON_ERROR);
         } catch (\JsonException $e) {
-            log_message('error', 'Could not decode JSON. File:' . basename(__FILE__) . ', Line:' . __LINE__ . ', Error: ' . $e->getMessage());
-        }
-        if (empty($json)) {
-            log_message('error', 'Invalid JSON returned when requesting token.');
-            $sql = "INSERT INTO cloud_log VALUES (NULL, " . $cloud->id . ", NOW(), 'error', '', 'Invalid JSON returned when requesting token.')";
+            log_message('error', 'Could not decode JSON for token, exiting. File:' . basename(__FILE__) . ', Line:' . __LINE__ . ', Error: ' . $e->getMessage());
+            log_message('error', (string)$body);
+            $sql = "INSERT INTO cloud_log VALUES (NULL, ?, NOW(), 'error', '', 'Could not decode JSON response for token, exiting.')";
+            $db->query($sql, [$cloud->id]);
+            return false;
         }
         if (!empty($json->error_description)) {
             log_message('error', $json->error_description);
-            $sql = "INSERT INTO cloud_log VALUES (NULL, " . $cloud->id . ", NOW(), 'error', '', '" . str_replace("'", "", $json->error_description) . "')";
+            $sql = "INSERT INTO cloud_log VALUES (NULL, ?, NOW(), 'error', '', ?)";
+            $db->query($sql, [$cloud->id, $json->error_description]);
+            return false;
         }
         if (empty($json->access_token)) {
-            log_message('error', 'Token not present in response.');
-            $sql = "INSERT INTO cloud_log VALUES (NULL, " . $cloud->id . ", NOW(), 'error', '', 'Token not present in response.')";
+            log_message('error', 'Token not present in response, exiting.');
+            $sql = "INSERT INTO cloud_log VALUES (NULL, ?, NOW(), 'error', '', ?)";
+            $db->query($sql, [$cloud->id, 'Token not present in response, exiting.']);
+            return false;
+        }
+        if (empty($json)) {
+            log_message('error', 'Empty JSON returned when requesting token, exiting.');
+            $sql = "INSERT INTO cloud_log VALUES (NULL, ?, NOW(), 'error', '', ?)";
+            $db->query($sql, [$cloud->id, 'Empty JSON returned when requesting token, exiting.']);
+            return false;
         }
         $token = '';
         if (!empty($json->access_token)) {
             $token = 'bearer ' . $json->access_token;
         }
 
+        unset($json);
         $url = 'https://management.azure.com/subscriptions/' . $cloud->credentials->subscription_id . '/locations?api-version=2016-06-01';
-        $response = $client->get($url, ['Authorization' => $token, 'headers' => ['Accept' => 'application/json'], 'http_errors' => false]);
+        $response = $client->get($url, ['headers' => ['Accept' => 'application/json', 'Authorization' => $token], 'http_errors' => false]);
         $body = $response->getBody();
         try {
             $json = json_decode($body, false, 512, JSON_THROW_ON_ERROR);
         } catch (\JsonException $e) {
-            log_message('error', 'Could not decode JSON. File:' . basename(__FILE__) . ', Line:' . __LINE__ . ', Error: ' . $e->getMessage());
+            log_message('error', 'Could not decode JSON for locations, exiting. File:' . basename(__FILE__) . ', Line:' . __LINE__ . ', Error: ' . $e->getMessage());
+            log_message('error', (string)$body);
+            $sql = "INSERT INTO cloud_log VALUES (NULL, ?, NOW(), 'error', '', 'Could not decode JSON response for locations, exiting.')";
+            $db->query($sql, [$cloud->id]);
+            return false;
+        }
+        if (!empty($json->error->message)) {
+            log_message('error', $json->error->message);
+            $sql = "INSERT INTO cloud_log VALUES (NULL, ?, NOW(), 'error', '', ?)";
+            $db->query($sql, [$cloud->id, $json->error->message]);
+            return false;
         }
         if (empty($json)) {
-            log_message('error', 'Invalid JSON returned when requesting locations.');
-            $sql = "INSERT INTO cloud_log VALUES (NULL, " . $cloud->id . ", NOW(), 'error', '', 'Invalid JSON returned when requesting locations.')";
-        }
-        if (!empty($json->error_description)) {
-            log_message('error', $json->error_description);
-            $sql = "INSERT INTO cloud_log VALUES (NULL, " . $cloud->id . ", NOW(), 'error', '', '" . str_replace("'", "", $json->error_description) . "')";
+            log_message('error', 'Empty JSON returned when requesting locations, exiting.');
+            $sql = "INSERT INTO cloud_log VALUES (NULL, ?, NOW(), 'error', '', ?)";
+            $db->query($sql, [$cloud->id, 'Empty JSON returned when requesting locations, exiting.']);
+            return false;
         }
 
-        foreach ($json->value as $region) {
-            $item = new stdClass();
-            $item->type = 'locations';
-            $item->attributes = new stdClass();
-            $item->attributes->name = $region->displayName;
-            $item->attributes->type = 'Cloud';
-            $item->attributes->description = $region->name;
-            $item->attributes->external_ident = $region->id;
-            $item->attributes->org_id = $cloud->org_id;
-            $item->attributes->longitude = $region->longitude;
-            $item->attributes->latitude = $region->latitude;
-            $item->attributes->address = 'Microsoft';
-            $item->attributes->options = $region;
-            $projects[0]->locations[] = $item;
-        }
-
-        $url = 'https://management.azure.com/subscriptions/' . $cloud->credentials->subscription_id . '/providers/Microsoft.Network/virtualNetworks?api-version=2018-08-01';
-        $response = $client->get($url, ['Authorization' => $token, 'headers' => ['Accept' => 'application/json'], 'http_errors' => false]);
-        $body = $response->getBody();
-        try {
-            $json = json_decode($body, false, 512, JSON_THROW_ON_ERROR);
-        } catch (\JsonException $e) {
-            log_message('error', 'Could not decode JSON. File:' . basename(__FILE__) . ', Line:' . __LINE__ . ', Error: ' . $e->getMessage());
-        }
-        if (empty($json)) {
-            log_message('error', 'Invalid JSON returned when requesting networks.');
-            $sql = "INSERT INTO cloud_log VALUES (NULL, " . $cloud->id . ", NOW(), 'error', '', 'Invalid JSON returned when requesting networks.')";
-        }
-        if (!empty($json->error_description)) {
-            log_message('error', $json->error_description);
-            $sql = "INSERT INTO cloud_log VALUES (NULL, " . $cloud->id . ", NOW(), 'error', '', '" . str_replace("'", "", $json->error_description) . "')";
-        }
-
-        foreach ($json->value as $network) {
-            $item = new stdClass();
-            $item->type = 'networks';
-            $item->attributes = new stdClass();
-            $item->attributes->name = (!empty($network->name)) ? $network->name : '';
-            $item->attributes->org_id = $cloud->org_id;
-            $item->attributes->network = (!empty($network->properties->addressSpace->addressPrefixes[0])) ? $network->properties->addressSpace->addressPrefixes[0] : '';
-            $item->attributes->type = 'Cloud Network';
-            $item->attributes->description = 'Azure Network';
-            $item->attributes->external_ident = (!empty($network->id)) ? $network->id : '';
-            $item->attributes->options = $network;
-            if (!empty($item->attributes->network)) {
-                $projects[0]->networks[] = $item;
+        if (!empty($json->value)) {
+            foreach ($json->value as $region) {
+                $item = new stdClass();
+                $item->type = 'locations';
+                $item->attributes = new stdClass();
+                $item->attributes->name = $region->displayName;
+                $item->attributes->type = 'Cloud';
+                $item->attributes->description = $region->name;
+                $item->attributes->external_ident = $region->id;
+                $item->attributes->org_id = $cloud->org_id;
+                $item->attributes->longitude = $region->longitude;
+                $item->attributes->latitude = $region->latitude;
+                $item->attributes->address = 'Microsoft';
+                $item->attributes->options = $region;
+                $projects[0]->locations[] = $item;
             }
+        }
 
-            foreach ($network->properties->subnets as $net) {
-                if (!empty($net->properties->addressPrefix) and $net->properties->addressPrefix !== $network->properties->addressSpace->addressPrefixes[0]) {
-                    $item = new stdClass();
-                    $item->type = 'networks';
-                    $item->attributes = new stdClass();
-                    $item->attributes->name = (!empty($net->name)) ? $net->name : '';
-                    $item->attributes->org_id = $cloud->org_id;
-                    $item->attributes->network = $net->{'properties'}->{'addressPrefix'};
-                    $item->attributes->type = 'Local Area Network';
-                    $item->attributes->description = 'Azure Network';
-                    $item->attributes->external_ident = (!empty($net->id)) ? $net->id : '';
-                    $item->attributes->options = $net;
+        unset($json);
+        $url = 'https://management.azure.com/subscriptions/' . $cloud->credentials->subscription_id . '/providers/Microsoft.Network/virtualNetworks?api-version=2018-08-01';
+        $response = $client->get($url, ['headers' => ['Accept' => 'application/json', 'Authorization' => $token], 'http_errors' => false]);
+        $body = $response->getBody();
+        try {
+            $json = json_decode($body, false, 512, JSON_THROW_ON_ERROR);
+        } catch (\JsonException $e) {
+            log_message('error', 'Could not decode JSON for networks, exiting. File:' . basename(__FILE__) . ', Line:' . __LINE__ . ', Error: ' . $e->getMessage());
+            log_message('error', (string)$body);
+            $sql = "INSERT INTO cloud_log VALUES (NULL, ?, NOW(), 'error', '', 'Could not decode JSON response for networks, exiting.')";
+            $db->query($sql, [$cloud->id]);
+            return false;
+        }
+        if (!empty($json->error->message)) {
+            log_message('error', $json->error->message);
+            $sql = "INSERT INTO cloud_log VALUES (NULL, ?, NOW(), 'error', '', ?)";
+            $db->query($sql, [$cloud->id, $json->error->message]);
+            return false;
+        }
+        if (empty($json)) {
+            log_message('error', 'Empty JSON returned when requesting networks.');
+            $sql = "INSERT INTO cloud_log VALUES (NULL, ?, NOW(), 'error', '', ?)";
+            $db->query($sql, [$cloud->id, 'Invalid JSON returned when requesting networks, exiting.']);
+            return false;
+        }
+
+        if (!empty($json->value)) {
+            foreach ($json->value as $network) {
+                $item = new stdClass();
+                $item->type = 'networks';
+                $item->attributes = new stdClass();
+                $item->attributes->name = (!empty($network->name)) ? $network->name : '';
+                $item->attributes->org_id = $cloud->org_id;
+                $item->attributes->network = (!empty($network->properties->addressSpace->addressPrefixes[0])) ? $network->properties->addressSpace->addressPrefixes[0] : '';
+                $item->attributes->type = 'Cloud Network';
+                $item->attributes->description = 'Azure Network';
+                $item->attributes->external_ident = (!empty($network->id)) ? $network->id : '';
+                $item->attributes->options = $network;
+                if (!empty($item->attributes->network)) {
                     $projects[0]->networks[] = $item;
+                }
+
+                if (!empty($network->properties->subnets)) {
+                    foreach ($network->properties->subnets as $net) {
+                        if (!empty($net->properties->addressPrefix) and $net->properties->addressPrefix !== $network->properties->addressSpace->addressPrefixes[0]) {
+                            $item = new stdClass();
+                            $item->type = 'networks';
+                            $item->attributes = new stdClass();
+                            $item->attributes->name = (!empty($net->name)) ? $net->name : '';
+                            $item->attributes->org_id = $cloud->org_id;
+                            $item->attributes->network = $net->{'properties'}->{'addressPrefix'};
+                            $item->attributes->type = 'Local Area Network';
+                            $item->attributes->description = 'Azure Network';
+                            $item->attributes->external_ident = (!empty($net->id)) ? $net->id : '';
+                            $item->attributes->options = $net;
+                            $projects[0]->networks[] = $item;
+                        }
+                    }
                 }
             }
         }
 
+        unset($json);
         $url = 'https://management.azure.com/subscriptions/' . $cloud->credentials->subscription_id . '/providers/Microsoft.Compute/virtualMachines?api-version=2017-12-01';
-        $response = $client->get($url, ['Authorization' => $token, 'headers' => ['Accept' => 'application/json'], 'http_errors' => false]);
+        $response = $client->get($url, ['headers' => ['Accept' => 'application/json', 'Authorization' => $token], 'http_errors' => false]);
         $body = $response->getBody();
         try {
             $instances = json_decode($body, false, 512, JSON_THROW_ON_ERROR);
         } catch (\JsonException $e) {
-            log_message('error', 'Could not decode JSON. File:' . basename(__FILE__) . ', Line:' . __LINE__ . ', Error: ' . $e->getMessage());
+            log_message('error', 'Could not decode JSON for instances, exiting. File:' . basename(__FILE__) . ', Line:' . __LINE__ . ', Error: ' . $e->getMessage());
+            log_message('error', (string)$body);
+            $sql = "INSERT INTO cloud_log VALUES (NULL, ?, NOW(), 'error', '', 'Could not decode JSON response for instances, exiting.')";
+            $db->query($sql, [$cloud->id]);
+            return false;
+        }
+        if (!empty($instances->error->message)) {
+            log_message('error', $instances->error->message);
+            $sql = "INSERT INTO cloud_log VALUES (NULL, ?, NOW(), 'error', '', ?)";
+            $db->query($sql, [$cloud->id, $instances->error->message]);
+            return false;
         }
         if (empty($instances)) {
-            log_message('error', 'Invalid JSON returned when requesting instances.');
-            $sql = "INSERT INTO cloud_log VALUES (NULL, " . $cloud->id . ", NOW(), 'error', '', 'Invalid JSON returned when requesting instances.')";
+            log_message('error', 'Empty JSON returned when requesting instances.');
+            $sql = "INSERT INTO cloud_log VALUES (NULL, ?, NOW(), 'error', '', ?)";
+            $db->query($sql, [$cloud->id, 'Empty JSON returned when requesting instances, exiting.']);
         }
-        if (!empty($json->error_description)) {
-            log_message('error', $json->error_description);
-            $sql = "INSERT INTO cloud_log VALUES (NULL, " . $cloud->id . ", NOW(), 'error', '', '" . str_replace("'", "", $json->error_description) . "')";
-        }
-
 
         $url = 'https://management.azure.com/subscriptions/' . $cloud->credentials->subscription_id . '/providers/Microsoft.Network/publicIPAddresses?api-version=2018-04-01';
-        $response = $client->get($url, ['Authorization' => $token, 'headers' => ['Accept' => 'application/json'], 'http_errors' => false]);
+        $response = $client->get($url, ['headers' => ['Accept' => 'application/json', 'Authorization' => $token], 'http_errors' => false]);
         $body = $response->getBody();
         try {
             $ip = json_decode($body, false, 512, JSON_THROW_ON_ERROR);
         } catch (\JsonException $e) {
-            log_message('error', 'Could not decode JSON. File:' . basename(__FILE__) . ', Line:' . __LINE__ . ', Error: ' . $e->getMessage());
+            log_message('error', 'Could not decode JSON for public ips, exiting. File:' . basename(__FILE__) . ', Line:' . __LINE__ . ', Error: ' . $e->getMessage());
+            log_message('error', (string)$body);
+            $sql = "INSERT INTO cloud_log VALUES (NULL, ?, NOW(), 'error', '', 'Could not decode JSON response for public ips, exiting.')";
+            $db->query($sql, [$cloud->id]);
+            return false;
+        }
+        if (!empty($ip->error->message)) {
+            log_message('error', $ip->error->message);
+            $sql = "INSERT INTO cloud_log VALUES (NULL, ?, NOW(), 'error', '', ?)";
+            $db->query($sql, [$cloud->id, $ip->error->message]);
+            return false;
         }
         if (empty($ip)) {
-            log_message('error', 'Invalid JSON returned when requesting ip.');
-            $sql = "INSERT INTO cloud_log VALUES (NULL, " . $cloud->id . ", NOW(), 'error', '', 'Invalid JSON returned when requesting ip.')";
-        }
-        if (!empty($json->error_description)) {
-            log_message('error', $json->error_description);
-            $sql = "INSERT INTO cloud_log VALUES (NULL, " . $cloud->id . ", NOW(), 'error', '', '" . str_replace("'", "", $json->error_description) . "')";
+            log_message('warning', 'Empty JSON returned when requesting public ips.');
+            $sql = "INSERT INTO cloud_log VALUES (NULL, ?, NOW(), 'warning', '', ?)";
+            $db->query($sql, [$cloud->id, 'Empty JSON returned when requesting public ips.']);
         }
 
-        foreach ($instances->value as $instance) {
-            $item = new stdClass();
-            $item->type = 'computer';
-            $item->attributes = new stdClass();
+        $newLocations = array();
+        if (!empty($instances->value)) {
+            foreach ($instances->value as $instance) {
+                $item = new stdClass();
+                $item->type = 'computer';
+                $item->attributes = new stdClass();
 
-            $item->attributes->hostname = $instance->properties->osProfile->computerName;
+                $item->attributes->hostname = (!empty($instance->properties->osProfile->computerName)) ? $instance->properties->osProfile->computerName : '';
 
-            $item->attributes->last_seen_by = 'cloud';
-            $item->attributes->form_factor = 'Virtual';
-            $item->attributes->status = 'production';
-            $item->attributes->environment = 'production';
-            $item->attributes->class = 'virtual server';
-            $item->attributes->org_id = $cloud->org_id;
-            $item->attributes->{'locations.name'} = '';
-            foreach ($projects[0]->locations as $location) {
-                if ($instance->location === $location->attributes->description) {
-                    $item->attributes->{'locations.name'} = $location->attributes->name;
+                $item->attributes->last_seen_by = 'cloud';
+                $item->attributes->form_factor = 'Virtual';
+                $item->attributes->status = 'production';
+                $item->attributes->environment = 'production';
+                $item->attributes->class = 'virtual server';
+                $item->attributes->org_id = $cloud->org_id;
+                $item->attributes->{'locations.name'} = '';
+                if (!empty($projects[0]->locations)) {
+                    foreach ($projects[0]->locations as $location) {
+                        if (!empty($instance->location) and !empty($location->attributes->description) and $instance->location === $location->attributes->description) {
+                            $item->attributes->{'locations.name'} = $location->attributes->name;
+                            $newLocations[] = $location;
+                        }
+                    }
                 }
-            }
-            foreach ($ip->value as $ipaddress) {
-                if ($ipaddress->tags->Name === $instance->name) {
-                    $item->attributes->ip = (!empty($ipaddress->properties->ipAddress)) ? $ipaddress->properties->ipAddress : '';
+                $item->attributes->ip = '';
+                if (!empty($ip->value)) {
+                    foreach ($ip->value as $ipaddress) {
+                        if (!empty($ipaddress->tags->Name) and !empty($instance->name) and $ipaddress->tags->Name === $instance->name) {
+                            $item->attributes->ip = (!empty($ipaddress->properties->ipAddress)) ? $ipaddress->properties->ipAddress : '';
+                        }
+                    }
                 }
-            }
-            $item->attributes->os_group = (!empty($instance->properties->storageProfile->osDisk->osType)) ? $instance->properties->storageProfile->osDisk->osType : '';
-            $temp = (!empty($instance->properties->storageProfile->imageReference->publisher)) ? $instance->properties->storageProfile->imageReference->publisher : '';
-            if ($temp === 'Canonical') {
-                $item->attributes->os_family = 'Ubuntu';
-                $item->attributes->os_name = 'Ubuntu ' . (!empty($instance->properties->storageProfile->imageReference->sku)) ? $instance->properties->storageProfile->imageReference->sku : '';
-            }
-            $item->attributes->cloud_id = $cloud->id;
-            $item->attributes->instance_provider = 'Microsoft Azure';
-            $item->attributes->instance_type = $instance->properties->hardwareProfile->vmSize;
-            $item->attributes->instance_ident = $instance->id;
-            # NOTE - must use a request per VM to InstanceViewStatus which is still ambiguous to get state
-            # For now simply set to 'running' so an audit is triggered.
-            # TODO - come back to this
-            $item->attributes->instance_state = 'running';
-            $item->attributes->instance_tags = $instance->tags;
-            $item->attributes->instance_reservation_ident = $instance->properties->vmId;
-            $item->attributes->instance_options = $instance;
-            $item->attributes->memory_count = 0;
-            $item->attributes->processor_count = 0;
-            $name = $instance->properties->hardwareProfile->vmSize;
-            foreach ($sizes->{$instance->location}->value as $size) {
-                if ($name === $size->name) {
-                    $item->attributes->processor_count = intval($size->numberOfCores);
-                    $item->attributes->memory_count = intval($size->memoryInMB) * 1024;
+                $item->attributes->os_group = (!empty($instance->properties->storageProfile->osDisk->osType)) ? $instance->properties->storageProfile->osDisk->osType : '';
+                $temp = (!empty($instance->properties->storageProfile->imageReference->publisher)) ? $instance->properties->storageProfile->imageReference->publisher : '';
+                $item->attributes->os_family = '';
+                $item->attributes->os_name = '';
+                if ($temp === 'Canonical') {
+                    $item->attributes->os_family = 'Ubuntu';
+                    $item->attributes->os_name = 'Ubuntu';
+                    if (!empty($instance->properties->storageProfile->imageReference->sku)) {
+                        $item->attributes->os_name .= ' ' . $instance->properties->storageProfile->imageReference->sku;
+                    }
                 }
+                $item->attributes->cloud_id = $cloud->id;
+                $item->attributes->instance_provider = 'Microsoft Azure';
+                $item->attributes->instance_type = (!empty($instance->properties->hardwareProfile->vmSize)) ? $instance->properties->hardwareProfile->vmSize : '';
+                $item->attributes->instance_ident = (!empty($instance->id)) ? $instance->id : '';
+                # NOTE - must use a request per VM to InstanceViewStatus which is still ambiguous to get state
+                # For now simply set to 'running' so an audit is triggered.
+                # TODO - come back to this
+                $item->attributes->instance_state = 'running';
+                $item->attributes->instance_tags = (!empty($instance->tags)) ? $instance->tags : '';
+                $item->attributes->instance_reservation_ident = (!empty($instance->properties->vmId)) ? $instance->properties->vmId : '';
+                $item->attributes->instance_options = $instance;
+                $item->attributes->memory_count = 0;
+                $item->attributes->processor_count = 0;
+                $name = $instance->properties->hardwareProfile->vmSize;
+                if (!empty($sizes->{$instance->location}->value)) {
+                    foreach ($sizes->{$instance->location}->value as $size) {
+                        if ($name === $size->name) {
+                            if (!empty($size->numberOfCores) and is_numeric($size->numberOfCores)) {
+                                $item->attributes->processor_count = intval($size->numberOfCores);
+                            }
+                            if (!empty($size->memoryInMB) and is_numeric($size->memoryInMB)) {
+                                $item->attributes->memory_count = intval($size->memoryInMB) * 1024;
+                            }
+                        }
+                    }
+                }
+                $projects[0]->devices[] = $item;
             }
-            $projects[0]->devices[] = $item;
         }
 
+        unset($projects[0]->locations);
+        $projects[0]->locations = $newLocations;
         return $projects[0];
     }
 
