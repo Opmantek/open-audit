@@ -9,9 +9,9 @@ use Config\Database;
 
 class OpenAudit extends BaseConfig
 {
-    # leave for backwards compat $this->displayVersion = '6.0.4';
-    public string $displayVersion = '6.0.4';
-    public int $appVersion = 20260512;
+    # leave for backwards compat $this->displayVersion = '7.0.0';
+    public string $displayVersion = '7.0.0';
+    public int $appVersion = 20260619;
 
     public float $microtime = 0;
     public int $collector_connect_timeout = 10;
@@ -145,7 +145,6 @@ class OpenAudit extends BaseConfig
     public string $discovery_use_vintage_service;
     public int $discovery_wmi_timeout;
     public string $display_version;
-    public string $enterprise_env;
     public string $feature_agents_advanced;
     public string $feature_devices_manufacturer_logo;
     public string $feature_executables;

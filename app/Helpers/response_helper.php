@@ -524,17 +524,17 @@ if (!function_exists('response_create')) {
                 $cwd = getcwd();
                 chdir('C:\\xampp\\open-audit\\other');
                 @exec($command, $output);
-                pclose(popen($command, 'r'));
+                # pclose(popen($command, 'r'));
                 chdir($cwd);
             } else {
                 $command = $config->enterprise_binary . " $id";
                 if (!empty($_SERVER['CI_ENVIRONMENT']) and $_SERVER['CI_ENVIRONMENT'] === 'development') {
                     $command = $config->enterprise_binary . " --debug $id 2>&1";
-                    log_message('debug', $command);
                 }
-                if (!empty($config->enterprise_env) and str_contains($command, 'enterprise.bin')) {
-                    $command = 'export PAR_GLOBAL_TMPDIR=' . $config->enterprise_env . '; ' . $command;
+                if (str_contains($command, 'enterprise.bin')) {
+                    $command = 'export PAR_GLOBAL_TMPDIR=/usr/local/open-audit/writable/tmp/; ' . $command;
                 }
+                log_message('debug', $command);
                 @exec($command, $output);
             }
             if (!empty($output)) {

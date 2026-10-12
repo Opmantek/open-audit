@@ -1331,7 +1331,7 @@ INSERT INTO `configuration` VALUES (109,'discovery_use_dns','y','bool','y','syst
 INSERT INTO `configuration` VALUES (111,'discovery_use_org_id_match','n','bool','y','system','2000-01-01 00:00:00','When matching a device and assign_devices_to_org is set, use that attribute in the relevant match rules.');
 INSERT INTO `configuration` VALUES (112,'discovery_use_vintage_service','n','bool','y','system','2000-01-01 00:00:00','On Windows, use the old way of running discovery with the Apache service account.');
 INSERT INTO `configuration` VALUES (113,'discovery_wmi_timeout','900','number','y','system','2000-01-01 00:00:00','Timeout duration (in seconds) when discovering a device from Linux via WMI.');
-INSERT INTO `configuration` VALUES (114,'display_version','6.0.4','text','n','system','2000-01-01 00:00:00','The version shown on the web pages.');
+INSERT INTO `configuration` VALUES (114,'display_version','7.0.0','text','n','system','2000-01-01 00:00:00','The version shown on the web pages.');
 INSERT INTO `configuration` VALUES (116,'mail_domain','','text','y','system','2000-01-01 00:00:00','Email domain to use.');
 INSERT INTO `configuration` VALUES (117,'mail_from','','text','y','system','2000-01-01 00:00:00','Email address used for as the sender.');
 INSERT INTO `configuration` VALUES (118,'mail_password','','text','y','system','2000-01-01 00:00:00','Email password for the email account.');
@@ -1342,7 +1342,7 @@ INSERT INTO `configuration` VALUES (122,'mail_user','','text','y','system','2000
 INSERT INTO `configuration` VALUES (123,'firstwave_prompt','2000-01-01','date','n','system','2000-01-01 00:00:00','Prompt about FirstWave products.');
 INSERT INTO `configuration` VALUES (124,'graph_days','30','number','y','system','2000-01-01 00:00:00','The number of days to report on for the Enterprise graphs.');
 INSERT INTO `configuration` VALUES (126,'homepage','summaries','text','y','system','2000-01-01 00:00:00','Any links to the default page should be directed to this endpoint.');
-INSERT INTO `configuration` VALUES (127,'internal_version','20260512','number','n','system','2000-01-01 00:00:00','The internal numerical version.');
+INSERT INTO `configuration` VALUES (127,'internal_version','20260619','number','n','system','2000-01-01 00:00:00','The internal numerical version.');
 INSERT INTO `configuration` VALUES (128,'maps_api_key','','text','y','system','2000-01-01 00:00:00','Your API key for Google Maps.');
 INSERT INTO `configuration` VALUES (129,'match_dbus','n','bool','y','system','2000-01-01 00:00:00','Should we match a device based on its dbus id.');
 INSERT INTO `configuration` VALUES (130,'match_dns_fqdn','n','bool','y','system','2000-01-01 00:00:00','Should we match a device based on its DNS fqdn.');
@@ -1384,7 +1384,6 @@ INSERT INTO `configuration` VALUES (169,'license_footer','','text','n','system',
 INSERT INTO `configuration` VALUES (170,'license_limit','','number','n','system','2000-01-01 00:00:00','Licensed devices.');
 INSERT INTO `configuration` VALUES (171,'server_os','','text','n','system','2000-01-01 00:00:00','The OS Open-AudIT is running on (this server).');
 INSERT INTO `configuration` VALUES (172,'server_platform','','text','n','system','2000-01-01 00:00:00','The OS Platform Open-AudIT is running on (this server).');
-INSERT INTO `configuration` VALUES (173,'enterprise_env','','text','y','system','2000-01-01 00:00:00','Set to allow execution not in /tmp for Linux.');
 INSERT INTO `configuration` VALUES (174,'message_of_the_day','','text','y','system','2000-01-01 00:00:00','Displayed on the logon page. Can be HTML.');
 INSERT INTO `configuration` VALUES (175,'default_geocode','Uluru, Northern Territory, Australia','text','y','system','2000-01-01 00:00:00','When executing an Integration and the target system requires a GeoCode, use this if we cannot make one from the existing data.');
 INSERT INTO `configuration` VALUES (176,'components_extra_columns','','text','y','system','2000-01-01 00:00:00','Any extra columns from the devices table to show on the components list page. Should be comman separated, no spaces, column name only.');

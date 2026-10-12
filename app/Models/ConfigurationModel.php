@@ -197,11 +197,8 @@ class ConfigurationModel extends BaseModel
                     pclose(popen($command, 'r'));
                     chdir($cwd);
                 } else {
-                    $command = $instance->config->enterprise_binary . ' --license';
-                    if (!empty($instance->config->enterprise_env) and str_contains($command, 'enterprise.bin')) {
-                        $command = 'export PAR_GLOBAL_TMPDIR=' . $instance->config->enterprise_env . '; ' . $command;
-                    }
-                    @exec($command, $output);
+                    $command = 'export PAR_GLOBAL_TMPDIR=/usr/local/open-audit/writable/tmp/; ' . $config->enterprise_binary . " --license";
+                    $output = @exec($command, $lines, $result_code);
                 }
             }
         }

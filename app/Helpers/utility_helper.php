@@ -517,11 +517,8 @@ function getLicenseDetails()
             pclose(popen($command, 'r'));
             chdir($cwd);
         } else {
-            $command = $config->enterprise_binary . " --license";
-            if (!empty($config->enterprise_env) and str_contains($command, 'enterprise.bin')) {
-                $command = 'export PAR_GLOBAL_TMPDIR=' . $config->enterprise_env . '; ' . $command;
-            }
-            $output = @exec($command, $output);
+            $command = 'export PAR_GLOBAL_TMPDIR=/usr/local/open-audit/writable/tmp/; ' . $config->enterprise_binary . " --license";
+            $output = @exec($command, $lines, $result_code);
         }
         if (!empty($output)) {
             $json = @json_decode($output);

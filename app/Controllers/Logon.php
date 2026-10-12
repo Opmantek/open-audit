@@ -355,12 +355,9 @@ class Logon extends Controller
             if (php_uname('s') === 'Windows NT') {
                 $command = "%comspec% /c start /b " . $enterprise_binary . " --license";
                 exec($command, $output);
-                pclose(popen($command, 'r'));
+                // pclose(popen($command, 'r'));
             } else {
-                $command = $enterprise_binary . " --license";
-                if (!empty($config->enterprise_env) and str_contains($command, 'enterprise.bin')) {
-                    $command = 'export PAR_GLOBAL_TMPDIR=' . $config->enterprise_env . '; ' . $command;
-                }
+                $command = 'export PAR_GLOBAL_TMPDIR=/usr/local/open-audit/writable/tmp/; ' . $enterprise_binary . " --license";
                 exec($command, $output);
             }
             if (!empty($output)) {
