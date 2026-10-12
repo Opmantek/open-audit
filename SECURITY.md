@@ -2,12 +2,11 @@
 
 ## Supported Versions
 
-As at February 2024, we support Open-AudIT 4.4.2 and 5.x.x
+As at November 2026, we support Open-AudIT 7.0.0 for paying customers.
 
 | Version | Supported          |
 | ------- | ------------------ |
-| 5.x.x   | :white_check_mark: |
-| 4.2.2   | :white_check_mark: |
+| 7.0.0   | :white_check_mark: |
 
 ## Reporting a Vulnerability
 

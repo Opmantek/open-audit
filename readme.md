@@ -28,17 +28,17 @@ Nmap is a prerequisite for Open-AudIT. We rely on Nmap for discovering devices o
 
 The other Linux prerequisites are:
 
-#### RedHat 8 & 9
+#### RedHat 9 & 10
 
-curl httpd ipmitool libnsl.x86_64 logrotate mariadb-server net-snmp net-snmp-utils nmap perl-Crypt-CBC perl-Time-ParseDate php php-cli php-intl php-json php-ldap php-mbstring php-mysqlnd php-process php-snmp php-xml samba-client screen sshpass wget zip
+curl httpd libnsl libxcrypt-compat mariadb-server net-snmp-utils nmap perl-Crypt-CBC php php-cli php-fpm php-intl php-ldap php-mbstring php-mysqlnd php-process php-snmp php-xml php-zip policycoreutils-python-utils samba-client
 
-#### Debian 11 & 12 
+#### Debian 12 & 13
 
-apache2 apache2-utils curl ipmitool libapache2-mod-php libcrypt-cbc-perl logrotate mariadb-server nmap openssh-client php php-cli php-curl php-intl php-ldap php-mbstring php-mysql php-snmp php-xml screen smbclient snmp sshpass wget zip 
+apache2 cron curl libapache2-mod-php libcrypt-cbc-perl mariadb-server nmap php php-cli php-curl php-intl php-ldap php-mbstring php-mysql php-snmp php-xml php-zip smbclient snmp
 
-#### Ubuntu 20.04 & 22.04
+#### Ubuntu 24.04 & 26.04
 
-apache2 apache2-utils curl ipmitool libapache2-mod-php libcrypt-cbc-perl logrotate mariadb-server nmap openssh-client php php-cli php-curl php-intl php-ldap php-mbstring php-mysql php-snmp php-xml screen smbclient snmp sshpass wget zip
+apache2 cron curl libapache2-mod-php libcrypt-cbc-perl mariadb-server nmap php php-cli php-curl php-intl php-ldap php-mbstring php-mysql php-snmp php-xml php-zip smbclient snmp
 
 ### Installing
 
