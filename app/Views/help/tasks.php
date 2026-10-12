@@ -1,5 +1,5 @@
 <?php
-# Copyright © 2023 FirstWave. All Rights Reserved.
+# Copyright © 2026 FirstWave. All Rights Reserved.
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
 $intro = '<p>' . __('Tasks can be one of several distinct types: Baseline, Discovery, Report, Query, Summary or Collector.') . '</p>

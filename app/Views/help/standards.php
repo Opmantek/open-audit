@@ -1,5 +1,5 @@
 <?php
-# Copyright © 2023 FirstWave. All Rights Reserved.
+# Copyright © 2026 FirstWave. All Rights Reserved.
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
 $intro = '<p>' . __('The Standards functionality in Open-AudIT allows you to, ahead of time, complete the questions auditors require when completing ISO 27001 certification.') . '</p>

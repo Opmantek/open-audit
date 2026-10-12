@@ -1,5 +1,5 @@
 <?php
-# Copyright © 2023 FirstWave. All Rights Reserved.
+# Copyright © 2026 FirstWave. All Rights Reserved.
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
 $intro = '<p>' . __('Being able to determine which machines are configured in the same way is a major part of systems administration and auditing – and now reporting on that will be made simple and automated. Once you define your baseline it will automatically run against a set of devices on a predetermined schedule. The output of these executed baselines will be available for web viewing, importing into a third party system or even as a printed report.<br><br>For auditing and management purposes it can be advantageous to baseline individual devices against a fixed, known good device. Baselines enable you to combine audit data with a set of attributes you have previously defined (your baseline) to determine compliance of devices.') . '<br>

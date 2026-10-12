@@ -1,5 +1,5 @@
 <?php
-# Copyright © 2023 FirstWave. All Rights Reserved.
+# Copyright © 2026 FirstWave. All Rights Reserved.
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
 $intro = '<p>' . __('The <i>Roles</i> endpoint allows you to manage the set of permissions(Create, Read, Update, Delete) that are granted to the users and are applied to each endpoint.') . '</p>

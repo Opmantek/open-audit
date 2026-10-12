@@ -1,5 +1,5 @@
 <?php
-# Copyright © 2023 FirstWave. All Rights Reserved.
+# Copyright © 2026 FirstWave. All Rights Reserved.
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
 $intro = '<p>' . __('Open-AudIT can store information in additional fields that are associated with each device.') . '</p>

@@ -1,5 +1,5 @@
 <?php
-# Copyright © 2023 FirstWave. All Rights Reserved.
+# Copyright © 2026 FirstWave. All Rights Reserved.
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
 $intro = '<p>' . _('The Integrations endpoint allows you to define an integration which you can then use to import and export Open-AudIT data to an external system. At present the single supported Integration type is <i>nmis</i>.<br><br>To integrate with an external system, all that is required is a new file to implement the required functions that an integration needs. There are no external dependencies or prerequisites. New integrations are planned for future releases.<br><br>For the purpose or brevity, you can substitute any external system where I refer to NMIS below (when implemented).') . '</p>';

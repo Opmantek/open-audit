@@ -1,5 +1,5 @@
 <?php
-# Copyright © 2023 FirstWave. All Rights Reserved.
+# Copyright © 2026 FirstWave. All Rights Reserved.
 # SPDX-License-Identifier: AGPL-3.0-or-later
 ?>
 <h1>ERROR: Connection Failed - NT_STATUS_NO_LOGON_SERVERS</h1>

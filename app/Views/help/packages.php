@@ -1,5 +1,5 @@
 <?php
-# Copyright © 2023 FirstWave. All Rights Reserved.
+# Copyright © 2026 FirstWave. All Rights Reserved.
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
 $intro = '<p>' . __('A package is a piece of installed software. A package has a type - antivirus, approved, backup, banned, cloud, firewall, ignored, license or other.') . '</p>

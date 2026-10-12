@@ -1,5 +1,5 @@
 <?php
-# Copyright © 2023 FirstWave. All Rights Reserved.
+# Copyright © 2026 FirstWave. All Rights Reserved.
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
 $intro = '<p>' . __('The Applications endpoint allows you to define an application which you can then associate to a component of a device (database, website, et al), an external service or something from AWS or Azure.') . '<br>
