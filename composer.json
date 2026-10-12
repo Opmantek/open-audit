@@ -1,16 +1,16 @@
 {
-    "name": "codeigniter4/appstarter",
-    "description": "CodeIgniter4 starter app",
-    "license": "MIT",
+    "name": "firstwave/open-audit",
+    "description": "Open-AudIT",
+    "license": "LicenseRef-Proprietary-FirstWave-202502",
     "type": "project",
-    "homepage": "https://codeigniter.com",
+    "homepage": "https://open-audit.com",
     "support": {
-        "forum": "http://forum.codeigniter.com/",
-        "source": "https://github.com/codeigniter4/CodeIgniter4",
-        "slack": "https://codeigniterchat.slack.com"
+        "wiki": "https://docs.community.firstwave.com/wiki/spaces/OA/overview?homepageId=3163947010",
+        "source": "https://github.com/Opmantek/open-audit",
+        "email": "support.nmis@firstwave.com"
     },
     "require": {
-        "php": "^8.1",
+        "php": "^8.2",
         "ext-curl": "*",
         "ext-gettext": "*",
         "ext-iconv": "*",
@@ -21,22 +21,20 @@
         "ext-simplexml": "*",
         "ext-snmp": "*",
         "aws/aws-sdk-php": "^3.281",
-        "codeigniter4/framework": "4.6.3.0",
-        "doctrine/instantiator": "1.5.0",
+        "codeigniter4/framework": "^4.7",
         "foxworth42/oauth2-okta": "^1.0",
         "google/auth": "^1.50",
         "gravitypdf/querypath": "^4.1",
         "kint-php/kint": "^5.1",
-        "laminas/laminas-escaper": "2.17.0",
+        "laminas/laminas-escaper": "^2.18",
         "league/oauth2-client": "^2.9",
         "league/oauth2-github": "^3.1",
         "masterminds/html5": "^2.10",
-        "paragonie/random_compat": "^2.0",
         "paragonie/sodium_compat": "^1.24",
         "phpoffice/phpspreadsheet": "^5.7",
         "phpseclib/phpseclib": "^3.0",
-        "symfony/deprecation-contracts": "2.5.2",
-        "thenetworg/oauth2-azure": "^2.2"
+        "thenetworg/oauth2-azure": "^2.2",
+        "league/commonmark": "^2.9"
     },
     "require-dev": {
         "codeigniter/coding-standard": "^1.9",
@@ -69,7 +67,10 @@
         "allow-plugins": {
             "ergebnis/composer-normalize": true
         },
-        "process-timeout": 0
+        "process-timeout": 0,
+        "platform": {
+            "php": "8.2.99"
+        }
     },
     "scripts": {
         "psalm:baseline": "psalm --set-baseline=psalm-baseline.xml",
