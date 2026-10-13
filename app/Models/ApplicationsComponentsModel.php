@@ -30,69 +30,7 @@ class ApplicationsComponentsModel extends BaseModel
      */
     public function collection(object $resp): array
     {
-        // Our query without limit
-        if (!empty($resp->meta->groupby)) {
-            $this->builder->groupBy($resp->meta->groupby);
-        } else {
-            $this->builder->groupBy('applications_components.id');
-        }
-        if (!empty($resp->meta->sort)) {
-            $this->builder->orderBy($resp->meta->sort);
-        } else {
-            $this->builder->orderBy('applications_components.name DESC');
-        }
-        $properties = $resp->meta->properties;
-        $this->builder->select($properties, false);
-        foreach ($resp->meta->filter as $filter) {
-            if ($filter->name === 'search') {
-                $this->builder->where('(applications_components.name LIKE ' . $this->db->escape($filter->value) . ')');
-                continue;
-            }
-            if (in_array($filter->operator, ['!=', '>=', '<=', '=', '>', '<', 'like', 'not like'])) {
-                $this->builder->{$filter->function}($filter->name . ' ' . $filter->operator, $filter->value);
-            } else {
-                $this->builder->{$filter->function}($filter->name, $filter->value);
-            }
-        }
-        // log_message('debug', 'SQL: ' . str_replace("\n", " ", (string)$this->builder->getCompiledSelect(false)));
-        $query = $this->builder->get();
-        $result = $query->getResult();
-        $GLOBALS['recordsFiltered'] = count($result);
-
-        // Our query as the user asked
-        $this->builder = $this->db->table('applications_components');
-        if (!empty($resp->meta->groupby)) {
-            $this->builder->groupBy($resp->meta->groupby);
-        } else {
-            $this->builder->groupBy('applications_components.id');
-        }
-        if (!empty($resp->meta->sort)) {
-            $this->builder->orderBy($resp->meta->sort);
-        } else {
-            $this->builder->orderBy('applications_components.name DESC');
-        }
-        $properties = $resp->meta->properties;
-        $this->builder->select($properties, false);
-        foreach ($resp->meta->filter as $filter) {
-            if ($filter->name === 'search') {
-                $this->builder->where('(applications_components.name LIKE ' . $this->db->escape($filter->value) .')');
-                continue;
-            }
-            if (in_array($filter->operator, ['!=', '>=', '<=', '=', '>', '<', 'like', 'not like'])) {
-                $this->builder->{$filter->function}($filter->name . ' ' . $filter->operator, $filter->value);
-            } else {
-                $this->builder->{$filter->function}($filter->name, $filter->value);
-            }
-        }
-        $this->builder->limit($resp->meta->limit, $resp->meta->offset);
-        // log_message('debug', 'SQL: ' . str_replace("\n", " ", (string)$this->builder->getCompiledSelect(false)));
-        $query = $this->builder->get();
-        if ($this->sqlError($this->db->error())) {
-            return array();
-        }
-        $result = $query->getResult();
-        // log_message('debug', str_replace("\n", " ", (string)$this->db->getLastQuery()));
-        return format_data($result, 'applications_components');
+        return array();
     }
 
     /**
@@ -117,13 +55,6 @@ class ApplicationsComponentsModel extends BaseModel
      */
     public function delete($id = null, bool $purge = false): bool
     {
-        $this->builder->delete(['id' => intval($id)]);
-        if ($this->sqlError($this->db->error())) {
-            return false;
-        }
-        if ($this->db->affectedRows() !== 1) {
-            return false;
-        }
         return true;
     }
 
@@ -214,60 +145,7 @@ class ApplicationsComponentsModel extends BaseModel
      */
     public function read(int $id = 0): array
     {
-        $device_links = array('api','application','authentication','certificate','client','database','device','program','queue','service','storage','website');
-        $properties = array();
-        $properties[] = 'applications_components.*';
-        $properties[] = 'applications.id AS `applications.id`';
-        $properties[] = 'applications.name AS `applications.name`';
-        $properties[] = 'orgs.name AS `orgs.name`';
-        $this->builder->select($properties, false);
-        $this->builder->join('applications', 'applications_components.application_id = applications.id', 'left');
-        $this->builder->join('orgs', 'applications_components.org_id = orgs.id', 'left');
-        $query = $this->builder->getWhere(['applications_components.id' => intval($id)]);
-        if ($this->sqlError($this->db->error())) {
-            return array();
-        }
-        $result = $query->getResult();
-        if (!empty($result)) {
-            $result[0]->{'primary_devices.name'} = '';
-            $result[0]->{'primary_devices.icon'} = '';
-            $result[0]->{'secondary_devices.name'} = '';
-            $result[0]->{'secondary_devices.icon'} = '';
-            if (in_array($result[0]->primary_type, $device_links)) {
-                $sql = "SELECT devices.name, devices.icon FROM devices WHERE id = ?";
-                $queryResult = $this->db->query($sql, [$result[0]->primary_internal_id_a])->getResult();
-                if (!empty($queryResult)) {
-                    $result[0]->{'primary_devices.name'} = $queryResult[0]->name;
-                    $result[0]->{'primary_devices.icon'} = $queryResult[0]->icon;
-                }
-            }
-            if (in_array($result[0]->secondary_type, $device_links)) {
-                $sql = "SELECT devices.name, devices.icon FROM devices WHERE id = ?";
-                $queryResult = $this->db->query($sql, [$result[0]->secondary_internal_id_a])->getResult();
-                if (!empty($queryResult)) {
-                    $result[0]->{'secondary_devices.name'} = $queryResult[0]->name;
-                    $result[0]->{'secondary_devices.icon'} = $queryResult[0]->icon;
-                }
-            }
-            if ($result[0]->primary_type === 'cluster') {
-                $sql = "SELECT * FROM clusters WHERE id = ?";
-                $queryResult = $this->db->query($sql, [$result[0]->primary_internal_id_b])->getResult();
-                if (!empty($queryResult)) {
-                    $result[0]->{'primary_clusters.name'} = $queryResult[0]->name;
-                    $result[0]->{'primary_clusters.id'} = $queryResult[0]->id;
-                }
-            }
-            if ($result[0]->secondary_type === 'cluster') {
-                $sql = "SELECT * FROM clusters WHERE id = ?";
-                $queryResult = $this->db->query($sql, [$result[0]->secondary_internal_id_b])->getResult();
-                if (!empty($queryResult)) {
-                    $result[0]->{'secondary_clusters.name'} = $queryResult[0]->name;
-                    $result[0]->{'secondary_clusters.id'} = $queryResult[0]->id;
-                }
-            }
-
-        }
-        return format_data($result, 'applications_components');
+        return array();
     }
 
     /**
@@ -282,9 +160,6 @@ class ApplicationsComponentsModel extends BaseModel
      */
     public function reset(string $table = ''): bool
     {
-        if ($this->tableReset('vendors')) {
-            return true;
-        }
         return false;
     }
 
@@ -298,12 +173,6 @@ class ApplicationsComponentsModel extends BaseModel
      */
     public function update($id = null, $data = null): bool
     {
-        $data = $this->updateFieldData('applications_components', $data);
-        $this->builder->where('id', intval($id));
-        $this->builder->update($data);
-        if ($this->sqlError($this->db->error())) {
-            return false;
-        }
         return true;
     }
 

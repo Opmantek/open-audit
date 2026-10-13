@@ -32,38 +32,7 @@ class CloudsModel extends BaseModel
      */
     public function collection(object $resp): array
     {
-        $config = new \Config\OpenAudit();
-        $properties = $resp->meta->properties;
-        $properties[] = "orgs.name as `orgs.name`";
-        $properties[] = "orgs.id as `orgs.id`";
-        $this->builder->select($properties, false);
-        $this->builder->join('orgs', $resp->meta->collection . '.org_id = orgs.id', 'left');
-        foreach ($resp->meta->filter as $filter) {
-            if (in_array($filter->operator, ['!=', '>=', '<=', '=', '>', '<', 'like', 'not like'])) {
-                $this->builder->{$filter->function}($filter->name . ' ' . $filter->operator, $filter->value);
-            } else {
-                $this->builder->{$filter->function}($filter->name, $filter->value);
-            }
-        }
-        $this->builder->orderBy($resp->meta->sort);
-        $this->builder->limit($resp->meta->limit, $resp->meta->offset);
-        $query = $this->builder->get()->getResult();
-        if ($this->sqlError($this->db->error())) {
-            return array();
-        }
-        if ($config->decrypt_credentials === 'y') {
-            $count = count($query);
-            for ($i = 0; $i < $count; $i++) {
-                if (!empty($query[$i]->credentials)) {
-                    try {
-                        $query[$i]->credentials = json_decode(simpleDecrypt($query[$i]->credentials, config('Encryption')->key), false, 512, JSON_THROW_ON_ERROR);
-                    } catch (\JsonException $e) {
-                        log_message('error', 'Could not decode JSON. File:' . basename(__FILE__) . ', Line:' . __LINE__ . ', Error: ' . $e->getMessage());
-                    }
-                }
-            }
-        }
-        return format_data($query, $resp->meta->collection);
+        return array();
     }
 
     /**
@@ -75,46 +44,7 @@ class CloudsModel extends BaseModel
      */
     public function create($data = null): ?int
     {
-        if (empty($data)) {
-            return null;
-        }
-        if (! empty($data->credentials) && is_string($data->credentials)) {
-            $data->credentials = (string)simpleEncrypt($data->credentials, config('Encryption')->key);
-        } else {
-            $data->credentials = (string)simpleEncrypt(json_encode($data->credentials), config('Encryption')->key);
-        }
-        if (! empty($data->options)) {
-            $data->options = json_encode($data->options);
-        }
-        $data = $this->createFieldData('clouds', $data);
-        if (empty($data)) {
-            return null;
-        }
-        $this->builder->insert($data);
-        if ($error = $this->sqlError($this->db->error())) {
-            \Config\Services::session()->setFlashdata('error', json_encode($error));
-            return null;
-        }
-        $id = intval($this->db->insertID());
-
-        # The discovery
-        $instance = & get_instance();
-        $instance->discoveriesModel = new \App\Models\DiscoveriesModel();
-        $discovery = new \stdClass();
-        $discovery->type = 'cloud';
-        $discovery->name = 'Discovery for ' . $data->name;
-        $discovery->description = $data->name . ' discovery for ' . $data->type;
-        $discovery->network_address = 'http://127.0.0.1/open-audit/index.php/input/discoveries';
-        $discovery->org_id = $data->org_id;
-        $discovery->discard = 'n';
-        $discovery->complete = 'n';
-        $discovery->subnet = '';
-        $discovery->cloud_id = $id;
-        $discovery->cloud_name = $data->name;
-        $discovery->match_options = '{"match_dbus":"","match_fqdn":"","match_dns_fqdn":"","match_dns_hostname":"","match_hostname":"y","match_hostname_dbus":"","match_hostname_serial":"","match_hostname_uuid":"","match_ip":"y","match_ip_no_data":"","match_mac":"y","match_mac_vmware":"","match_serial":"","match_serial_type":"","match_sysname":"","match_sysname_serial":"","match_uuid":""}';
-        $instance->discoveriesModel->create($discovery);
-
-        return ($id);
+        return null;
     }
 
     /**
@@ -127,23 +57,6 @@ class CloudsModel extends BaseModel
      */
     public function delete($id = null, bool $purge = false): bool
     {
-        // Delete any related discoveries
-        $sql = "DELETE FROM `discoveries` WHERE `cloud_id` = ?";
-        $this->db->query($sql, [$id]);
-
-        $sql = "DELETE FROM `tasks` WHERE `sub_resource_id` = ? AND `type` = 'clouds'";
-        $this->db->query($sql, [$id]);
-
-        $sql = 'DELETE FROM `cloud_log` WHERE `cloud_id` = ?';
-        $this->db->query($sql, [$id]);
-
-        $this->builder->delete(['id' => intval($id)]);
-        if ($this->sqlError($this->db->error())) {
-            return false;
-        }
-        if ($this->db->affectedRows() !== 1) {
-            return false;
-        }
         return true;
     }
 
@@ -156,38 +69,7 @@ class CloudsModel extends BaseModel
      */
     public function includedCollection(int $id = 0): array
     {
-        $included = array();
-        $included['devices_retrieved'] = 0;
-        $included['devices_audited'] = 0;
-        $included['devices_not_audited'] = 0;
-        $included['devices_running'] = 0;
-        $included['devices_stopped'] = 0;
-        $included['locations'] = 0;
-        $included['networks'] = 0;
-
-        $sql = "SELECT * FROM devices WHERE cloud_id != ''";
-        $devices = $this->db->query($sql, [$id])->getResult();
-        $included['devices_retrieved'] = count($devices);
-        foreach ($devices as $device) {
-            if ($device->serial !== '') {
-                $included['devices_audited'] += 1;
-            } else {
-                $included['devices_not_audited'] += 1;
-            }
-            if ($device->instance_state === 'running') {
-                $included['devices_running'] += 1;
-            } else {
-                $included['devices_stopped'] += 1;
-            }
-        }
-
-        $sql = "SELECT count(*) AS `count` FROM locations WHERE cloud_id != ''";
-        $included['locations'] = intval($this->db->query($sql, [$id])->getResult()[0]->count);
-
-        $sql = "SELECT count(*) AS `count` FROM networks WHERE cloud_id != ''";
-        $included['networks'] = intval($this->db->query($sql, [$id])->getResult()[0]->count);
-
-        return $included;
+        return array();
     }
 
     /**
@@ -199,74 +81,7 @@ class CloudsModel extends BaseModel
      */
     public function includedRead(int $id = 0): array
     {
-        $included = array();
-        $sql = "SELECT * FROM cloud_log WHERE cloud_id = ? ORDER BY id";
-        $included['logs'] = $this->db->query($sql, [$id])->getResult();
-
-        $included['stats'] = new stdClass();
-        $included['stats']->devices_retrieved = 0;
-        $included['stats']->devices_audited = 0;
-        $included['stats']->devices_not_audited = 0;
-        $included['stats']->devices_running = 0;
-        $included['stats']->devices_stopped = 0;
-        $included['stats']->locations = 0;
-        $included['stats']->networks = 0;
-        $included['stats']->last_run = '';
-        $included['stats']->duration = '';
-
-        // $sql = "SELECT COUNT(*) as `count` FROM `locations` WHERE `cloud_id` = ?";
-        // $included['stats']->locations = intval($this->db->query($sql, [$id])->getResult()[0]->count);
-
-        // $sql = "SELECT COUNT(*) as `count` FROM `networks` WHERE `cloud_id` = ?";
-        // $included['stats']->networks = intval($this->db->query($sql, [$id])->getResult()[0]->count);
-
-        $sql = "SELECT * FROM `locations` WHERE `cloud_id` = ?";
-        $result = $this->db->query($sql, [$id])->getResult();
-        $included['stats']->locations = count($result);
-        $included['locations'] = $result;
-
-        $sql = "SELECT * FROM `networks` WHERE `cloud_id` = ?";
-        $result = $this->db->query($sql, [$id])->getResult();
-        $included['stats']->networks = count($result);
-        $included['networks'] = $result;
-
-        $sql = "SELECT `timestamp` FROM `cloud_log` WHERE `cloud_id` = ? ORDER BY `id` ASC LIMIT 1";
-        $temp = $this->db->query($sql, [$id])->getResult();
-        $included['stats']->last_run = (!empty($temp)) ? $temp[0]->timestamp : '';
-        $finished = $included['stats']->last_run;
-
-        $date = new \DateTime($included['stats']->last_run);
-        $date2 = new \DateTime($finished);
-        $included['stats']->duration = $date2->getTimestamp() - $date->getTimestamp();
-
-        $sql = "SELECT devices.id AS `devices.id`, devices.ip AS `devices.ip`, devices.name AS `devices.name`, devices.type AS `devices.type`, devices.os_group AS `devices.os_group`, devices.icon AS `devices.icon`, devices.serial AS `devices.serial`, devices.environment AS `devices.environment`, devices.instance_state AS `devices.instance_state`, devices.instance_type AS `devices.instance_type`, devices.location_id AS `devices.location_id`, locations.name AS `locations.name` FROM `devices` LEFT JOIN `locations` ON devices.location_id = locations.id WHERE devices.cloud_id = ?";
-        $query = $this->db->query($sql, [$id]);
-        $devices = $query->getResult();
-        $count = count($devices);
-        for ($i = 0; $i < $count; $i++) {
-            $devices[$i]->{'devices.padded_ip'} = $devices[$i]->{'devices.ip'};
-            $devices[$i]->{'devices.ip'} = ip_address_from_db($devices[$i]->{'devices.ip'});
-            $included['stats']->devices_retrieved += 1;
-            if (!empty($devices[$i]->serial)) {
-                $included['stats']->devices_audited += 1;
-            } else {
-                $included['stats']->devices_not_audited += 1;
-            }
-            if ($devices[$i]->{'devices.instance_state'} === 'running') {
-                $included['stats']->devices_running += 1;
-            } else {
-                $included['stats']->devices_stopped += 1;
-            }
-        }
-        $included['devices'] = $devices;
-
-        $sql = "SELECT id, name FROM discoveries WHERE cloud_id = ?";
-        $query = $this->db->query($sql, [$id]);
-        $result = $query->getResult();
-        if (!empty($result[0])) {
-            $included['discoveries'] = $result[0];
-        }
-        return $included;
+        return array();
     }
 
     /**
@@ -299,26 +114,7 @@ class CloudsModel extends BaseModel
      */
     public function listUser($where = array(), $orgs = array()): array
     {
-        if (empty($orgs)) {
-            $instance = & get_instance();
-            $orgs = array_unique(array_merge($instance->user->orgs, $instance->orgsModel->getUserDescendants($instance->user->orgs, $instance->orgs)));
-            $orgs[] = 1;
-            $orgs = array_unique($orgs);
-        }
-
-        $properties = array();
-        $properties[] = 'clouds.*';
-        $properties[] = 'orgs.name as `orgs.name`';
-        $this->builder->select($properties, false);
-        $this->builder->join('orgs', 'clouds.org_id = orgs.id', 'left');
-        $this->builder->whereIn('orgs.id', $orgs);
-        $this->builder->where($where);
-        $this->builder->orderBy('clouds.name', 'ASC');
-        $query = $this->builder->get();
-        if ($this->sqlError($this->db->error())) {
-            return array();
-        }
-        return format_data($query->getResult(), 'clouds');
+        return array();
     }
 
     /**
@@ -331,11 +127,7 @@ class CloudsModel extends BaseModel
      */
     public function listAll(): array
     {
-        $query = $this->builder->get();
-        if ($this->sqlError($this->db->error())) {
-            return array();
-        }
-        return $query->getResult();
+        return array();
     }
 
     /**
@@ -347,34 +139,7 @@ class CloudsModel extends BaseModel
      */
     public function read(int $id = 0): array
     {
-        $config = new \Config\OpenAudit();
-        $query = $this->builder->getWhere(['id' => intval($id)]);
-        if ($this->sqlError($this->db->error())) {
-            return array();
-        }
-        $cloud = $query->getResult();
-        if (!empty($cloud[0]->options)) {
-            try {
-                $cloud[0]->options = json_decode($cloud[0]->options, false, 512, JSON_THROW_ON_ERROR);
-            } catch (\JsonException $e) {
-                log_message('error', 'Could not decode JSON. File:' . basename(__FILE__) . ', Line:' . __LINE__ . ', Error: ' . $e->getMessage());
-            }
-        } else {
-            $cloud[0]->options = new \stdClass();
-            $cloud[0]->options->ssh = 'y';
-            $cloud[0]->options->wmi = 'y';
-            $cloud[0]->options->snmp = 'n';
-        }
-        if ($config->decrypt_credentials === 'y') {
-            if (!empty($cloud[0]->credentials)) {
-                try {
-                    $cloud[0]->credentials = json_decode(simpleDecrypt($cloud[0]->credentials, config('Encryption')->key), false, 512, JSON_THROW_ON_ERROR);
-                } catch (\JsonException $e) {
-                    log_message('error', 'Could not decode JSON. File:' . basename(__FILE__) . ', Line:' . __LINE__ . ', Error: ' . $e->getMessage());
-                }
-            }
-        }
-        return format_data($cloud, 'clouds');
+        return array();
     }
 
     /**
@@ -389,9 +154,6 @@ class CloudsModel extends BaseModel
      */
     public function reset(string $table = ''): bool
     {
-        if ($this->tableReset('clouds')) {
-            return true;
-        }
         return false;
     }
 
@@ -405,45 +167,6 @@ class CloudsModel extends BaseModel
      */
     public function update($id = null, $data = null): bool
     {
-
-        if (!empty($data->credentials) or !empty($data->options)) {
-            $query = $this->builder->getWhere(['id' => intval($id)]);
-            $get_result = $query->getResult();
-        }
-
-        if (!empty($data->credentials)) {
-            $received_credentials = new \stdClass();
-            foreach ($data->credentials as $key => $value) {
-                    $received_credentials->$key = $value;
-            }
-            try {
-                $existing_credentials = json_decode(simpleDecrypt($get_result[0]->credentials, config('Encryption')->key), false, 512, JSON_THROW_ON_ERROR);
-            } catch (\JsonException $e) {
-                log_message('error', 'Could not decode JSON. File:' . basename(__FILE__) . ', Line:' . __LINE__ . ', Error: ' . $e->getMessage());
-            }
-            $new_credentials = new \stdClass();
-            foreach ($existing_credentials as $key => $value) {
-                if (!empty($received_credentials->$key)) {
-                    $new_credentials->$key = $received_credentials->$key;
-                } else {
-                    $new_credentials->$key = $existing_credentials->$key;
-                }
-            }
-            $data->credentials = (string)simpleEncrypt(json_encode($new_credentials), config('Encryption')->key);
-        }
-        if (!empty($data->options)) {
-            $options = json_decode($get_result[0]->options);
-            foreach ($data->options as $key => $value) {
-                $options->{$key} = $value;
-            }
-            $data->options = json_encode($options);
-        }
-        $data = $this->updateFieldData('clouds', $data);
-        $this->builder->where('id', intval($id));
-        $this->builder->update($data);
-        if ($this->sqlError($this->db->error())) {
-            return false;
-        }
         return true;
     }
 
@@ -459,26 +182,7 @@ class CloudsModel extends BaseModel
      */
     public function log(int $cloud_id = 0, string $message = '', string $severity_text = 'info', int $pid = 0): int
     {
-        if (empty($cloud_id)) {
-            log_message('warning', 'No cloud_id provided to CloudsModel::log.');
-            return 0;
-        }
-        if (empty($message)) {
-            log_message('warning', 'No message provided to CloudsModel::log.');
-            return 0;
-        }
-        $sev = array('debug','info','notice','warning','error','critical','alert','emergency');
-        if (!in_array($severity_text, $sev)) {
-            log_message('warning', 'Invalid severity provided to CloudsModel::log.');
-            return 0;
-        }
-        if (empty($pid)) {
-            $pid = getmypid();
-        }
-        $sql = "INSERT INTO cloud_log VALUES(null, ?, NOW(), ?, ?, ?)";
-        $this->db->query($sql, [$cloud_id, $severity_text, $pid, $message]);
-        $id = intval($this->db->insertID());
-        return $id;
+        return 0;
     }
 
     /**

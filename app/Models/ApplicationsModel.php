@@ -26,25 +26,7 @@ class ApplicationsModel extends BaseModel
      */
     public function collection(object $resp): array
     {
-        $properties = $resp->meta->properties;
-        $properties[] = "orgs.name as `orgs.name`";
-        $properties[] = "orgs.id as `orgs.id`";
-        $this->builder->select($properties, false);
-        $this->builder->join('orgs', $resp->meta->collection . '.org_id = orgs.id', 'left');
-        foreach ($resp->meta->filter as $filter) {
-            if (in_array($filter->operator, ['!=', '>=', '<=', '=', '>', '<', 'like', 'not like'])) {
-                $this->builder->{$filter->function}($filter->name . ' ' . $filter->operator, $filter->value);
-            } else {
-                $this->builder->{$filter->function}($filter->name, $filter->value);
-            }
-        }
-        $this->builder->orderBy($resp->meta->sort);
-        $this->builder->limit($resp->meta->limit, $resp->meta->offset);
-        $query = $this->builder->get();
-        if ($this->sqlError($this->db->error())) {
-            return array();
-        }
-        return format_data($query->getResult(), $resp->meta->collection);
+        return array();
     }
 
     /**
@@ -56,19 +38,7 @@ class ApplicationsModel extends BaseModel
      */
     public function create($data = null): ?int
     {
-        if (empty($data)) {
-            return null;
-        }
-        $data = $this->createFieldData('applications', $data);
-        if (empty($data)) {
-            return null;
-        }
-        $this->builder->insert($data);
-        if ($error = $this->sqlError($this->db->error())) {
-            \Config\Services::session()->setFlashdata('error', json_encode($error));
-            return null;
-        }
-        return (intval($this->db->insertID()));
+        return null;
     }
 
     /**
@@ -80,13 +50,6 @@ class ApplicationsModel extends BaseModel
      */
     public function delete($id = null, bool $purge = false): bool
     {
-        $this->builder->delete(['id' => intval($id)]);
-        if ($this->sqlError($this->db->error())) {
-            return false;
-        }
-        if ($this->db->affectedRows() !== 1) {
-            return false;
-        }
         return true;
     }
 
@@ -98,29 +61,7 @@ class ApplicationsModel extends BaseModel
      */
     public function includedRead(int $id = 0): array
     {
-        $instance = & get_instance();
-        $org_list = array_unique(array_merge($instance->user->orgs, $instance->orgsModel->getUserDescendants($instance->user->orgs, $instance->orgs)));
-        $org_list[] = 1;
-        $org_list = array_unique($org_list);
-
-        $properties = array();
-        $properties[] = 'application.id AS `application.id`';
-        $properties[] = 'devices.id AS `devices.id`';
-        $properties[] = 'devices.name AS `devices.name`';
-        $properties[] = 'devices.ip AS `devices.ip`';
-        $properties[] = 'devices.description AS `devices.description`';
-        $this->builder->select($properties, false);
-        $this->builder->join('application', 'application.application_id = applications.id', 'left');
-        $this->builder->join('devices', 'application.device_id = devices.id', 'left');
-        $this->builder->where('applications.id', $id);
-        $this->builder->whereIn('devices.org_id', $org_list);
-        $query = $this->builder->get();
-        if ($this->sqlError($this->db->error())) {
-            return array();
-        }
-        $return = array();
-        $return['devices'] = format_data($query->getResult(), 'devices');
-        return $return;
+        return array();
     }
 
     /**
@@ -141,26 +82,7 @@ class ApplicationsModel extends BaseModel
      */
     public function listUser($where = array(), $orgs = array()): array
     {
-        if (empty($orgs)) {
-            $instance = & get_instance();
-            $orgs = array_unique(array_merge($instance->user->orgs, $instance->orgsModel->getUserDescendants($instance->user->orgs, $instance->orgs)));
-            $orgs[] = 1;
-            $orgs = array_unique($orgs);
-        }
-
-        $properties = array();
-        $properties[] = 'applications.*';
-        $properties[] = 'orgs.name as `orgs.name`';
-        $this->builder->select($properties, false);
-        $this->builder->join('orgs', 'applications.org_id = orgs.id', 'left');
-        $this->builder->whereIn('orgs.id', $orgs);
-        $this->builder->where($where);
-        $this->builder->orderBy('applications.name', 'ASC');
-        $query = $this->builder->get();
-        if ($this->sqlError($this->db->error())) {
-            return array();
-        }
-        return format_data($query->getResult(), 'applications');
+        return array();
     }
 
     /**
@@ -170,11 +92,7 @@ class ApplicationsModel extends BaseModel
      */
     public function listAll(): array
     {
-        $query = $this->builder->get();
-        if ($this->sqlError($this->db->error())) {
-            return array();
-        }
-        return $query->getResult();
+        return array();
     }
 
     /**
@@ -186,11 +104,7 @@ class ApplicationsModel extends BaseModel
      */
     public function read(int $id = 0): array
     {
-        $query = $this->builder->getWhere(['id' => intval($id)]);
-        if ($this->sqlError($this->db->error())) {
-            return array();
-        }
-        return format_data($query->getResult(), 'applications');
+        return array();
     }
 
     /**
@@ -200,9 +114,6 @@ class ApplicationsModel extends BaseModel
      */
     public function reset(string $table = ''): bool
     {
-        if ($this->tableReset('applications')) {
-            return true;
-        }
         return false;
     }
 
@@ -215,13 +126,6 @@ class ApplicationsModel extends BaseModel
      */
     public function update($id = null, $data = null): bool
     {
-        // Accept our client data
-        $data = $this->updateFieldData('applications', $data);
-        $this->builder->where('id', intval($id));
-        $this->builder->update($data);
-        if ($this->sqlError($this->db->error())) {
-            return false;
-        }
         return true;
     }
 

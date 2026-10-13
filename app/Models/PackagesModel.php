@@ -30,25 +30,7 @@ class PackagesModel extends BaseModel
      */
     public function collection(object $resp): array
     {
-        $properties = $resp->meta->properties;
-        $properties[] = "orgs.name as `orgs.name`";
-        $properties[] = "orgs.id as `orgs.id`";
-        $this->builder->select($properties, false);
-        $this->builder->join('orgs', $resp->meta->collection . '.org_id = orgs.id', 'left');
-        foreach ($resp->meta->filter as $filter) {
-            if (in_array($filter->operator, ['!=', '>=', '<=', '=', '>', '<', 'like', 'not like'])) {
-                $this->builder->{$filter->function}($filter->name . ' ' . $filter->operator, $filter->value);
-            } else {
-                $this->builder->{$filter->function}($filter->name, $filter->value);
-            }
-        }
-        $this->builder->orderBy($resp->meta->sort);
-        $this->builder->limit($resp->meta->limit, $resp->meta->offset);
-        $query = $this->builder->get();
-        if ($this->sqlError($this->db->error())) {
-            return array();
-        }
-        return format_data($query->getResult(), $resp->meta->collection);
+        return array();
     }
 
     /**
@@ -60,22 +42,7 @@ class PackagesModel extends BaseModel
      */
     public function create($data = null): ?int
     {
-        if (empty($data)) {
-            return null;
-        }
-        $data = $this->createFieldData('packages', $data);
-        if (empty($data)) {
-            return null;
-        }
-        if (empty($data->sql)) {
-            $data->sql = '';
-        }
-        $this->builder->insert($data);
-        if ($error = $this->sqlError($this->db->error())) {
-            \Config\Services::session()->setFlashdata('error', json_encode($error));
-            return null;
-        }
-        return (intval($this->db->insertID()));
+        return null;
     }
 
     /**
@@ -88,13 +55,6 @@ class PackagesModel extends BaseModel
      */
     public function delete($id = null, bool $purge = false): bool
     {
-        $this->builder->delete(['id' => intval($id)]);
-        if ($this->sqlError($this->db->error())) {
-            return false;
-        }
-        if ($this->db->affectedRows() !== 1) {
-            return false;
-        }
         return true;
     }
 
@@ -122,40 +82,7 @@ class PackagesModel extends BaseModel
      */
     public function includedCreateForm(int $id = 0): array
     {
-        $return = array();
-        $return['software'] = array();
-        if (!empty($_GET['os']) or !empty($_GET['range'])) {
-            $instance = & get_instance();
-            $orgs = array_unique(array_merge($instance->user->orgs, $instance->orgsModel->getUserDescendants($instance->user->orgs, $instance->orgs)));
-            $orgs[] = 1;
-            $orgs = array_unique($orgs);
-
-            $range_filter = '';
-            if (!empty($_GET['range'])) {
-                log_message('debug', 'RANGE: ' . json_encode($_GET['range']));
-                $range = explode(',', $_GET['range']);
-                $range_filter = 'AND SUBSTRING(software.name, 1, 1) IN (';
-                foreach ($range as $firstLetter) {
-                    $firstLetter = substr($firstLetter, 0, 1);
-                    $firstLetter = preg_replace("/[^A-Za-z0-9]+/", "", $firstLetter);
-                    if (!empty($firstLetter)) {
-                        $range_filter .= "'$firstLetter', ";
-                    }
-                }
-                $range_filter = substr($range_filter, 0, -2) . ') ';
-            }
-
-            if (!empty($_GET['os'])) {
-                $sql = "SELECT DISTINCT software.name AS `name`, CONCAT('[', GROUP_CONCAT(DISTINCT CONCAT(JSON_OBJECT(packages.type, packages.id))), ']') AS `type`, packages.software_name AS `software_name`, count(software.id) AS `found`, packages.id AS `id` FROM `software` LEFT JOIN `devices` ON (software.device_id = devices.id) LEFT JOIN packages ON (software.name LIKE packages.software_name) WHERE devices.org_id IN (" . implode(',', $orgs) . ") AND devices.os_group = ? $range_filter GROUP BY software.name, software.type ORDER BY software.name";
-                $return['software'] = $this->db->query($sql, [$_GET['os']])->getResult();
-            } else {
-                $sql = "SELECT DISTINCT software.name AS `name`, CONCAT('[', GROUP_CONCAT(DISTINCT CONCAT(JSON_OBJECT(packages.type, packages.id))), ']') AS `type`, packages.software_name AS `software_name`, count(software.id) AS `found`, packages.id AS `id` FROM `software` LEFT JOIN `devices` ON (software.device_id = devices.id) LEFT JOIN packages ON (software.name LIKE packages.software_name) WHERE devices.org_id IN (" . implode(',', $orgs) . ") $range_filter GROUP BY software.name, software.type ORDER BY software.name";
-                $return['software'] = $this->db->query($sql)->getResult();
-            }
-
-            log_message('debug', (string)$this->db->getLastQuery());
-        }
-        return $return;
+        return array();
     }
 
     /**
@@ -172,26 +99,7 @@ class PackagesModel extends BaseModel
      */
     public function listUser($where = array(), $orgs = array()): array
     {
-        if (empty($orgs)) {
-            $instance = & get_instance();
-            $orgs = array_unique(array_merge($instance->user->orgs, $instance->orgsModel->getUserDescendants($instance->user->orgs, $instance->orgs)));
-            $orgs[] = 1;
-            $orgs = array_unique($orgs);
-        }
-
-        $properties = array();
-        $properties[] = 'packages.*';
-        $properties[] = 'orgs.name as `orgs.name`';
-        $this->builder->select($properties, false);
-        $this->builder->join('orgs', 'packages.org_id = orgs.id', 'left');
-        $this->builder->whereIn('orgs.id', $orgs);
-        $this->builder->where($where);
-        $this->builder->orderBy('packages.name', 'ASC');
-        $query = $this->builder->get();
-        if ($this->sqlError($this->db->error())) {
-            return array();
-        }
-        return format_data($query->getResult(), 'packages');
+        return array();
     }
 
     /**
@@ -204,11 +112,7 @@ class PackagesModel extends BaseModel
      */
     public function listAll(): array
     {
-        $query = $this->builder->get();
-        if ($this->sqlError($this->db->error())) {
-            return array();
-        }
-        return $query->getResult();
+        return array();
     }
 
     /**
@@ -220,11 +124,7 @@ class PackagesModel extends BaseModel
      */
     public function read(int $id = 0): array
     {
-        $query = $this->builder->getWhere(['id' => intval($id)]);
-        if ($this->sqlError($this->db->error())) {
-            return array();
-        }
-        return format_data($query->getResult(), 'packages');
+        return array();
     }
 
     /**
@@ -239,9 +139,6 @@ class PackagesModel extends BaseModel
      */
     public function reset(string $table = ''): bool
     {
-        if ($this->tableReset('packages')) {
-            return true;
-        }
         return false;
     }
 
@@ -255,13 +152,6 @@ class PackagesModel extends BaseModel
      */
     public function update($id = null, $data = null): bool
     {
-        // Accept our client data
-        $data = $this->updateFieldData('packages', $data);
-        $this->builder->where('id', intval($id));
-        $this->builder->update($data);
-        if ($this->sqlError($this->db->error())) {
-            return false;
-        }
         return true;
     }
 

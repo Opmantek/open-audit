@@ -30,25 +30,7 @@ class BaselinesModel extends BaseModel
      */
     public function collection(object $resp): array
     {
-        $properties = $resp->meta->properties;
-        $properties[] = "orgs.name as `orgs.name`";
-        $properties[] = "orgs.id as `orgs.id`";
-        $this->builder->select($properties, false);
-        $this->builder->join('orgs', $resp->meta->collection . '.org_id = orgs.id', 'left');
-        foreach ($resp->meta->filter as $filter) {
-            if (in_array($filter->operator, ['!=', '>=', '<=', '=', '>', '<', 'like', 'not like'])) {
-                $this->builder->{$filter->function}($filter->name . ' ' . $filter->operator, $filter->value);
-            } else {
-                $this->builder->{$filter->function}($filter->name, $filter->value);
-            }
-        }
-        $this->builder->orderBy($resp->meta->sort);
-        $this->builder->limit($resp->meta->limit, $resp->meta->offset);
-        $query = $this->builder->get();
-        if ($this->sqlError($this->db->error())) {
-            return array();
-        }
-        return format_data($query->getResult(), $resp->meta->collection);
+        return array();
     }
 
     /**
@@ -60,19 +42,7 @@ class BaselinesModel extends BaseModel
      */
     public function create($data = null): ?int
     {
-        if (empty($data)) {
-            return null;
-        }
-        $data = $this->createFieldData('baselines', $data);
-        if (empty($data)) {
-            return null;
-        }
-        $this->builder->insert($data);
-        if ($error = $this->sqlError($this->db->error())) {
-            \Config\Services::session()->setFlashdata('error', json_encode($error));
-            return null;
-        }
-        return (intval($this->db->insertID()));
+        return null;
     }
 
     /**
@@ -85,13 +55,6 @@ class BaselinesModel extends BaseModel
      */
     public function delete($id = null, bool $purge = false): bool
     {
-        $this->builder->delete(['id' => intval($id)]);
-        if ($this->sqlError($this->db->error())) {
-            return false;
-        }
-        if ($this->db->affectedRows() !== 1) {
-            return false;
-        }
         return true;
     }
 
@@ -104,28 +67,7 @@ class BaselinesModel extends BaseModel
      */
     public function includedRead(int $id = 0): array
     {
-        $included = array();
-        $sql = "SELECT id, name, timestamp, result FROM baselines_results WHERE baseline_id = ?";
-        $result = $this->db->query($sql, [$id])->getResult();
-        $count = count($result);
-        for ($i = 0; $i < $count; $i++) {
-            try {
-                $json = json_decode($result[$i]->result, false, 512, JSON_THROW_ON_ERROR);
-            } catch (\JsonException $e) {
-                log_message('error', 'Could not decode JSON. File:' . basename(__FILE__) . ', Line:' . __LINE__ . ', Error: ' . $e->getMessage());
-                continue;
-            }
-            unset($json->device_list);
-            unset($json->policy);
-            $result[$i]->result = json_encode($json);
-        }
-        $included['baselines_results'] = format_data($result, 'baselines_results');
-
-        $sql = "SELECT * FROM baselines_policies WHERE baseline_id = ?";
-        $result = $this->db->query($sql, [$id])->getResult();
-        $included['baselines_policies'] = format_data($result, 'baselines_policies');
-
-        return $included;
+        return array();
     }
 
     /**
@@ -157,26 +99,7 @@ class BaselinesModel extends BaseModel
      */
     public function listUser($where = array(), $orgs = array()): array
     {
-        if (empty($orgs)) {
-            $instance = & get_instance();
-            $orgs = array_unique(array_merge($instance->user->orgs, $instance->orgsModel->getUserDescendants($instance->user->orgs, $instance->orgs)));
-            $orgs[] = 1;
-            $orgs = array_unique($orgs);
-        }
-
-        $properties = array();
-        $properties[] = 'baselines.*';
-        $properties[] = 'orgs.name as `orgs.name`';
-        $this->builder->select($properties, false);
-        $this->builder->join('orgs', 'baselines.org_id = orgs.id', 'left');
-        $this->builder->whereIn('orgs.id', $orgs);
-        $this->builder->where($where);
-        $this->builder->orderBy('baselines.name', 'ASC');
-        $query = $this->builder->get();
-        if ($this->sqlError($this->db->error())) {
-            return array();
-        }
-        return format_data($query->getResult(), 'baselines');
+        return array();
     }
 
     /**
@@ -189,11 +112,7 @@ class BaselinesModel extends BaseModel
      */
     public function listAll(): array
     {
-        $query = $this->builder->get();
-        if ($this->sqlError($this->db->error())) {
-            return array();
-        }
-        return $query->getResult();
+        return array();
     }
 
     /**
@@ -205,11 +124,7 @@ class BaselinesModel extends BaseModel
      */
     public function read(int $id = 0): array
     {
-        $query = $this->builder->getWhere(['id' => intval($id)]);
-        if ($this->sqlError($this->db->error())) {
-            return array();
-        }
-        return format_data($query->getResult(), 'baselines');
+        return array();
     }
 
     /**
@@ -224,9 +139,6 @@ class BaselinesModel extends BaseModel
      */
     public function reset(string $table = ''): bool
     {
-        if ($this->tableReset('baselines')) {
-            return true;
-        }
         return false;
     }
 
@@ -240,21 +152,6 @@ class BaselinesModel extends BaseModel
      */
     public function update($id = null, $data = null): bool
     {
-        // Accept our client data
-        $data = $this->updateFieldData('baselines', $data);
-        $this->builder->where('id', intval($id));
-        $this->builder->update($data);
-        if ($this->sqlError($this->db->error())) {
-            return false;
-        }
-        if (!empty($data->org_id)) {
-            // Update our policies
-            $sql = "UPDATE baselines_policies SET org_id = ? WHERE baseline_id = ?";
-            $this->db->query($sql, [$data->org_id, $id]);
-            // Update our results
-            $sql = "UPDATE baselines_results SET org_id = ? WHERE baseline_id = ?";
-            $this->db->query($sql, [$data->org_id, $id]);
-        }
         return true;
     }
 

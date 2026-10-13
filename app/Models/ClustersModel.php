@@ -30,25 +30,7 @@ class ClustersModel extends BaseModel
      */
     public function collection(object $resp): array
     {
-        $properties = $resp->meta->properties;
-        $properties[] = "orgs.name as `orgs.name`";
-        $properties[] = "orgs.id as `orgs.id`";
-        $this->builder->select($properties, false);
-        $this->builder->join('orgs', $resp->meta->collection . '.org_id = orgs.id', 'left');
-        foreach ($resp->meta->filter as $filter) {
-            if (in_array($filter->operator, ['!=', '>=', '<=', '=', '>', '<', 'like', 'not like'])) {
-                $this->builder->{$filter->function}($filter->name . ' ' . $filter->operator, $filter->value);
-            } else {
-                $this->builder->{$filter->function}($filter->name, $filter->value);
-            }
-        }
-        $this->builder->orderBy($resp->meta->sort);
-        $this->builder->limit($resp->meta->limit, $resp->meta->offset);
-        $query = $this->builder->get();
-        if ($this->sqlError($this->db->error())) {
-            return array();
-        }
-        return format_data($query->getResult(), $resp->meta->collection);
+        return array();
     }
 
     /**
@@ -73,13 +55,6 @@ class ClustersModel extends BaseModel
      */
     public function delete($id = null, bool $purge = false): bool
     {
-        $this->builder->delete(['id' => intval($id)]);
-        if ($this->sqlError($this->db->error())) {
-            return false;
-        }
-        if ($this->db->affectedRows() !== 1) {
-            return false;
-        }
         return true;
     }
 
@@ -95,103 +70,7 @@ class ClustersModel extends BaseModel
      */
     public function includedRead(int $id = 0): array
     {
-        $instance = & get_instance();
-        $org_list = array_unique(array_merge($instance->user->orgs, $instance->orgsModel->getUserDescendants($instance->user->orgs, $instance->orgs)));
-        $org_list[] = 1;
-        $org_list = array_unique($org_list);
-
-        $clusters = $this->read($id);
-        $cluster = $clusters[0];
-        $return = array();
-
-        $attributesModel = new \App\Models\AttributesModel();
-        $return = array();
-        $types = $attributesModel->listUser(['attributes.type' => 'environment']);
-        $return['types'] = $types;
-
-        if ($cluster->attributes->purpose === 'virtualisation') {
-            $sql = "SELECT
-                        devices.id AS `devices.id`,
-                        devices.name AS `devices.name`,
-                        (devices.memory_count / 1024) AS `devices.memory_count`,
-                        devices.ip AS `devices.ip`,
-                        devices.os_family AS `devices.os_family`,
-                        devices.icon AS `devices.icon`,
-                        processor.hyperthreading AS `processor.hyperthreading`,
-                        processor.physical_count AS `processor.physical_count`,
-                        processor.core_count AS `processor.core_count`,
-                        processor.logical_count AS `processor.logical_count`,
-                        cluster.role AS `cluster.role`,
-                        cluster.id AS `cluster.id`,
-                        'host' AS `type`
-                    FROM
-                        cluster
-                    LEFT JOIN
-                        devices ON (cluster.device_id = devices.id)
-                    LEFT JOIN
-                        processor ON (devices.id = processor.device_id)
-                    WHERE
-                        cluster.cluster_id = " . intval($id) . " AND
-                        devices.org_id IN (" . implode(',', $org_list) . ")";
-
-            $query = $this->db->query($sql);
-            if ($this->sqlError($this->db->error())) {
-                return array();
-            }
-            $return['members'] = format_data($query->getResult(), 'devices');
-
-            $sql = 'SELECT devices.name AS `host.name`, vm.icon AS `vm.icon`, vm.name AS `vm.name`, vm.id AS `vm.id`, vm.guest_device_id AS `vm.guest_device_id`, vm.cpu_count AS `vm.cpu_count`, vm.memory_count AS `vm.memory_count`, vm.status AS `vm.status`, "guest" as `type`, GROUP_CONCAT(DISTINCT server.name ORDER BY server.name ASC SEPARATOR ", ") AS `guest.servers`, guest.os_family AS `guest.os_family`, guest.ip AS `guest.ip`, guest.icon AS `guest.icon` FROM `devices` LEFT JOIN `cluster` ON (`devices`.`id` = `cluster`.`device_id`) LEFT JOIN `vm` ON (`devices`.`id` = `vm`.`device_id` AND `vm`.`current` = "y") LEFT JOIN `server` ON vm.guest_device_id = `server`.`device_id` LEFT JOIN `devices` `guest` ON vm.guest_device_id = guest.id WHERE devices.org_id IN (' . implode(',', $org_list) . ') AND `cluster`.`cluster_id` = ? GROUP BY vm.guest_device_id, vm.icon, vm.name, devices.name, vm.id, vm.cpu_count, vm.memory_count, vm.status, guest.os_family, guest.ip ORDER BY vm.name';
-
-            $query = $this->db->query($sql, [$id]);
-            if ($this->sqlError($this->db->error())) {
-                return array();
-            }
-            $guests = $query->getResult();
-            foreach ($guests as $guest) {
-                $guest->{'guest.ip_padded'} = $guest->{'guest.ip'};
-                $guest->{'guest.ip'} = ip_address_from_db($guest->{'guest.ip'});
-            }
-            $return['guests'] = format_data($guests, 'devices');
-        }
-
-
-        if ($cluster->attributes->purpose !== 'virtualisation') {
-            $sql = 'SELECT devices.id AS `devices.id`, devices.name AS `devices.name`, devices.description AS `devices.description`, devices.memory_count AS `devices.memory_count`, devices.ip AS `devices.ip`, devices.os_family AS `devices.os_family`, devices.icon AS `devices.icon`, processor.hyperthreading AS `processor.hyperthreading`, processor.physical_count AS `processor.physical_count`, processor.core_count AS `processor.core_count`, processor.logical_count AS `processor.logical_count`, cluster.role AS `cluster.role`, cluster.id AS `cluster.id`, GROUP_CONCAT(DISTINCT server.name ORDER BY server.name ASC SEPARATOR ", ") AS `servers` FROM `devices` LEFT JOIN `orgs` ON (`devices`.`org_id` = `orgs`.`id`) LEFT JOIN `cluster` ON (`devices`.`id` = `cluster`.`device_id`) LEFT JOIN `processor` ON (`devices`.`id` = `processor`.`device_id` AND `processor`.`current` = "y") LEFT JOIN `server` ON `devices`.`id` = `server`.`device_id` WHERE `orgs`.`id` IN (' . implode(',', $org_list) . ') AND `cluster`.`cluster_id` = ? GROUP BY `devices`.`id`, `processor`.`hyperthreading`, `processor`.`logical_count`, `cluster`.`role`';
-            $query = $this->db->query($sql, [$id]);
-            if ($this->sqlError($this->db->error())) {
-                return array();
-            }
-            $result = $query->getResult();
-            $count = count($result);
-            for ($i = 0; $i < $count; $i++) {
-                    $result[$i]->{'guest.id'} = '';
-                    $result[$i]->{'guest.name'} = '';
-                    $result[$i]->{'guest.os_family'} = '';
-                    $result[$i]->{'guest.servers'} = '';
-                if (!empty($result[$i]->{'vm.devices_id'})) {
-                    # Get the guest details
-                    $sql = "SELECT name, os_family, icon FROM devices WHERE id = " . intval($result[$i]->{'vm.devices_id'});
-                    $query = $this->db->query($sql);
-                    $vm_result = $query->getResult();
-                    $result[$i]->{'guest.id'} = intval($result[$i]->{'vm.devices_id'});
-                    $result[$i]->{'guest.name'} = $vm_result[0]->name;
-                    $result[$i]->{'guest.os_family'} = $vm_result[0]->os_family;
-                    # Get the guest server(s) running on the guest
-                    $sql = "SELECT JSON_UNQUOTE(JSON_EXTRACT(components.details, '$.name')) AS `server` FROM components WHERE type = 'server' AND device_id = " . intval($result[$i]->{'vm.devices_id'});
-                    $query = $this->db->query($sql);
-                    $vm_result = $query->getResult();
-                    $servers = array();
-                    if (!empty($vm_result)) {
-                        foreach ($vm_result as $item) {
-                            $servers[] = $item->server;
-                        }
-                    }
-                    $result[$i]->{'guest.servers'} = implode(', ', $servers);
-                }
-            }
-            $return['devices'] = format_data($result, 'devices');
-        }
-        return $return;
+        return array();
     }
 
     /**
@@ -203,10 +82,7 @@ class ClustersModel extends BaseModel
      */
     public function includedCreateForm(int $id = 0): array
     {
-        $attributesModel = new \App\Models\AttributesModel();
-        $include = array();
-        $include['environment'] = $attributesModel->listUser(['attributes.resource' => 'devices', 'attributes.type' => 'environment']);
-        return $include;
+        return array();
     }
 
     /**
@@ -223,26 +99,7 @@ class ClustersModel extends BaseModel
      */
     public function listUser($where = array(), $orgs = array()): array
     {
-        if (empty($orgs)) {
-            $instance = & get_instance();
-            $orgs = array_unique(array_merge($instance->user->orgs, $instance->orgsModel->getUserDescendants($instance->user->orgs, $instance->orgs)));
-            $orgs[] = 1;
-            $orgs = array_unique($orgs);
-        }
-
-        $properties = array();
-        $properties[] = 'clusters.*';
-        $properties[] = 'orgs.name as `orgs.name`';
-        $this->builder->select($properties, false);
-        $this->builder->join('orgs', 'clusters.org_id = orgs.id', 'left');
-        $this->builder->whereIn('orgs.id', $orgs);
-        $this->builder->where($where);
-        $this->builder->orderBy('clusters.name', 'ASC');
-        $query = $this->builder->get();
-        if ($this->sqlError($this->db->error())) {
-            return array();
-        }
-        return format_data($query->getResult(), 'clusters');
+        return array();
     }
 
     /**
@@ -255,11 +112,7 @@ class ClustersModel extends BaseModel
      */
     public function listAll(): array
     {
-        $query = $this->builder->get();
-        if ($this->sqlError($this->db->error())) {
-            return array();
-        }
-        return $query->getResult();
+        return array();
     }
 
     /**
@@ -271,11 +124,7 @@ class ClustersModel extends BaseModel
      */
     public function read(int $id = 0): array
     {
-        $query = $this->builder->getWhere(['id' => intval($id)]);
-        if ($this->sqlError($this->db->error())) {
-            return array();
-        }
-        return format_data($query->getResult(), 'clusters');
+        return array();
     }
 
     /**
@@ -290,9 +139,6 @@ class ClustersModel extends BaseModel
      */
     public function reset(string $table = ''): bool
     {
-        if ($this->tableReset('clusters')) {
-            return true;
-        }
         return false;
     }
 
@@ -306,13 +152,6 @@ class ClustersModel extends BaseModel
      */
     public function update($id = null, $data = null): bool
     {
-        // Accept our client data
-        $data = $this->updateFieldData('clusters', $data);
-        $this->builder->where('id', intval($id));
-        $this->builder->update($data);
-        if ($this->sqlError($this->db->error())) {
-            return false;
-        }
         return true;
     }
 

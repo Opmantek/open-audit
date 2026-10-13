@@ -32,54 +32,7 @@ class TasksModel extends BaseModel
      */
     public function collection(object $resp): array
     {
-        $instance = & get_instance();
-        $properties = $resp->meta->properties;
-        $properties[] = "orgs.name as `orgs.name`";
-        $properties[] = "orgs.id as `orgs.id`";
-        $this->builder->select($properties, false);
-        $this->builder->join('orgs', $resp->meta->collection . '.org_id = orgs.id', 'left');
-        foreach ($resp->meta->filter as $filter) {
-            if (in_array($filter->operator, ['!=', '>=', '<=', '=', '>', '<', 'like', 'not like'])) {
-                $this->builder->{$filter->function}($filter->name . ' ' . $filter->operator, $filter->value);
-            } else {
-                $this->builder->{$filter->function}($filter->name, $filter->value);
-            }
-        }
-        $this->builder->orderBy($resp->meta->sort);
-        $this->builder->limit($resp->meta->limit, $resp->meta->offset);
-        $query = $this->builder->get();
-        if ($this->sqlError($this->db->error())) {
-            return array();
-        }
-        $result = $query->getResult();
-        for ($i = 0; $i < count($result); $i++) {
-            // SubResources
-            if (!empty($result[$i]->type) and $this->db->tableExists($result[$i]->type)) {
-                $sql = 'SELECT id, name FROM `' . $result[$i]->type . '` WHERE id = ?';
-                $data_result = $this->db->query($sql, [$result[$i]->sub_resource_id])->getResult();
-                if (!empty($data_result[0]->name)) {
-                    $result[$i]->{$result[$i]->type . '.id'} = $data_result[0]->id;
-                    $result[$i]->{$result[$i]->type . '.name'} = $data_result[0]->name;
-                    $result[$i]->sub_resource_name = $data_result[0]->name;
-                } else {
-                    $result[$i]->sub_resource_name = '';
-                }
-            } else {
-                $result[$i]->sub_resource_name = '';
-            }
-            // Collectors
-            $result[$i]->{'collectors.name'} = 'localhost';
-            $result[$i]->{'collectors.id'} = 0;
-            if (!empty($result[$i]->uuid) and $result[$i]->uuid !== $instance->config->uuid) {
-                $sql = 'SELECT id, name FROM collectors WHERE uuid = ? LIMIT 1';
-                $data_result = $this->db->query($sql, [$result[$i]->uuid])->getResult();
-                if (!empty($data_result[0]->name)) {
-                    $result[$i]->{'collectors.name'} = $data_result[0]->name;
-                    $result[$i]->{'collectors.id'} = $data_result[0]->id;
-                }
-            }
-        }
-        return format_data($result, 'tasks');
+        return array();
     }
 
     /**
@@ -91,30 +44,7 @@ class TasksModel extends BaseModel
      */
     public function create($data = null): ?int
     {
-        if (empty($data)) {
-            return null;
-        }
-        $data->minute = is_array($data->minute) ? implode(',', $data->minute) : (string)$data->minute;
-        $data->hour = is_array($data->hour) ? implode(',', $data->hour) : (string)$data->hour;
-        $data->month = is_array($data->month) ? implode(',', $data->month) : (string)$data->month;
-        $data->day_of_month = is_array($data->day_of_month) ? implode(',', $data->day_of_month) : (string)$data->day_of_month;
-        $data->day_of_week = is_array($data->day_of_week) ? implode(',', $data->day_of_week) : (string)$data->day_of_week;
-        if (empty($data->uuid)) {
-            $instance = & get_instance();
-            $data->uuid = $instance->config->uuid;
-        }
-        if (empty($data->sub_resource_id) and ($data->type === 'vulnerabilities' or $data->type === 'vulnerabilities_all' or $data->type === 'vendors' or $data->type === 'vendors_execute_all')) {
-            $data->sub_resource_id = 0;
-        }
-        $data = $this->createFieldData('tasks', $data);
-        if (empty($data)) {
-            return null;
-        }
-        $this->builder->insert($data);
-        if ($this->sqlError($this->db->error())) {
-            return null;
-        }
-        return (intval($this->db->insertID()));
+        return null;
     }
 
     /**
@@ -127,13 +57,6 @@ class TasksModel extends BaseModel
      */
     public function delete($id = null, bool $purge = false): bool
     {
-        $this->builder->delete(['id' => intval($id)]);
-        if ($this->sqlError($this->db->error())) {
-            return false;
-        }
-        if ($this->db->affectedRows() !== 1) {
-            return false;
-        }
         return true;
     }
 
@@ -146,24 +69,7 @@ class TasksModel extends BaseModel
      */
     public function includedRead(int $id = 0): array
     {
-        $included = array();
-        $result = $this->builder->getWhere(['id' => intval($id)])->getResult()[0];
-        if ($result->type !== 'vulnerabilities_all' and $result->type !== 'vendors_execute_all') {
-            $type = ucfirst($result->type);
-            if ($type != 'Collector') {
-                $namespace = "\\App\\Models\\" . $type . "Model";
-            }
-            if ($type === 'Collector') {
-                $namespace = "\\App\\Models\\CollectorsModel";
-            }
-            $typeModel = new $namespace();
-            $included[strtolower($type)] = $typeModel->listUser();
-            if ($type === 'Baselines') {
-                $groupsModel = new \App\Models\GroupsModel();
-                $included['groups'] = $groupsModel->listUser();
-            }
-        }
-        return $included;
+        return array();
     }
 
     /**
@@ -175,37 +81,7 @@ class TasksModel extends BaseModel
      */
     public function includedCreateForm(int $id = 0): array
     {
-        $include = array();
-        $instance = & get_instance();
-
-        $baselinesModel = new \App\Models\BaselinesModel();
-        $include['baselines'] = $baselinesModel->listUser();
-
-        $benchmarksModel = new \App\Models\BenchmarksModel();
-        $include['benchmarks'] = $benchmarksModel->listUser();
-
-        $collectorsModel = new \App\Models\CollectorsModel();
-        $include['collectors'] = $collectorsModel->listUser();
-
-        $cloudsModel = new \App\Models\CloudsModel();
-        $include['clouds'] = $cloudsModel->listUser();
-
-        $discoveriesModel = new \App\Models\DiscoveriesModel();
-        $include['discoveries'] = $discoveriesModel->listUser();
-
-        $groupsModel = new \App\Models\GroupsModel();
-        $include['groups'] = $groupsModel->listUser();
-
-        $integrationsModel = new \App\Models\IntegrationsModel();
-        $include['integrations'] = $integrationsModel->listUser();
-
-        $queriesModel = new \App\Models\QueriesModel();
-        $include['queries'] = $queriesModel->listUser();
-
-        $summariesModel = new \App\Models\SummariesModel();
-        $include['summaries'] = $summariesModel->listUser();
-
-        return $include;
+        return array();
     }
 
 
@@ -223,25 +99,7 @@ class TasksModel extends BaseModel
      */
     public function listUser($where = array(), $orgs = array()): array
     {
-        if (empty($orgs)) {
-            $instance = & get_instance();
-            $orgs = array_unique(array_merge($instance->user->orgs, $instance->orgsModel->getUserDescendants($instance->user->orgs, $instance->orgs)));
-            $orgs[] = 1;
-            $orgs = array_unique($orgs);
-        }
-
-        $properties = array();
-        $properties[] = 'tasks.*';
-        $properties[] = 'orgs.name as `orgs.name`';
-        $this->builder->select($properties, false);
-        $this->builder->join('orgs', 'tasks.org_id = orgs.id', 'left');
-        $this->builder->whereIn('orgs.id', $orgs);
-        $this->builder->where($where);
-        $query = $this->builder->get();
-        if ($this->sqlError($this->db->error())) {
-            return array();
-        }
-        return format_data($query->getResult(), 'tasks');
+        return array();
     }
 
     /**
@@ -254,11 +112,7 @@ class TasksModel extends BaseModel
      */
     public function listAll(): array
     {
-        $query = $this->builder->get();
-        if ($this->sqlError($this->db->error())) {
-            return array();
-        }
-        return $query->getResult();
+        return array();
     }
 
     /**
@@ -270,28 +124,7 @@ class TasksModel extends BaseModel
      */
     public function read(int $id = 0): array
     {
-        $result = $this->builder->getWhere(['id' => intval($id)])->getResult();
-        if ($this->sqlError($this->db->error())) {
-            return array();
-        }
-        if ($result !== false) {
-            for ($i = 0; $i < count($result); $i++) {
-                if ($result[$i]->type !== 'collector' and $result[$i]->type !== 'reports' and $result[$i]->type !== 'vulnerabilities_all' and $result[$i]->type !== 'vendors_execute_all') {
-                    $sql = 'SELECT id, name FROM `' . $result[$i]->type . '` WHERE id = ?';
-                    $data_result = $this->db->query($sql, [$result[$i]->sub_resource_id])->getResult();
-                    if (!empty($data_result[0]->name)) {
-                        $result[$i]->{$result[$i]->type . '.id'} = $data_result[0]->id;
-                        $result[$i]->{$result[$i]->type . '.name'} = $data_result[0]->name;
-                        $result[$i]->sub_resource_name = $data_result[0]->name;
-                    } else {
-                        $result[$i]->sub_resource_name = '';
-                    }
-                } else {
-                    $result[$i]->sub_resource_name = '';
-                }
-            }
-        }
-        return format_data($result, 'tasks');
+        return array();
     }
 
     /**
@@ -306,9 +139,6 @@ class TasksModel extends BaseModel
      */
     public function reset(string $table = ''): bool
     {
-        if ($this->tableReset('tasks')) {
-            return true;
-        }
         return false;
     }
 
@@ -322,65 +152,6 @@ class TasksModel extends BaseModel
      */
     public function update($id = null, $data = null): bool
     {
-        if (!empty($data->options)) {
-            $received = new \stdClass();
-            if (gettype($data->options) === 'object' or gettype($data->options) === 'array') {
-                foreach ($data->options as $key => $value) {
-                        $received->$key = $value;
-                }
-            }
-            $existing = new \stdClass();
-            if (!empty($data->id)) {
-                $select = 'SELECT * FROM tasks WHERE id = ?';
-                $result = $this->db->query($select, array($data->id))->getResult();
-                if (empty($result)) {
-                    // ID provided, but does not exist
-                    return null;
-                }
-                if (!empty($result[0]->options)) {
-                    try {
-                        $existing = json_decode($result[0]->options, false, 512, JSON_THROW_ON_ERROR);
-                    } catch (\JsonException $e) {
-                        log_message('error', 'Could not decode JSON. File:' . basename(__FILE__) . ', Line:' . __LINE__ . ', Error: ' . $e->getMessage());
-                    }
-                }
-            }
-            $new = new \stdClass();
-            foreach ($existing as $existing_key => $existing_value) {
-                if (isset($received->$existing_key)) {
-                    $new->$existing_key = $received->$existing_key;
-                } else {
-                    $new->$existing_key = $existing->$existing_key;
-                }
-            }
-            $data->options = (string)json_encode($new);
-        }
-        if (! empty($data->{'minute[]'}) && is_array($data->{'minute[]'})) {
-            $data->minute = implode(',', $data->{'minute[]'});
-            unset($data->{'minute[]'});
-        }
-        if (! empty($data->{'hour[]'}) && is_array($data->{'hour[]'})) {
-            $data->hour = implode(',', $data->{'hour[]'});
-            unset($data->{'hour[]'});
-        }
-        if (! empty($data->{'day_of_month[]'}) && is_array($data->{'day_of_month[]'})) {
-            $data->day_of_month = implode(',', $data->{'day_of_month[]'});
-            unset($data->{'day_of_month[]'});
-        }
-        if (! empty($data->{'month[]'}) && is_array($data->{'month[]'})) {
-            $data->month = implode(',', $data->{'month[]'});
-            unset($data->{'month[]'});
-        }
-        if (! empty($data->{'day_of_week[]'}) && is_array($data->{'day_of_week[]'})) {
-            $data->day_of_week = implode(',', $data->{'day_of_week[]'});
-            unset($data->{'day_of_week[]'});
-        }
-        $data = $this->updateFieldData('tasks', $data);
-        $this->builder->where('id', intval($id));
-        $this->builder->update($data);
-        if ($this->sqlError($this->db->error())) {
-            return false;
-        }
         return true;
     }
 

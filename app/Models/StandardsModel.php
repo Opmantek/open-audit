@@ -30,25 +30,7 @@ class StandardsModel extends BaseModel
      */
     public function collection(object $resp): array
     {
-        $properties = $resp->meta->properties;
-        $properties[] = "orgs.name as `orgs.name`";
-        $properties[] = "orgs.id as `orgs.id`";
-        $this->builder->select($properties, false);
-        $this->builder->join('orgs', $resp->meta->collection . '.org_id = orgs.id', 'left');
-        foreach ($resp->meta->filter as $filter) {
-            if (in_array($filter->operator, ['!=', '>=', '<=', '=', '>', '<', 'like', 'not like'])) {
-                $this->builder->{$filter->function}($filter->name . ' ' . $filter->operator, $filter->value);
-            } else {
-                $this->builder->{$filter->function}($filter->name, $filter->value);
-            }
-        }
-        $this->builder->orderBy($resp->meta->sort);
-        $this->builder->limit($resp->meta->limit, $resp->meta->offset);
-        $query = $this->builder->get();
-        if ($this->sqlError($this->db->error())) {
-            return array();
-        }
-        return format_data($query->getResult(), $resp->meta->collection);
+        return array();
     }
 
     /**
@@ -73,13 +55,6 @@ class StandardsModel extends BaseModel
      */
     public function delete($id = null, bool $purge = false): bool
     {
-        $this->builder->delete(['id' => intval($id)]);
-        if ($this->sqlError($this->db->error())) {
-            return false;
-        }
-        if ($this->db->affectedRows() !== 1) {
-            return false;
-        }
         return true;
     }
 
@@ -95,21 +70,7 @@ class StandardsModel extends BaseModel
      */
     public function includedRead(int $id = 0): array
     {
-        $return = array();
-        $sql = "SELECT standards_results.*, standards_policies.name AS `standards_policies.name`, standards_policies.class AS `standards_policies.class`, standards_policies.section AS `standards_policies.section` FROM standards_results LEFT JOIN standards_policies ON (standards_results.policy_id = standards_policies.id) WHERE standards_results.standard_id = ?";
-        $result = $this->db->query($sql, [$id])->getResult();
-        if ($this->sqlError($this->db->error())) {
-            return array();
-        }
-        foreach ($result as $item) {
-            $explode = explode('.', $item->{'standards_policies.section'});
-            for ($i=0; $i < count($explode); $i++) { 
-                $explode[$i] = mb_substr("00000" . $explode[$i], -5);
-            }
-            $item->{'standards_policies.section_padded'} = implode('.', $explode);
-        }
-        $return['standards_results'] = format_data($result, 'standards_results');
-        return $return;
+        return array();
     }
 
     /**
@@ -121,8 +82,7 @@ class StandardsModel extends BaseModel
      */
     public function includedCreateForm(int $id = 0): array
     {
-        $include = array();
-        return $include;
+        return array();
     }
 
     /**
@@ -139,25 +99,7 @@ class StandardsModel extends BaseModel
      */
     public function listUser($where = array(), $orgs = array()): array
     {
-        if (empty($orgs)) {
-            $instance = & get_instance();
-            $orgs = array_unique(array_merge($instance->user->orgs, $instance->orgsModel->getUserDescendants($instance->user->orgs, $instance->orgs)));
-            $orgs[] = 1;
-            $orgs = array_unique($orgs);
-        }
-
-        $properties = array();
-        $properties[] = 'standards.*';
-        $properties[] = 'orgs.name as `orgs.name`';
-        $this->builder->select($properties, false);
-        $this->builder->join('orgs', 'standards.org_id = orgs.id', 'left');
-        $this->builder->whereIn('orgs.id', $orgs);
-        $this->builder->where($where);
-        $query = $this->builder->get();
-        if ($this->sqlError($this->db->error())) {
-            return array();
-        }
-        return format_data($query->getResult(), 'standards');
+        return array();
     }
 
     /**
@@ -170,11 +112,7 @@ class StandardsModel extends BaseModel
      */
     public function listAll(): array
     {
-        $query = $this->builder->get();
-        if ($this->sqlError($this->db->error())) {
-            return array();
-        }
-        return $query->getResult();
+        return array();
     }
 
     /**
@@ -186,11 +124,7 @@ class StandardsModel extends BaseModel
      */
     public function read(int $id = 0): array
     {
-        $query = $this->builder->getWhere(['id' => intval($id)]);
-        if ($this->sqlError($this->db->error())) {
-            return array();
-        }
-        return format_data($query->getResult(), 'standards');
+        return array();
     }
 
     /**
@@ -205,9 +139,6 @@ class StandardsModel extends BaseModel
      */
     public function reset(string $table = ''): bool
     {
-        if ($this->tableReset('standards')) {
-            return true;
-        }
         return false;
     }
 
@@ -221,13 +152,6 @@ class StandardsModel extends BaseModel
      */
     public function update($id = null, $data = null): bool
     {
-        // Accept our client data
-        $data = $this->updateFieldData('standards', $data);
-        $this->builder->where('id', intval($id));
-        $this->builder->update($data);
-        if ($this->sqlError($this->db->error())) {
-            return false;
-        }
         return true;
     }
 

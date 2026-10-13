@@ -30,69 +30,7 @@ class RacksModel extends BaseModel
      */
     public function collection(object $resp): array
     {
-        $properties = $resp->meta->properties;
-        $properties[] = "orgs.name as `orgs.name`";
-        $properties[] = "orgs.id as `orgs.id`";
-        $properties[] = "locations.name as `locations.name`";
-        $properties[] = "locations.id as `locations.id`";
-        $properties[] = "count(rack_devices.id) as `rack_devices_count`";
-        $properties[] = "SUM(rack_devices.height) AS `used`";
-        $properties[] = "COALESCE(racks.ru_height, 0) - COALESCE(SUM(rack_devices.height), 0) AS `free`";
-        $properties[] = "racks.ru_height AS `lcs`";
-        $this->builder->select($properties, false);
-        $this->builder->join('orgs', $resp->meta->collection . '.org_id = orgs.id', 'left');
-        $this->builder->join('locations', $resp->meta->collection . '.location_id = locations.id', 'left');
-        $this->builder->join('rack_devices', 'rack_devices.rack_id = racks.id', 'left');
-        foreach ($resp->meta->filter as $filter) {
-            if (in_array($filter->operator, ['!=', '>=', '<=', '=', '>', '<', 'like', 'not like'])) {
-                $this->builder->{$filter->function}($filter->name . ' ' . $filter->operator, $filter->value);
-            } else {
-                $this->builder->{$filter->function}($filter->name, $filter->value);
-            }
-        }
-        $this->builder->groupBy('racks.id');
-        $this->builder->orderBy($resp->meta->sort);
-        $this->builder->limit($resp->meta->limit, $resp->meta->offset);
-        $query = $this->builder->get();
-        if ($this->sqlError($this->db->error())) {
-            return array();
-        }
-        $racks = $query->getResult();
-        $count = count($racks);
-        for ($i = 0; $i < $count; $i++) {
-            if (empty($racks[$i]->ru_height)) {
-                $racks[$i]->ru_height = 0;
-            }
-            $height = intval($racks[$i]->ru_height);
-            # log_message('error', "Rack: " . $racks[$i]->id . ", height: " . $racks[$i]->ru_height);
-            $sql = "SELECT * FROM rack_devices WHERE rack_id = ? ORDER BY position";
-            $devices = $this->db->query($sql, [$racks[$i]->id])->getResult();
-            $spaces = array();
-            $space = 0;
-            if (!empty($devices)) {
-                for ($j = 0; $j < $height; $j++) {
-                    $hit = false;
-                    foreach ($devices as $device) {
-                        if (intval($device->position) === $j or (intval($device->position) < $j and (intval($device->position) + intval($device->height)) >= $j)) {
-                            # log_message('error', 'TRUE - position is ' . $j . ' and device position is ' . $device->position . ' and device height is ' . $device->height);
-                            $hit = true;
-                            if ($space > 0) {
-                                $spaces[] = $space;
-                            }
-                            $space = 0;
-                        }
-                    }
-                    if (!$hit) {
-                        $space += 1;
-                    }
-                }
-                $spaces[] = $space;
-            }
-            if (!empty($spaces)) {
-                $racks[$i]->lcs = max($spaces);
-            }
-        }
-        return format_data($racks, $resp->meta->collection);
+        return array();
     }
 
     /**
@@ -117,13 +55,6 @@ class RacksModel extends BaseModel
      */
     public function delete($id = null, bool $purge = false): bool
     {
-        $this->builder->delete(['id' => intval($id)]);
-        if ($this->sqlError($this->db->error())) {
-            return false;
-        }
-        if ($this->db->affectedRows() !== 1) {
-            return false;
-        }
         return true;
     }
 
@@ -136,48 +67,7 @@ class RacksModel extends BaseModel
      */
     public function includedCreateForm(int $id = 0): array
     {
-        $instance = & get_instance();
-        $include = array();
-        $locationsModel = new \App\Models\LocationsModel();
-        $include['locations'] = $locationsModel->listUser();
-
-        $include['rows'] = array();
-        $sql = "SELECT DISTINCT `row` FROM racks WHERE racks.org_id IN (" . $instance->user->org_list . ")";
-        $temp = $this->db->query($sql)->getResult();
-        foreach ($temp as $item) {
-            if (!empty($item->row)) {
-                $include['rows'][] = $item->row;
-            }
-        }
-
-        $include['rooms'] = array();
-        $sql = "SELECT DISTINCT `room` FROM racks WHERE racks.org_id IN (" . $instance->user->org_list . ")";
-        $temp = $this->db->query($sql)->getResult();
-        foreach ($temp as $item) {
-            if (!empty($item->room)) {
-                $include['rooms'][] = $item->room;
-            }
-        }
-
-        $include['floors'] = array();
-        $sql = "SELECT DISTINCT `floor` FROM racks WHERE racks.org_id IN (" . $instance->user->org_list . ")";
-        $temp = $this->db->query($sql)->getResult();
-        foreach ($temp as $item) {
-            if (!empty($item->floor)) {
-                $include['floors'][] = $item->floor;
-            }
-        }
-
-        $include['buildings'] = array();
-        $sql = "SELECT DISTINCT `building` FROM racks WHERE racks.org_id IN (" . $instance->user->org_list . ")";
-        $temp = $this->db->query($sql)->getResult();
-        foreach ($temp as $item) {
-            if (!empty($item->building)) {
-                $include['buildings'][] = $item->building;
-            }
-        }
-
-        return $include;
+        return array();
     }
 
     /**
@@ -189,27 +79,7 @@ class RacksModel extends BaseModel
      */
     public function includedRead(int $id = 0): array
     {
-        $included = array();
-        $properties = array();
-        $properties[] = 'rack_devices.*';
-        $properties[] = 'devices.name as `devices.name`';
-        $properties[] = 'devices.id as `devices.id`';
-        $properties[] = 'devices.name as `devices.name`';
-        $properties[] = 'devices.type as `devices.type`';
-        $properties[] = 'devices.ip as `devices.ip`';
-        $properties[] = 'devices.icon as `devices.icon`';
-        $properties[] = 'image.filename as `image.filename`';
-        $this->builder->select($properties, false);
-        $this->builder->join('rack_devices', 'rack_devices.rack_id = racks.id', 'left');
-        $this->builder->join('devices', 'rack_devices.device_id = devices.id', 'left');
-        $this->builder->join('image', 'image.device_id = rack_devices.device_id and image.orientation = "front"', 'left');
-        $this->builder->where('rack_id', $id);
-        $query = $this->builder->get();
-        $included['rack_devices'] = format_data($query->getResult(), 'rack_devices');
-
-        $locationsModel = new \App\Models\LocationsModel();
-        $included['locations'] = $locationsModel->listUser();
-        return $included;
+        return array();
     }
 
     /**
@@ -226,25 +96,7 @@ class RacksModel extends BaseModel
      */
     public function listUser($where = array(), $orgs = array()): array
     {
-        if (empty($orgs)) {
-            $instance = & get_instance();
-            $orgs = array_unique(array_merge($instance->user->orgs, $instance->orgsModel->getUserDescendants($instance->user->orgs, $instance->orgs)));
-            $orgs[] = 1;
-            $orgs = array_unique($orgs);
-        }
-
-        $properties = array();
-        $properties[] = 'racks.*';
-        $properties[] = 'orgs.name as `orgs.name`';
-        $this->builder->select($properties, false);
-        $this->builder->join('orgs', 'racks.org_id = orgs.id', 'left');
-        $this->builder->whereIn('orgs.id', $orgs);
-        $this->builder->where($where);
-        $query = $this->builder->get();
-        if ($this->sqlError($this->db->error())) {
-            return array();
-        }
-        return format_data($query->getResult(), 'racks');
+        return array();
     }
 
     /**
@@ -257,11 +109,7 @@ class RacksModel extends BaseModel
      */
     public function listAll(): array
     {
-        $query = $this->builder->get();
-        if ($this->sqlError($this->db->error())) {
-            return array();
-        }
-        return $query->getResult();
+        return array();
     }
 
     /**
@@ -273,11 +121,7 @@ class RacksModel extends BaseModel
      */
     public function read(int $id = 0): array
     {
-        $query = $this->builder->getWhere(['id' => intval($id)]);
-        if ($this->sqlError($this->db->error())) {
-            return array();
-        }
-        return format_data($query->getResult(), 'racks');
+        return array();
     }
 
     /**
@@ -292,9 +136,6 @@ class RacksModel extends BaseModel
      */
     public function reset(string $table = ''): bool
     {
-        if ($this->tableReset('racks')) {
-            return true;
-        }
         return false;
     }
 
@@ -308,13 +149,6 @@ class RacksModel extends BaseModel
      */
     public function update($id = null, $data = null): bool
     {
-        // Accept our client data
-        $data = $this->updateFieldData('racks', $data);
-        $this->builder->where('id', intval($id));
-        $this->builder->update($data);
-        if ($this->sqlError($this->db->error())) {
-            return false;
-        }
         return true;
     }
 

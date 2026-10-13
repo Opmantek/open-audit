@@ -32,22 +32,7 @@ class BenchmarksPoliciesModel extends BaseModel
      */
     public function collection(object $resp): array
     {
-        $properties = $resp->meta->properties;
-        $this->builder->select($properties, false);
-        foreach ($resp->meta->filter as $filter) {
-            if (in_array($filter->operator, ['!=', '>=', '<=', '=', '>', '<'])) {
-                $this->builder->{$filter->function}($filter->name . ' ' . $filter->operator, $filter->value);
-            } else {
-                $this->builder->{$filter->function}($filter->name, $filter->value);
-            }
-        }
-        $this->builder->orderBy($resp->meta->sort);
-        $this->builder->limit($resp->meta->limit, $resp->meta->offset);
-        $query = $this->builder->get();
-        if ($this->sqlError($this->db->error())) {
-            return array();
-        }
-        return format_data($query->getResult(), $resp->meta->collection);
+        return array();
     }
 
     /**
@@ -59,19 +44,7 @@ class BenchmarksPoliciesModel extends BaseModel
      */
     public function create($data = null): ?int
     {
-        if (empty($data)) {
-            return null;
-        }
-        $data = $this->createFieldData('benchmarks_policies', $data);
-        if (empty($data)) {
-            return null;
-        }
-        $this->builder->insert($data);
-        if ($error = $this->sqlError($this->db->error())) {
-            \Config\Services::session()->setFlashdata('error', json_encode($error));
-            return null;
-        }
-        return (intval($this->db->insertID()));
+        return array();
     }
 
     /**
@@ -84,13 +57,6 @@ class BenchmarksPoliciesModel extends BaseModel
      */
     public function delete($id = null, bool $purge = false): bool
     {
-        $this->builder->delete(['id' => intval($id)]);
-        if ($this->sqlError($this->db->error())) {
-            return false;
-        }
-        if ($this->db->affectedRows() !== 1) {
-            return false;
-        }
         return true;
     }
 
@@ -112,16 +78,7 @@ class BenchmarksPoliciesModel extends BaseModel
      */
     public function includedRead(int $id = 0): array
     {
-        $instance = & get_instance();
-        $orgs = array_unique(array_merge($instance->user->orgs, $instance->orgsModel->getUserDescendants($instance->user->orgs, $instance->orgs)));
-        $orgs = array_unique($orgs);
-        $orgs = implode(', ', $orgs);
-
-        $included = array();
-        $sql = "SELECT benchmarks.name AS `benchmarks.name`, devices.id AS `devices.id`, devices.name AS `devices.name`, devices.ip AS `devices.ip`, devices.os_family AS `devices.os_family`, devices.os_version AS `devices.os_version`, benchmarks_result.id AS `benchmarks_result.id`, benchmarks_result.result AS `benchmarks_result.result` FROM benchmarks_policies LEFT JOIN benchmarks_result ON benchmarks_policies.external_ident = benchmarks_result.external_ident LEFT JOIN devices ON benchmarks_result.device_id = devices.id LEFT JOIN benchmarks ON benchmarks.id = benchmarks_result.benchmark_id WHERE devices.org_id IN ($orgs) AND benchmarks_result.external_ident = benchmarks_policies.external_ident AND benchmarks_policies.id = ?";
-        $included['devices'] = $this->db->query($sql, [$id])->getResult();
-
-        return $included;
+        return array();
     }
 
     /**
@@ -154,16 +111,7 @@ class BenchmarksPoliciesModel extends BaseModel
      */
     public function listUser($where = array(), $orgs = array()): array
     {
-        $properties = array();
-        $properties[] = 'benchmarks_policies.*';
-        $this->builder->select($properties, false);
-        $this->builder->where($where);
-        $this->builder->orderBy('benchmarks_policies.name', 'ASC');
-        $query = $this->builder->get();
-        if ($this->sqlError($this->db->error())) {
-            return array();
-        }
-        return format_data($query->getResult(), 'benchmarks_policies');
+        return array();
     }
 
     /**
@@ -176,11 +124,7 @@ class BenchmarksPoliciesModel extends BaseModel
      */
     public function listAll(): array
     {
-        $query = $this->builder->get();
-        if ($this->sqlError($this->db->error())) {
-            return array();
-        }
-        return $query->getResult();
+        return array();
     }
 
     /**
@@ -192,11 +136,7 @@ class BenchmarksPoliciesModel extends BaseModel
      */
     public function read(int $id = 0): array
     {
-        $query = $this->builder->getWhere(['id' => intval($id)]);
-        if ($this->sqlError($this->db->error())) {
-            return array();
-        }
-        return format_data($query->getResult(), 'benchmarks_policies');
+        return array();
     }
 
     /**
@@ -211,9 +151,6 @@ class BenchmarksPoliciesModel extends BaseModel
      */
     public function reset(string $table = ''): bool
     {
-        if ($this->tableReset('benchmarks_policies')) {
-            return true;
-        }
         return false;
     }
 
@@ -227,12 +164,6 @@ class BenchmarksPoliciesModel extends BaseModel
      */
     public function update($id = null, $data = null): bool
     {
-        $data = $this->updateFieldData('benchmarks_policies', $data);
-        $this->builder->where('id', intval($id));
-        $this->builder->update($data);
-        if ($this->sqlError($this->db->error())) {
-            return false;
-        }
         return true;
     }
 

@@ -30,31 +30,7 @@ class RackDevicesModel extends BaseModel
      */
     public function collection(object $resp): array
     {
-        $properties = $resp->meta->properties;
-        $properties[] = "orgs.name as `orgs.name`";
-        $properties[] = "orgs.id as `orgs.id`";
-        $properties[] = "devices.name as `devices.name`";
-        $properties[] = "devices.id as `devices.id`";
-        $properties[] = "racks.name as `racks.name`";
-        $properties[] = "racks.id as `racks.id`";
-        $this->builder->select($properties, false);
-        $this->builder->join('orgs', $resp->meta->collection . '.org_id = orgs.id', 'left');
-        $this->builder->join('devices', $resp->meta->collection . '.device_id = devices.id', 'left');
-        $this->builder->join('racks', $resp->meta->collection . '.rack_id = racks.id', 'left');
-        foreach ($resp->meta->filter as $filter) {
-            if (in_array($filter->operator, ['!=', '>=', '<=', '=', '>', '<', 'like', 'not like'])) {
-                $this->builder->{$filter->function}($filter->name . ' ' . $filter->operator, $filter->value);
-            } else {
-                $this->builder->{$filter->function}($filter->name, $filter->value);
-            }
-        }
-        $this->builder->orderBy($resp->meta->sort);
-        $this->builder->limit($resp->meta->limit, $resp->meta->offset);
-        $query = $this->builder->get();
-        if ($this->sqlError($this->db->error())) {
-            return array();
-        }
-        return format_data($query->getResult(), $resp->meta->collection);
+        return array();
     }
 
     /**
@@ -66,22 +42,7 @@ class RackDevicesModel extends BaseModel
      */
     public function create($data = null): ?int
     {
-        if (empty($data)) {
-            return null;
-        }
-        $data = $this->createFieldData('rack_devices', $data);
-        if (empty($data)) {
-            return null;
-        }
-        if (empty($data->height)) {
-            $data->height = 1;
-        }
-        $this->builder->insert($data);
-        if ($error = $this->sqlError($this->db->error())) {
-            \Config\Services::session()->setFlashdata('error', json_encode($error));
-            return null;
-        }
-        return (intval($this->db->insertID()));
+        return null;
     }
 
     /**
@@ -94,13 +55,6 @@ class RackDevicesModel extends BaseModel
      */
     public function delete($id = null, bool $purge = false): bool
     {
-        $this->builder->delete(['id' => intval($id)]);
-        if ($this->sqlError($this->db->error())) {
-            return false;
-        }
-        if ($this->db->affectedRows() !== 1) {
-            return false;
-        }
         return true;
     }
 
@@ -128,10 +82,7 @@ class RackDevicesModel extends BaseModel
      */
     public function includedCreateForm(int $id = 0): array
     {
-        $included = array();
-        $racksModel = new \App\Models\RacksModel();
-        $included['racks'] = $racksModel->listUser();
-        return $included;
+        return array();
     }
 
     /**
@@ -148,25 +99,7 @@ class RackDevicesModel extends BaseModel
      */
     public function listUser($where = array(), $orgs = array()): array
     {
-        if (empty($orgs)) {
-            $instance = & get_instance();
-            $orgs = array_unique(array_merge($instance->user->orgs, $instance->orgsModel->getUserDescendants($instance->user->orgs, $instance->orgs)));
-            $orgs[] = 1;
-            $orgs = array_unique($orgs);
-        }
-
-        $properties = array();
-        $properties[] = 'rack_devices.*';
-        $properties[] = 'orgs.name as `orgs.name`';
-        $this->builder->select($properties, false);
-        $this->builder->join('orgs', 'rack_devices.org_id = orgs.id', 'left');
-        $this->builder->whereIn('orgs.id', $orgs);
-        $this->builder->where($where);
-        $query = $this->builder->get();
-        if ($this->sqlError($this->db->error())) {
-            return array();
-        }
-        return format_data($query->getResult(), 'rack_devices');
+        return array();
     }
 
     /**
@@ -179,11 +112,7 @@ class RackDevicesModel extends BaseModel
      */
     public function listAll(): array
     {
-        $query = $this->builder->get();
-        if ($this->sqlError($this->db->error())) {
-            return array();
-        }
-        return $query->getResult();
+        return array();
     }
 
     /**
@@ -195,12 +124,7 @@ class RackDevicesModel extends BaseModel
      */
     public function read(int $id = 0): array
     {
-        $sql = "SELECT rack_devices.*, racks.name AS `racks.name`, devices.name AS `devices.name` FROM rack_devices LEFT JOIN racks ON rack_devices.rack_id = racks.id LEFT JOIN devices ON rack_devices.device_id = devices.id WHERE rack_devices.id = ?";
-        $query = $this->db->query($sql, [$id]);
-        if ($this->sqlError($this->db->error())) {
-            return array();
-        }
-        return format_data($query->getResult(), 'rack_devices');
+        return array();
     }
 
     /**
@@ -215,9 +139,6 @@ class RackDevicesModel extends BaseModel
      */
     public function reset(string $table = ''): bool
     {
-        if ($this->tableReset('rack_devices')) {
-            return true;
-        }
         return false;
     }
 
@@ -231,13 +152,6 @@ class RackDevicesModel extends BaseModel
      */
     public function update($id = null, $data = null): bool
     {
-        // Accept our client data
-        $data = $this->updateFieldData('rack_devices', $data);
-        $this->builder->where('id', intval($id));
-        $this->builder->update($data);
-        if ($this->sqlError($this->db->error())) {
-            return false;
-        }
         return true;
     }
 

@@ -32,25 +32,7 @@ class AgentsModel extends BaseModel
      */
     public function collection(object $resp): array
     {
-        $properties = $resp->meta->properties;
-        $properties[] = "orgs.name as `orgs.name`";
-        $properties[] = "orgs.id as `orgs.id`";
-        $this->builder->select($properties, false);
-        $this->builder->join('orgs', $resp->meta->collection . '.org_id = orgs.id', 'left');
-        foreach ($resp->meta->filter as $filter) {
-            if (in_array($filter->operator, ['!=', '>=', '<=', '=', '>', '<', 'like', 'not like'])) {
-                $this->builder->{$filter->function}($filter->name . ' ' . $filter->operator, $filter->value);
-            } else {
-                $this->builder->{$filter->function}($filter->name, $filter->value);
-            }
-        }
-        $this->builder->orderBy($resp->meta->sort);
-        $this->builder->limit($resp->meta->limit, $resp->meta->offset);
-        $query = $this->builder->get();
-        if ($this->sqlError($this->db->error())) {
-            return array();
-        }
-        return format_data($query->getResult(), $resp->meta->collection);
+        return array();
     }
 
     /**
@@ -62,19 +44,7 @@ class AgentsModel extends BaseModel
      */
     public function create($data = null): ?int
     {
-        if (empty($data)) {
-            return null;
-        }
-        $data = $this->createFieldData('agents', $data);
-        if (empty($data)) {
-            return null;
-        }
-        $this->builder->insert($data);
-        if ($error = $this->sqlError($this->db->error())) {
-            \Config\Services::session()->setFlashdata('error', json_encode($error));
-            return null;
-        }
-        return (intval($this->db->insertID()));
+        return null;
     }
 
     /**
@@ -87,13 +57,6 @@ class AgentsModel extends BaseModel
      */
     public function delete($id = null, bool $purge = false): bool
     {
-        $this->builder->delete(['id' => intval($id)]);
-        if ($this->sqlError($this->db->error())) {
-            return false;
-        }
-        if ($this->db->affectedRows() !== 1) {
-            return false;
-        }
         return true;
     }
 
@@ -112,27 +75,7 @@ class AgentsModel extends BaseModel
      */
     public function download(int $id = 0, string $os = ''): ?string
     {
-        $instance = & get_instance();
-        // $result = $this->read($id);
-        // $data = $result[0]->attributes;
-        // if (empty($id)) {
-        //     log_message('error', 'No script returned when ScriptsModel::download called with ID ' . $id);
-        //     return null;
-        // }
-        $filename = ROOTPATH . 'other/agent_windows.ps1';
-        if (!file_exists($filename)) {
-            log_message('error', "Script does not exist on filesystem for $filename.");
-            return null;
-        }
-        $file = file_get_contents($filename);
-        // Force all line endings to be Unix style
-        // Windows audit scripts with Unix line endings work
-        // Unix audit scripts with Windows line endings do not work (bash for one, chokes)
-        $file = str_replace("\r\n", "\n", $file);
-        $file = str_replace("\r", "\n", $file);
-        // Set our URL
-        $file = str_replace('$url = ""', '$url = "' . base_url() . '"', $file);
-        return $file;
+        return null;
     }
 
     /**
@@ -145,7 +88,6 @@ class AgentsModel extends BaseModel
      */
     public function execute()
     {
-        log_message('debug', 'AgentsExecute called.');
         return;
     }
 
@@ -162,10 +104,7 @@ class AgentsModel extends BaseModel
      */
     public function includedRead(int $id = 0): array
     {
-        $included = array();
-        $locationsModel = new \App\Models\LocationsModel();
-        $included['locations'] = $locationsModel->listUser();
-        return $included;
+        return array();
     }
 
     /**
@@ -181,11 +120,7 @@ class AgentsModel extends BaseModel
      */
     public function includedCreateForm(int $id = 0): array
     {
-        $instance = & get_instance();
-        $locationsModel = new \App\Models\LocationsModel();
-        $include = array();
-        $include['locations'] = $locationsModel->listUser();
-        return $include;
+        return array();
     }
 
 
@@ -203,26 +138,7 @@ class AgentsModel extends BaseModel
      */
     public function listUser($where = array(), $orgs = array()): array
     {
-        if (empty($orgs)) {
-            $instance = & get_instance();
-            $orgs = array_unique(array_merge($instance->user->orgs, $instance->orgsModel->getUserDescendants($instance->user->orgs, $instance->orgs)));
-            $orgs = array_unique(array_merge($orgs, $instance->orgsModel->getUserAscendants($instance->user->orgs, $instance->orgs)));
-            $orgs[] = 1;
-            $orgs = array_unique($orgs);
-        }
-
-        $properties = array();
-        $properties[] = 'agents.*';
-        $properties[] = 'orgs.name as `orgs.name`';
-        $this->builder->select($properties, false);
-        $this->builder->join('orgs', 'agents.org_id = orgs.id', 'left');
-        $this->builder->whereIn('orgs.id', $orgs);
-        $this->builder->where($where);
-        $query = $this->builder->get();
-        if ($this->sqlError($this->db->error())) {
-            return array();
-        }
-        return format_data($query->getResult(), 'agents');
+        return array();
     }
 
     /**
@@ -236,12 +152,7 @@ class AgentsModel extends BaseModel
      */
     public function listAll(): array
     {
-        $this->builder->orderBy('weight');
-        $query = $this->builder->get();
-        if ($this->sqlError($this->db->error())) {
-            return array();
-        }
-        return $query->getResult();
+        return array();
     }
 
     /**
@@ -253,11 +164,7 @@ class AgentsModel extends BaseModel
      */
     public function read(int $id = 0): array
     {
-        $query = $this->builder->getWhere(['id' => intval($id)]);
-        if ($this->sqlError($this->db->error())) {
-            return array();
-        }
-        return format_data($query->getResult(), 'agents');
+        return array();
     }
 
     /**
@@ -272,9 +179,6 @@ class AgentsModel extends BaseModel
      */
     public function reset(string $table = ''): bool
     {
-        if ($this->tableReset('agents')) {
-            return true;
-        }
         return false;
     }
 
@@ -288,12 +192,6 @@ class AgentsModel extends BaseModel
      */
     public function update($id = null, $data = null): bool
     {
-        $data = $this->updateFieldData('agents', $data);
-        $this->builder->where('id', intval($id));
-        $this->builder->update($data);
-        if ($this->sqlError($this->db->error())) {
-            return false;
-        }
         return true;
     }
 

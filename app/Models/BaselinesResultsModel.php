@@ -30,43 +30,7 @@ class BaselinesResultsModel extends BaseModel
      */
     public function collection(object $resp): array
     {
-        $properties = $resp->meta->properties;
-        $properties[] = 'baselines.id AS `baselines.id`';
-        $properties[] = 'baselines.name AS `baselines.name`';
-        $this->builder->select($properties, false);
-        $this->builder->join('baselines', 'baselines_results.baseline_id = baselines.id', 'left');
-
-        foreach ($resp->meta->filter as $filter) {
-            if (in_array($filter->operator, ['!=', '>=', '<=', '=', '>', '<', 'like', 'not like'])) {
-                $this->builder->{$filter->function}($filter->name . ' ' . $filter->operator, $filter->value);
-            } else {
-                $this->builder->{$filter->function}($filter->name, $filter->value);
-            }
-        }
-        $this->builder->orderBy($resp->meta->sort);
-        if (!empty($resp->meta->groupby)) {
-            $this->builder->groupBy($resp->meta->groupby);
-        }
-        $this->builder->limit($resp->meta->limit, $resp->meta->offset);
-        $query = $this->builder->get();
-        if ($this->sqlError($this->db->error())) {
-            return array();
-        }
-        $result = $query->getResult();
-        $count = count($result);
-        for ($i = 0; $i < $count; $i++) {
-            if (!empty($result[$i]->result)) {
-                try {
-                    $json = json_decode($result[$i]->result, false, 512, JSON_THROW_ON_ERROR);
-                } catch (\JsonException $e) {
-                    log_message('error', 'Could not decode JSON. File:' . basename(__FILE__) . ', Line:' . __LINE__ . ', Error: ' . $e->getMessage());
-                }
-                unset($json->device_list);
-                unset($json->policy);
-                $result[$i]->result = json_encode($json);
-            }
-        }
-        return format_data($result, 'baselines_results');
+        return array();
     }
 
     /**
@@ -78,9 +42,6 @@ class BaselinesResultsModel extends BaseModel
      */
     public function create($data = null): ?int
     {
-        if (empty($data)) {
-            return null;
-        }
         return null;
     }
 
@@ -94,13 +55,6 @@ class BaselinesResultsModel extends BaseModel
      */
     public function delete($id = null, bool $purge = false): bool
     {
-        $this->builder->delete(['id' => intval($id)]);
-        if ($this->sqlError($this->db->error())) {
-            return false;
-        }
-        if ($this->db->affectedRows() !== 1) {
-            return false;
-        }
         return true;
     }
 
@@ -148,28 +102,7 @@ class BaselinesResultsModel extends BaseModel
      */
     public function listUser($where = array(), $orgs = array()): array
     {
-        if (empty($orgs)) {
-            $instance = & get_instance();
-            $orgs = array_unique(array_merge($instance->user->orgs, $instance->orgsModel->getUserDescendants($instance->user->orgs, $instance->orgs)));
-            $orgs[] = 1;
-            $orgs = array_unique($orgs);
-        }
-
-        $properties = array();
-        $properties[] = 'baselines_results.*';
-        $properties[] = 'baselines.name AS `baselines.name`';
-        $properties[] = 'orgs.name as `orgs.name`';
-        $this->builder->select($properties, false);
-        $this->builder->join('orgs', 'baselines_results.org_id = orgs.id', 'left');
-        $this->builder->join('baselines', 'baselines_results.baseline_id = baselines.id', 'left');
-        $this->builder->whereIn('orgs.id', $orgs);
-        $this->builder->where($where);
-        $this->builder->orderBy('baselines.name', 'ASC');
-        $query = $this->builder->get();
-        if ($this->sqlError($this->db->error())) {
-            return array();
-        }
-        return format_data($query->getResult(), 'baselines_results');
+        return array();
     }
 
     /**
@@ -182,11 +115,7 @@ class BaselinesResultsModel extends BaseModel
      */
     public function listAll(): array
     {
-        $query = $this->builder->get();
-        if ($this->sqlError($this->db->error())) {
-            return array();
-        }
-        return $query->getResult();
+        return array();
     }
 
     /**
@@ -198,26 +127,7 @@ class BaselinesResultsModel extends BaseModel
      */
     public function read(int $id = 0): array
     {
-        // $query = $this->builder->getWhere(['id' => intval($id)]);
-        // if ($this->sqlError($this->db->error())) {
-        //     return array();
-        // }
-        // return format_data($query->getResult(), 'baselines_results');
-
-        $properties = array();
-        $properties[] = 'baselines_results.*';
-        $properties[] = 'orgs.name as `orgs.name`';
-        $properties[] = 'orgs.id as `orgs.id`';
-        $properties[] = 'baselines.name as `baselines.name`';
-        $properties[] = 'baselines.id as `baselines.id`';
-        $this->builder->select($properties, false);
-        $this->builder->join('orgs', 'baselines_results.org_id = orgs.id', 'left');
-        $this->builder->join('baselines', 'baselines_results.baseline_id = baselines.id', 'left');
-        $query = $this->builder->getWhere(['baselines_results.id' => intval($id)]);
-        if ($this->sqlError($this->db->error())) {
-            return array();
-        }
-        return format_data($query->getResult(), 'baselines_results');
+        return array();
     }
 
     /**

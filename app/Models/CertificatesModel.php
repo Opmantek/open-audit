@@ -32,25 +32,7 @@ class CertificatesModel extends BaseModel
      */
     public function collection(object $resp): array
     {
-        $properties = $resp->meta->properties;
-        $properties[] = "orgs.name as `orgs.name`";
-        $properties[] = "orgs.id as `orgs.id`";
-        $this->builder->select($properties, false);
-        $this->builder->join('orgs', $resp->meta->collection . '.org_id = orgs.id', 'left');
-        foreach ($resp->meta->filter as $filter) {
-            if (in_array($filter->operator, ['!=', '>=', '<=', '=', '>', '<', 'like', 'not like'])) {
-                $this->builder->{$filter->function}($filter->name . ' ' . $filter->operator, $filter->value);
-            } else {
-                $this->builder->{$filter->function}($filter->name, $filter->value);
-            }
-        }
-        $this->builder->orderBy($resp->meta->sort);
-        $this->builder->limit($resp->meta->limit, $resp->meta->offset);
-        $query = $this->builder->get();
-        if ($this->sqlError($this->db->error())) {
-            return array();
-        }
-        return format_data($query->getResult(), $resp->meta->collection);
+        return array();
     }
 
     /**
@@ -62,19 +44,7 @@ class CertificatesModel extends BaseModel
      */
     public function create($data = null): ?int
     {
-        if (empty($data)) {
-            return null;
-        }
-        $data = $this->createFieldData('certificates', $data);
-        if (empty($data)) {
-            return null;
-        }
-        $this->builder->insert($data);
-        if ($error = $this->sqlError($this->db->error())) {
-            \Config\Services::session()->setFlashdata('error', json_encode($error));
-            return null;
-        }
-        return (intval($this->db->insertID()));
+        return null;
     }
 
     /**
@@ -87,13 +57,6 @@ class CertificatesModel extends BaseModel
      */
     public function delete($id = null, bool $purge = false): bool
     {
-        $this->builder->delete(['id' => intval($id)]);
-        if ($this->sqlError($this->db->error())) {
-            return false;
-        }
-        if ($this->db->affectedRows() !== 1) {
-            return false;
-        }
         return true;
     }
 
@@ -107,33 +70,7 @@ class CertificatesModel extends BaseModel
      */
     public function includedRead(int $id = 0): array
     {
-        $included = array();
-
-        $instance = & get_instance();
-        $orgs = array_unique(array_merge($instance->user->orgs, $instance->orgsModel->getUserDescendants($instance->user->orgs, $instance->orgs)));
-        $orgs = array_unique(array_merge($orgs, $instance->orgsModel->getUserAscendants($instance->user->orgs, $instance->orgs)));
-        $orgs[] = 1;
-        $orgs = array_unique($orgs);
-        $orgs = implode(',', $orgs);
-
-        $certificate = $this->read($id);
-        $certificate = $certificate[0];
-
-        $sql = "SELECT server_item.parent_name AS `server_item.parent_name`, server_item.name AS `server_item.name`, server_item.status AS `server_item.status`, server_item.type AS `server_item.type`, server_item.current AS `server_item.current`, devices.id AS `devices.id`, devices.name AS `devices.name` FROM server_item LEFT JOIN devices ON (server_item.device_id = devices.id) LEFT JOIN certificate ON (certificate.device_id = devices.id) WHERE server_item.certificate_file = certificate.name AND certificate.serial = ? AND devices.org_id IN (" . $orgs . ")";
-        $result = $this->db->query($sql, [$certificate->attributes->serial])->getResult();
-        // log_message('error', 'SQL: ' . str_replace("\n", " ", (string)$this->db->getLastQuery()));
-        $current = 'n';
-        foreach ($result as $device) {
-            if ($device->{'server_item.current'} === 'y') {
-                $current = 'y';
-            }
-        }
-        if ($certificate->attributes->active !== $current) {
-            $sql = "UPDATE certificates SET active = ? WHERE id = ?";
-            $this->db->query($sql, [$current, $certificate->id]);
-        }
-        $included['devices'] = format_data($result, 'devices');
-        return $included;
+        return array();
     }
 
     /**
@@ -145,8 +82,7 @@ class CertificatesModel extends BaseModel
      */
     public function includedCreateForm(int $id = 0): array
     {
-        $include = array();
-        return $include;
+        return array();
     }
 
 
@@ -164,27 +100,7 @@ class CertificatesModel extends BaseModel
      */
     public function listUser($where = array(), $orgs = array()): array
     {
-        if (empty($orgs)) {
-            $instance = & get_instance();
-            $orgs = array_unique(array_merge($instance->user->orgs, $instance->orgsModel->getUserDescendants($instance->user->orgs, $instance->orgs)));
-            $orgs = array_unique(array_merge($orgs, $instance->orgsModel->getUserAscendants($instance->user->orgs, $instance->orgs)));
-            $orgs[] = 1;
-            $orgs = array_unique($orgs);
-        }
-
-        $properties = array();
-        $properties[] = 'certificates.*';
-        $properties[] = 'orgs.name as `orgs.name`';
-        $this->builder->select($properties, false);
-        $this->builder->join('orgs', 'certificates.org_id = orgs.id', 'left');
-        $this->builder->whereIn('orgs.id', $orgs);
-        $this->builder->where($where);
-        $this->builder->orderBy('certificates.name', 'ASC');
-        $query = $this->builder->get();
-        if ($this->sqlError($this->db->error())) {
-            return array();
-        }
-        return format_data($query->getResult(), 'certificates');
+        return array();
     }
 
     /**
@@ -197,12 +113,7 @@ class CertificatesModel extends BaseModel
      */
     public function listAll(): array
     {
-        $this->builder->orderBy('id');
-        $query = $this->builder->get();
-        if ($this->sqlError($this->db->error())) {
-            return array();
-        }
-        return $query->getResult();
+        return array();
     }
 
     /**
@@ -214,11 +125,7 @@ class CertificatesModel extends BaseModel
      */
     public function read(int $id = 0): array
     {
-        $query = $this->builder->getWhere(['id' => intval($id)]);
-        if ($this->sqlError($this->db->error())) {
-            return array();
-        }
-        return format_data($query->getResult(), 'certificates');
+        return array();
     }
 
     /**
@@ -233,9 +140,6 @@ class CertificatesModel extends BaseModel
      */
     public function reset(string $table = ''): bool
     {
-        if ($this->tableReset('certificates')) {
-            return true;
-        }
         return false;
     }
 
@@ -249,12 +153,6 @@ class CertificatesModel extends BaseModel
      */
     public function update($id = null, $data = null): bool
     {
-        $data = $this->updateFieldData('certificates', $data);
-        $this->builder->where('id', intval($id));
-        $this->builder->update($data);
-        if ($this->sqlError($this->db->error())) {
-            return false;
-        }
         return true;
     }
 
