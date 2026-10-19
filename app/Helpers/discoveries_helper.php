@@ -630,9 +630,11 @@ if (! function_exists('ip_scan')) {
             $options->timing = (int) $nmap->timing;
         }
 
-        if (isset($nmap->ping) && $nmap->ping === 'n') {
-            $options->noPing = true;
-        }
+        // Always -Pn. An address only reaches this function after answering the ping sweep, so
+        // repeating host discovery on every port scan adds nothing, and when the device did not
+        // answer that second time nmap wrote no host element and every scan result was lost.
+        // The ping scan option still governs the sweep itself.
+        $options->noPing = true;
 
         if (isset($nmap->service_version) && $nmap->service_version === 'y') {
             $options->serviceDetection = true;
@@ -674,7 +676,7 @@ if (! function_exists('ip_scan')) {
             $log->command_output = json_encode($host);
             $discoveryLogModel->create($log);
 
-            $result = check_nmap_host_array($discovery, $host, $ip, $process->getCommandLine());
+            $result = nmap_host_result($discovery, $host, $ip, $process, $discoveryLogModel, $log);
             $ports  = $device['nmap_ports'] ?? [];
             $device = array_merge($device, $result);
 
@@ -689,7 +691,7 @@ if (! function_exists('ip_scan')) {
         if (isset($nmap->nmap_udp_ports) && ctype_digit($nmap->nmap_udp_ports) && intval($nmap->nmap_udp_ports) > 0 && intval($nmap->nmap_udp_ports) < 65536) {
             $scanOptions = clone $options;
             $scanOptions->scanType = NmapOptions::SCAN_TYPE_UDP;
-            $scanOptions->topPorts = (int) $nmap->nmap_tcp_ports;
+            $scanOptions->topPorts = (int) $nmap->nmap_udp_ports;
 
             if ($executable !== get_php_scan_command() && isset($nmap->exclude_udp_ports) && $nmapVersion > 6) {
                 $scanOptions->excludeUdpPorts = PortHelper::expand($nmap->exclude_udp_ports);
@@ -708,7 +710,7 @@ if (! function_exists('ip_scan')) {
             $log->command_output = json_encode($host);
             $discoveryLogModel->create($log);
 
-            $result = check_nmap_host_array($discovery, $host, $ip, $process->getCommandLine());
+            $result = nmap_host_result($discovery, $host, $ip, $process, $discoveryLogModel, $log);
             $ports  = $device['nmap_ports'] ?? [];
             $device = array_merge($device, $result);
 
@@ -742,7 +744,7 @@ if (! function_exists('ip_scan')) {
             $log->command_output = json_encode($host);
             $discoveryLogModel->create($log);
 
-            $result = check_nmap_host_array($discovery, $host, $ip, $process->getCommandLine());
+            $result = nmap_host_result($discovery, $host, $ip, $process, $discoveryLogModel, $log);
             $ports = $device['nmap_ports'] ?? [];
             $device = array_merge($device, $result);
 
@@ -778,7 +780,7 @@ if (! function_exists('ip_scan')) {
             $log->command_output = json_encode($host);
             $discoveryLogModel->create($log);
 
-            $result = check_nmap_host_array($discovery, $host, $ip, $process->getCommandLine());
+            $result = nmap_host_result($discovery, $host, $ip, $process, $discoveryLogModel, $log);
             $ports = $device['nmap_ports'] ?? [];
             $device = array_merge($device, $result);
 
@@ -1041,6 +1043,50 @@ if (! function_exists('ip_scan')) {
     }
 }
 
+if (! function_exists('nmap_host_result')) {
+    /**
+     * Hand a parsed nmap host to check_nmap_host_array(), or record why there is none.
+     *
+     * nmap writes no <host> element when the address did not answer its discovery probes for
+     * this scan, and none when nmap itself failed to run, so the parser hands back an empty
+     * array. Calling check_nmap_host_array() with that only produced "No host provided" in the
+     * PHP log, with no address, command or stderr to act on. This writes the circumstances
+     * against the address in the discovery log instead and returns an empty result, so the
+     * scans that follow still run.
+     *
+     * @param  object      $discovery
+     * @param  array       $host               One parsed host, or [] when nmap reported none.
+     * @param  string      $ip
+     * @param  NmapProcess $process            The finished scan, for its command, exit code and stderr.
+     * @param  object      $discoveryLogModel
+     * @param  object      $log                The caller's log template. Message, command, output and
+     *                                         severity are put back afterwards.
+     * @return array
+     */
+    function nmap_host_result(object $discovery, array $host, string $ip, NmapProcess $process, object $discoveryLogModel, object $log): array
+    {
+        if (!empty($host)) {
+            return check_nmap_host_array($discovery, $host, $ip, $process->getCommandLine());
+        }
+        $stderr = trim($process->getErrorOutput());
+        if ($process->isSuccessful()) {
+            $log->message = 'Nmap found no host at ' . $ip . '. The address did not answer the discovery probes for this scan, so no ports were checked.';
+        } else {
+            $log->message = 'Nmap failed for ' . $ip . ' with exit code ' . var_export($process->getExitCode(), true) . ', so no ports were checked.';
+        }
+        $log->command = $process->getCommandLine();
+        $log->command_output = ($stderr !== '') ? $stderr : 'No host element in the nmap output.';
+        $log->command_status = 'notice';
+        $log->severity = 6;
+        $discoveryLogModel->create($log);
+        $log->message = '';
+        $log->command = '';
+        $log->command_output = '';
+        $log->severity = 7;
+        return [];
+    }
+}
+
 if (! function_exists('check_nmap_host_array')) {
     /**
      * Purpose of this function is to carry out the same checks as the check_nmap_output
@@ -1055,7 +1101,7 @@ if (! function_exists('check_nmap_host_array')) {
         }
 
         if (empty($host)) {
-            log_message('error', 'No host provided to discoveries_helper::check_nmap_host_array.');
+            log_message('error', 'No host provided to discoveries_helper::check_nmap_host_array for ' . $ip . '.');
             return [];
         }
 
