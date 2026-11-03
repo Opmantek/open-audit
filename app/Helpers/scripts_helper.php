@@ -227,3 +227,20 @@ if (!function_exists('scripts_collectios_options')) {
             return $options_scripts;
     }
 }
+
+if (!function_exists('scripts_based_on_is_valid')) {
+    /**
+     * Test whether a based_on value names one of the audit scripts supplied with Open-AudIT.
+     *
+     * The value is used to build the path of the file a download serves, so only an exact
+     * script name is accepted. A path, such as one containing ../, is not.
+     *
+     * @param string $based_on The value to test.
+     *
+     * @return bool True if the value is a supplied audit script, false otherwise.
+     */
+    function scripts_based_on_is_valid(string $based_on): bool
+    {
+        return array_key_exists($based_on, scripts_collections_options());
+    }
+}

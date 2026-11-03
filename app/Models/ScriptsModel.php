@@ -7,6 +7,7 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Libraries\Exception\FormValidationException;
 use Exception;
 use stdClass;
 
@@ -170,6 +171,10 @@ class ScriptsModel extends BaseModel
     {
         if (empty($data)) {
             return null;
+        }
+        // The file a download serves, and downloads need no login, so only a shipped script.
+        if (!isset($data->based_on) or !scripts_based_on_is_valid((string)$data->based_on)) {
+            throw FormValidationException::forField('based_on', 'Based On must be one of the audit scripts supplied with Open-AudIT.');
         }
         if (empty($data->options)) {
             $data->options = new \stdClass();
@@ -356,6 +361,11 @@ class ScriptsModel extends BaseModel
         $data = $result[0]->attributes;
         if (empty($data)) {
             log_message('error', 'No script returned when ScriptsModel::download called with ID ' . $id);
+            return null;
+        }
+        // A row stored before based_on was checked could name any file, and this is served to anyone.
+        if (!scripts_based_on_is_valid((string)$data->based_on)) {
+            log_message('error', 'Script ' . intval($id) . ' has an invalid based_on and will not be served.');
             return null;
         }
         $filename = ROOTPATH . 'other/' . $data->based_on;
@@ -619,6 +629,9 @@ class ScriptsModel extends BaseModel
     public function update($id = null, $data = null): bool
     {
         $id = intval($id);
+        if (isset($data->based_on) and !scripts_based_on_is_valid((string)$data->based_on)) {
+            throw FormValidationException::forField('based_on', 'Based On must be one of the audit scripts supplied with Open-AudIT.');
+        }
         $script = $this->read($id);
         if (!empty($data->options)) {
             foreach ($script[0]->attributes->options as $key => $value) {
